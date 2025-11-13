@@ -323,6 +323,110 @@
             border-left: 3px solid var(--color-primary) !important;
         }
 
+        /* Card View Styles */
+        .card-grid {
+            display: none;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: var(--space-4);
+            padding: var(--space-4);
+        }
+
+        .card-grid.active {
+            display: grid;
+        }
+
+        .cattle-card {
+            background: white;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: box-shadow 0.2s, transform 0.2s;
+            cursor: pointer;
+        }
+
+        .cattle-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .card-header-section {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            padding: var(--space-4);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-tag-id {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .card-status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .card-body-section {
+            padding: var(--space-4);
+        }
+
+        .card-info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--space-2) 0;
+            border-bottom: 1px solid var(--color-border-light);
+        }
+
+        .card-info-row:last-child {
+            border-bottom: none;
+        }
+
+        .card-label {
+            font-size: 13px;
+            color: var(--color-text-light);
+            font-weight: 500;
+        }
+
+        .card-value {
+            font-size: 14px;
+            color: var(--color-text);
+            font-weight: 600;
+        }
+
+        .card-value.link {
+            color: var(--color-primary);
+            cursor: pointer;
+        }
+
+        .card-value.link:hover {
+            text-decoration: underline;
+        }
+
+        .card-actions {
+            padding: var(--space-3) var(--space-4);
+            background: var(--color-bg-light);
+            display: flex;
+            gap: var(--space-2);
+            border-top: 1px solid var(--color-border-light);
+        }
+
+        .card-actions .btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        /* Hide table when card view active */
+        .table-wrapper.hidden {
+            display: none;
+        }
+
         .edit-mode-badge {
             background: var(--color-primary);
             color: white;
@@ -835,6 +939,78 @@
         .add-item-btn:hover {
             background: var(--color-primary-dark);
         }
+
+        /* Mobile Responsive Breakpoints */
+        @media (max-width: 768px) {
+            /* Auto-switch to card view on mobile */
+            #table-container {
+                display: none !important;
+            }
+
+            .card-grid {
+                display: grid !important;
+            }
+
+            /* Hide view toggle on mobile */
+            .view-toggle {
+                display: none;
+            }
+
+            /* Stack toolbar items vertically on mobile */
+            .datatable-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .toolbar-left {
+                margin-bottom: var(--space-2);
+            }
+
+            /* Adjust card layout for mobile */
+            .card-grid {
+                grid-template-columns: 1fr;
+                padding: var(--space-3);
+            }
+
+            /* Larger touch targets for mobile */
+            .card-actions .btn {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+
+            /* Adjust header for mobile */
+            .page-header {
+                padding: var(--space-3);
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            /* Adjust filter bar for mobile */
+            .filter-bar {
+                flex-direction: column;
+                gap: var(--space-2);
+            }
+
+            .filter-group {
+                flex: 1 1 100%;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            /* Tablet: 2 columns */
+            .card-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1025px) {
+            /* Desktop: 3+ columns */
+            .card-grid {
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            }
+        }
     </style>
 </head>
 <body>
@@ -906,15 +1082,14 @@
                         Reset Columns
                     </button>
                     <div class="view-toggle">
-                        <button class="view-btn active">📋 Table</button>
-                        <button class="view-btn">📇 Cards</button>
-                        <button class="view-btn">📊 Analytics</button>
+                        <button id="table-view-btn" class="btn btn-primary btn-sm" onclick="switchView('table')">📋 Table</button>
+                        <button id="card-view-btn" class="btn btn-secondary btn-sm" onclick="switchView('cards')">📇 Cards</button>
                     </div>
                 </div>
             </div>
 
             <!-- Table -->
-            <div class="table-wrapper">
+            <div class="table-wrapper" id="table-view">
                 <table class="datatable" id="cattle-table">
                     <thead>
                         <tr id="table-header">
@@ -925,6 +1100,11 @@
                         <!-- Data will be rendered here -->
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Card Grid -->
+            <div class="card-grid" id="card-view">
+                <!-- Cards will be rendered here -->
             </div>
 
             <!-- Pagination -->
@@ -1738,6 +1918,9 @@
         // State for sorting
         let currentSort = { field: null, direction: 'asc' };
 
+        // View state (table or cards)
+        let currentView = 'table';
+
         // Edit mode state
         let isEditMode = false;
         let draggedColumnIndex = null;
@@ -2243,6 +2426,116 @@
 
             html += '</tbody></table>';
             return html;
+        }
+
+        // Render card view
+        function renderCardView() {
+            let cattle = getFilteredCattle();
+
+            // Apply sorting if active
+            if (currentSort.field) {
+                cattle = sortCattle([...cattle], currentSort.field, currentSort.direction);
+            }
+
+            const cardGrid = document.getElementById('card-view');
+            document.getElementById('cow-count').textContent = cattleStore.getAll().length;
+            document.getElementById('pagination-info').textContent = `1-${cattle.length} of ${cattleStore.getAll().length}`;
+
+            if (cattle.length === 0) {
+                cardGrid.innerHTML = '<p class="empty-state" style="grid-column: 1/-1; text-align: center; padding: var(--space-6);">No cattle match the selected filters.</p>';
+                return;
+            }
+
+            let html = '';
+            cattle.forEach(cow => {
+                html += renderCattleCard(cow);
+            });
+
+            cardGrid.innerHTML = html;
+        }
+
+        // Render individual cattle card
+        function renderCattleCard(cow) {
+            const calves = calfStore.search(cow.tagId, ['cattleId']);
+            const work = workStore.search(cow.tagId, ['cattleId']);
+
+            return `
+                <div class="cattle-card" onclick="expandToCalf('${cow.id}', '${cow.currentCalf || ''}')">
+                    <div class="card-header-section">
+                        <h3 class="card-tag-id">${cow.tagId}</h3>
+                        <span class="card-status-badge status-${cow.status}">${cow.status}</span>
+                    </div>
+                    <div class="card-body-section">
+                        <div class="card-info-row">
+                            <span class="card-label">Breed</span>
+                            <span class="card-value">${cow.breed}</span>
+                        </div>
+                        <div class="card-info-row">
+                            <span class="card-label">Age</span>
+                            <span class="card-value">${cow.age}</span>
+                        </div>
+                        <div class="card-info-row">
+                            <span class="card-label">Weight</span>
+                            <span class="card-value">${cow.weight} lbs</span>
+                        </div>
+                        <div class="card-info-row">
+                            <span class="card-label">Total Calves</span>
+                            <span class="card-value"><strong>${cow.totalCalves || 0}</strong></span>
+                        </div>
+                        <div class="card-info-row">
+                            <span class="card-label">Last Calving</span>
+                            <span class="card-value">${cow.lastCalving || '—'}</span>
+                        </div>
+                        ${cow.currentCalf ? `
+                            <div class="card-info-row">
+                                <span class="card-label">Current Calf</span>
+                                <span class="card-value"><a href="#" class="action-link" onclick="event.stopPropagation(); expandToCalf('${cow.id}', '${cow.currentCalf}')">${cow.currentCalf}</a></span>
+                            </div>
+                        ` : ''}
+                        ${cow.dueDate ? `
+                            <div class="card-info-row card-highlight">
+                                <span class="card-label">Due Date</span>
+                                <span class="card-value"><strong>${cow.dueDate}</strong></span>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn btn-sm" onclick="event.stopPropagation(); editCow('${cow.id}')">
+                            Edit
+                        </button>
+                        <button class="btn btn-sm" onclick="event.stopPropagation(); deleteCow('${cow.id}')">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Switch between table and card view
+        function switchView(view) {
+            currentView = view;
+            const tableContainer = document.getElementById('table-container');
+            const cardGrid = document.getElementById('card-view');
+            const tableViewBtn = document.getElementById('table-view-btn');
+            const cardViewBtn = document.getElementById('card-view-btn');
+
+            if (view === 'cards') {
+                tableContainer.style.display = 'none';
+                cardGrid.classList.add('active');
+                tableViewBtn.classList.remove('btn-primary');
+                tableViewBtn.classList.add('btn-secondary');
+                cardViewBtn.classList.remove('btn-secondary');
+                cardViewBtn.classList.add('btn-primary');
+                renderCardView();
+            } else {
+                tableContainer.style.display = 'block';
+                cardGrid.classList.remove('active');
+                cardViewBtn.classList.remove('btn-primary');
+                cardViewBtn.classList.add('btn-secondary');
+                tableViewBtn.classList.remove('btn-secondary');
+                tableViewBtn.classList.add('btn-primary');
+                renderTable();
+            }
         }
 
         // Toggle calf expansion
