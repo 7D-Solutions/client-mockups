@@ -2371,10 +2371,29 @@
 
             workStore.add(data);
 
-            // Find parent cow ID to re-expand after render
+            // Determine if this is for a cow or a calf
             const cattleId = data.cattleId;
-            const parent = cattleStore.search(cattleId, ['tagId'])[0];
-            const parentCowId = parent ? parent.id : null;
+            const isCalfId = cattleId.includes('-C'); // Calf IDs have '-C' in them
+            let parentCowId = null;
+            let calfId = null;
+
+            if (isCalfId) {
+                // This is a calf - find the parent cow
+                const calf = calfStore.search(cattleId, ['calfId'])[0];
+                if (calf) {
+                    const parentCow = cattleStore.search(calf.cattleId, ['tagId'])[0];
+                    if (parentCow) {
+                        parentCowId = parentCow.id;
+                        calfId = calf.id;
+                    }
+                }
+            } else {
+                // This is a cow
+                const cow = cattleStore.search(cattleId, ['tagId'])[0];
+                if (cow) {
+                    parentCowId = cow.id;
+                }
+            }
 
             Toast.success('Work history added successfully');
             closeModal('work-modal');
@@ -2389,14 +2408,35 @@
                         cowRow.classList.add('expanded');
                         expandedRow.classList.add('show');
 
-                        // If adding to work history tab, switch to that tab
-                        const workTab = expandedRow.querySelector('.history-tab[data-tab="work"]');
-                        const workContent = expandedRow.querySelector('.tab-content[data-tab="work"]');
-                        if (workTab && workContent) {
-                            expandedRow.querySelectorAll('.history-tab').forEach(t => t.classList.remove('active'));
-                            expandedRow.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                            workTab.classList.add('active');
-                            workContent.classList.add('active');
+                        if (isCalfId && calfId) {
+                            // Added to calf - expand calf row and stay on Calves tab
+                            const calfRow = expandedRow.querySelector(`.calf-row[data-calf-id="${calfId}"]`);
+                            const calfExpandedRow = expandedRow.querySelector(`.calf-expanded-row[data-calf-id="${calfId}"]`);
+
+                            if (calfRow && calfExpandedRow) {
+                                calfRow.classList.add('expanded');
+                                calfExpandedRow.classList.add('show');
+                            }
+
+                            // Make sure Calves tab is active
+                            const calvesTab = expandedRow.querySelector('.history-tab[data-tab="calves"]');
+                            const calvesContent = expandedRow.querySelector('.tab-content[data-tab="calves"]');
+                            if (calvesTab && calvesContent) {
+                                expandedRow.querySelectorAll('.history-tab').forEach(t => t.classList.remove('active'));
+                                expandedRow.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                                calvesTab.classList.add('active');
+                                calvesContent.classList.add('active');
+                            }
+                        } else {
+                            // Added to cow - switch to Work History tab
+                            const workTab = expandedRow.querySelector('.history-tab[data-tab="work"]');
+                            const workContent = expandedRow.querySelector('.tab-content[data-tab="work"]');
+                            if (workTab && workContent) {
+                                expandedRow.querySelectorAll('.history-tab').forEach(t => t.classList.remove('active'));
+                                expandedRow.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                                workTab.classList.add('active');
+                                workContent.classList.add('active');
+                            }
                         }
                     }
                 }, 0);
