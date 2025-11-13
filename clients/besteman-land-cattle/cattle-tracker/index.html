@@ -1601,7 +1601,18 @@
 
                     // CH-1890 calves
                     { cattleId: '#CH-1890', calfId: '#CH-1890-C5', birthDate: '2024-02-28', gender: 'female', birthWeight: 90, currentWeight: 405, status: 'nursing' },
-                    { cattleId: '#CH-1890', calfId: '#CH-1890-C4', birthDate: '2023-03-12', gender: 'male', birthWeight: 92, weaningWeight: 625, weaningAge: '8.5 months', status: 'sold' }
+                    { cattleId: '#CH-1890', calfId: '#CH-1890-C4', birthDate: '2023-03-12', gender: 'male', birthWeight: 92, weaningWeight: 625, weaningAge: '8.5 months', status: 'sold' },
+
+                    // A-2245 calves (dry cow - all calves weaned/sold)
+                    { cattleId: '#A-2245', calfId: '#A-2245-C7', birthDate: '2023-11-10', gender: 'male', birthWeight: 84, weaningWeight: 580, weaningAge: '7.5 months', status: 'sold' },
+                    { cattleId: '#A-2245', calfId: '#A-2245-C6', birthDate: '2022-12-15', gender: 'female', birthWeight: 82, weaningWeight: 575, weaningAge: '8 months', status: 'sold' },
+                    { cattleId: '#A-2245', calfId: '#A-2245-C5', birthDate: '2022-01-20', gender: 'male', birthWeight: 85, weaningWeight: 590, weaningAge: '7 months', status: 'sold' },
+                    { cattleId: '#A-2245', calfId: '#A-2245-C4', birthDate: '2021-02-08', gender: 'female', birthWeight: 80, weaningWeight: 570, weaningAge: '8 months', status: 'sold' },
+
+                    // H-1234 calves (dry cow - all calves weaned/sold)
+                    { cattleId: '#H-1234', calfId: '#H-1234-C7', birthDate: '2023-12-10', gender: 'female', birthWeight: 81, weaningWeight: 595, weaningAge: '8 months', status: 'sold' },
+                    { cattleId: '#H-1234', calfId: '#H-1234-C6', birthDate: '2023-01-05', gender: 'male', birthWeight: 83, weaningWeight: 585, weaningAge: '8.5 months', status: 'sold' },
+                    { cattleId: '#H-1234', calfId: '#H-1234-C5', birthDate: '2022-02-18', gender: 'female', birthWeight: 79, weaningWeight: 580, weaningAge: '8 months', status: 'sold' }
                 ];
                 sampleCalves.forEach(c => calfStore.add(c));
 
@@ -1666,7 +1677,22 @@
                     { cattleId: '#R-2678', date: '2024-11-10', activityType: 'vaccination', details: 'Post-calving vaccination', administeredBy: 'Dr. Sarah Williams', notes: 'Recent birth' },
                     { cattleId: '#H-1234', date: '2024-10-12', activityType: 'weighing', details: 'Weight: 1,370 lbs', administeredBy: 'John Smith', notes: 'Dry cow monitoring' },
                     { cattleId: '#A-2890', date: '2024-10-28', activityType: 'pregnancy-test', details: 'Confirmed pregnant - Due Jan 22', administeredBy: 'Dr. Sarah Williams', notes: 'Good prognosis' },
-                    { cattleId: '#CH-1890', date: '2024-11-01', activityType: 'vaccination', details: 'Cattle Master 4', administeredBy: 'Dr. Sarah Williams', notes: 'Annual vaccination' }
+                    { cattleId: '#CH-1890', date: '2024-11-01', activityType: 'vaccination', details: 'Cattle Master 4', administeredBy: 'Dr. Sarah Williams', notes: 'Annual vaccination' },
+
+                    // Additional calves work history
+                    { cattleId: '#H-1556-C1', date: '2024-10-05', activityType: 'vaccination', details: 'First vaccination', administeredBy: 'Dr. Sarah Williams', notes: 'First-time calf doing well' },
+                    { cattleId: '#R-2104-C2', date: '2024-10-15', activityType: 'vaccination', details: 'Bovi-Shield vaccination', administeredBy: 'Dr. Sarah Williams', notes: 'Healthy calf' },
+                    { cattleId: '#A-2567-C3', date: '2024-10-20', activityType: 'weighing', details: 'Weight: 305 lbs', administeredBy: 'John Smith', notes: 'Good growth' },
+                    { cattleId: '#R-3421-C4', date: '2024-10-10', activityType: 'vaccination', details: 'Vaccination series', administeredBy: 'Dr. Sarah Williams', notes: 'Healthy calf' },
+                    { cattleId: '#H-2891-C5', date: '2024-10-25', activityType: 'weighing', details: 'Weight: 320 lbs', administeredBy: 'John Smith', notes: 'Excellent growth rate' },
+                    { cattleId: '#CH-1567-C6', date: '2024-10-08', activityType: 'vaccination', details: 'Cattle vaccination', administeredBy: 'Dr. Sarah Williams', notes: 'Strong calf' },
+                    { cattleId: '#R-1945-C2', date: '2024-11-01', activityType: 'vaccination', details: 'First vaccination', administeredBy: 'Dr. Sarah Williams', notes: 'Recent birth, doing well' },
+                    { cattleId: '#H-3156-C4', date: '2024-10-18', activityType: 'weighing', details: 'Weight: 380 lbs', administeredBy: 'John Smith', notes: 'Good weight' },
+                    { cattleId: '#A-1678-C5', date: '2024-10-22', activityType: 'vaccination', details: 'Vaccination series', administeredBy: 'Dr. Sarah Williams', notes: 'Healthy calf' },
+                    { cattleId: '#CH-2345-C3', date: '2024-10-15', activityType: 'weighing', details: 'Weight: 395 lbs', administeredBy: 'John Smith', notes: 'Large calf, excellent genetics' },
+                    { cattleId: '#R-2678-C1', date: '2024-11-05', activityType: 'vaccination', details: 'First vaccination', administeredBy: 'Dr. Sarah Williams', notes: 'New calf, healthy' },
+                    { cattleId: '#A-2890-C4', date: '2024-10-28', activityType: 'weighing', details: 'Weight: 435 lbs', administeredBy: 'John Smith', notes: 'Heavy calf' },
+                    { cattleId: '#CH-1890-C5', date: '2024-10-20', activityType: 'vaccination', details: 'Vaccination series', administeredBy: 'Dr. Sarah Williams', notes: 'Strong calf' }
                 ];
                 sampleWork.forEach(w => workStore.add(w));
             }
