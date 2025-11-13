@@ -1674,19 +1674,28 @@
 
                 // Generate payment history for each tenant (last 6 months)
                 tenants.forEach((tenant, index) => {
+                    // Make some tenants delinquent (haven't paid current month)
+                    const isDelinquent = index % 4 === 0; // Every 4th tenant is delinquent
+                    const missedMultipleMonths = index % 8 === 0; // Every 8th tenant missed multiple months
+
                     for (let monthsAgo = 5; monthsAgo >= 0; monthsAgo--) {
                         const paymentMonth = currentMonth - monthsAgo;
                         const paymentYear = paymentMonth < 0 ? currentYear - 1 : currentYear;
                         const adjustedMonth = paymentMonth < 0 ? 12 + paymentMonth : paymentMonth;
 
+                        // Skip current month payment for delinquent tenants
+                        if (isDelinquent && monthsAgo === 0) {
+                            continue; // No payment this month
+                        }
+
+                        // Skip last 2 months for severely delinquent tenants
+                        if (missedMultipleMonths && monthsAgo <= 1) {
+                            continue; // No payment for 2 months
+                        }
+
                         // Vary payment timing (some on time, some late)
                         let paymentDay;
                         let lateFee = 0;
-
-                        if (index % 5 === 0 && monthsAgo === 0) {
-                            // Current month - some tenants haven't paid yet
-                            if (today.getDate() > 5) continue;
-                        }
 
                         if (index % 7 === 0 && monthsAgo < 2) {
                             // Occasional late payers
@@ -2714,13 +2723,66 @@
             }
         }
 
-        // Delinquency messaging
+        // Delinquency messaging - Send to single tenant
+        function sendDelinquencyNoticeToTenant(tenantId) {
+            const tenant = tenantsStore.getById(tenantId);
+            const balance = calculateTenantBalance(tenantId);
+
+            if (balance.balance <= 0) {
+                showToast('This tenant has no outstanding balance', 'info');
+                return;
+            }
+
+            const property = propertiesStore.getById(tenant.propertyId);
+
+            // Build professional message
+            let message = `Dear ${tenant.name},
+
+`;
+            message += `This is a reminder that your rent payment of $${tenant.monthlyRent.toLocaleString()} was due on the 5th and has not been received. `;
+            message += `Your current balance is $${balance.balance.toLocaleString()}.
+
+`;
+
+            // Include late fees if applicable
+            if (balance.lateFees > 0) {
+                message += `A late fee of $${balance.lateFees.toLocaleString()} has been applied to your account.
+
+`;
+            }
+
+            message += `Please submit payment immediately to avoid further action.
+
+`;
+            message += `Thank you,
+Kelly Enterprises Property Management`;
+
+            // Add message to store
+            messagesStore.add({
+                tenantId: tenant.id,
+                propertyId: tenant.propertyId,
+                date: new Date().toISOString(),
+                type: 'Delinquency Notice',
+                subject: `Rent Past Due - ${property.address}`,
+                message: message,
+                sentVia: 'Email',
+                status: 'Sent'
+            });
+
+            showToast(`Delinquency notice sent to ${tenant.name}!`, 'success');
+            updateDashboard();
+        }
+
+        // Delinquency messaging - Send to all delinquent tenants
         function sendDelinquencyMessages() {
+            console.log('sendDelinquencyMessages called');
             const tenants = tenantsStore.getAll();
+            console.log('Tenants found:', tenants.length);
             let noticesSent = 0;
 
             tenants.forEach(tenant => {
                 const balance = calculateTenantBalance(tenant.id);
+                console.log(`Tenant ${tenant.name} balance:`, balance.balance);
 
                 // Only send notice if tenant has outstanding balance
                 if (balance.balance > 0) {
@@ -2761,12 +2823,17 @@ Kelly Enterprises Property Management`;
                     });
 
                     noticesSent++;
+                    console.log(`Notice sent to ${tenant.name}`);
                 }
             });
 
+            console.log('Total notices sent:', noticesSent);
+
             if (noticesSent === 0) {
+                console.log('Showing toast: No delinquent tenants');
                 showToast('No delinquent tenants found', 'info');
             } else {
+                console.log('Showing toast: Notices sent');
                 showToast(`Sent ${noticesSent} delinquency notice${noticesSent === 1 ? '' : 's'}!`, 'success');
                 updateDashboard();
             }
@@ -3780,10 +3847,15 @@ Kelly Enterprises Property Management`;
                 <h3 style="font-size: 14px; font-weight: 600; color: var(--color-text-light); text-transform: uppercase; margin-bottom: var(--space-3);">Payment History</h3>
                 ${paymentHistory}
 
-                <div style="display: flex; gap: var(--space-2); margin-top: var(--space-4); justify-content: flex-end;">
-                    <button class="btn btn-primary" onclick="showPaymentModalFromDetails('${tenantId}')">💵 Record Payment</button>
-                    <button class="btn btn-secondary" onclick="manageLeaseFromDetails('${tenantId}')">📄 Manage Lease</button>
-                    <button class="btn btn-secondary" onclick="editTenantFromDetails('${tenantId}')">✏️ Edit Tenant</button>
+                <div style="display: flex; gap: var(--space-2); margin-top: var(--space-4); justify-content: space-between;">
+                    <div>
+                        ${balance.balance > 0 ? `<button class="btn btn-danger" onclick="sendDelinquencyNoticeToTenant('${tenantId}')">📧 Send Delinquency Notice</button>` : ''}
+                    </div>
+                    <div style="display: flex; gap: var(--space-2);">
+                        <button class="btn btn-primary" onclick="showPaymentModalFromDetails('${tenantId}')">💵 Record Payment</button>
+                        <button class="btn btn-secondary" onclick="manageLeaseFromDetails('${tenantId}')">📄 Manage Lease</button>
+                        <button class="btn btn-secondary" onclick="editTenantFromDetails('${tenantId}')">✏️ Edit Tenant</button>
+                    </div>
                 </div>
             `;
 
@@ -3878,7 +3950,10 @@ Kelly Enterprises Property Management`;
 
         // Initialize on load
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Content Loaded - Initializing...');
+            console.log('Properties before init:', propertiesStore.getAll().length);
             initializeSampleData();
+            console.log('Properties after init:', propertiesStore.getAll().length);
             loadColumnSettings(); // Load saved column preferences
             populatePropertyFilter();
             updateDashboard();
