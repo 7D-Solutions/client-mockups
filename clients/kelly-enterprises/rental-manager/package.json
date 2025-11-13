@@ -1,0 +1,14 @@
+{
+  "name": "rental-manager",
+  "version": "1.0.0",
+  "description": "Rental property management mockup for Kelly Enterprises",
+  "scripts": {
+    "start": "npx serve . -p $PORT"
+  },
+  "keywords": ["mockup", "rental", "7dsolutions"],
+  "author": "7D Solutions",
+  "license": "MIT",
+  "dependencies": {
+    "serve": "^14.2.1"
+  }
+}

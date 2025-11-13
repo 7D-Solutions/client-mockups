@@ -1,8 +1,0 @@
-[phases.setup]
-nixPkgs = ["nginx"]
-
-[phases.build]
-cmds = ["echo 'No build needed for static HTML'"]
-
-[start]
-cmd = "nginx -g 'daemon off;' -c /app/nginx.conf"
