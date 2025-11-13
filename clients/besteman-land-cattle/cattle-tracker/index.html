@@ -2823,7 +2823,7 @@
             }
 
             closeModal('cow-modal');
-            renderTable();
+            renderCurrentView();
         }
 
         // Delete Cow
@@ -2889,21 +2889,25 @@
 
                 Toast.success('Calf added successfully');
                 closeModal('calf-modal');
-                renderTable();
 
-                // Re-expand the parent cow row
-                setTimeout(() => {
-                    const cowRow = document.querySelector(`.cow-row[data-cow-id="${parentCowId}"]`);
-                    const expandedRow = document.querySelector(`.expanded-row[data-cow-id="${parentCowId}"]`);
-                    if (cowRow && expandedRow) {
-                        cowRow.classList.add('expanded');
-                        expandedRow.classList.add('show');
-                    }
-                }, 0);
+                // Re-render current view (table or cards)
+                renderCurrentView();
+
+                // Re-expand the parent cow row (only in table view)
+                if (currentView === 'table') {
+                    setTimeout(() => {
+                        const cowRow = document.querySelector(`.cow-row[data-cow-id="${parentCowId}"]`);
+                        const expandedRow = document.querySelector(`.expanded-row[data-cow-id="${parentCowId}"]`);
+                        if (cowRow && expandedRow) {
+                            cowRow.classList.add('expanded');
+                            expandedRow.classList.add('show');
+                        }
+                    }, 0);
+                }
             } else {
                 Toast.success('Calf added successfully');
                 closeModal('calf-modal');
-                renderTable();
+                renderCurrentView();
             }
         }
 
@@ -2967,10 +2971,10 @@
 
             Toast.success('Work history added successfully');
             closeModal('work-modal');
-            renderTable();
+            renderCurrentView();
 
-            // Re-expand the parent cow row if found
-            if (parentCowId) {
+            // Re-expand the parent cow row if found (only in table view)
+            if (parentCowId && currentView === 'table') {
                 setTimeout(() => {
                     const cowRow = document.querySelector(`.cow-row[data-cow-id="${parentCowId}"]`);
                     const expandedRow = document.querySelector(`.expanded-row[data-cow-id="${parentCowId}"]`);
