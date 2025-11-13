@@ -1627,7 +1627,7 @@
             { id: 'totalCalves', label: 'Total Calves', visible: true },
             { id: 'lastCalving', label: 'Last Calving', visible: true },
             { id: 'currentCalf', label: 'Current Calf', visible: true },
-            { id: 'actions', label: 'Actions', visible: true, locked: true }
+            { id: 'actions', label: 'Actions', visible: true }
         ];
 
         // Load column preferences from session storage
@@ -1895,7 +1895,7 @@
                 case 'lastCalving':
                     return cow.lastCalving || '—';
                 case 'currentCalf':
-                    return cow.currentCalf ? `<a href="#" class="action-link">${cow.currentCalf}</a>` : '—';
+                    return cow.currentCalf ? `<a href="#" class="action-link" onclick="event.stopPropagation(); expandToCalf('${cow.id}', '${cow.currentCalf}')">${cow.currentCalf}</a>` : '—';
                 case 'actions':
                     return `<a href="#" class="action-link" onclick="event.stopPropagation(); editCow('${cow.id}')">Edit</a> | <a href="#" class="action-link" onclick="event.stopPropagation(); deleteCow('${cow.id}')">Delete</a>`;
                 default:
@@ -2121,6 +2121,61 @@
                 calfRow.classList.add('expanded');
                 expandedRow.classList.add('show');
             }
+        }
+
+        // Expand cow and navigate to specific calf
+        function expandToCalf(cowId, calfTagId) {
+            // First, expand the cow row
+            const cowRow = document.querySelector(`.cow-row[data-cow-id="${cowId}"]`);
+            const cowExpandedRow = document.querySelector(`.expanded-row[data-cow-id="${cowId}"]`);
+
+            if (!cowRow || !cowExpandedRow) return;
+
+            // Collapse all other cows
+            document.querySelectorAll('.cow-row').forEach(r => r.classList.remove('expanded'));
+            document.querySelectorAll('.expanded-row').forEach(r => r.classList.remove('show'));
+
+            // Expand this cow
+            cowRow.classList.add('expanded');
+            cowExpandedRow.classList.add('show');
+
+            // Switch to Calves tab and expand the specific calf
+            setTimeout(() => {
+                // Activate Calves tab
+                const calvesTab = cowExpandedRow.querySelector('.history-tab[data-tab="calves"]');
+                const calvesContent = cowExpandedRow.querySelector('.tab-content[data-tab="calves"]');
+
+                if (calvesTab && calvesContent) {
+                    cowExpandedRow.querySelectorAll('.history-tab').forEach(t => t.classList.remove('active'));
+                    cowExpandedRow.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    calvesTab.classList.add('active');
+                    calvesContent.classList.add('active');
+
+                    // Find the calf by tag ID and expand it
+                    setTimeout(() => {
+                        const calves = calfStore.getAll().filter(c => c.cattleId === cattleStore.getById(cowId).tagId);
+                        const targetCalf = calves.find(c => c.calfId === calfTagId);
+
+                        if (targetCalf) {
+                            const calfRow = cowExpandedRow.querySelector(`.calf-row[data-calf-id="${targetCalf.id}"]`);
+                            const calfExpandedRow = cowExpandedRow.querySelector(`.calf-expanded-row[data-calf-id="${targetCalf.id}"]`);
+
+                            if (calfRow && calfExpandedRow) {
+                                // Collapse all other calves
+                                cowExpandedRow.querySelectorAll('.calf-row').forEach(r => r.classList.remove('expanded'));
+                                cowExpandedRow.querySelectorAll('.calf-expanded-row').forEach(r => r.classList.remove('show'));
+
+                                // Expand this calf
+                                calfRow.classList.add('expanded');
+                                calfExpandedRow.classList.add('show');
+
+                                // Scroll to the calf
+                                calfRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                            }
+                        }
+                    }, 100);
+                }
+            }, 100);
         }
 
         // Attach event listeners
