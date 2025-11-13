@@ -762,7 +762,7 @@
                 </div>
                 <div class="filter-group">
                     <label class="filter-label" style="opacity: 0; pointer-events: none;">-</label>
-                    <button class="btn btn-secondary" onclick="resetFilters()">✕ Clear Search</button>
+                    <button class="btn btn-secondary" onclick="resetFilters()">✕ Clear Filters</button>
                 </div>
             </div>
         </div>
@@ -2082,10 +2082,15 @@
             }
         }
 
-        // Reset search bar
+        // Reset search and filters
         function resetFilters() {
-            // Clear search input only
+            // Clear search input
             document.getElementById('search-input').value = '';
+
+            // Reset all filter selects
+            document.getElementById('status-filter').value = '';
+            document.getElementById('breed-filter').value = '';
+            document.getElementById('age-filter').value = '';
 
             // Re-render table
             renderTable();
