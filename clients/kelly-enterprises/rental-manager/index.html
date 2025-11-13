@@ -1851,7 +1851,13 @@
             // Clear old data if version changed or missing
             if (currentVersion !== String(DATA_VERSION)) {
                 console.log('Data version mismatch or missing. Clearing and reinitializing...');
-                sessionStorage.clear();
+                // Clear individual stores instead of entire sessionStorage
+                propertiesStore.clear();
+                tenantsStore.clear();
+                paymentsStore.clear();
+                expensesStore.clear();
+                messagesStore.clear();
+                applicationsStore.clear();
                 sessionStorage.setItem('rental-data-version', DATA_VERSION);
             }
 
@@ -4287,7 +4293,7 @@ Kelly Enterprises Property Management`;
             console.log('Payments after init:', paymentsStore.getAll().length);
             console.log('=== INITIALIZATION COMPLETE ===');
 
-            loadColumnSettings(); // Load saved column preferences
+            // Column preferences are loaded automatically when columns array is initialized
             populatePropertyFilter();
             updateDashboard();
             renderTable();
