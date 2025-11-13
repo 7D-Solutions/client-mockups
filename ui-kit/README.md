@@ -129,9 +129,43 @@ When you discover a new pattern in a mockup:
 - `.page-title` - Page title
 - `.page-actions` - Action buttons area
 
+## Documentation
+
+- **QUICKSTART.md** - 5-minute guide to spinning up a new app
+- **FEATURES.md** - Detailed component documentation and implementation guides
+- **CLAUDE.md** - Comprehensive context for AI assistants
+- **EXTRACTION_REPORT.md** - History and extraction details
+- **templates/starter-template.html** - Complete working starter template
+
+## Getting Started
+
+**Quick Start (5 minutes)**:
+1. Copy `templates/starter-template.html` to your project
+2. Update paths to UI Kit files
+3. Customize data model and table columns
+4. Open in browser and test!
+
+See **QUICKSTART.md** for detailed step-by-step instructions.
+
+## Advanced Features
+
+See **FEATURES.md** for implementation guides:
+- Column Customization (show/hide, drag-and-drop reordering)
+- Pagination (smart page numbers, auto-hide, filtering support)
+- Master-Detail with Tabs
+- Filtering and Sorting
+- And more...
+
 ## Version History
 
-- **v1.0** - Initial extraction from FireProof ERP
+- **v1.1** (Nov 2025)
+  - Added pagination feature with FireProof ERP pattern
+  - Created comprehensive documentation (CLAUDE.md, QUICKSTART.md)
+  - Added complete starter template
+  - Fixed MockupStore search to use exact matching
+
+- **v1.0** (Nov 2025)
+  - Initial extraction from FireProof ERP
   - Core CSS tokens and components
   - JavaScript utilities for mockups
   - Session-based data storage
