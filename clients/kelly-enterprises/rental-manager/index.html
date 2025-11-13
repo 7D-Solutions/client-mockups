@@ -6,8 +6,88 @@
     <title>Kelly Enterprises - Rental Manager</title>
     <!-- Railway deployment test -->
 
-    <!-- 7D Solutions UI Kit -->
-    <script src="../../../ui-kit/js/mockup-core.js"></script>
+    <script>
+        // MockupStore - Session-based data management
+        class MockupStore {
+          constructor(storeName) {
+            this.storeName = storeName;
+            this.data = this.load();
+          }
+
+          load() {
+            const stored = sessionStorage.getItem(this.storeName);
+            return stored ? JSON.parse(stored) : [];
+          }
+
+          save() {
+            sessionStorage.setItem(this.storeName, JSON.stringify(this.data));
+          }
+
+          getAll() {
+            return [...this.data];
+          }
+
+          getById(id) {
+            return this.data.find(item => item.id === id);
+          }
+
+          add(item) {
+            const newItem = {
+              ...item,
+              id: Date.now().toString(),
+              createdAt: new Date().toISOString()
+            };
+            this.data.push(newItem);
+            this.save();
+            return newItem;
+          }
+
+          update(id, updates) {
+            const index = this.data.findIndex(item => item.id === id);
+            if (index !== -1) {
+              this.data[index] = {
+                ...this.data[index],
+                ...updates,
+                updatedAt: new Date().toISOString()
+              };
+              this.save();
+              return this.data[index];
+            }
+            return null;
+          }
+
+          delete(id) {
+            const index = this.data.findIndex(item => item.id === id);
+            if (index !== -1) {
+              this.data.splice(index, 1);
+              this.save();
+              return true;
+            }
+            return false;
+          }
+
+          clear() {
+            this.data = [];
+            sessionStorage.removeItem(this.storeName);
+          }
+
+          search(query, fields = []) {
+            if (!query) return this.getAll();
+
+            const lowerQuery = query.toLowerCase();
+            return this.data.filter(item => {
+              return fields.some(field => {
+                const value = item[field];
+                return value && value.toString().toLowerCase().includes(lowerQuery);
+              });
+            });
+          }
+
+          filter(filterFn) {
+            return this.data.filter(filterFn);
+          }
+        }
+    </script>
 
     <style>
         * {
