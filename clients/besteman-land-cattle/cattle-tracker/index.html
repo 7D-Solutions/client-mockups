@@ -729,10 +729,7 @@
             <div class="filters-section">
                 <div class="filter-group">
                     <label class="filter-label">Search</label>
-                    <div style="display: flex; gap: 8px; align-items: center;">
-                        <input type="text" id="search-input" class="filter-input" placeholder="Tag ID, Breed..." style="width: 250px;">
-                        <button class="btn btn-secondary" onclick="resetFilters()" style="padding: 8px 12px; font-size: 13px;">✕ Clear</button>
-                    </div>
+                    <input type="text" id="search-input" class="filter-input" placeholder="Tag ID, Breed..." style="width: 250px;">
                 </div>
                 <div class="filter-group">
                     <label class="filter-label">Status</label>
@@ -762,6 +759,9 @@
                         <option value="2-5">2-5 years</option>
                         <option value="5+">5+ years</option>
                     </select>
+                </div>
+                <div class="filter-group" style="margin-left: auto;">
+                    <button class="btn btn-secondary" onclick="resetFilters()" style="margin-top: 24px;">✕ Clear Search</button>
                 </div>
             </div>
         </div>
