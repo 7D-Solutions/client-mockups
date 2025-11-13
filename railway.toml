@@ -1,0 +1,12 @@
+# Railway configuration for client-mockups monorepo
+# Each service should be configured separately in Railway dashboard with watch paths
+
+# Example configuration (apply in Railway dashboard):
+#
+# Service: kelly-rental-manager
+# Root Directory: clients/kelly-enterprises/rental-manager
+# Watch Paths: clients/kelly-enterprises/rental-manager/**
+#
+# Service: cattle-tracker
+# Root Directory: clients/besteman-land-cattle/cattle-tracker
+# Watch Paths: clients/besteman-land-cattle/cattle-tracker/**
