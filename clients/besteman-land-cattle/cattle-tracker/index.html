@@ -1174,6 +1174,16 @@
 
         // Add sample data
         function initSampleData() {
+            // Data version - increment this to force reload of sample data
+            const DATA_VERSION = 2;
+            const currentVersion = sessionStorage.getItem('cattle-data-version');
+
+            // Clear old data if version changed
+            if (currentVersion !== String(DATA_VERSION)) {
+                sessionStorage.clear();
+                sessionStorage.setItem('cattle-data-version', DATA_VERSION);
+            }
+
             if (cattleStore.getAll().length === 0) {
                 const sampleCattle = [
                     {
