@@ -787,7 +787,7 @@
                             <th class="sortable">Breed <span class="sort-icon">▼</span></th>
                             <th class="sortable">Age <span class="sort-icon">▼</span></th>
                             <th class="sortable">Weight <span class="sort-icon">▼</span></th>
-                            <th>Status</th>
+                            <th class="sortable">Status <span class="sort-icon">▼</span></th>
                             <th class="sortable">Total Calves <span class="sort-icon">▼</span></th>
                             <th class="sortable">Last Calving <span class="sort-icon">▼</span></th>
                             <th>Current Calf</th>
@@ -2101,6 +2101,7 @@
                 'breed': 1,
                 'age': 2,
                 'weight': 3,
+                'status': 4,
                 'totalCalves': 5,
                 'lastCalving': 6
             };
@@ -2136,7 +2137,7 @@
             sortableColumns.forEach((header, index) => {
                 header.style.cursor = 'pointer';
                 header.addEventListener('click', () => {
-                    const fieldMap = ['tagId', 'breed', 'age', 'weight', null, 'totalCalves', 'lastCalving'];
+                    const fieldMap = ['tagId', 'breed', 'age', 'weight', 'status', 'totalCalves', 'lastCalving'];
                     const field = fieldMap[index];
                     if (field) {
                         handleColumnSort(field);
