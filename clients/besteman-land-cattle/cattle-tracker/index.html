@@ -942,19 +942,19 @@
 
         /* Mobile Responsive Breakpoints */
         @media (max-width: 768px) {
-            /* Auto-switch to card view on mobile */
-            #table-view {
+            /* Auto-switch to card view on mobile - DISABLED */
+            /* #table-view {
                 display: none !important;
             }
 
             #card-view {
                 display: grid !important;
-            }
+            } */
 
-            /* Hide view toggle on mobile */
-            .view-toggle {
+            /* Hide view toggle on mobile - DISABLED */
+            /* .view-toggle {
                 display: none;
-            }
+            } */
 
             /* Stack toolbar items vertically on mobile */
             .datatable-toolbar {
@@ -3083,12 +3083,13 @@
 
         // Detect mobile and initialize appropriate view
         function initializeView() {
-            const isMobile = window.innerWidth <= 768;
-            if (isMobile) {
-                switchView('cards');
-            } else {
+            // Mobile detection disabled - always start with table view
+            // const isMobile = window.innerWidth <= 768;
+            // if (isMobile) {
+            //     switchView('cards');
+            // } else {
                 renderTable();
-            }
+            // }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -3113,23 +3114,23 @@
                 }
             });
 
-            // Handle window resize for orientation changes
-            let resizeTimer;
-            window.addEventListener('resize', () => {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(() => {
-                    const isMobile = window.innerWidth <= 768;
-                    const isCurrentlyCards = currentView === 'cards';
+            // Handle window resize for orientation changes (DISABLED)
+            // let resizeTimer;
+            // window.addEventListener('resize', () => {
+            //     clearTimeout(resizeTimer);
+            //     resizeTimer = setTimeout(() => {
+            //         const isMobile = window.innerWidth <= 768;
+            //         const isCurrentlyCards = currentView === 'cards';
 
-                    // Auto-switch based on screen size
-                    if (isMobile && !isCurrentlyCards) {
-                        switchView('cards');
-                    } else if (!isMobile && isCurrentlyCards && window.innerWidth > 768) {
-                        // Only switch back to table on desktop if user didn't manually choose cards
-                        // For now, keep user's choice
-                    }
-                }, 250);
-            });
+            //         // Auto-switch based on screen size
+            //         if (isMobile && !isCurrentlyCards) {
+            //             switchView('cards');
+            //         } else if (!isMobile && isCurrentlyCards && window.innerWidth > 768) {
+            //             // Only switch back to table on desktop if user didn't manually choose cards
+            //             // For now, keep user's choice
+            //         }
+            //     }, 250);
+            // });
         });
     </script>
 </body>
