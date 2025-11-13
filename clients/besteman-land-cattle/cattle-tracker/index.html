@@ -1388,7 +1388,11 @@
         <div class="modal-body" id="detail-modal-body" style="max-height: 70vh; overflow-y: auto;">
             <!-- Content will be rendered dynamically -->
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer" style="display: flex; justify-content: space-between;">
+            <div style="display: flex; gap: 12px;">
+                <button class="btn btn-primary" id="detail-edit-btn" onclick="editCowFromDetail()">Edit</button>
+                <button class="btn btn-danger" id="detail-delete-btn" onclick="deleteCowFromDetail()">Delete</button>
+            </div>
             <button class="btn btn-secondary" onclick="closeModal('detail-modal')">Close</button>
         </div>
     </div>
@@ -2548,10 +2552,16 @@
             });
         }
 
+        // Current cow ID for detail modal
+        let currentDetailCowId = null;
+
         // Show cow detail modal (for card view)
         function showCowDetail(cowId) {
             const cow = cattleStore.getById(cowId);
             if (!cow) return;
+
+            // Store current cow ID for edit/delete buttons
+            currentDetailCowId = cowId;
 
             const modalTitle = document.getElementById('detail-modal-title');
             const modalBody = document.getElementById('detail-modal-body');
@@ -2568,13 +2578,29 @@
             }, 100);
         }
 
+        // Edit cow from detail modal
+        function editCowFromDetail() {
+            if (currentDetailCowId) {
+                closeModal('detail-modal');
+                editCow(currentDetailCowId);
+            }
+        }
+
+        // Delete cow from detail modal
+        function deleteCowFromDetail() {
+            if (currentDetailCowId) {
+                closeModal('detail-modal');
+                deleteCow(currentDetailCowId);
+            }
+        }
+
         // Render individual cattle card
         function renderCattleCard(cow) {
             const calves = calfStore.search(cow.tagId, ['cattleId']);
             const work = workStore.search(cow.tagId, ['cattleId']);
 
             return `
-                <div class="cattle-card" onclick="showCowDetail('${cow.id}')"
+                <div class="cattle-card" onclick="showCowDetail('${cow.id}')">
                     <div class="card-header-section">
                         <h3 class="card-tag-id">${cow.tagId}</h3>
                         <span class="card-status-badge status-${cow.status}">${cow.status}</span>
@@ -2603,7 +2629,7 @@
                         ${cow.currentCalf ? `
                             <div class="card-info-row">
                                 <span class="card-label">Current Calf</span>
-                                <span class="card-value"><a href="#" class="action-link" onclick="event.stopPropagation(); expandToCalf('${cow.id}', '${cow.currentCalf}')">${cow.currentCalf}</a></span>
+                                <span class="card-value"><a href="#" class="action-link" onclick="event.stopPropagation(); showCowDetail('${cow.id}')">${cow.currentCalf}</a></span>
                             </div>
                         ` : ''}
                         ${cow.dueDate ? `
@@ -2612,14 +2638,6 @@
                                 <span class="card-value"><strong>${cow.dueDate}</strong></span>
                             </div>
                         ` : ''}
-                    </div>
-                    <div class="card-actions">
-                        <button class="btn btn-sm" onclick="event.stopPropagation(); editCow('${cow.id}')">
-                            Edit
-                        </button>
-                        <button class="btn btn-sm" onclick="event.stopPropagation(); deleteCow('${cow.id}')">
-                            Delete
-                        </button>
                     </div>
                 </div>
             `;
