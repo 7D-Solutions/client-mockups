@@ -729,7 +729,10 @@
             <div class="filters-section">
                 <div class="filter-group">
                     <label class="filter-label">Search</label>
-                    <input type="text" id="search-input" class="filter-input" placeholder="Tag ID, Breed..." style="width: 250px;">
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <input type="text" id="search-input" class="filter-input" placeholder="Tag ID, Breed..." style="width: 250px;">
+                        <button class="btn btn-secondary" onclick="resetFilters()" style="padding: 8px 12px; font-size: 13px;">✕ Clear</button>
+                    </div>
                 </div>
                 <div class="filter-group">
                     <label class="filter-label">Status</label>
@@ -2076,6 +2079,15 @@
                     }
                 }, 0);
             }
+        }
+
+        // Reset search bar
+        function resetFilters() {
+            // Clear search input only
+            document.getElementById('search-input').value = '';
+
+            // Re-render table
+            renderTable();
         }
 
         // Handle column sort
