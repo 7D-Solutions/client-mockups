@@ -1,0 +1,14 @@
+{
+  "name": "cattle-tracker",
+  "version": "1.0.0",
+  "description": "Cattle tracking mockup for 7D Solutions",
+  "scripts": {
+    "start": "npx serve . -p $PORT"
+  },
+  "keywords": ["mockup", "cattle", "7dsolutions"],
+  "author": "7D Solutions",
+  "license": "MIT",
+  "dependencies": {
+    "serve": "^14.2.1"
+  }
+}
