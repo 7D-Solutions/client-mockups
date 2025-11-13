@@ -918,6 +918,75 @@
                 margin-left: 0;
             }
         }
+
+        /* Column Edit Mode Styling */
+        .table-edit-mode th {
+            position: relative;
+            padding-top: 50px !important;
+        }
+
+        .table-edit-mode th.sortable {
+            cursor: move;
+        }
+
+        .column-checkbox-wrapper {
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .column-checkbox-wrapper input[type="checkbox"] {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+        }
+
+        .column-checkbox-label {
+            font-size: 11px;
+            color: var(--color-text-light);
+            font-weight: 500;
+        }
+
+        .drag-handle {
+            position: absolute;
+            top: 50%;
+            left: 4px;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: var(--color-text-light);
+            cursor: move;
+            opacity: 0.4;
+            transition: opacity 0.2s;
+        }
+
+        .table-edit-mode th:hover .drag-handle {
+            opacity: 0.8;
+        }
+
+        /* Drag and drop visual feedback */
+        .dragging {
+            opacity: 0.5;
+            background: var(--color-bg-light) !important;
+        }
+
+        .drag-over {
+            border-left: 3px solid var(--color-primary) !important;
+        }
+
+        .edit-mode-badge {
+            margin-left: 8px;
+            padding: 2px 8px;
+            background: var(--color-warning);
+            color: white;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -1066,7 +1135,13 @@
                     <div class="toolbar-left">
                         <span class="record-count" id="record-count">0 tenants</span>
                     </div>
-                    <div class="toolbar-right">
+                    <div class="toolbar-right" style="display: flex; gap: 12px; align-items: center;">
+                        <button class="btn btn-secondary" onclick="toggleEditMode()" id="edit-columns-btn" style="padding: 6px 12px; font-size: 13px;">
+                            ⚙️ Edit Columns
+                        </button>
+                        <button class="btn btn-secondary" onclick="resetColumns()" id="reset-columns-btn" style="padding: 6px 12px; font-size: 13px; display: none;">
+                            Reset Columns
+                        </button>
                         <div class="view-toggle">
                             <button class="view-toggle-btn active" data-view="table" onclick="toggleRentLogView('table')">
                                 📋 Table
@@ -1075,9 +1150,6 @@
                                 🃏 Cards
                             </button>
                         </div>
-                        <button class="btn btn-secondary btn-sm" onclick="showColumnSettingsModal()" style="margin-left: 12px;">
-                            ⚙️ Columns
-                        </button>
                     </div>
                 </div>
 
@@ -1414,6 +1486,30 @@
                             <input type="number" class="form-control" id="property-price" step="0.01">
                         </div>
                     </div>
+
+                    <div style="margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--color-border-light);">
+                        <h4 style="font-size: 14px; font-weight: 600; margin-bottom: var(--space-3); color: var(--color-text);">Mortgage Information (Optional)</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Mortgage Amount</label>
+                                <input type="number" class="form-control" id="property-mortgage-amount" step="0.01" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Interest Rate (%)</label>
+                                <input type="number" class="form-control" id="property-interest-rate" step="0.01" placeholder="0.00">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Monthly Payment</label>
+                                <input type="number" class="form-control" id="property-monthly-payment" step="0.01" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Mortgage Start Date</label>
+                                <input type="date" class="form-control" id="property-mortgage-start">
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -1604,48 +1700,152 @@
         let applicationsItemsPerPage = 10;
         let currentTenantId = null;
 
-        // Column customization for Rent Log table
-        const defaultRentLogColumns = {
-            tenant: { label: 'Tenant', visible: true, order: 0, locked: false },
-            property: { label: 'Property', visible: true, order: 1, locked: false },
-            monthlyRent: { label: 'Monthly Rent', visible: true, order: 2, locked: false },
-            paidThisMonth: { label: 'Paid This Month', visible: true, order: 3, locked: false },
-            balance: { label: 'Balance', visible: true, order: 4, locked: false },
-            lateFees: { label: 'Late Fees', visible: true, order: 5, locked: false },
-            lastPayment: { label: 'Last Payment', visible: true, order: 6, locked: false },
-            status: { label: 'Status', visible: true, order: 7, locked: false },
-            actions: { label: 'Actions', visible: true, order: 8, locked: true }
-        };
+        // Column customization for Rent Log table (cattle-tracker pattern)
+        let isEditMode = false;
+        let draggedColumnIndex = null;
+        let dragOverColumnIndex = null;
 
-        let rentLogColumns = JSON.parse(JSON.stringify(defaultRentLogColumns));
+        const defaultRentLogColumns = [
+            { id: 'tenant', label: 'Tenant', visible: true, locked: true },
+            { id: 'property', label: 'Property', visible: true, locked: false },
+            { id: 'monthlyRent', label: 'Monthly Rent', visible: true, locked: false },
+            { id: 'paidThisMonth', label: 'Paid This Month', visible: true, locked: false },
+            { id: 'balance', label: 'Balance', visible: true, locked: false },
+            { id: 'lateFees', label: 'Late Fees', visible: true, locked: false },
+            { id: 'lastPayment', label: 'Last Payment', visible: true, locked: false },
+            { id: 'status', label: 'Status', visible: true, locked: false },
+            { id: 'actions', label: 'Actions', visible: true, locked: true }
+        ];
 
-        // Load column settings from sessionStorage
-        function loadColumnSettings() {
-            const saved = sessionStorage.getItem('kelly-rent-log-columns');
+        // Load column preferences from session storage
+        function loadColumnPreferences() {
+            const saved = sessionStorage.getItem('kelly-rent-log-columns-v2');
             if (saved) {
                 try {
                     const savedCols = JSON.parse(saved);
                     // Merge with defaults to handle any new columns
-                    Object.keys(defaultRentLogColumns).forEach(key => {
-                        if (savedCols[key]) {
-                            rentLogColumns[key] = { ...defaultRentLogColumns[key], ...savedCols[key] };
-                        }
+                    return defaultRentLogColumns.map(def => {
+                        const saved = savedCols.find(s => s.id === def.id);
+                        return saved ? { ...def, visible: saved.visible } : def;
                     });
                 } catch (e) {
-                    console.error('Failed to load column preferences:', e);
+                    return [...defaultRentLogColumns];
                 }
+            }
+            return [...defaultRentLogColumns];
+        }
+
+        let rentLogColumns = loadColumnPreferences();
+
+        // Save column preferences to session storage
+        function saveColumnPreferences() {
+            sessionStorage.setItem('kelly-rent-log-columns-v2', JSON.stringify(rentLogColumns));
+        }
+
+        // Toggle edit mode
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            const table = document.getElementById('rent-table');
+            const btn = document.getElementById('edit-columns-btn');
+            const resetBtn = document.getElementById('reset-columns-btn');
+
+            if (isEditMode) {
+                table.classList.add('table-edit-mode');
+                btn.innerHTML = '✓ Done Editing<span class="edit-mode-badge">EDIT MODE</span>';
+                btn.classList.remove('btn-secondary');
+                btn.classList.add('btn-primary');
+                resetBtn.style.display = 'inline-block';
+            } else {
+                table.classList.remove('table-edit-mode');
+                btn.innerHTML = '⚙️ Edit Columns';
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-secondary');
+                resetBtn.style.display = 'none';
+            }
+
+            renderTable();
+        }
+
+        // Reset columns to default
+        function resetColumns() {
+            rentLogColumns = defaultRentLogColumns.map(col => ({ ...col }));
+            saveColumnPreferences();
+            renderTable();
+            showToast('Columns reset to default', 'success');
+        }
+
+        // Toggle column visibility
+        function toggleColumnVisibility(columnId) {
+            const column = rentLogColumns.find(c => c.id === columnId);
+            if (column && !column.locked) {
+                column.visible = !column.visible;
+                saveColumnPreferences();
+                renderTable();
             }
         }
 
-        // Save column settings to sessionStorage
-        function saveColumnSettingsToStorage() {
-            sessionStorage.setItem('kelly-rent-log-columns', JSON.stringify(rentLogColumns));
+        // Drag and drop handlers
+        function handleDragStart(e, index) {
+            draggedColumnIndex = index;
+            e.currentTarget.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', e.currentTarget.innerHTML);
+        }
+
+        function handleDragOver(e, index) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+
+            const th = e.currentTarget;
+
+            // Remove drag-over from all columns
+            document.querySelectorAll('th').forEach(header => {
+                header.classList.remove('drag-over');
+            });
+
+            // Add drag-over to current column
+            if (draggedColumnIndex !== index) {
+                th.classList.add('drag-over');
+                dragOverColumnIndex = index;
+            }
+
+            return false;
+        }
+
+        function handleDrop(e, index) {
+            e.stopPropagation();
+
+            if (draggedColumnIndex !== null && dragOverColumnIndex !== null && draggedColumnIndex !== dragOverColumnIndex) {
+                // Reorder columns array
+                const draggedCol = rentLogColumns[draggedColumnIndex];
+                const newColumns = [...rentLogColumns];
+                newColumns.splice(draggedColumnIndex, 1);
+                newColumns.splice(dragOverColumnIndex, 0, draggedCol);
+
+                rentLogColumns = newColumns;
+                saveColumnPreferences();
+                renderTable();
+            }
+
+            return false;
+        }
+
+        function handleDragEnd(e) {
+            e.currentTarget.classList.remove('dragging');
+
+            // Remove all drag-over classes
+            document.querySelectorAll('th').forEach(header => {
+                header.classList.remove('drag-over');
+            });
+
+            draggedColumnIndex = null;
+            dragOverColumnIndex = null;
         }
 
         // Initialize sample data
         function initializeSampleData() {
             // Data version - increment this to force reload of sample data
-            const DATA_VERSION = 2;
+            const DATA_VERSION = 3;
             const currentVersion = sessionStorage.getItem('rental-data-version');
 
             // Clear old data if version changed or missing
@@ -1657,46 +1857,46 @@
 
             if (propertiesStore.getAll().length === 0) {
                 const properties = [
-                    // Springfield Properties
-                    { address: '123 Oak Street, Springfield', type: 'Single Family', purchasePrice: 250000 },
-                    { address: '456 Elm Avenue, Springfield', type: 'Multi-Family Duplex', purchasePrice: 380000 },
-                    { address: '789 Pine Road, Springfield', type: 'Condo', purchasePrice: 180000 },
-                    { address: '321 Maple Drive, Springfield', type: 'Townhouse', purchasePrice: 220000 },
-                    { address: '555 Cherry Lane, Springfield', type: 'Single Family', purchasePrice: 275000 },
-                    { address: '876 Birch Court, Springfield', type: 'Single Family', purchasePrice: 295000 },
-                    { address: '234 Willow Way, Springfield', type: 'Condo', purchasePrice: 165000 },
-                    { address: '987 Cedar Boulevard, Springfield', type: 'Multi-Family Duplex', purchasePrice: 420000 },
-                    // Riverside Properties
-                    { address: '101 River Road, Riverside', type: 'Single Family', purchasePrice: 310000 },
-                    { address: '202 Lake Drive, Riverside', type: 'Townhouse', purchasePrice: 245000 },
-                    { address: '303 Harbor Street, Riverside', type: 'Condo', purchasePrice: 195000 },
-                    { address: '404 Marina Way, Riverside', type: 'Single Family', purchasePrice: 340000 },
-                    { address: '505 Dock Lane, Riverside', type: 'Multi-Family Duplex', purchasePrice: 450000 },
-                    { address: '606 Bay Avenue, Riverside', type: 'Townhouse', purchasePrice: 265000 },
+                    // Springfield Properties - Some with mortgages
+                    { address: '123 Oak Street, Springfield', type: 'Single Family', purchasePrice: 250000, mortgageAmount: 200000, interestRate: 6.5, monthlyPayment: 1264, mortgageStartDate: '2023-06-01' },
+                    { address: '456 Elm Avenue, Springfield', type: 'Multi-Family Duplex', purchasePrice: 380000, mortgageAmount: 304000, interestRate: 6.75, monthlyPayment: 1973, mortgageStartDate: '2024-01-15' },
+                    { address: '789 Pine Road, Springfield', type: 'Condo', purchasePrice: 180000 }, // No mortgage
+                    { address: '321 Maple Drive, Springfield', type: 'Townhouse', purchasePrice: 220000, mortgageAmount: 176000, interestRate: 6.25, monthlyPayment: 1084, mortgageStartDate: '2023-11-01' },
+                    { address: '555 Cherry Lane, Springfield', type: 'Single Family', purchasePrice: 275000 }, // No mortgage
+                    { address: '876 Birch Court, Springfield', type: 'Single Family', purchasePrice: 295000, mortgageAmount: 236000, interestRate: 7.0, monthlyPayment: 1571, mortgageStartDate: '2024-03-01' },
+                    { address: '234 Willow Way, Springfield', type: 'Condo', purchasePrice: 165000 }, // No mortgage
+                    { address: '987 Cedar Boulevard, Springfield', type: 'Multi-Family Duplex', purchasePrice: 420000, mortgageAmount: 336000, interestRate: 6.5, monthlyPayment: 2124, mortgageStartDate: '2024-05-15' },
+                    // Riverside Properties - Mix of mortgaged and paid-off
+                    { address: '101 River Road, Riverside', type: 'Single Family', purchasePrice: 310000, mortgageAmount: 248000, interestRate: 6.75, monthlyPayment: 1609, mortgageStartDate: '2023-07-01' },
+                    { address: '202 Lake Drive, Riverside', type: 'Townhouse', purchasePrice: 245000 }, // No mortgage
+                    { address: '303 Harbor Street, Riverside', type: 'Condo', purchasePrice: 195000, mortgageAmount: 156000, interestRate: 6.0, monthlyPayment: 935, mortgageStartDate: '2024-02-15' },
+                    { address: '404 Marina Way, Riverside', type: 'Single Family', purchasePrice: 340000, mortgageAmount: 272000, interestRate: 7.25, monthlyPayment: 1856, mortgageStartDate: '2023-12-01' },
+                    { address: '505 Dock Lane, Riverside', type: 'Multi-Family Duplex', purchasePrice: 450000, mortgageAmount: 360000, interestRate: 6.5, monthlyPayment: 2275, mortgageStartDate: '2024-07-15' },
+                    { address: '606 Bay Avenue, Riverside', type: 'Townhouse', purchasePrice: 265000 }, // No mortgage
                     // Lakeside Properties
-                    { address: '711 Lakefront Drive, Lakeside', type: 'Single Family', purchasePrice: 385000 },
-                    { address: '822 Shore Road, Lakeside', type: 'Condo', purchasePrice: 215000 },
-                    { address: '933 Beach Boulevard, Lakeside', type: 'Townhouse', purchasePrice: 280000 },
-                    { address: '1044 Sunset Way, Lakeside', type: 'Single Family', purchasePrice: 395000 },
+                    { address: '711 Lakefront Drive, Lakeside', type: 'Single Family', purchasePrice: 385000, mortgageAmount: 308000, interestRate: 6.25, monthlyPayment: 1897, mortgageStartDate: '2023-08-01' },
+                    { address: '822 Shore Road, Lakeside', type: 'Condo', purchasePrice: 215000, mortgageAmount: 172000, interestRate: 6.5, monthlyPayment: 1087, mortgageStartDate: '2024-03-15' },
+                    { address: '933 Beach Boulevard, Lakeside', type: 'Townhouse', purchasePrice: 280000 }, // No mortgage
+                    { address: '1044 Sunset Way, Lakeside', type: 'Single Family', purchasePrice: 395000, mortgageAmount: 316000, interestRate: 7.0, monthlyPayment: 2104, mortgageStartDate: '2024-05-01' },
                     // Downtown Properties
-                    { address: '155 Main Street #201, Downtown', type: 'Apartment', purchasePrice: 175000 },
-                    { address: '266 Central Avenue #405, Downtown', type: 'Apartment', purchasePrice: 185000 },
-                    { address: '377 Broadway #102, Downtown', type: 'Apartment', purchasePrice: 165000 },
-                    { address: '488 Commerce Street, Downtown', type: 'Multi-Family Triplex', purchasePrice: 525000 },
+                    { address: '155 Main Street #201, Downtown', type: 'Apartment', purchasePrice: 175000 }, // No mortgage
+                    { address: '266 Central Avenue #405, Downtown', type: 'Apartment', purchasePrice: 185000, mortgageAmount: 148000, interestRate: 6.75, monthlyPayment: 960, mortgageStartDate: '2023-09-01' },
+                    { address: '377 Broadway #102, Downtown', type: 'Apartment', purchasePrice: 165000 }, // No mortgage
+                    { address: '488 Commerce Street, Downtown', type: 'Multi-Family Triplex', purchasePrice: 525000, mortgageAmount: 420000, interestRate: 6.5, monthlyPayment: 2655, mortgageStartDate: '2024-04-01' },
                     // Hillcrest Properties
-                    { address: '1200 Summit Drive, Hillcrest', type: 'Single Family', purchasePrice: 415000 },
-                    { address: '1311 Ridge Road, Hillcrest', type: 'Single Family', purchasePrice: 435000 },
-                    { address: '1422 Vista Avenue, Hillcrest', type: 'Townhouse', purchasePrice: 295000 },
-                    { address: '1533 Peak Lane, Hillcrest', type: 'Condo', purchasePrice: 225000 },
+                    { address: '1200 Summit Drive, Hillcrest', type: 'Single Family', purchasePrice: 415000, mortgageAmount: 332000, interestRate: 6.0, monthlyPayment: 1990, mortgageStartDate: '2023-11-15' },
+                    { address: '1311 Ridge Road, Hillcrest', type: 'Single Family', purchasePrice: 435000, mortgageAmount: 348000, interestRate: 6.75, monthlyPayment: 2258, mortgageStartDate: '2024-01-01' },
+                    { address: '1422 Vista Avenue, Hillcrest', type: 'Townhouse', purchasePrice: 295000 }, // No mortgage
+                    { address: '1533 Peak Lane, Hillcrest', type: 'Condo', purchasePrice: 225000, mortgageAmount: 180000, interestRate: 6.5, monthlyPayment: 1138, mortgageStartDate: '2024-07-01' },
                     // Meadowbrook Properties
-                    { address: '2100 Meadow Lane, Meadowbrook', type: 'Single Family', purchasePrice: 265000 },
-                    { address: '2211 Garden Road, Meadowbrook', type: 'Single Family', purchasePrice: 275000 },
-                    { address: '2322 Park Avenue, Meadowbrook', type: 'Townhouse', purchasePrice: 235000 },
-                    { address: '2433 Green Street, Meadowbrook', type: 'Single Family', purchasePrice: 285000 },
+                    { address: '2100 Meadow Lane, Meadowbrook', type: 'Single Family', purchasePrice: 265000, mortgageAmount: 212000, interestRate: 7.0, monthlyPayment: 1412, mortgageStartDate: '2024-06-01' },
+                    { address: '2211 Garden Road, Meadowbrook', type: 'Single Family', purchasePrice: 275000 }, // No mortgage
+                    { address: '2322 Park Avenue, Meadowbrook', type: 'Townhouse', purchasePrice: 235000, mortgageAmount: 188000, interestRate: 6.25, monthlyPayment: 1158, mortgageStartDate: '2024-02-15' },
+                    { address: '2433 Green Street, Meadowbrook', type: 'Single Family', purchasePrice: 285000, mortgageAmount: 228000, interestRate: 6.75, monthlyPayment: 1479, mortgageStartDate: '2023-10-01' },
                     // Oakwood Properties
-                    { address: '3100 Forest Drive, Oakwood', type: 'Single Family', purchasePrice: 305000 },
-                    { address: '3211 Timber Road, Oakwood', type: 'Multi-Family Duplex', purchasePrice: 395000 },
-                    { address: '3322 Grove Avenue, Oakwood', type: 'Single Family', purchasePrice: 315000 }
+                    { address: '3100 Forest Drive, Oakwood', type: 'Single Family', purchasePrice: 305000 }, // No mortgage
+                    { address: '3211 Timber Road, Oakwood', type: 'Multi-Family Duplex', purchasePrice: 395000, mortgageAmount: 316000, interestRate: 6.5, monthlyPayment: 1998, mortgageStartDate: '2024-05-01' },
+                    { address: '3322 Grove Avenue, Oakwood', type: 'Single Family', purchasePrice: 315000, mortgageAmount: 252000, interestRate: 7.25, monthlyPayment: 1719, mortgageStartDate: '2023-12-15' }
                 ];
                 properties.forEach(p => propertiesStore.add(p));
             }
@@ -2068,19 +2268,42 @@
             }
         }
 
-        // Render table
-        // Render table headers based on column visibility
+        // Render table headers based on column visibility and ordering
         function renderTableHeaders() {
             const thead = document.getElementById('rent-table-header');
             let html = '';
 
-            // Get columns in order and filter by visibility
-            const columnsArray = Object.entries(rentLogColumns)
-                .sort((a, b) => a[1].order - b[1].order)
-                .filter(([key, col]) => col.visible);
+            // Filter visible columns
+            const visibleColumns = rentLogColumns.filter(col => col.visible);
 
-            columnsArray.forEach(([key, col]) => {
-                html += `<th>${col.label}</th>`;
+            visibleColumns.forEach((col, index) => {
+                // Drag and drop attributes (only for unlocked columns in edit mode)
+                const dragAttrs = isEditMode && !col.locked ? `
+                    draggable="true"
+                    class="sortable"
+                    ondragstart="handleDragStart(event, ${index})"
+                    ondragover="handleDragOver(event, ${index})"
+                    ondrop="handleDrop(event, ${index})"
+                    ondragend="handleDragEnd(event)"` : '';
+
+                // Checkbox in edit mode
+                const checkbox = isEditMode ? `
+                    <div class="column-checkbox-wrapper">
+                        <input
+                            type="checkbox"
+                            ${col.visible ? 'checked' : ''}
+                            ${col.locked ? 'disabled' : ''}
+                            onchange="toggleColumnVisibility('${col.id}')"
+                            onclick="event.stopPropagation()"
+                        >
+                        <span class="column-checkbox-label">Show</span>
+                    </div>
+                ` : '';
+
+                // Drag handle in edit mode (only for unlocked columns)
+                const dragHandle = isEditMode && !col.locked ? '<span class="drag-handle">⋮⋮</span>' : '';
+
+                html += `<th ${dragAttrs}>${checkbox}${dragHandle}${col.label}</th>`;
             });
 
             thead.innerHTML = html;
@@ -2180,18 +2403,17 @@
                 // Build row HTML with only visible columns
                 let rowHtml = '<tr style="cursor: pointer;" onclick="showTenantDetails(\'' + tenant.id + '\')">';
 
-                Object.entries(rentLogColumns)
-                    .sort((a, b) => a[1].order - b[1].order)
-                    .filter(([key, col]) => col.visible)
-                    .forEach(([key, col]) => {
+                rentLogColumns
+                    .filter(col => col.visible)
+                    .forEach(col => {
                         // Actions column should stop propagation
-                        if (key === 'actions') {
-                            rowHtml += `<td onclick="event.stopPropagation()">${columnData[key]}</td>`;
-                        } else if (key === 'balance') {
+                        if (col.id === 'actions') {
+                            rowHtml += `<td onclick="event.stopPropagation()">${columnData[col.id]}</td>`;
+                        } else if (col.id === 'balance') {
                             // Balance has a class on the td
-                            rowHtml += `<td class="${balanceClass}">${columnData[key]}</td>`;
+                            rowHtml += `<td class="${balanceClass}">${columnData[col.id]}</td>`;
                         } else {
-                            rowHtml += `<td>${columnData[key]}</td>`;
+                            rowHtml += `<td>${columnData[col.id]}</td>`;
                         }
                     });
 
@@ -3084,8 +3306,12 @@ Kelly Enterprises Property Management`;
                     monthlyIncome += tenant.monthlyRent || 0;
                 });
 
+                // Calculate YTD mortgage payments (months passed in current year)
+                const monthsPassed = today.getMonth() + 1;
+                const ytdMortgage = (property.monthlyPayment || 0) * monthsPassed;
+
                 const annualIncome = monthlyIncome * 12;
-                const netPL = annualIncome - ytdExpenses;
+                const netPL = annualIncome - ytdExpenses - ytdMortgage;
 
                 tbody.innerHTML += `
                     <tr style="cursor: pointer;" onclick="showPropertyDetails('${property.id}')">
@@ -3722,6 +3948,10 @@ Kelly Enterprises Property Management`;
             document.getElementById('property-address').value = property.address;
             document.getElementById('property-type').value = property.type;
             document.getElementById('property-price').value = property.purchasePrice || '';
+            document.getElementById('property-mortgage-amount').value = property.mortgageAmount || '';
+            document.getElementById('property-interest-rate').value = property.interestRate || '';
+            document.getElementById('property-monthly-payment').value = property.monthlyPayment || '';
+            document.getElementById('property-mortgage-start').value = property.mortgageStartDate || '';
 
             showModal('property-modal');
         }
@@ -3730,7 +3960,11 @@ Kelly Enterprises Property Management`;
             const data = {
                 address: document.getElementById('property-address').value,
                 type: document.getElementById('property-type').value,
-                purchasePrice: parseFloat(document.getElementById('property-price').value) || 0
+                purchasePrice: parseFloat(document.getElementById('property-price').value) || 0,
+                mortgageAmount: parseFloat(document.getElementById('property-mortgage-amount').value) || null,
+                interestRate: parseFloat(document.getElementById('property-interest-rate').value) || null,
+                monthlyPayment: parseFloat(document.getElementById('property-monthly-payment').value) || null,
+                mortgageStartDate: document.getElementById('property-mortgage-start').value || null
             };
 
             if (currentPropertyId) {
