@@ -78,7 +78,7 @@ class MockupStore {
     return this.data.filter(item => {
       return fields.some(field => {
         const value = item[field];
-        return value && value.toString().toLowerCase().includes(lowerQuery);
+        return value && value.toString().toLowerCase() === lowerQuery;
       });
     });
   }
