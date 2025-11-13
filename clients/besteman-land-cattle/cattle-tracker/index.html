@@ -297,6 +297,22 @@
             font-weight: 500;
         }
 
+        .drag-handle {
+            position: absolute;
+            left: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: var(--color-text-light);
+            cursor: move;
+            opacity: 0.4;
+            transition: opacity 0.2s;
+        }
+
+        .table-edit-mode th:hover .drag-handle {
+            opacity: 0.8;
+        }
+
         /* Drag and drop visual feedback */
         .dragging {
             opacity: 0.5;
@@ -1847,7 +1863,11 @@
                         </div>
                     ` : '';
 
+                    // Drag handle in edit mode (only for unlocked columns)
+                    const dragHandle = isEditMode && !col.locked ? '<span class="drag-handle">⋮⋮</span>' : '';
+
                     html += `<th class="${sortClass}" ${draggable} ${dragHandlers} data-column-id="${col.id}">
+                        ${dragHandle}
                         ${checkbox}
                         ${col.label} ${sortIcon}
                     </th>`;
