@@ -729,35 +729,35 @@
             <div class="filters-section">
                 <div class="filter-group">
                     <label class="filter-label">Search</label>
-                    <input type="text" class="filter-input" placeholder="Tag ID, Breed..." style="width: 250px;">
+                    <input type="text" id="search-input" class="filter-input" placeholder="Tag ID, Breed..." style="width: 250px;">
                 </div>
                 <div class="filter-group">
                     <label class="filter-label">Status</label>
-                    <select class="filter-select" style="width: 150px;">
-                        <option>All Status</option>
-                        <option>Active</option>
-                        <option>Pregnant</option>
-                        <option>Dry</option>
-                        <option>Sold</option>
+                    <select id="status-filter" class="filter-select" style="width: 150px;">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="pregnant">Pregnant</option>
+                        <option value="dry">Dry</option>
+                        <option value="sold">Sold</option>
                     </select>
                 </div>
                 <div class="filter-group">
                     <label class="filter-label">Breed</label>
-                    <select class="filter-select" style="width: 150px;">
-                        <option>All Breeds</option>
-                        <option>Angus</option>
-                        <option>Hereford</option>
-                        <option>Charolais</option>
-                        <option>Simmental</option>
+                    <select id="breed-filter" class="filter-select" style="width: 150px;">
+                        <option value="">All Breeds</option>
+                        <option value="Angus">Angus</option>
+                        <option value="Hereford">Hereford</option>
+                        <option value="Charolais">Charolais</option>
+                        <option value="Simmental">Simmental</option>
                     </select>
                 </div>
                 <div class="filter-group">
                     <label class="filter-label">Age Range</label>
-                    <select class="filter-select" style="width: 130px;">
-                        <option>All Ages</option>
-                        <option>0-2 years</option>
-                        <option>2-5 years</option>
-                        <option>5+ years</option>
+                    <select id="age-filter" class="filter-select" style="width: 130px;">
+                        <option value="">All Ages</option>
+                        <option value="0-2">0-2 years</option>
+                        <option value="2-5">2-5 years</option>
+                        <option value="5+">5+ years</option>
                     </select>
                 </div>
             </div>
@@ -1485,15 +1485,94 @@
             return `${years.toFixed(1)} years`;
         }
 
+        // State for sorting
+        let currentSort = { field: null, direction: 'asc' };
+
+        // Apply filters and search
+        function getFilteredCattle() {
+            let cattle = cattleStore.getAll();
+
+            // Apply search filter
+            const searchTerm = document.getElementById('search-input')?.value.toLowerCase() || '';
+            if (searchTerm) {
+                cattle = cattle.filter(cow =>
+                    cow.tagId.toLowerCase().includes(searchTerm) ||
+                    cow.breed.toLowerCase().includes(searchTerm) ||
+                    (cow.currentCalf && cow.currentCalf.toLowerCase().includes(searchTerm))
+                );
+            }
+
+            // Apply status filter
+            const statusFilter = document.getElementById('status-filter')?.value || '';
+            if (statusFilter) {
+                cattle = cattle.filter(cow => cow.status === statusFilter);
+            }
+
+            // Apply breed filter
+            const breedFilter = document.getElementById('breed-filter')?.value || '';
+            if (breedFilter) {
+                cattle = cattle.filter(cow => cow.breed.includes(breedFilter));
+            }
+
+            // Apply age filter
+            const ageFilter = document.getElementById('age-filter')?.value || '';
+            if (ageFilter) {
+                cattle = cattle.filter(cow => {
+                    const ageYears = parseFloat(cow.age);
+                    if (ageFilter === '0-2') return ageYears <= 2;
+                    if (ageFilter === '2-5') return ageYears > 2 && ageYears <= 5;
+                    if (ageFilter === '5+') return ageYears > 5;
+                    return true;
+                });
+            }
+
+            return cattle;
+        }
+
+        // Sort cattle array
+        function sortCattle(cattle, field, direction) {
+            return cattle.sort((a, b) => {
+                let aVal = a[field];
+                let bVal = b[field];
+
+                // Handle numeric fields
+                if (field === 'weight' || field === 'totalCalves') {
+                    aVal = parseFloat(aVal) || 0;
+                    bVal = parseFloat(bVal) || 0;
+                } else if (field === 'age') {
+                    aVal = parseFloat(a.age) || 0;
+                    bVal = parseFloat(b.age) || 0;
+                } else if (field === 'lastCalving') {
+                    aVal = aVal ? new Date(aVal).getTime() : 0;
+                    bVal = bVal ? new Date(bVal).getTime() : 0;
+                } else {
+                    // String fields
+                    aVal = (aVal || '').toString().toLowerCase();
+                    bVal = (bVal || '').toString().toLowerCase();
+                }
+
+                if (aVal < bVal) return direction === 'asc' ? -1 : 1;
+                if (aVal > bVal) return direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+
         // Render table
         function renderTable() {
-            const cattle = cattleStore.getAll();
+            let cattle = getFilteredCattle();
+
+            // Apply sorting if active
+            if (currentSort.field) {
+                cattle = sortCattle([...cattle], currentSort.field, currentSort.direction);
+            }
+
             const tbody = document.getElementById('table-body');
-            document.getElementById('cow-count').textContent = cattle.length;
-            document.getElementById('pagination-info').textContent = `1-${cattle.length} of ${cattle.length}`;
+            const totalCount = cattleStore.getAll().length;
+            document.getElementById('cow-count').textContent = totalCount;
+            document.getElementById('pagination-info').textContent = `1-${cattle.length} of ${totalCount}`;
 
             if (cattle.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" class="empty-state">No cattle records. Click "Add New Cow" to get started.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="10" class="empty-state">No cattle match the selected filters.</td></tr>';
                 return;
             }
 
@@ -1999,10 +2078,71 @@
             }
         }
 
+        // Handle column sort
+        function handleColumnSort(field) {
+            // Toggle direction if clicking same field
+            if (currentSort.field === field) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.field = field;
+                currentSort.direction = 'asc';
+            }
+
+            // Update sort icons
+            document.querySelectorAll('.sortable').forEach(th => {
+                th.classList.remove('sorted');
+                const icon = th.querySelector('.sort-icon');
+                if (icon) icon.textContent = '▼';
+            });
+
+            // Get the column header and update its sort icon
+            const fieldMap = {
+                'tagId': 0,
+                'breed': 1,
+                'age': 2,
+                'weight': 3,
+                'totalCalves': 5,
+                'lastCalving': 6
+            };
+            const colIndex = fieldMap[field];
+            if (colIndex !== undefined) {
+                const sortableHeaders = document.querySelectorAll('.sortable');
+                const header = sortableHeaders[colIndex];
+                if (header) {
+                    header.classList.add('sorted');
+                    const icon = header.querySelector('.sort-icon');
+                    if (icon) {
+                        icon.textContent = currentSort.direction === 'asc' ? '▲' : '▼';
+                    }
+                }
+            }
+
+            renderTable();
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             initSampleData();
             renderTable();
+
+            // Add search/filter event listeners
+            document.getElementById('search-input').addEventListener('input', renderTable);
+            document.getElementById('status-filter').addEventListener('change', renderTable);
+            document.getElementById('breed-filter').addEventListener('change', renderTable);
+            document.getElementById('age-filter').addEventListener('change', renderTable);
+
+            // Add column sort event listeners
+            const sortableColumns = document.querySelectorAll('.sortable');
+            sortableColumns.forEach((header, index) => {
+                header.style.cursor = 'pointer';
+                header.addEventListener('click', () => {
+                    const fieldMap = ['tagId', 'breed', 'age', 'weight', null, 'totalCalves', 'lastCalving'];
+                    const field = fieldMap[index];
+                    if (field) {
+                        handleColumnSort(field);
+                    }
+                });
+            });
         });
     </script>
 </body>
