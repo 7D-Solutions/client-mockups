@@ -943,11 +943,11 @@
         /* Mobile Responsive Breakpoints */
         @media (max-width: 768px) {
             /* Auto-switch to card view on mobile */
-            #table-container {
+            #table-view {
                 display: none !important;
             }
 
-            .card-grid {
+            #card-view {
                 display: grid !important;
             }
 
@@ -2514,13 +2514,13 @@
         // Switch between table and card view
         function switchView(view) {
             currentView = view;
-            const tableContainer = document.getElementById('table-container');
+            const tableView = document.getElementById('table-view');
             const cardGrid = document.getElementById('card-view');
             const tableViewBtn = document.getElementById('table-view-btn');
             const cardViewBtn = document.getElementById('card-view-btn');
 
             if (view === 'cards') {
-                tableContainer.style.display = 'none';
+                tableView.style.display = 'none';
                 cardGrid.classList.add('active');
                 tableViewBtn.classList.remove('btn-primary');
                 tableViewBtn.classList.add('btn-secondary');
@@ -2528,7 +2528,7 @@
                 cardViewBtn.classList.add('btn-primary');
                 renderCardView();
             } else {
-                tableContainer.style.display = 'block';
+                tableView.style.display = 'block';
                 cardGrid.classList.remove('active');
                 cardViewBtn.classList.remove('btn-primary');
                 cardViewBtn.classList.add('btn-secondary');
