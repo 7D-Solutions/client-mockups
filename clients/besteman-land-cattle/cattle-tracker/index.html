@@ -1818,7 +1818,9 @@
             const sortableFields = ['tagId', 'breed', 'age', 'weight', 'status', 'totalCalves', 'lastCalving'];
 
             columns.forEach((col, index) => {
-                if (col.visible) {
+                // In edit mode, show ALL columns (including hidden ones)
+                // In normal mode, show only visible columns
+                if (isEditMode || col.visible) {
                     const isSortable = sortableFields.includes(col.id);
                     const sortClass = isSortable ? 'sortable' : '';
                     const sortIcon = isSortable && !isEditMode ? '<span class="sort-icon">▼</span>' : '';
@@ -1895,7 +1897,8 @@
 
             const tbody = document.getElementById('table-body');
             const totalCount = cattleStore.getAll().length;
-            const visibleColCount = columns.filter(c => c.visible).length + 1; // +1 for expand icon
+            // In edit mode, count ALL columns. In normal mode, count only visible columns
+            const visibleColCount = (isEditMode ? columns.length : columns.filter(c => c.visible).length) + 1; // +1 for expand icon
             document.getElementById('cow-count').textContent = totalCount;
             document.getElementById('pagination-info').textContent = `1-${cattle.length} of ${totalCount}`;
 
@@ -1912,7 +1915,8 @@
                 html += `<td><span class="expand-icon">▶</span></td>`;
 
                 columns.forEach(col => {
-                    if (col.visible) {
+                    // In edit mode, show ALL columns. In normal mode, show only visible columns
+                    if (isEditMode || col.visible) {
                         html += `<td>${getCellContent(cow, col.id)}</td>`;
                     }
                 });
