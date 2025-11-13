@@ -209,6 +209,61 @@
             color: white;
         }
 
+        /* Column customization dropdown */
+        .column-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .column-dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            min-width: 220px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-radius: 6px;
+            z-index: 1000;
+            border: 1px solid var(--color-border);
+            margin-top: 8px;
+        }
+
+        .column-dropdown-content.show {
+            display: block;
+        }
+
+        .column-dropdown-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--color-border-light);
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--color-text);
+        }
+
+        .column-dropdown-item {
+            padding: 10px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .column-dropdown-item:hover {
+            background: var(--color-bg-light);
+        }
+
+        .column-dropdown-item input[type="checkbox"] {
+            cursor: pointer;
+        }
+
+        .column-dropdown-footer {
+            padding: 8px 16px;
+            border-top: 1px solid var(--color-border-light);
+            text-align: right;
+        }
+
         .table-wrapper {
             overflow-x: auto;
         }
@@ -774,10 +829,24 @@
                 <div class="toolbar-left">
                     <span class="record-count">Showing <strong id="cow-count">0</strong> cows</span>
                 </div>
-                <div class="view-toggle">
-                    <button class="view-btn active">📋 Table</button>
-                    <button class="view-btn">📇 Cards</button>
-                    <button class="view-btn">📊 Analytics</button>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <div class="column-dropdown">
+                        <button class="btn btn-secondary" onclick="toggleColumnDropdown()" style="padding: 6px 12px; font-size: 13px;">
+                            ⚙️ Columns
+                        </button>
+                        <div id="column-dropdown" class="column-dropdown-content">
+                            <div class="column-dropdown-header">Show/Hide Columns</div>
+                            <div id="column-checkboxes"></div>
+                            <div class="column-dropdown-footer">
+                                <button class="btn btn-secondary" onclick="resetColumns()" style="padding: 4px 8px; font-size: 12px;">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="view-toggle">
+                        <button class="view-btn active">📋 Table</button>
+                        <button class="view-btn">📇 Cards</button>
+                        <button class="view-btn">📊 Analytics</button>
+                    </div>
                 </div>
             </div>
 
@@ -785,17 +854,8 @@
             <div class="table-wrapper">
                 <table class="datatable" id="cattle-table">
                     <thead>
-                        <tr>
-                            <th style="width: 40px;"></th>
-                            <th class="sortable">Tag ID <span class="sort-icon">▼</span></th>
-                            <th class="sortable">Breed <span class="sort-icon">▼</span></th>
-                            <th class="sortable">Age <span class="sort-icon">▼</span></th>
-                            <th class="sortable">Weight <span class="sort-icon">▼</span></th>
-                            <th class="sortable">Status <span class="sort-icon">▼</span></th>
-                            <th class="sortable">Total Calves <span class="sort-icon">▼</span></th>
-                            <th class="sortable">Last Calving <span class="sort-icon">▼</span></th>
-                            <th>Current Calf</th>
-                            <th>Actions</th>
+                        <tr id="table-header">
+                            <!-- Headers will be rendered dynamically -->
                         </tr>
                     </thead>
                     <tbody id="table-body">
@@ -1492,6 +1552,106 @@
         // State for sorting
         let currentSort = { field: null, direction: 'asc' };
 
+        // Column visibility state
+        const defaultColumns = [
+            { id: 'tagId', label: 'Tag ID', visible: true },
+            { id: 'breed', label: 'Breed', visible: true },
+            { id: 'age', label: 'Age', visible: true },
+            { id: 'weight', label: 'Weight', visible: true },
+            { id: 'status', label: 'Status', visible: true },
+            { id: 'totalCalves', label: 'Total Calves', visible: true },
+            { id: 'lastCalving', label: 'Last Calving', visible: true },
+            { id: 'currentCalf', label: 'Current Calf', visible: true },
+            { id: 'actions', label: 'Actions', visible: true, locked: true }
+        ];
+
+        // Load column preferences from session storage
+        function loadColumnPreferences() {
+            const saved = sessionStorage.getItem('cattle-columns');
+            if (saved) {
+                try {
+                    const savedCols = JSON.parse(saved);
+                    // Merge with defaults to handle any new columns
+                    return defaultColumns.map(def => {
+                        const saved = savedCols.find(s => s.id === def.id);
+                        return saved ? { ...def, visible: saved.visible } : def;
+                    });
+                } catch (e) {
+                    return [...defaultColumns];
+                }
+            }
+            return [...defaultColumns];
+        }
+
+        let columns = loadColumnPreferences();
+
+        // Save column preferences to session storage
+        function saveColumnPreferences() {
+            sessionStorage.setItem('cattle-columns', JSON.stringify(columns));
+        }
+
+        // Toggle column dropdown
+        function toggleColumnDropdown() {
+            const dropdown = document.getElementById('column-dropdown');
+            dropdown.classList.toggle('show');
+            if (dropdown.classList.contains('show')) {
+                renderColumnCheckboxes();
+            }
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('column-dropdown');
+            const button = e.target.closest('.column-dropdown');
+            if (!button && dropdown) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Render column checkboxes
+        function renderColumnCheckboxes() {
+            const container = document.getElementById('column-checkboxes');
+            let html = '';
+            columns.forEach(col => {
+                const disabled = col.locked ? 'disabled' : '';
+                const checked = col.visible ? 'checked' : '';
+                html += `
+                    <div class="column-dropdown-item">
+                        <input
+                            type="checkbox"
+                            id="col-${col.id}"
+                            ${checked}
+                            ${disabled}
+                            onchange="toggleColumnVisibility('${col.id}')"
+                        >
+                        <label for="col-${col.id}" style="cursor: pointer; user-select: none; flex: 1;">
+                            ${col.label}
+                        </label>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // Toggle column visibility
+        function toggleColumnVisibility(columnId) {
+            const column = columns.find(c => c.id === columnId);
+            if (column && !column.locked) {
+                column.visible = !column.visible;
+                saveColumnPreferences();
+                renderTable();
+            }
+        }
+
+        // Reset columns to default
+        function resetColumns() {
+            columns = defaultColumns.map(c => ({ ...c, visible: true }));
+            saveColumnPreferences();
+            renderColumnCheckboxes();
+            renderTable();
+            Toast.success('Columns reset to default');
+        }
+
         // Apply filters and search
         function getFilteredCattle() {
             let cattle = cattleStore.getAll();
@@ -1561,6 +1721,51 @@
             });
         }
 
+        // Render table headers
+        function renderTableHeaders() {
+            const thead = document.getElementById('table-header');
+            let html = '<th style="width: 40px;"></th>'; // Expand icon column
+
+            const sortableFields = ['tagId', 'breed', 'age', 'weight', 'status', 'totalCalves', 'lastCalving'];
+
+            columns.forEach(col => {
+                if (col.visible) {
+                    const isSortable = sortableFields.includes(col.id);
+                    const sortClass = isSortable ? 'sortable' : '';
+                    const sortIcon = isSortable ? '<span class="sort-icon">▼</span>' : '';
+                    html += `<th class="${sortClass}">${col.label} ${sortIcon}</th>`;
+                }
+            });
+
+            thead.innerHTML = html;
+        }
+
+        // Get cell content for a column
+        function getCellContent(cow, columnId) {
+            switch(columnId) {
+                case 'tagId':
+                    return `<span class="cow-id">${cow.tagId}</span>`;
+                case 'breed':
+                    return cow.breed;
+                case 'age':
+                    return cow.age;
+                case 'weight':
+                    return `${cow.weight} lbs`;
+                case 'status':
+                    return `<span class="status-badge status-${cow.status}">${cow.status}</span>`;
+                case 'totalCalves':
+                    return `<strong>${cow.totalCalves || 0}</strong>`;
+                case 'lastCalving':
+                    return cow.lastCalving || '—';
+                case 'currentCalf':
+                    return cow.currentCalf ? `<a href="#" class="action-link">${cow.currentCalf}</a>` : '—';
+                case 'actions':
+                    return `<a href="#" class="action-link" onclick="event.stopPropagation(); editCow('${cow.id}')">Edit</a> | <a href="#" class="action-link" onclick="event.stopPropagation(); deleteCow('${cow.id}')">Delete</a>`;
+                default:
+                    return '—';
+            }
+        }
+
         // Render table
         function renderTable() {
             let cattle = getFilteredCattle();
@@ -1570,13 +1775,17 @@
                 cattle = sortCattle([...cattle], currentSort.field, currentSort.direction);
             }
 
+            // Render headers
+            renderTableHeaders();
+
             const tbody = document.getElementById('table-body');
             const totalCount = cattleStore.getAll().length;
+            const visibleColCount = columns.filter(c => c.visible).length + 1; // +1 for expand icon
             document.getElementById('cow-count').textContent = totalCount;
             document.getElementById('pagination-info').textContent = `1-${cattle.length} of ${totalCount}`;
 
             if (cattle.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" class="empty-state">No cattle match the selected filters.</td></tr>';
+                tbody.innerHTML = `<tr><td colspan="${visibleColCount}" class="empty-state">No cattle match the selected filters.</td></tr>`;
                 return;
             }
 
@@ -1584,28 +1793,21 @@
 
             cattle.forEach(cow => {
                 // Main row
-                html += `
-                    <tr class="cow-row" data-cow-id="${cow.id}">
-                        <td><span class="expand-icon">▶</span></td>
-                        <td><span class="cow-id">${cow.tagId}</span></td>
-                        <td>${cow.breed}</td>
-                        <td>${cow.age}</td>
-                        <td>${cow.weight} lbs</td>
-                        <td><span class="status-badge status-${cow.status}">${cow.status}</span></td>
-                        <td><strong>${cow.totalCalves || 0}</strong></td>
-                        <td>${cow.lastCalving || '—'}</td>
-                        <td>${cow.currentCalf ? `<a href="#" class="action-link">${cow.currentCalf}</a>` : '—'}</td>
-                        <td>
-                            <a href="#" class="action-link" onclick="event.stopPropagation(); editCow('${cow.id}')">Edit</a> |
-                            <a href="#" class="action-link" onclick="event.stopPropagation(); deleteCow('${cow.id}')">Delete</a>
-                        </td>
-                    </tr>
-                `;
+                html += `<tr class="cow-row" data-cow-id="${cow.id}">`;
+                html += `<td><span class="expand-icon">▶</span></td>`;
+
+                columns.forEach(col => {
+                    if (col.visible) {
+                        html += `<td>${getCellContent(cow, col.id)}</td>`;
+                    }
+                });
+
+                html += `</tr>`;
 
                 // Expanded row
                 html += `
                     <tr class="expanded-row" data-cow-id="${cow.id}">
-                        <td colspan="10" class="expanded-content">
+                        <td colspan="${visibleColCount}" class="expanded-content">
                             <div class="expanded-inner">
                                 ${renderExpandedContent(cow)}
                             </div>
@@ -2150,17 +2352,16 @@
             document.getElementById('breed-filter').addEventListener('change', renderTable);
             document.getElementById('age-filter').addEventListener('change', renderTable);
 
-            // Add column sort event listeners
-            const sortableColumns = document.querySelectorAll('.sortable');
-            sortableColumns.forEach((header, index) => {
-                header.style.cursor = 'pointer';
-                header.addEventListener('click', () => {
-                    const fieldMap = ['tagId', 'breed', 'age', 'weight', 'status', 'totalCalves', 'lastCalving'];
-                    const field = fieldMap[index];
-                    if (field) {
-                        handleColumnSort(field);
+            // Add column sort event listeners (delegate to table header)
+            document.getElementById('table-header').addEventListener('click', (e) => {
+                const th = e.target.closest('th.sortable');
+                if (th) {
+                    const headerText = th.textContent.trim().replace(/[▼▲]/g, '').trim();
+                    const column = columns.find(c => c.label === headerText);
+                    if (column) {
+                        handleColumnSort(column.id);
                     }
-                });
+                }
             });
         });
     </script>
