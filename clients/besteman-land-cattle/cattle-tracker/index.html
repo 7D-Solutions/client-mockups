@@ -966,20 +966,6 @@
 
         /* Mobile Responsive Breakpoints */
         @media (max-width: 768px) {
-            /* Auto-switch to card view on mobile - DISABLED */
-            /* #table-view {
-                display: none !important;
-            }
-
-            #card-view {
-                display: grid !important;
-            } */
-
-            /* Hide view toggle on mobile - DISABLED */
-            /* .view-toggle {
-                display: none;
-            } */
-
             /* Stack toolbar items vertically on mobile */
             .datatable-toolbar {
                 flex-direction: column;
@@ -1019,6 +1005,57 @@
 
             .filter-group {
                 flex: 1 1 100%;
+            }
+
+            /* Full-screen modals on mobile */
+            .modal {
+                max-width: 100% !important;
+                width: 100% !important;
+                height: 100vh !important;
+                margin: 0 !important;
+                border-radius: 0 !important;
+                max-height: 100vh !important;
+            }
+
+            #detail-modal {
+                border-radius: 20px 20px 0 0 !important;
+            }
+
+            .modal-header {
+                padding: 20px 20px 12px;
+                position: relative;
+            }
+
+            /* Add swipe indicator to modal header */
+            .modal-header::before {
+                content: '';
+                position: absolute;
+                top: 8px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 40px;
+                height: 4px;
+                background: #ccc;
+                border-radius: 2px;
+            }
+
+            .modal-body {
+                max-height: calc(100vh - 180px) !important;
+                padding: 20px;
+            }
+
+            .modal-footer {
+                padding: 16px 20px;
+                flex-wrap: wrap;
+            }
+
+            .modal-footer > div {
+                width: 100%;
+                margin-bottom: 12px;
+            }
+
+            .modal-footer .btn {
+                width: 100%;
             }
         }
 
@@ -2555,6 +2592,100 @@
         // Current cow ID for detail modal
         let currentDetailCowId = null;
 
+        // Swipe gesture handler for modal
+        class SwipeHandler {
+            constructor(element, onSwipeDown) {
+                this.element = element;
+                this.onSwipeDown = onSwipeDown;
+                this.startY = 0;
+                this.currentY = 0;
+                this.isDragging = false;
+                this.threshold = 100; // Minimum swipe distance in pixels
+
+                this.handleTouchStart = this.handleTouchStart.bind(this);
+                this.handleTouchMove = this.handleTouchMove.bind(this);
+                this.handleTouchEnd = this.handleTouchEnd.bind(this);
+            }
+
+            handleTouchStart(e) {
+                // Only start swipe from top of modal
+                if (e.target.closest('.modal-body') && e.target.closest('.modal-body').scrollTop > 0) {
+                    return; // Allow scrolling if content is scrolled
+                }
+
+                this.startY = e.touches[0].clientY;
+                this.isDragging = true;
+                this.element.style.transition = 'none';
+            }
+
+            handleTouchMove(e) {
+                if (!this.isDragging) return;
+
+                this.currentY = e.touches[0].clientY;
+                const deltaY = this.currentY - this.startY;
+
+                // Only allow downward swipes
+                if (deltaY > 0) {
+                    e.preventDefault();
+                    const opacity = Math.max(0.3, 1 - (deltaY / 400));
+                    this.element.style.transform = `translateY(${deltaY}px)`;
+                    this.element.style.opacity = opacity;
+
+                    // Update backdrop opacity
+                    const backdrop = document.getElementById('modal-backdrop');
+                    if (backdrop) {
+                        backdrop.style.opacity = opacity;
+                    }
+                }
+            }
+
+            handleTouchEnd(e) {
+                if (!this.isDragging) return;
+
+                const deltaY = this.currentY - this.startY;
+                this.isDragging = false;
+
+                this.element.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+
+                if (deltaY > this.threshold) {
+                    // Swipe threshold met - close modal
+                    this.element.style.transform = 'translateY(100%)';
+                    this.element.style.opacity = '0';
+                    setTimeout(() => {
+                        this.onSwipeDown();
+                        this.reset();
+                    }, 300);
+                } else {
+                    // Snap back
+                    this.reset();
+                }
+            }
+
+            reset() {
+                this.element.style.transform = '';
+                this.element.style.opacity = '';
+                const backdrop = document.getElementById('modal-backdrop');
+                if (backdrop) {
+                    backdrop.style.opacity = '';
+                }
+            }
+
+            attach() {
+                this.element.addEventListener('touchstart', this.handleTouchStart, { passive: false });
+                this.element.addEventListener('touchmove', this.handleTouchMove, { passive: false });
+                this.element.addEventListener('touchend', this.handleTouchEnd);
+            }
+
+            detach() {
+                this.element.removeEventListener('touchstart', this.handleTouchStart);
+                this.element.removeEventListener('touchmove', this.handleTouchMove);
+                this.element.removeEventListener('touchend', this.handleTouchEnd);
+            }
+        }
+
+        // Swipe handler instance
+        let modalSwipeHandler = null;
+
         // Show cow detail modal (for card view)
         function showCowDetail(cowId) {
             const cow = cattleStore.getById(cowId);
@@ -2571,6 +2702,16 @@
 
             // Open modal
             ModalManager.show('detail-modal');
+
+            // Attach swipe handler
+            const modal = document.getElementById('detail-modal');
+            if (modalSwipeHandler) {
+                modalSwipeHandler.detach();
+            }
+            modalSwipeHandler = new SwipeHandler(modal, () => {
+                closeModal('detail-modal');
+            });
+            modalSwipeHandler.attach();
 
             // Re-attach tab listeners
             setTimeout(() => {
