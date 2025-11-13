@@ -1564,6 +1564,17 @@
 
         // Initialize sample data
         function initializeSampleData() {
+            // Data version - increment this to force reload of sample data
+            const DATA_VERSION = 1;
+            const currentVersion = sessionStorage.getItem('rental-data-version');
+
+            // Clear old data if version changed or missing
+            if (currentVersion !== String(DATA_VERSION)) {
+                console.log('Data version mismatch or missing. Clearing and reinitializing...');
+                sessionStorage.clear();
+                sessionStorage.setItem('rental-data-version', DATA_VERSION);
+            }
+
             if (propertiesStore.getAll().length === 0) {
                 const properties = [
                     // Springfield Properties
@@ -3951,10 +3962,19 @@ Kelly Enterprises Property Management`;
 
         // Initialize on load
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM Content Loaded - Initializing...');
+            console.log('=== RENTAL MANAGER INITIALIZING ===');
             console.log('Properties before init:', propertiesStore.getAll().length);
+            console.log('Tenants before init:', tenantsStore.getAll().length);
+            console.log('Payments before init:', paymentsStore.getAll().length);
+
+            // Force initialization
             initializeSampleData();
+
             console.log('Properties after init:', propertiesStore.getAll().length);
+            console.log('Tenants after init:', tenantsStore.getAll().length);
+            console.log('Payments after init:', paymentsStore.getAll().length);
+            console.log('=== INITIALIZATION COMPLETE ===');
+
             loadColumnSettings(); // Load saved column preferences
             populatePropertyFilter();
             updateDashboard();
