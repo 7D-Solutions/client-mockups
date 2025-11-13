@@ -390,6 +390,221 @@ function renderTable() {
 
 ---
 
+## Pagination
+
+**Source**: FireProof ERP - Infrastructure Components
+**Extracted**: November 2025
+**Status**: Production-Ready
+
+### Overview
+
+Smart pagination component with dynamic page number display, configurable items per page, and automatic hiding when only one page exists.
+
+### Visual Design
+
+**Multiple Pages:**
+```
+┌─────────────────────────────────────────────────────┐
+│ Showing 11-20 of 45 cows                            │
+│                                                      │
+│ « 1  2  [3]  4  5  »                                │
+└─────────────────────────────────────────────────────┘
+```
+
+**Single Page (auto-hidden):**
+```
+┌─────────────────────────────────────────────────────┐
+│ Showing 1-21 of 21 cows                             │
+│                                                      │
+│ (no pagination controls shown)                      │
+└─────────────────────────────────────────────────────┘
+```
+
+### Implementation
+
+#### 1. Pagination State
+
+```javascript
+// Pagination state variables
+let currentPage = 1;
+let itemsPerPage = 10; // Default: 10 items per page
+
+// Calculate pagination
+const totalItems = data.length;
+const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+// Validate current page
+if (currentPage > totalPages && totalPages > 0) {
+    currentPage = totalPages;
+}
+if (currentPage < 1) {
+    currentPage = 1;
+}
+
+// Get paginated slice
+const startIndex = (currentPage - 1) * itemsPerPage;
+const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+const paginatedData = data.slice(startIndex, endIndex);
+```
+
+#### 2. HTML Structure
+
+```html
+<div class="pagination">
+    <div class="pagination-info">
+        Showing <span id="pagination-info">0-0 of 0</span> items
+    </div>
+    <div class="pagination-controls">
+        <!-- Rendered dynamically by renderPaginationControls() -->
+    </div>
+</div>
+```
+
+#### 3. Render Function
+
+```javascript
+function renderPaginationControls(totalPages) {
+    const paginationControls = document.querySelector('.pagination-controls');
+
+    // Auto-hide if only one page
+    if (totalPages <= 1) {
+        paginationControls.style.display = 'none';
+        return;
+    }
+
+    paginationControls.style.display = 'flex';
+
+    // Generate page numbers (max 7 visible)
+    const getPageNumbers = () => {
+        const pages = [];
+        const maxVisible = 7;
+
+        if (totalPages <= maxVisible) {
+            // Show all pages
+            for (let i = 1; i <= totalPages; i++) {
+                pages.push(i);
+            }
+        } else {
+            // Show first, last, and pages around current
+            pages.push(1);
+            let start = Math.max(2, currentPage - 2);
+            let end = Math.min(totalPages - 1, currentPage + 2);
+
+            if (start > 2) pages.push('...');
+
+            for (let i = start; i <= end; i++) {
+                pages.push(i);
+            }
+
+            if (end < totalPages - 1) pages.push('...');
+            if (totalPages > 1) pages.push(totalPages);
+        }
+
+        return pages;
+    };
+
+    const pageNumbers = getPageNumbers();
+    let html = '';
+
+    // Previous button
+    html += `<button class="page-btn" onclick="goToPage(${currentPage - 1})"
+             ${currentPage === 1 ? 'disabled' : ''}>«</button>`;
+
+    // Page numbers
+    pageNumbers.forEach(page => {
+        if (page === '...') {
+            html += `<span style="padding: 0 12px; display: flex; align-items: center;
+                     color: var(--color-text-light);">...</span>`;
+        } else {
+            html += `<button class="page-btn ${page === currentPage ? 'active' : ''}"
+                     onclick="goToPage(${page})" ${page === currentPage ? 'disabled' : ''}>${page}</button>`;
+        }
+    });
+
+    // Next button
+    html += `<button class="page-btn" onclick="goToPage(${currentPage + 1})"
+             ${currentPage === totalPages ? 'disabled' : ''}>»</button>`;
+
+    paginationControls.innerHTML = html;
+}
+
+// Navigate to page
+function goToPage(page) {
+    currentPage = page;
+    renderData(); // Re-render with new page
+}
+```
+
+#### 4. Usage in Render Functions
+
+```javascript
+function renderTable() {
+    let data = getFilteredData();
+
+    // Apply sorting
+    if (currentSort.field) {
+        data = sortData(data, currentSort.field, currentSort.direction);
+    }
+
+    // Calculate pagination
+    const totalItems = data.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    // Get paginated slice
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+    const paginatedData = data.slice(startIndex, endIndex);
+
+    // Update info text
+    const startItem = totalItems > 0 ? startIndex + 1 : 0;
+    document.getElementById('pagination-info').textContent =
+        `${startItem}-${endIndex} of ${totalItems}`;
+
+    // Render pagination controls
+    renderPaginationControls(totalPages);
+
+    // Render paginated data
+    renderRows(paginatedData);
+}
+```
+
+### Key Features
+
+✅ **Dynamic Page Numbers**: Shows max 7 page buttons with ellipsis for large datasets
+✅ **Auto-Hide**: Pagination controls hidden when only 1 page exists
+✅ **Smart Navigation**: Previous/Next buttons with proper disabled states
+✅ **Page Validation**: Automatically corrects invalid page numbers
+✅ **Filtered Data Support**: Works seamlessly with filtering and sorting
+✅ **Configurable Page Size**: Adjustable `itemsPerPage` constant
+✅ **Info Display**: Shows "X-Y of Z items" for user awareness
+
+### Configuration Options
+
+```javascript
+// Adjust items per page
+let itemsPerPage = 25; // Default: 10
+
+// Common values: 10, 25, 50, 100
+```
+
+### FireProof ERP Reference
+
+**Source Component**: `/frontend/src/infrastructure/components/Pagination.tsx`
+**Hook**: `/frontend/src/infrastructure/hooks/usePagination.ts`
+**Constants**: `/frontend/src/infrastructure/constants/pagination.ts`
+**Lines**: 23-125 (component), 72-73 (offset calculation)
+
+### Usage in New Mockups
+
+1. Copy pagination state variables (`currentPage`, `itemsPerPage`)
+2. Add pagination calculation logic to render functions
+3. Copy `renderPaginationControls()` and `goToPage()` functions
+4. Copy pagination HTML structure
+5. Update info text with current page range
+6. Call `renderPaginationControls(totalPages)` after calculating pages
+
+---
+
 ## Future Features to Add
 
 - [ ] Export to CSV/Excel

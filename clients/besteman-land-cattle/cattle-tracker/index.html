@@ -1196,8 +1196,8 @@
                 <div class="pagination-info">
                     Showing <span id="pagination-info">0-0 of 0</span> cows
                 </div>
-                <div class="pagination-controls" style="display: none;">
-                    <!-- Pagination controls hidden - showing all records -->
+                <div class="pagination-controls">
+                    <!-- Pagination controls rendered dynamically -->
                 </div>
             </div>
         </div>
@@ -2019,6 +2019,10 @@
         // View state (table or cards)
         let currentView = 'table';
 
+        // Pagination state
+        let currentPage = 1;
+        let itemsPerPage = 10;
+
         // Edit mode state
         let isEditMode = false;
         let draggedColumnIndex = null;
@@ -2331,6 +2335,23 @@
                 cattle = sortCattle([...cattle], currentSort.field, currentSort.direction);
             }
 
+            // Calculate pagination
+            const totalItems = cattle.length;
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+            // Ensure current page is valid
+            if (currentPage > totalPages && totalPages > 0) {
+                currentPage = totalPages;
+            }
+            if (currentPage < 1) {
+                currentPage = 1;
+            }
+
+            // Get paginated data
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+            const paginatedCattle = cattle.slice(startIndex, endIndex);
+
             // Render headers
             renderTableHeaders();
 
@@ -2339,16 +2360,22 @@
             // In edit mode, count ALL columns. In normal mode, count only visible columns
             const visibleColCount = (isEditMode ? columns.length : columns.filter(c => c.visible).length) + 1; // +1 for expand icon
             document.getElementById('cow-count').textContent = totalCount;
-            document.getElementById('pagination-info').textContent = `1-${cattle.length} of ${totalCount}`;
 
-            if (cattle.length === 0) {
+            // Update pagination info
+            const startItem = totalItems > 0 ? startIndex + 1 : 0;
+            document.getElementById('pagination-info').textContent = `${startItem}-${endIndex} of ${totalItems}`;
+
+            // Render pagination controls
+            renderPaginationControls(totalPages);
+
+            if (paginatedCattle.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="${visibleColCount}" class="empty-state">No cattle match the selected filters.</td></tr>`;
                 return;
             }
 
             let html = '';
 
-            cattle.forEach(cow => {
+            paginatedCattle.forEach(cow => {
                 // Main row
                 html += `<tr class="cow-row" data-cow-id="${cow.id}">`;
                 html += `<td><span class="expand-icon">▶</span></td>`;
@@ -2535,21 +2562,110 @@
                 cattle = sortCattle([...cattle], currentSort.field, currentSort.direction);
             }
 
+            // Calculate pagination
+            const totalItems = cattle.length;
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+            // Ensure current page is valid
+            if (currentPage > totalPages && totalPages > 0) {
+                currentPage = totalPages;
+            }
+            if (currentPage < 1) {
+                currentPage = 1;
+            }
+
+            // Get paginated data
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+            const paginatedCattle = cattle.slice(startIndex, endIndex);
+
             const cardGrid = document.getElementById('card-view');
             document.getElementById('cow-count').textContent = cattleStore.getAll().length;
-            document.getElementById('pagination-info').textContent = `1-${cattle.length} of ${cattleStore.getAll().length}`;
 
-            if (cattle.length === 0) {
+            // Update pagination info
+            const startItem = totalItems > 0 ? startIndex + 1 : 0;
+            document.getElementById('pagination-info').textContent = `${startItem}-${endIndex} of ${totalItems}`;
+
+            // Render pagination controls
+            renderPaginationControls(totalPages);
+
+            if (paginatedCattle.length === 0) {
                 cardGrid.innerHTML = '<p class="empty-state" style="grid-column: 1/-1; text-align: center; padding: var(--space-6);">No cattle match the selected filters.</p>';
                 return;
             }
 
             let html = '';
-            cattle.forEach(cow => {
+            paginatedCattle.forEach(cow => {
                 html += renderCattleCard(cow);
             });
 
             cardGrid.innerHTML = html;
+        }
+
+        // Render pagination controls (based on FireProof pattern)
+        function renderPaginationControls(totalPages) {
+            const paginationControls = document.querySelector('.pagination-controls');
+
+            if (totalPages <= 1) {
+                paginationControls.style.display = 'none';
+                return;
+            }
+
+            paginationControls.style.display = 'flex';
+
+            // Generate page numbers to show (max 7 visible)
+            const getPageNumbers = () => {
+                const pages = [];
+                const maxVisible = 7;
+
+                if (totalPages <= maxVisible) {
+                    for (let i = 1; i <= totalPages; i++) {
+                        pages.push(i);
+                    }
+                } else {
+                    pages.push(1);
+                    let start = Math.max(2, currentPage - 2);
+                    let end = Math.min(totalPages - 1, currentPage + 2);
+
+                    if (start > 2) pages.push('...');
+
+                    for (let i = start; i <= end; i++) {
+                        pages.push(i);
+                    }
+
+                    if (end < totalPages - 1) pages.push('...');
+
+                    if (totalPages > 1) pages.push(totalPages);
+                }
+
+                return pages;
+            };
+
+            const pageNumbers = getPageNumbers();
+            let html = '';
+
+            // Previous button
+            html += `<button class="page-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>«</button>`;
+
+            // Page numbers
+            pageNumbers.forEach(page => {
+                if (page === '...') {
+                    html += `<span style="padding: 0 12px; display: flex; align-items: center; color: var(--color-text-light);">...</span>`;
+                } else {
+                    html += `<button class="page-btn ${page === currentPage ? 'active' : ''}" onclick="goToPage(${page})" ${page === currentPage ? 'disabled' : ''}>${page}</button>`;
+                }
+            });
+
+            // Next button
+            html += `<button class="page-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>»</button>`;
+
+            paginationControls.innerHTML = html;
+        }
+
+        // Navigate to specific page
+        function goToPage(page) {
+            currentPage = page;
+            renderCurrentView();
         }
 
         // Attach tab listeners for modal
