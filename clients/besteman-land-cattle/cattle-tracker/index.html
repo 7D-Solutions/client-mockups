@@ -2071,6 +2071,7 @@
         function renderExpandedContent(cow) {
             const calves = calfStore.search(cow.tagId, ['cattleId']);
             const work = workStore.search(cow.tagId, ['cattleId']);
+            console.log(`Rendering ${cow.tagId}: ${calves.length} calves, ${work.length} work records`);
 
             return `
                 <!-- Summary -->
