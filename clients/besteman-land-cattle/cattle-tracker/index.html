@@ -264,6 +264,59 @@
             text-align: right;
         }
 
+        /* Edit mode styling */
+        .table-edit-mode th {
+            position: relative;
+            padding-top: 50px !important;
+        }
+
+        .table-edit-mode th.sortable {
+            cursor: move;
+        }
+
+        .column-checkbox-wrapper {
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .column-checkbox-wrapper input[type="checkbox"] {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+        }
+
+        .column-checkbox-label {
+            font-size: 11px;
+            color: var(--color-text-light);
+            font-weight: 500;
+        }
+
+        /* Drag and drop visual feedback */
+        .dragging {
+            opacity: 0.5;
+            background: var(--color-bg-light) !important;
+        }
+
+        .drag-over {
+            border-left: 3px solid var(--color-primary) !important;
+        }
+
+        .edit-mode-badge {
+            background: var(--color-primary);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
         .table-wrapper {
             overflow-x: auto;
         }
@@ -830,18 +883,9 @@
                     <span class="record-count">Showing <strong id="cow-count">0</strong> cows</span>
                 </div>
                 <div style="display: flex; gap: 12px; align-items: center;">
-                    <div class="column-dropdown">
-                        <button class="btn btn-secondary" onclick="toggleColumnDropdown()" style="padding: 6px 12px; font-size: 13px;">
-                            ⚙️ Columns
-                        </button>
-                        <div id="column-dropdown" class="column-dropdown-content">
-                            <div class="column-dropdown-header">Show/Hide Columns</div>
-                            <div id="column-checkboxes"></div>
-                            <div class="column-dropdown-footer">
-                                <button class="btn btn-secondary" onclick="resetColumns()" style="padding: 4px 8px; font-size: 12px;">Reset</button>
-                            </div>
-                        </div>
-                    </div>
+                    <button class="btn btn-secondary" onclick="toggleEditMode()" id="edit-columns-btn" style="padding: 6px 12px; font-size: 13px;">
+                        ⚙️ Edit Columns
+                    </button>
                     <div class="view-toggle">
                         <button class="view-btn active">📋 Table</button>
                         <button class="view-btn">📇 Cards</button>
@@ -1552,6 +1596,11 @@
         // State for sorting
         let currentSort = { field: null, direction: 'asc' };
 
+        // Edit mode state
+        let isEditMode = false;
+        let draggedColumnIndex = null;
+        let dragOverColumnIndex = null;
+
         // Column visibility state
         const defaultColumns = [
             { id: 'tagId', label: 'Tag ID', visible: true },
@@ -1590,47 +1639,25 @@
             sessionStorage.setItem('cattle-columns', JSON.stringify(columns));
         }
 
-        // Toggle column dropdown
-        function toggleColumnDropdown() {
-            const dropdown = document.getElementById('column-dropdown');
-            dropdown.classList.toggle('show');
-            if (dropdown.classList.contains('show')) {
-                renderColumnCheckboxes();
-            }
-        }
+        // Toggle edit mode
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            const table = document.getElementById('cattle-table');
+            const btn = document.getElementById('edit-columns-btn');
 
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (e) => {
-            const dropdown = document.getElementById('column-dropdown');
-            const button = e.target.closest('.column-dropdown');
-            if (!button && dropdown) {
-                dropdown.classList.remove('show');
+            if (isEditMode) {
+                table.classList.add('table-edit-mode');
+                btn.innerHTML = '✓ Done Editing<span class="edit-mode-badge">EDIT MODE</span>';
+                btn.classList.remove('btn-secondary');
+                btn.classList.add('btn-primary');
+            } else {
+                table.classList.remove('table-edit-mode');
+                btn.innerHTML = '⚙️ Edit Columns';
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-secondary');
             }
-        });
 
-        // Render column checkboxes
-        function renderColumnCheckboxes() {
-            const container = document.getElementById('column-checkboxes');
-            let html = '';
-            columns.forEach(col => {
-                const disabled = col.locked ? 'disabled' : '';
-                const checked = col.visible ? 'checked' : '';
-                html += `
-                    <div class="column-dropdown-item">
-                        <input
-                            type="checkbox"
-                            id="col-${col.id}"
-                            ${checked}
-                            ${disabled}
-                            onchange="toggleColumnVisibility('${col.id}')"
-                        >
-                        <label for="col-${col.id}" style="cursor: pointer; user-select: none; flex: 1;">
-                            ${col.label}
-                        </label>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
+            renderTable();
         }
 
         // Toggle column visibility
@@ -1647,9 +1674,71 @@
         function resetColumns() {
             columns = defaultColumns.map(c => ({ ...c, visible: true }));
             saveColumnPreferences();
-            renderColumnCheckboxes();
             renderTable();
             Toast.success('Columns reset to default');
+        }
+
+        // Drag and drop handlers
+        function handleDragStart(e, index) {
+            draggedColumnIndex = index;
+            e.currentTarget.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', e.currentTarget.innerHTML);
+        }
+
+        function handleDragOver(e, index) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+
+            const th = e.currentTarget;
+
+            // Remove drag-over from all columns
+            document.querySelectorAll('th').forEach(header => {
+                header.classList.remove('drag-over');
+            });
+
+            // Add drag-over to current column
+            if (draggedColumnIndex !== index) {
+                th.classList.add('drag-over');
+                dragOverColumnIndex = index;
+            }
+
+            return false;
+        }
+
+        function handleDrop(e, index) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            if (draggedColumnIndex !== index && draggedColumnIndex !== null) {
+                // Reorder columns array
+                const draggedCol = columns[draggedColumnIndex];
+                const newColumns = [...columns];
+
+                // Remove from old position
+                newColumns.splice(draggedColumnIndex, 1);
+
+                // Insert at new position
+                newColumns.splice(index, 0, draggedCol);
+
+                columns = newColumns;
+                saveColumnPreferences();
+                renderTable();
+            }
+
+            return false;
+        }
+
+        function handleDragEnd(e) {
+            e.currentTarget.classList.remove('dragging');
+
+            // Remove all drag-over classes
+            document.querySelectorAll('th').forEach(header => {
+                header.classList.remove('drag-over');
+            });
+
+            draggedColumnIndex = null;
+            dragOverColumnIndex = null;
         }
 
         // Apply filters and search
@@ -1728,12 +1817,38 @@
 
             const sortableFields = ['tagId', 'breed', 'age', 'weight', 'status', 'totalCalves', 'lastCalving'];
 
-            columns.forEach(col => {
+            columns.forEach((col, index) => {
                 if (col.visible) {
                     const isSortable = sortableFields.includes(col.id);
                     const sortClass = isSortable ? 'sortable' : '';
-                    const sortIcon = isSortable ? '<span class="sort-icon">▼</span>' : '';
-                    html += `<th class="${sortClass}">${col.label} ${sortIcon}</th>`;
+                    const sortIcon = isSortable && !isEditMode ? '<span class="sort-icon">▼</span>' : '';
+
+                    // Drag attributes for edit mode
+                    const draggable = isEditMode && !col.locked ? 'draggable="true"' : '';
+                    const dragHandlers = isEditMode && !col.locked ?
+                        `ondragstart="handleDragStart(event, ${index})"
+                         ondragover="handleDragOver(event, ${index})"
+                         ondrop="handleDrop(event, ${index})"
+                         ondragend="handleDragEnd(event)"` : '';
+
+                    // Checkbox in edit mode
+                    const checkbox = isEditMode ? `
+                        <div class="column-checkbox-wrapper">
+                            <input
+                                type="checkbox"
+                                ${col.visible ? 'checked' : ''}
+                                ${col.locked ? 'disabled' : ''}
+                                onchange="toggleColumnVisibility('${col.id}')"
+                                onclick="event.stopPropagation()"
+                            >
+                            <span class="column-checkbox-label">Show</span>
+                        </div>
+                    ` : '';
+
+                    html += `<th class="${sortClass}" ${draggable} ${dragHandlers} data-column-id="${col.id}">
+                        ${checkbox}
+                        ${col.label} ${sortIcon}
+                    </th>`;
                 }
             });
 
