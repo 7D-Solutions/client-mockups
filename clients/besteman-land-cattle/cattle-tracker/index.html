@@ -902,6 +902,9 @@
                     <button class="btn btn-secondary" onclick="toggleEditMode()" id="edit-columns-btn" style="padding: 6px 12px; font-size: 13px;">
                         ⚙️ Edit Columns
                     </button>
+                    <button class="btn btn-secondary" onclick="resetColumns()" id="reset-columns-btn" style="padding: 6px 12px; font-size: 13px; display: none;">
+                        Reset Columns
+                    </button>
                     <div class="view-toggle">
                         <button class="view-btn active">📋 Table</button>
                         <button class="view-btn">📇 Cards</button>
@@ -1783,20 +1786,32 @@
             isEditMode = !isEditMode;
             const table = document.getElementById('cattle-table');
             const btn = document.getElementById('edit-columns-btn');
+            const resetBtn = document.getElementById('reset-columns-btn');
 
             if (isEditMode) {
                 table.classList.add('table-edit-mode');
                 btn.innerHTML = '✓ Done Editing<span class="edit-mode-badge">EDIT MODE</span>';
                 btn.classList.remove('btn-secondary');
                 btn.classList.add('btn-primary');
+                resetBtn.style.display = 'inline-block';
             } else {
                 table.classList.remove('table-edit-mode');
                 btn.innerHTML = '⚙️ Edit Columns';
                 btn.classList.remove('btn-primary');
                 btn.classList.add('btn-secondary');
+                resetBtn.style.display = 'none';
             }
 
             renderTable();
+        }
+
+        // Reset columns to default
+        function resetColumns() {
+            // Reset to default columns configuration
+            columns = defaultColumns.map(col => ({ ...col }));
+            saveColumnPreferences();
+            renderTable();
+            Toast.success('Columns reset to default');
         }
 
         // Toggle column visibility
