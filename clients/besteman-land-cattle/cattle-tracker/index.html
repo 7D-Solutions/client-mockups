@@ -1175,7 +1175,7 @@
         // Add sample data
         function initSampleData() {
             // Data version - increment this to force reload of sample data
-            const DATA_VERSION = 4;
+            const DATA_VERSION = 5;
             const currentVersion = sessionStorage.getItem('cattle-data-version');
 
             // Clear old data if version changed
@@ -1533,7 +1533,12 @@
                     }
                 ];
 
-                sampleCattle.forEach(c => cattleStore.add(c));
+                sampleCattle.forEach(c => {
+                    // Use tagId as the ID instead of auto-generated
+                    const cowData = { ...c, id: c.tagId };
+                    cattleStore.data.push(cowData);
+                });
+                cattleStore.save();
 
                 // Sample calf history - Multiple calves per cow
                 const sampleCalves = [
@@ -1624,7 +1629,12 @@
                     { cattleId: '#H-1234', calfId: '#H-1234-C6', birthDate: '2023-01-05', gender: 'male', birthWeight: 83, weaningWeight: 585, weaningAge: '8.5 months', status: 'sold' },
                     { cattleId: '#H-1234', calfId: '#H-1234-C5', birthDate: '2022-02-18', gender: 'female', birthWeight: 79, weaningWeight: 580, weaningAge: '8 months', status: 'sold' }
                 ];
-                sampleCalves.forEach(c => calfStore.add(c));
+                sampleCalves.forEach(c => {
+                    // Use calfId as the ID instead of auto-generated
+                    const calfData = { ...c, id: c.calfId };
+                    calfStore.data.push(calfData);
+                });
+                calfStore.save();
 
                 // Sample work history - For both cows and calves
                 const sampleWork = [
@@ -1704,7 +1714,12 @@
                     { cattleId: '#A-2890-C4', date: '2024-10-28', activityType: 'weighing', details: 'Weight: 435 lbs', administeredBy: 'John Smith', notes: 'Heavy calf' },
                     { cattleId: '#CH-1890-C5', date: '2024-10-20', activityType: 'vaccination', details: 'Vaccination series', administeredBy: 'Dr. Sarah Williams', notes: 'Strong calf' }
                 ];
-                sampleWork.forEach(w => workStore.add(w));
+                sampleWork.forEach(w => {
+                    // Use combination of cattleId + date + activity as ID
+                    const workData = { ...w, id: `${w.cattleId}-${w.date}-${w.activityType}` };
+                    workStore.data.push(workData);
+                });
+                workStore.save();
             }
         }
 
