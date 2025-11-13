@@ -2726,8 +2726,7 @@
         }
 
         function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('show');
-            document.getElementById('modal-backdrop').classList.remove('show');
+            ModalManager.hide(modalId);
         }
 
         // Confirmation modal
