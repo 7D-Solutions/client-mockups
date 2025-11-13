@@ -3008,15 +3008,34 @@
         }
 
         // Initialize
+        // Render the current view (table or cards)
+        function renderCurrentView() {
+            if (currentView === 'cards') {
+                renderCardView();
+            } else {
+                renderTable();
+            }
+        }
+
+        // Detect mobile and initialize appropriate view
+        function initializeView() {
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+                switchView('cards');
+            } else {
+                renderTable();
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             initSampleData();
-            renderTable();
+            initializeView();
 
             // Add search/filter event listeners
-            document.getElementById('search-input').addEventListener('input', renderTable);
-            document.getElementById('status-filter').addEventListener('change', renderTable);
-            document.getElementById('breed-filter').addEventListener('change', renderTable);
-            document.getElementById('age-filter').addEventListener('change', renderTable);
+            document.getElementById('search-input').addEventListener('input', renderCurrentView);
+            document.getElementById('status-filter').addEventListener('change', renderCurrentView);
+            document.getElementById('breed-filter').addEventListener('change', renderCurrentView);
+            document.getElementById('age-filter').addEventListener('change', renderCurrentView);
 
             // Add column sort event listeners (delegate to table header)
             document.getElementById('table-header').addEventListener('click', (e) => {
@@ -3028,6 +3047,24 @@
                         handleColumnSort(column.id);
                     }
                 }
+            });
+
+            // Handle window resize for orientation changes
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    const isMobile = window.innerWidth <= 768;
+                    const isCurrentlyCards = currentView === 'cards';
+
+                    // Auto-switch based on screen size
+                    if (isMobile && !isCurrentlyCards) {
+                        switchView('cards');
+                    } else if (!isMobile && isCurrentlyCards && window.innerWidth > 768) {
+                        // Only switch back to table on desktop if user didn't manually choose cards
+                        // For now, keep user's choice
+                    }
+                }, 250);
             });
         });
     </script>
