@@ -7,6 +7,7 @@ class MockupStore {
   constructor(storeName) {
     this.storeName = storeName;
     this.data = this.load();
+    this.idCounter = 0;
   }
 
   load() {
@@ -29,7 +30,7 @@ class MockupStore {
   add(item) {
     const newItem = {
       ...item,
-      id: Date.now().toString(),
+      id: `${Date.now()}-${this.idCounter++}`,
       createdAt: new Date().toISOString()
     };
     this.data.push(newItem);
