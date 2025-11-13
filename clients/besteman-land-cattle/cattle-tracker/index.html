@@ -1346,6 +1346,20 @@
         </div>
     </div>
 
+    <!-- Cow Detail Modal (for card view) -->
+    <div id="detail-modal" class="modal" style="max-width: 900px;">
+        <div class="modal-header">
+            <h2 class="modal-title" id="detail-modal-title">Cow Details</h2>
+            <button class="modal-close" onclick="closeModal('detail-modal')">&times;</button>
+        </div>
+        <div class="modal-body" id="detail-modal-body" style="max-height: 70vh; overflow-y: auto;">
+            <!-- Content will be rendered dynamically -->
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('detail-modal')">Close</button>
+        </div>
+    </div>
+
     <script>
         // Initialize data stores
         const cattleStore = new MockupStore('cattle-records');
@@ -2454,13 +2468,63 @@
             cardGrid.innerHTML = html;
         }
 
+        // Attach tab listeners for modal
+        function attachTabListeners() {
+            document.querySelectorAll('#detail-modal-body .history-tab').forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const tabName = this.dataset.tab;
+                    const cowId = this.dataset.cow;
+                    const modalBody = document.getElementById('detail-modal-body');
+
+                    // Toggle active tab
+                    modalBody.querySelectorAll('.history-tab').forEach(t => t.classList.remove('active'));
+                    modalBody.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+                    this.classList.add('active');
+                    const content = modalBody.querySelector(`.tab-content[data-tab="${tabName}"][data-cow="${cowId}"]`);
+                    if (content) {
+                        content.classList.add('active');
+                    }
+                });
+            });
+
+            // Attach calf expand listeners
+            document.querySelectorAll('#detail-modal-body .calf-row').forEach(row => {
+                row.addEventListener('click', function(e) {
+                    const calfId = this.dataset.calfId;
+                    toggleCalfExpand(calfId);
+                });
+            });
+        }
+
+        // Show cow detail modal (for card view)
+        function showCowDetail(cowId) {
+            const cow = cattleStore.getById(cowId);
+            if (!cow) return;
+
+            const modalTitle = document.getElementById('detail-modal-title');
+            const modalBody = document.getElementById('detail-modal-body');
+
+            modalTitle.textContent = `${cow.tagId} - ${cow.breed}`;
+            modalBody.innerHTML = renderExpandedContent(cow);
+
+            // Open modal
+            ModalManager.show('detail-modal');
+
+            // Re-attach tab listeners
+            setTimeout(() => {
+                attachTabListeners();
+            }, 100);
+        }
+
         // Render individual cattle card
         function renderCattleCard(cow) {
             const calves = calfStore.search(cow.tagId, ['cattleId']);
             const work = workStore.search(cow.tagId, ['cattleId']);
 
             return `
-                <div class="cattle-card" onclick="expandToCalf('${cow.id}', '${cow.currentCalf || ''}')">
+                <div class="cattle-card" onclick="showCowDetail('${cow.id}')"
                     <div class="card-header-section">
                         <h3 class="card-tag-id">${cow.tagId}</h3>
                         <span class="card-status-badge status-${cow.status}">${cow.status}</span>
