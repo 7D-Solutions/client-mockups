@@ -7,7 +7,6 @@ class MockupStore {
   constructor(storeName) {
     this.storeName = storeName;
     this.data = this.load();
-    this.idCounter = 0;
   }
 
   load() {
@@ -27,10 +26,15 @@ class MockupStore {
     return this.data.find(item => item.id === id);
   }
 
+  generateId() {
+    // Generate a unique ID using timestamp + random string
+    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  }
+
   add(item) {
     const newItem = {
       ...item,
-      id: `${Date.now()}-${this.idCounter++}`,
+      id: this.generateId(),
       createdAt: new Date().toISOString()
     };
     this.data.push(newItem);
