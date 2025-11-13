@@ -1904,16 +1904,33 @@
             // Update parent cow
             const parent = cattleStore.search(data.cattleId, ['tagId'])[0];
             if (parent) {
+                // Store parent ID to re-expand after render
+                const parentCowId = parent.id;
+
                 cattleStore.update(parent.id, {
                     totalCalves: (parent.totalCalves || 0) + 1,
                     lastCalving: data.birthDate,
                     currentCalf: data.calfId
                 });
-            }
 
-            Toast.success('Calf added successfully');
-            closeModal('calf-modal');
-            renderTable();
+                Toast.success('Calf added successfully');
+                closeModal('calf-modal');
+                renderTable();
+
+                // Re-expand the parent cow row
+                setTimeout(() => {
+                    const cowRow = document.querySelector(`.cow-row[data-cow-id="${parentCowId}"]`);
+                    const expandedRow = document.querySelector(`.expanded-row[data-cow-id="${parentCowId}"]`);
+                    if (cowRow && expandedRow) {
+                        cowRow.classList.add('expanded');
+                        expandedRow.classList.add('show');
+                    }
+                }, 0);
+            } else {
+                Toast.success('Calf added successfully');
+                closeModal('calf-modal');
+                renderTable();
+            }
         }
 
         // Add Work History Modal
@@ -1949,9 +1966,37 @@
             };
 
             workStore.add(data);
+
+            // Find parent cow ID to re-expand after render
+            const cattleId = data.cattleId;
+            const parent = cattleStore.search(cattleId, ['tagId'])[0];
+            const parentCowId = parent ? parent.id : null;
+
             Toast.success('Work history added successfully');
             closeModal('work-modal');
             renderTable();
+
+            // Re-expand the parent cow row if found
+            if (parentCowId) {
+                setTimeout(() => {
+                    const cowRow = document.querySelector(`.cow-row[data-cow-id="${parentCowId}"]`);
+                    const expandedRow = document.querySelector(`.expanded-row[data-cow-id="${parentCowId}"]`);
+                    if (cowRow && expandedRow) {
+                        cowRow.classList.add('expanded');
+                        expandedRow.classList.add('show');
+
+                        // If adding to work history tab, switch to that tab
+                        const workTab = expandedRow.querySelector('.history-tab[data-tab="work"]');
+                        const workContent = expandedRow.querySelector('.tab-content[data-tab="work"]');
+                        if (workTab && workContent) {
+                            expandedRow.querySelectorAll('.history-tab').forEach(t => t.classList.remove('active'));
+                            expandedRow.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                            workTab.classList.add('active');
+                            workContent.classList.add('active');
+                        }
+                    }
+                }, 0);
+            }
         }
 
         // Initialize
