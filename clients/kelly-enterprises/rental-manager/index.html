@@ -1186,6 +1186,12 @@
                         <span class="record-count" id="property-count">0 properties</span>
                     </div>
                     <div class="toolbar-right" style="display: flex; gap: var(--space-3); align-items: center;">
+                        <button class="btn btn-secondary" onclick="togglePropertiesEditMode()" id="edit-properties-columns-btn" style="padding: 6px 12px; font-size: 13px;">
+                            ⚙️ Edit Columns
+                        </button>
+                        <button class="btn btn-secondary" onclick="resetPropertiesColumns()" id="reset-properties-columns-btn" style="padding: 6px 12px; font-size: 13px; display: none;">
+                            Reset Columns
+                        </button>
                         <div class="view-toggle">
                             <button class="view-toggle-btn active" data-view="table" onclick="togglePropertiesView('table')">
                                 📋 Table
@@ -1236,7 +1242,13 @@
                     <div class="toolbar-left">
                         <span class="record-count" id="expense-count">0 expenses</span>
                     </div>
-                    <div>
+                    <div class="toolbar-right" style="display: flex; gap: var(--space-3); align-items: center;">
+                        <button class="btn btn-secondary" onclick="toggleExpensesEditMode()" id="edit-expenses-columns-btn" style="padding: 6px 12px; font-size: 13px;">
+                            ⚙️ Edit Columns
+                        </button>
+                        <button class="btn btn-secondary" onclick="resetExpensesColumns()" id="reset-expenses-columns-btn" style="padding: 6px 12px; font-size: 13px; display: none;">
+                            Reset Columns
+                        </button>
                         <button class="btn btn-primary" onclick="showAddExpenseModal()">➕ Add Expense</button>
                     </div>
                 </div>
@@ -1273,6 +1285,14 @@
                     <div class="toolbar-left">
                         <span class="record-count" id="message-count">0 messages</span>
                     </div>
+                    <div class="toolbar-right" style="display: flex; gap: var(--space-3); align-items: center;">
+                        <button class="btn btn-secondary" onclick="toggleMessagesEditMode()" id="edit-messages-columns-btn" style="padding: 6px 12px; font-size: 13px;">
+                            ⚙️ Edit Columns
+                        </button>
+                        <button class="btn btn-secondary" onclick="resetMessagesColumns()" id="reset-messages-columns-btn" style="padding: 6px 12px; font-size: 13px; display: none;">
+                            Reset Columns
+                        </button>
+                    </div>
                 </div>
 
                 <div class="table-wrapper">
@@ -1304,6 +1324,14 @@
                 <div class="datatable-toolbar">
                     <div class="toolbar-left">
                         <span class="record-count" id="application-count">0 applications</span>
+                    </div>
+                    <div class="toolbar-right" style="display: flex; gap: var(--space-3); align-items: center;">
+                        <button class="btn btn-secondary" onclick="toggleApplicationsEditMode()" id="edit-applications-columns-btn" style="padding: 6px 12px; font-size: 13px;">
+                            ⚙️ Edit Columns
+                        </button>
+                        <button class="btn btn-secondary" onclick="resetApplicationsColumns()" id="reset-applications-columns-btn" style="padding: 6px 12px; font-size: 13px; display: none;">
+                            Reset Columns
+                        </button>
                     </div>
                 </div>
 
@@ -1740,6 +1768,491 @@
         // Save column preferences to session storage
         function saveColumnPreferences() {
             sessionStorage.setItem('kelly-rent-log-columns-v2', JSON.stringify(rentLogColumns));
+        }
+
+        // ========== PROPERTIES TABLE COLUMN CUSTOMIZATION ==========
+        let isPropertiesEditMode = false;
+        let draggedPropertiesColumnIndex = null;
+        let dragOverPropertiesColumnIndex = null;
+
+        const defaultPropertiesColumns = [
+            { id: 'address', label: 'Address', visible: true, locked: true },
+            { id: 'type', label: 'Type', visible: true, locked: false },
+            { id: 'purchasePrice', label: 'Purchase Price', visible: true, locked: false },
+            { id: 'tenants', label: 'Tenants', visible: true, locked: false },
+            { id: 'monthlyIncome', label: 'Monthly Income', visible: true, locked: false },
+            { id: 'ytdExpenses', label: 'YTD Expenses', visible: true, locked: false },
+            { id: 'netPL', label: 'Net P&L', visible: true, locked: false },
+            { id: 'actions', label: 'Actions', visible: true, locked: true }
+        ];
+
+        function loadPropertiesColumnPreferences() {
+            const saved = sessionStorage.getItem('kelly-properties-columns');
+            if (saved) {
+                try {
+                    const savedCols = JSON.parse(saved);
+                    return defaultPropertiesColumns.map(def => {
+                        const saved = savedCols.find(s => s.id === def.id);
+                        return saved ? { ...def, visible: saved.visible } : def;
+                    });
+                } catch (e) {
+                    return [...defaultPropertiesColumns];
+                }
+            }
+            return [...defaultPropertiesColumns];
+        }
+
+        let propertiesColumns = loadPropertiesColumnPreferences();
+
+        function savePropertiesColumnPreferences() {
+            sessionStorage.setItem('kelly-properties-columns', JSON.stringify(propertiesColumns));
+        }
+
+        function togglePropertiesEditMode() {
+            isPropertiesEditMode = !isPropertiesEditMode;
+            const table = document.getElementById('property-table');
+            const btn = document.getElementById('edit-properties-columns-btn');
+            const resetBtn = document.getElementById('reset-properties-columns-btn');
+
+            if (isPropertiesEditMode) {
+                table.classList.add('table-edit-mode');
+                btn.innerHTML = '✓ Done Editing<span class="edit-mode-badge">EDIT MODE</span>';
+                btn.classList.remove('btn-secondary');
+                btn.classList.add('btn-primary');
+                resetBtn.style.display = 'inline-block';
+            } else {
+                table.classList.remove('table-edit-mode');
+                btn.innerHTML = '⚙️ Edit Columns';
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-secondary');
+                resetBtn.style.display = 'none';
+            }
+
+            renderPropertiesTable();
+        }
+
+        function resetPropertiesColumns() {
+            propertiesColumns = defaultPropertiesColumns.map(col => ({ ...col }));
+            savePropertiesColumnPreferences();
+            renderPropertiesTable();
+            showToast('Properties columns reset to default', 'success');
+        }
+
+        function togglePropertiesColumnVisibility(columnId) {
+            const column = propertiesColumns.find(c => c.id === columnId);
+            if (column && !column.locked) {
+                column.visible = !column.visible;
+                savePropertiesColumnPreferences();
+                renderPropertiesTable();
+            }
+        }
+
+        function handlePropertiesDragStart(e, index) {
+            draggedPropertiesColumnIndex = index;
+            e.currentTarget.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', e.currentTarget.innerHTML);
+        }
+
+        function handlePropertiesDragOver(e, index) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            const th = e.currentTarget;
+            document.querySelectorAll('#property-table th').forEach(header => {
+                header.classList.remove('drag-over');
+            });
+            if (draggedPropertiesColumnIndex !== index) {
+                th.classList.add('drag-over');
+                dragOverPropertiesColumnIndex = index;
+            }
+            return false;
+        }
+
+        function handlePropertiesDrop(e, index) {
+            e.stopPropagation();
+            if (draggedPropertiesColumnIndex !== null && dragOverPropertiesColumnIndex !== null && draggedPropertiesColumnIndex !== dragOverPropertiesColumnIndex) {
+                const draggedCol = propertiesColumns[draggedPropertiesColumnIndex];
+                const newColumns = [...propertiesColumns];
+                newColumns.splice(draggedPropertiesColumnIndex, 1);
+                newColumns.splice(dragOverPropertiesColumnIndex, 0, draggedCol);
+                propertiesColumns = newColumns;
+                savePropertiesColumnPreferences();
+                renderPropertiesTable();
+            }
+            return false;
+        }
+
+        function handlePropertiesDragEnd(e) {
+            e.currentTarget.classList.remove('dragging');
+            document.querySelectorAll('#property-table th').forEach(header => {
+                header.classList.remove('drag-over');
+            });
+            draggedPropertiesColumnIndex = null;
+            dragOverPropertiesColumnIndex = null;
+        }
+
+        // ========== EXPENSES TABLE COLUMN CUSTOMIZATION ==========
+        let isExpensesEditMode = false;
+        let draggedExpensesColumnIndex = null;
+        let dragOverExpensesColumnIndex = null;
+
+        const defaultExpensesColumns = [
+            { id: 'date', label: 'Date', visible: true, locked: true },
+            { id: 'property', label: 'Property', visible: true, locked: false },
+            { id: 'category', label: 'Category', visible: true, locked: false },
+            { id: 'vendor', label: 'Vendor', visible: true, locked: false },
+            { id: 'description', label: 'Description', visible: true, locked: false },
+            { id: 'amount', label: 'Amount', visible: true, locked: false },
+            { id: 'paymentMethod', label: 'Payment Method', visible: true, locked: false },
+            { id: 'actions', label: 'Actions', visible: true, locked: true }
+        ];
+
+        function loadExpensesColumnPreferences() {
+            const saved = sessionStorage.getItem('kelly-expenses-columns');
+            if (saved) {
+                try {
+                    const savedCols = JSON.parse(saved);
+                    return defaultExpensesColumns.map(def => {
+                        const saved = savedCols.find(s => s.id === def.id);
+                        return saved ? { ...def, visible: saved.visible } : def;
+                    });
+                } catch (e) {
+                    return [...defaultExpensesColumns];
+                }
+            }
+            return [...defaultExpensesColumns];
+        }
+
+        let expensesColumns = loadExpensesColumnPreferences();
+
+        function saveExpensesColumnPreferences() {
+            sessionStorage.setItem('kelly-expenses-columns', JSON.stringify(expensesColumns));
+        }
+
+        function toggleExpensesEditMode() {
+            isExpensesEditMode = !isExpensesEditMode;
+            const table = document.getElementById('expense-table');
+            const btn = document.getElementById('edit-expenses-columns-btn');
+            const resetBtn = document.getElementById('reset-expenses-columns-btn');
+
+            if (isExpensesEditMode) {
+                table.classList.add('table-edit-mode');
+                btn.innerHTML = '✓ Done Editing<span class="edit-mode-badge">EDIT MODE</span>';
+                btn.classList.remove('btn-secondary');
+                btn.classList.add('btn-primary');
+                resetBtn.style.display = 'inline-block';
+            } else {
+                table.classList.remove('table-edit-mode');
+                btn.innerHTML = '⚙️ Edit Columns';
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-secondary');
+                resetBtn.style.display = 'none';
+            }
+
+            renderExpensesView();
+        }
+
+        function resetExpensesColumns() {
+            expensesColumns = defaultExpensesColumns.map(col => ({ ...col }));
+            saveExpensesColumnPreferences();
+            renderExpensesView();
+            showToast('Expenses columns reset to default', 'success');
+        }
+
+        function toggleExpensesColumnVisibility(columnId) {
+            const column = expensesColumns.find(c => c.id === columnId);
+            if (column && !column.locked) {
+                column.visible = !column.visible;
+                saveExpensesColumnPreferences();
+                renderExpensesView();
+            }
+        }
+
+        function handleExpensesDragStart(e, index) {
+            draggedExpensesColumnIndex = index;
+            e.currentTarget.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', e.currentTarget.innerHTML);
+        }
+
+        function handleExpensesDragOver(e, index) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            const th = e.currentTarget;
+            document.querySelectorAll('#expense-table th').forEach(header => {
+                header.classList.remove('drag-over');
+            });
+            if (draggedExpensesColumnIndex !== index) {
+                th.classList.add('drag-over');
+                dragOverExpensesColumnIndex = index;
+            }
+            return false;
+        }
+
+        function handleExpensesDrop(e, index) {
+            e.stopPropagation();
+            if (draggedExpensesColumnIndex !== null && dragOverExpensesColumnIndex !== null && draggedExpensesColumnIndex !== dragOverExpensesColumnIndex) {
+                const draggedCol = expensesColumns[draggedExpensesColumnIndex];
+                const newColumns = [...expensesColumns];
+                newColumns.splice(draggedExpensesColumnIndex, 1);
+                newColumns.splice(dragOverExpensesColumnIndex, 0, draggedCol);
+                expensesColumns = newColumns;
+                saveExpensesColumnPreferences();
+                renderExpensesView();
+            }
+            return false;
+        }
+
+        function handleExpensesDragEnd(e) {
+            e.currentTarget.classList.remove('dragging');
+            document.querySelectorAll('#expense-table th').forEach(header => {
+                header.classList.remove('drag-over');
+            });
+            draggedExpensesColumnIndex = null;
+            dragOverExpensesColumnIndex = null;
+        }
+
+        // ========== MESSAGES TABLE COLUMN CUSTOMIZATION ==========
+        let isMessagesEditMode = false;
+        let draggedMessagesColumnIndex = null;
+        let dragOverMessagesColumnIndex = null;
+
+        const defaultMessagesColumns = [
+            { id: 'date', label: 'Date', visible: true, locked: true },
+            { id: 'tenant', label: 'Tenant', visible: true, locked: false },
+            { id: 'property', label: 'Property', visible: true, locked: false },
+            { id: 'type', label: 'Type', visible: true, locked: false },
+            { id: 'subject', label: 'Subject', visible: true, locked: false },
+            { id: 'sentVia', label: 'Sent Via', visible: true, locked: false },
+            { id: 'status', label: 'Status', visible: true, locked: false },
+            { id: 'actions', label: 'Actions', visible: true, locked: true }
+        ];
+
+        function loadMessagesColumnPreferences() {
+            const saved = sessionStorage.getItem('kelly-messages-columns');
+            if (saved) {
+                try {
+                    const savedCols = JSON.parse(saved);
+                    return defaultMessagesColumns.map(def => {
+                        const saved = savedCols.find(s => s.id === def.id);
+                        return saved ? { ...def, visible: saved.visible } : def;
+                    });
+                } catch (e) {
+                    return [...defaultMessagesColumns];
+                }
+            }
+            return [...defaultMessagesColumns];
+        }
+
+        let messagesColumns = loadMessagesColumnPreferences();
+
+        function saveMessagesColumnPreferences() {
+            sessionStorage.setItem('kelly-messages-columns', JSON.stringify(messagesColumns));
+        }
+
+        function toggleMessagesEditMode() {
+            isMessagesEditMode = !isMessagesEditMode;
+            const table = document.getElementById('message-table');
+            const btn = document.getElementById('edit-messages-columns-btn');
+            const resetBtn = document.getElementById('reset-messages-columns-btn');
+
+            if (isMessagesEditMode) {
+                table.classList.add('table-edit-mode');
+                btn.innerHTML = '✓ Done Editing<span class="edit-mode-badge">EDIT MODE</span>';
+                btn.classList.remove('btn-secondary');
+                btn.classList.add('btn-primary');
+                resetBtn.style.display = 'inline-block';
+            } else {
+                table.classList.remove('table-edit-mode');
+                btn.innerHTML = '⚙️ Edit Columns';
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-secondary');
+                resetBtn.style.display = 'none';
+            }
+
+            renderMessagesView();
+        }
+
+        function resetMessagesColumns() {
+            messagesColumns = defaultMessagesColumns.map(col => ({ ...col }));
+            saveMessagesColumnPreferences();
+            renderMessagesView();
+            showToast('Messages columns reset to default', 'success');
+        }
+
+        function toggleMessagesColumnVisibility(columnId) {
+            const column = messagesColumns.find(c => c.id === columnId);
+            if (column && !column.locked) {
+                column.visible = !column.visible;
+                saveMessagesColumnPreferences();
+                renderMessagesView();
+            }
+        }
+
+        function handleMessagesDragStart(e, index) {
+            draggedMessagesColumnIndex = index;
+            e.currentTarget.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', e.currentTarget.innerHTML);
+        }
+
+        function handleMessagesDragOver(e, index) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            const th = e.currentTarget;
+            document.querySelectorAll('#message-table th').forEach(header => {
+                header.classList.remove('drag-over');
+            });
+            if (draggedMessagesColumnIndex !== index) {
+                th.classList.add('drag-over');
+                dragOverMessagesColumnIndex = index;
+            }
+            return false;
+        }
+
+        function handleMessagesDrop(e, index) {
+            e.stopPropagation();
+            if (draggedMessagesColumnIndex !== null && dragOverMessagesColumnIndex !== null && draggedMessagesColumnIndex !== dragOverMessagesColumnIndex) {
+                const draggedCol = messagesColumns[draggedMessagesColumnIndex];
+                const newColumns = [...messagesColumns];
+                newColumns.splice(draggedMessagesColumnIndex, 1);
+                newColumns.splice(dragOverMessagesColumnIndex, 0, draggedCol);
+                messagesColumns = newColumns;
+                saveMessagesColumnPreferences();
+                renderMessagesView();
+            }
+            return false;
+        }
+
+        function handleMessagesDragEnd(e) {
+            e.currentTarget.classList.remove('dragging');
+            document.querySelectorAll('#message-table th').forEach(header => {
+                header.classList.remove('drag-over');
+            });
+            draggedMessagesColumnIndex = null;
+            dragOverMessagesColumnIndex = null;
+        }
+
+        // ========== APPLICATIONS TABLE COLUMN CUSTOMIZATION ==========
+        let isApplicationsEditMode = false;
+        let draggedApplicationsColumnIndex = null;
+        let dragOverApplicationsColumnIndex = null;
+
+        const defaultApplicationsColumns = [
+            { id: 'date', label: 'Date Applied', visible: true, locked: true },
+            { id: 'name', label: 'Applicant Name', visible: true, locked: false },
+            { id: 'property', label: 'Property Interest', visible: true, locked: false },
+            { id: 'phone', label: 'Phone', visible: true, locked: false },
+            { id: 'email', label: 'Email', visible: true, locked: false },
+            { id: 'monthlyIncome', label: 'Monthly Income', visible: true, locked: false },
+            { id: 'creditScore', label: 'Credit Score', visible: true, locked: false },
+            { id: 'status', label: 'Status', visible: true, locked: false },
+            { id: 'actions', label: 'Actions', visible: true, locked: true }
+        ];
+
+        function loadApplicationsColumnPreferences() {
+            const saved = sessionStorage.getItem('kelly-applications-columns');
+            if (saved) {
+                try {
+                    const savedCols = JSON.parse(saved);
+                    return defaultApplicationsColumns.map(def => {
+                        const saved = savedCols.find(s => s.id === def.id);
+                        return saved ? { ...def, visible: saved.visible } : def;
+                    });
+                } catch (e) {
+                    return [...defaultApplicationsColumns];
+                }
+            }
+            return [...defaultApplicationsColumns];
+        }
+
+        let applicationsColumns = loadApplicationsColumnPreferences();
+
+        function saveApplicationsColumnPreferences() {
+            sessionStorage.setItem('kelly-applications-columns', JSON.stringify(applicationsColumns));
+        }
+
+        function toggleApplicationsEditMode() {
+            isApplicationsEditMode = !isApplicationsEditMode;
+            const table = document.getElementById('application-table');
+            const btn = document.getElementById('edit-applications-columns-btn');
+            const resetBtn = document.getElementById('reset-applications-columns-btn');
+
+            if (isApplicationsEditMode) {
+                table.classList.add('table-edit-mode');
+                btn.innerHTML = '✓ Done Editing<span class="edit-mode-badge">EDIT MODE</span>';
+                btn.classList.remove('btn-secondary');
+                btn.classList.add('btn-primary');
+                resetBtn.style.display = 'inline-block';
+            } else {
+                table.classList.remove('table-edit-mode');
+                btn.innerHTML = '⚙️ Edit Columns';
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-secondary');
+                resetBtn.style.display = 'none';
+            }
+
+            renderApplicationsView();
+        }
+
+        function resetApplicationsColumns() {
+            applicationsColumns = defaultApplicationsColumns.map(col => ({ ...col }));
+            saveApplicationsColumnPreferences();
+            renderApplicationsView();
+            showToast('Applications columns reset to default', 'success');
+        }
+
+        function toggleApplicationsColumnVisibility(columnId) {
+            const column = applicationsColumns.find(c => c.id === columnId);
+            if (column && !column.locked) {
+                column.visible = !column.visible;
+                saveApplicationsColumnPreferences();
+                renderApplicationsView();
+            }
+        }
+
+        function handleApplicationsDragStart(e, index) {
+            draggedApplicationsColumnIndex = index;
+            e.currentTarget.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', e.currentTarget.innerHTML);
+        }
+
+        function handleApplicationsDragOver(e, index) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            const th = e.currentTarget;
+            document.querySelectorAll('#application-table th').forEach(header => {
+                header.classList.remove('drag-over');
+            });
+            if (draggedApplicationsColumnIndex !== index) {
+                th.classList.add('drag-over');
+                dragOverApplicationsColumnIndex = index;
+            }
+            return false;
+        }
+
+        function handleApplicationsDrop(e, index) {
+            e.stopPropagation();
+            if (draggedApplicationsColumnIndex !== null && dragOverApplicationsColumnIndex !== null && draggedApplicationsColumnIndex !== dragOverApplicationsColumnIndex) {
+                const draggedCol = applicationsColumns[draggedApplicationsColumnIndex];
+                const newColumns = [...applicationsColumns];
+                newColumns.splice(draggedApplicationsColumnIndex, 1);
+                newColumns.splice(dragOverApplicationsColumnIndex, 0, draggedCol);
+                applicationsColumns = newColumns;
+                saveApplicationsColumnPreferences();
+                renderApplicationsView();
+            }
+            return false;
+        }
+
+        function handleApplicationsDragEnd(e) {
+            e.currentTarget.classList.remove('dragging');
+            document.querySelectorAll('#application-table th').forEach(header => {
+                header.classList.remove('drag-over');
+            });
+            draggedApplicationsColumnIndex = null;
+            dragOverApplicationsColumnIndex = null;
         }
 
         // Toggle edit mode
@@ -3293,6 +3806,37 @@ Kelly Enterprises Property Management`;
 
             document.getElementById('property-count').textContent = `${properties.length} propert${properties.length === 1 ? 'y' : 'ies'}`;
 
+            // Render table headers
+            const thead = document.querySelector('#property-table thead tr');
+            thead.innerHTML = '';
+
+            const visibleColumns = propertiesColumns.filter(col => col.visible);
+
+            visibleColumns.forEach((col, index) => {
+                const dragAttrs = isPropertiesEditMode && !col.locked ? `
+                    draggable="true"
+                    class="sortable"
+                    ondragstart="handlePropertiesDragStart(event, ${index})"
+                    ondragover="handlePropertiesDragOver(event, ${index})"
+                    ondrop="handlePropertiesDrop(event, ${index})"
+                    ondragend="handlePropertiesDragEnd(event)"` : '';
+
+                const checkbox = isPropertiesEditMode ? `
+                    <div class="column-checkbox-wrapper">
+                        <input
+                            type="checkbox"
+                            ${col.visible ? 'checked' : ''}
+                            ${col.locked ? 'disabled' : ''}
+                            onchange="togglePropertiesColumnVisibility('${col.id}')"
+                            onclick="event.stopPropagation()"
+                        />
+                        <label>${col.label}</label>
+                    </div>` : col.label;
+
+                thead.innerHTML += `<th ${dragAttrs}>${checkbox}</th>`;
+            });
+
+            // Render table body
             const tbody = document.getElementById('property-table-body');
             tbody.innerHTML = '';
 
@@ -3319,23 +3863,42 @@ Kelly Enterprises Property Management`;
                 const annualIncome = monthlyIncome * 12;
                 const netPL = annualIncome - ytdExpenses - ytdMortgage;
 
-                tbody.innerHTML += `
-                    <tr style="cursor: pointer;" onclick="showPropertyDetails('${property.id}')">
-                        <td><strong>${property.address}</strong></td>
-                        <td>${property.type}</td>
-                        <td>$${(property.purchasePrice || 0).toLocaleString()}</td>
-                        <td><span class="badge badge-info">${propertyTenants.length}</span></td>
-                        <td style="color: var(--color-success);"><strong>$${monthlyIncome.toLocaleString()}</strong></td>
-                        <td style="color: var(--color-danger);">$${ytdExpenses.toLocaleString()}</td>
-                        <td style="color: ${netPL >= 0 ? 'var(--color-success)' : 'var(--color-danger)'};">
-                            <strong>$${Math.abs(netPL).toLocaleString()}</strong>
-                        </td>
-                        <td onclick="event.stopPropagation()">
-                            <button class="btn btn-sm btn-secondary" onclick="editProperty('${property.id}')">Edit</button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteProperty('${property.id}')">Delete</button>
-                        </td>
-                    </tr>
-                `;
+                // Column data mapping
+                const columnData = {
+                    address: `<strong>${property.address}</strong>`,
+                    type: property.type,
+                    purchasePrice: `$${(property.purchasePrice || 0).toLocaleString()}`,
+                    tenants: `<span class="badge badge-info">${propertyTenants.length}</span>`,
+                    monthlyIncome: `<strong>$${monthlyIncome.toLocaleString()}</strong>`,
+                    ytdExpenses: `$${ytdExpenses.toLocaleString()}`,
+                    netPL: `<strong>$${Math.abs(netPL).toLocaleString()}</strong>`,
+                    actions: `
+                        <button class="btn btn-sm btn-secondary" onclick="editProperty('${property.id}')">Edit</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteProperty('${property.id}')">Delete</button>
+                    `
+                };
+
+                // Build row HTML with only visible columns
+                let rowHtml = '<tr style="cursor: pointer;" onclick="showPropertyDetails(\'' + property.id + '\')">';
+
+                propertiesColumns
+                    .filter(col => col.visible)
+                    .forEach(col => {
+                        if (col.id === 'actions') {
+                            rowHtml += `<td onclick="event.stopPropagation()">${columnData[col.id]}</td>`;
+                        } else if (col.id === 'monthlyIncome') {
+                            rowHtml += `<td style="color: var(--color-success);">${columnData[col.id]}</td>`;
+                        } else if (col.id === 'ytdExpenses') {
+                            rowHtml += `<td style="color: var(--color-danger);">${columnData[col.id]}</td>`;
+                        } else if (col.id === 'netPL') {
+                            rowHtml += `<td style="color: ${netPL >= 0 ? 'var(--color-success)' : 'var(--color-danger)'};">${columnData[col.id]}</td>`;
+                        } else {
+                            rowHtml += `<td>${columnData[col.id]}</td>`;
+                        }
+                    });
+
+                rowHtml += '</tr>';
+                tbody.innerHTML += rowHtml;
             });
 
             renderPropertiesPaginationControls(totalPages);
@@ -3560,6 +4123,37 @@ Kelly Enterprises Property Management`;
 
             document.getElementById('expense-count').textContent = `${allExpenses.length} expense${allExpenses.length === 1 ? '' : 's'}`;
 
+            // Render table headers
+            const thead = document.querySelector('#expense-table thead tr');
+            thead.innerHTML = '';
+
+            const visibleColumns = expensesColumns.filter(col => col.visible);
+
+            visibleColumns.forEach((col, index) => {
+                const dragAttrs = isExpensesEditMode && !col.locked ? `
+                    draggable="true"
+                    class="sortable"
+                    ondragstart="handleExpensesDragStart(event, ${index})"
+                    ondragover="handleExpensesDragOver(event, ${index})"
+                    ondrop="handleExpensesDrop(event, ${index})"
+                    ondragend="handleExpensesDragEnd(event)"` : '';
+
+                const checkbox = isExpensesEditMode ? `
+                    <div class="column-checkbox-wrapper">
+                        <input
+                            type="checkbox"
+                            ${col.visible ? 'checked' : ''}
+                            ${col.locked ? 'disabled' : ''}
+                            onchange="toggleExpensesColumnVisibility('${col.id}')"
+                            onclick="event.stopPropagation()"
+                        />
+                        <label>${col.label}</label>
+                    </div>` : col.label;
+
+                thead.innerHTML += `<th ${dragAttrs}>${checkbox}</th>`;
+            });
+
+            // Render table body
             const tbody = document.getElementById('expense-table-body');
 
             // Build rows array for better performance
@@ -3571,24 +4165,36 @@ Kelly Enterprises Property Management`;
                     ? '<span class="badge badge-success" style="font-size: 11px;" title="Receipt uploaded">📎 Receipt</span>'
                     : '<span class="badge badge-warning" style="font-size: 11px;" title="No receipt">⚠ No Receipt</span>';
 
-                return `
-                    <tr style="cursor: pointer;" onclick="showExpenseDetails('${expense.id}')">
-                        <td>${new Date(expense.date).toLocaleDateString()}</td>
-                        <td><small>${property ? property.address : 'N/A'}</small></td>
-                        <td><span class="category-badge ${categoryClass}">${expense.category}</span></td>
-                        <td>
-                            <strong>${expense.vendor}</strong><br>
-                            ${receiptIndicator}
-                        </td>
-                        <td>${expense.description || '-'}</td>
-                        <td><strong>$${parseFloat(expense.amount).toLocaleString()}</strong></td>
-                        <td><small>${expense.paymentMethod}</small></td>
-                        <td onclick="event.stopPropagation()">
-                            <button class="btn btn-sm btn-secondary" onclick="editExpense('${expense.id}')">Edit</button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteExpense('${expense.id}')">Delete</button>
-                        </td>
-                    </tr>
-                `;
+                // Column data mapping
+                const columnData = {
+                    date: new Date(expense.date).toLocaleDateString(),
+                    property: `<small>${property ? property.address : 'N/A'}</small>`,
+                    category: `<span class="category-badge ${categoryClass}">${expense.category}</span>`,
+                    vendor: `<strong>${expense.vendor}</strong><br>${receiptIndicator}`,
+                    description: expense.description || '-',
+                    amount: `<strong>$${parseFloat(expense.amount).toLocaleString()}</strong>`,
+                    paymentMethod: `<small>${expense.paymentMethod}</small>`,
+                    actions: `
+                        <button class="btn btn-sm btn-secondary" onclick="editExpense('${expense.id}')">Edit</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteExpense('${expense.id}')">Delete</button>
+                    `
+                };
+
+                // Build row HTML with only visible columns
+                let rowHtml = '<tr style="cursor: pointer;" onclick="showExpenseDetails(\'' + expense.id + '\')">';
+
+                expensesColumns
+                    .filter(col => col.visible)
+                    .forEach(col => {
+                        if (col.id === 'actions') {
+                            rowHtml += `<td onclick="event.stopPropagation()">${columnData[col.id]}</td>`;
+                        } else {
+                            rowHtml += `<td>${columnData[col.id]}</td>`;
+                        }
+                    });
+
+                rowHtml += '</tr>';
+                return rowHtml;
             });
 
             // Update DOM once instead of in loop
@@ -3691,13 +4297,45 @@ Kelly Enterprises Property Management`;
 
             document.getElementById('message-count').textContent = `${allMessages.length} message${allMessages.length === 1 ? '' : 's'}`;
 
+            // Render table headers
+            const thead = document.querySelector('#message-table thead tr');
+            thead.innerHTML = '';
+
+            const visibleColumns = messagesColumns.filter(col => col.visible);
+
+            visibleColumns.forEach((col, index) => {
+                const dragAttrs = isMessagesEditMode && !col.locked ? `
+                    draggable="true"
+                    class="sortable"
+                    ondragstart="handleMessagesDragStart(event, ${index})"
+                    ondragover="handleMessagesDragOver(event, ${index})"
+                    ondrop="handleMessagesDrop(event, ${index})"
+                    ondragend="handleMessagesDragEnd(event)"` : '';
+
+                const checkbox = isMessagesEditMode ? `
+                    <div class="column-checkbox-wrapper">
+                        <input
+                            type="checkbox"
+                            ${col.visible ? 'checked' : ''}
+                            ${col.locked ? 'disabled' : ''}
+                            onchange="toggleMessagesColumnVisibility('${col.id}')"
+                            onclick="event.stopPropagation()"
+                        />
+                        <label>${col.label}</label>
+                    </div>` : col.label;
+
+                thead.innerHTML += `<th ${dragAttrs}>${checkbox}</th>`;
+            });
+
+            // Render table body
             const tbody = document.getElementById('message-table-body');
             tbody.innerHTML = '';
 
             if (allMessages.length === 0) {
+                const colSpan = visibleColumns.length;
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" style="text-align: center; padding: var(--space-5); color: var(--color-text-light);">
+                        <td colspan="${colSpan}" style="text-align: center; padding: var(--space-5); color: var(--color-text-light);">
                             No messages sent yet. Delinquency notices will appear here.
                         </td>
                     </tr>
@@ -3715,16 +4353,35 @@ Kelly Enterprises Property Management`;
                 const tenant = tenantsStore.getById(message.tenantId);
                 const property = propertiesStore.getById(message.propertyId);
 
-                tbody.innerHTML += `
-                    <tr style="cursor: pointer;" onclick="showMessageDetails('${message.id}')">
-                        <td>${new Date(message.date).toLocaleDateString()}</td>
-                        <td>${tenant ? tenant.name : 'Unknown'}</td>
-                        <td>${property ? property.address : 'Unknown'}</td>
-                        <td><span class="badge badge-info">${message.type}</span></td>
-                        <td>${message.subject}</td>
-                        <td><span class="badge badge-success">${message.status}</span></td>
-                    </tr>
-                `;
+                // Column data mapping
+                const columnData = {
+                    date: new Date(message.date).toLocaleDateString(),
+                    tenant: tenant ? tenant.name : 'Unknown',
+                    property: property ? property.address : 'Unknown',
+                    type: `<span class="badge badge-info">${message.type}</span>`,
+                    subject: message.subject,
+                    sentVia: message.sentVia || 'Email',
+                    status: `<span class="badge badge-success">${message.status}</span>`,
+                    actions: `
+                        <button class="btn btn-sm btn-primary" onclick="showMessageDetails('${message.id}')">View</button>
+                    `
+                };
+
+                // Build row HTML with only visible columns
+                let rowHtml = '<tr style="cursor: pointer;" onclick="showMessageDetails(\'' + message.id + '\')">';
+
+                messagesColumns
+                    .filter(col => col.visible)
+                    .forEach(col => {
+                        if (col.id === 'actions') {
+                            rowHtml += `<td onclick="event.stopPropagation()">${columnData[col.id]}</td>`;
+                        } else {
+                            rowHtml += `<td>${columnData[col.id]}</td>`;
+                        }
+                    });
+
+                rowHtml += '</tr>';
+                tbody.innerHTML += rowHtml;
             });
 
             // Render pagination controls
@@ -3805,13 +4462,45 @@ Kelly Enterprises Property Management`;
 
             document.getElementById('application-count').textContent = `${allApplications.length} application${allApplications.length === 1 ? '' : 's'}`;
 
+            // Render table headers
+            const thead = document.querySelector('#application-table thead tr');
+            thead.innerHTML = '';
+
+            const visibleColumns = applicationsColumns.filter(col => col.visible);
+
+            visibleColumns.forEach((col, index) => {
+                const dragAttrs = isApplicationsEditMode && !col.locked ? `
+                    draggable="true"
+                    class="sortable"
+                    ondragstart="handleApplicationsDragStart(event, ${index})"
+                    ondragover="handleApplicationsDragOver(event, ${index})"
+                    ondrop="handleApplicationsDrop(event, ${index})"
+                    ondragend="handleApplicationsDragEnd(event)"` : '';
+
+                const checkbox = isApplicationsEditMode ? `
+                    <div class="column-checkbox-wrapper">
+                        <input
+                            type="checkbox"
+                            ${col.visible ? 'checked' : ''}
+                            ${col.locked ? 'disabled' : ''}
+                            onchange="toggleApplicationsColumnVisibility('${col.id}')"
+                            onclick="event.stopPropagation()"
+                        />
+                        <label>${col.label}</label>
+                    </div>` : col.label;
+
+                thead.innerHTML += `<th ${dragAttrs}>${checkbox}</th>`;
+            });
+
+            // Render table body
             const tbody = document.getElementById('application-table-body');
             tbody.innerHTML = '';
 
             if (allApplications.length === 0) {
+                const colSpan = visibleColumns.length;
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="9" style="text-align: center; padding: var(--space-5); color: var(--color-text-light);">
+                        <td colspan="${colSpan}" style="text-align: center; padding: var(--space-5); color: var(--color-text-light);">
                             No applications received yet.
                         </td>
                     </tr>
@@ -3832,25 +4521,40 @@ Kelly Enterprises Property Management`;
                     app.status === 'Under Review' ? 'badge-warning' :
                     'badge-info';
 
-                tbody.innerHTML += `
-                    <tr style="cursor: pointer;" onclick="viewApplication('${app.id}')">
-                        <td>${new Date(app.dateApplied).toLocaleDateString()}</td>
-                        <td><strong>${app.applicantName}</strong></td>
-                        <td>${app.propertyInterest}</td>
-                        <td>${app.phone}</td>
-                        <td>${app.email}</td>
-                        <td>$${app.monthlyIncome.toLocaleString()}</td>
-                        <td>${app.creditScore}</td>
-                        <td><span class="badge ${statusBadgeClass}">${app.status}</span></td>
-                        <td onclick="event.stopPropagation()">
-                            <button class="btn btn-sm btn-primary" onclick="viewApplication('${app.id}')">View</button>
-                            ${app.status === 'Pending Review' || app.status === 'Under Review' ?
-                                `<button class="btn btn-sm btn-success" onclick="approveApplication('${app.id}')">Approve</button>
-                                 <button class="btn btn-sm btn-danger" onclick="rejectApplication('${app.id}')">Reject</button>` :
-                                ''}
-                        </td>
-                    </tr>
-                `;
+                // Column data mapping
+                const columnData = {
+                    date: new Date(app.dateApplied).toLocaleDateString(),
+                    name: `<strong>${app.applicantName}</strong>`,
+                    property: app.propertyInterest,
+                    phone: app.phone,
+                    email: app.email,
+                    monthlyIncome: `$${app.monthlyIncome.toLocaleString()}`,
+                    creditScore: app.creditScore,
+                    status: `<span class="badge ${statusBadgeClass}">${app.status}</span>`,
+                    actions: `
+                        <button class="btn btn-sm btn-primary" onclick="viewApplication('${app.id}')">View</button>
+                        ${app.status === 'Pending Review' || app.status === 'Under Review' ?
+                            `<button class="btn btn-sm btn-success" onclick="approveApplication('${app.id}')">Approve</button>
+                             <button class="btn btn-sm btn-danger" onclick="rejectApplication('${app.id}')">Reject</button>` :
+                            ''}
+                    `
+                };
+
+                // Build row HTML with only visible columns
+                let rowHtml = '<tr style="cursor: pointer;" onclick="viewApplication(\'' + app.id + '\')">';
+
+                applicationsColumns
+                    .filter(col => col.visible)
+                    .forEach(col => {
+                        if (col.id === 'actions') {
+                            rowHtml += `<td onclick="event.stopPropagation()">${columnData[col.id]}</td>`;
+                        } else {
+                            rowHtml += `<td>${columnData[col.id]}</td>`;
+                        }
+                    });
+
+                rowHtml += '</tr>';
+                tbody.innerHTML += rowHtml;
             });
 
             // Render pagination controls
