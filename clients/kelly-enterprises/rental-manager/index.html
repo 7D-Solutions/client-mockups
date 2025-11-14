@@ -6,6 +6,9 @@
     <title>Kelly Enterprises - Rental Manager</title>
     <!-- Railway deployment test -->
 
+    <!-- SheetJS for Excel/CSV parsing -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+
     <script>
         // MockupStore - Session-based data management
         class MockupStore {
@@ -1020,6 +1023,10 @@
                     <span class="sidebar-nav-icon">📋</span>
                     <span>Applications</span>
                 </button>
+                <button class="sidebar-nav-item" data-view="transactions" onclick="switchViewFromSidebar('transactions')">
+                    <span class="sidebar-nav-icon">📊</span>
+                    <span>Import Transactions</span>
+                </button>
             </div>
         </div>
 
@@ -1358,6 +1365,54 @@
 
                 <!-- Pagination Controls -->
                 <div id="applications-pagination" class="pagination" style="margin-top: var(--space-4);"></div>
+            </div>
+        </div>
+
+        <!-- Transaction Import View -->
+        <div id="transactions-view" class="view-content" style="display: none;">
+            <div class="page-header" style="margin-bottom: var(--space-5);">
+                <h2 style="margin-bottom: var(--space-3);">Import Bank Transactions</h2>
+                <p style="color: var(--color-text-light);">Upload a CSV or Excel file containing bank transactions to automatically match with rental payments.</p>
+            </div>
+
+            <!-- Upload Section -->
+            <div class="card" style="margin-bottom: var(--space-5);">
+                <div class="card-header">
+                    <h3>Upload Transactions File</h3>
+                </div>
+                <div class="card-body">
+                    <div style="display: flex; gap: var(--space-4); align-items: center; flex-wrap: wrap;">
+                        <input type="file" id="transaction-file-input" accept=".csv,.xlsx,.xls" style="flex: 1; min-width: 300px;">
+                        <button class="btn btn-primary" onclick="importTransactions()" id="import-btn">
+                            📤 Import & Match
+                        </button>
+                    </div>
+                    <div id="file-info" style="margin-top: var(--space-3); color: var(--color-text-light); font-size: 14px;"></div>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div id="import-stats" style="display: none; margin-bottom: var(--space-5);">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4);">
+                    <div class="stat-card" style="background: white; padding: var(--space-4); border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div style="font-size: 32px; font-weight: 700; color: var(--color-primary);" id="stat-total">0</div>
+                        <div style="color: var(--color-text-light); margin-top: var(--space-2);">Total Transactions</div>
+                    </div>
+                    <div class="stat-card" style="background: white; padding: var(--space-4); border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div style="font-size: 32px; font-weight: 700; color: var(--color-success);" id="stat-matched">0</div>
+                        <div style="color: var(--color-text-light); margin-top: var(--space-2);">Auto-Matched</div>
+                    </div>
+                    <div class="stat-card" style="background: white; padding: var(--space-4); border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div style="font-size: 32px; font-weight: 700; color: var(--color-warning);" id="stat-unmatched">0</div>
+                        <div style="color: var(--color-text-light); margin-top: var(--space-2);">Need Review</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transactions List -->
+            <div id="transactions-list" style="display: none;">
+                <h3 style="margin-bottom: var(--space-4);">Review Transactions</h3>
+                <div id="transactions-container"></div>
             </div>
         </div>
     </div>
@@ -1706,6 +1761,7 @@
         const expensesStore = new MockupStore('kelly-expenses');
         const messagesStore = new MockupStore('kelly-messages');
         const applicationsStore = new MockupStore('kelly-applications');
+        const transactionsStore = new MockupStore('kelly-transactions');
 
         // Rent Log pagination
         let currentPage = 1;
@@ -5002,6 +5058,256 @@ Kelly Enterprises Property Management`;
             updateDashboard();
             renderTable();
         });
+
+        // ========== TRANSACTION IMPORT FUNCTIONS ==========
+
+        function importTransactions() {
+            const fileInput = document.getElementById('transaction-file-input');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select a file to import');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const sheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[sheetName];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+                    if (jsonData.length === 0) {
+                        alert('The file is empty');
+                        return;
+                    }
+
+                    processTransactions(jsonData);
+                } catch (error) {
+                    alert('Error reading file: ' + error.message);
+                }
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        function processTransactions(rawData) {
+            const columns = detectColumns(Object.keys(rawData[0]));
+            const transactions = [];
+            let matched = 0;
+            let unmatched = 0;
+
+            rawData.forEach((row, index) => {
+                const transaction = {
+                    date: parseTransactionDate(row[columns.date]),
+                    amount: parseTransactionAmount(row[columns.amount]),
+                    description: row[columns.description] || '',
+                    reference: row[columns.reference] || '',
+                    rowNumber: index + 2,
+                    rawData: row
+                };
+
+                if (!transaction.date || isNaN(transaction.amount)) {
+                    console.warn(`Skipping invalid row ${index + 2}`);
+                    return;
+                }
+
+                const matches = findMatches(transaction);
+                transaction.matches = matches;
+
+                if (matches.length > 0) matched++;
+                else unmatched++;
+
+                const saved = transactionsStore.add(transaction);
+                transactions.push(saved);
+            });
+
+            displayTransactions(transactions, matched, unmatched);
+        }
+
+        function detectColumns(headers) {
+            const patterns = {
+                date: ['date', 'transaction date', 'trans date', 'posted date', 'dt'],
+                amount: ['amount', 'amt', 'total', 'sum', 'value', 'price', 'payment'],
+                description: ['description', 'desc', 'memo', 'notes', 'details', 'merchant'],
+                reference: ['reference', 'ref', 'check', 'transaction id']
+            };
+
+            const detected = {};
+            headers.forEach(header => {
+                const normalized = header.toLowerCase().trim();
+                Object.keys(patterns).forEach(field => {
+                    patterns[field].forEach(pattern => {
+                        if (normalized.includes(pattern) && !detected[field]) {
+                            detected[field] = header;
+                        }
+                    });
+                });
+            });
+
+            if (!detected.date) detected.date = headers[0];
+            if (!detected.amount) detected.amount = headers[1];
+            if (!detected.description) detected.description = headers[2] || headers[1];
+
+            return detected;
+        }
+
+        function parseTransactionDate(value) {
+            if (!value) return null;
+            if (typeof value === 'number') {
+                const date = new Date((value - 25569) * 86400 * 1000);
+                return date.toISOString().split('T')[0];
+            }
+            const date = new Date(value);
+            return isNaN(date.getTime()) ? null : date.toISOString().split('T')[0];
+        }
+
+        function parseTransactionAmount(value) {
+            if (typeof value === 'number') return value;
+            const cleaned = String(value).replace(/[$,]/g, '');
+            return parseFloat(cleaned);
+        }
+
+        function findMatches(transaction) {
+            const matches = [];
+            const payments = paymentsStore.getAll();
+
+            payments.forEach(payment => {
+                const paymentDate = new Date(payment.date);
+                const transactionDate = new Date(transaction.date);
+                const daysDiff = Math.abs((transactionDate - paymentDate) / (1000 * 60 * 60 * 24));
+
+                if (payment.amount === transaction.amount && daysDiff <= 7 && payment.status !== 'matched') {
+                    const property = propertiesStore.getById(payment.propertyId);
+                    const tenant = tenantsStore.getById(payment.tenantId);
+                    matches.push({
+                        paymentId: payment.id,
+                        property: property?.name || 'Unknown',
+                        tenant: tenant?.name || 'Unknown',
+                        amount: payment.amount,
+                        date: payment.date,
+                        confidence: 0.95,
+                        reason: 'Exact amount + date match'
+                    });
+                }
+            });
+
+            if (matches.length === 0) {
+                payments.forEach(payment => {
+                    const amountDiff = Math.abs(payment.amount - transaction.amount);
+                    if (amountDiff < 10 && payment.status !== 'matched') {
+                        const property = propertiesStore.getById(payment.propertyId);
+                        const tenant = tenantsStore.getById(payment.tenantId);
+                        const tenantName = (tenant?.name || '').toLowerCase();
+                        const description = transaction.description.toLowerCase();
+
+                        if (description.includes(tenantName) || tenantName.includes(description.split(' ')[0])) {
+                            matches.push({
+                                paymentId: payment.id,
+                                property: property?.name || 'Unknown',
+                                tenant: tenant?.name || 'Unknown',
+                                amount: payment.amount,
+                                date: payment.date,
+                                confidence: 0.75,
+                                reason: `Similar amount (±$${amountDiff.toFixed(2)})`
+                            });
+                        }
+                    }
+                });
+            }
+
+            return matches.sort((a, b) => b.confidence - a.confidence);
+        }
+
+        function displayTransactions(transactions, matched, unmatched) {
+            document.getElementById('stat-total').textContent = transactions.length;
+            document.getElementById('stat-matched').textContent = matched;
+            document.getElementById('stat-unmatched').textContent = unmatched;
+            document.getElementById('import-stats').style.display = 'block';
+            document.getElementById('transactions-list').style.display = 'block';
+
+            const container = document.getElementById('transactions-container');
+            container.innerHTML = '';
+            transactions.forEach(t => container.appendChild(createTransactionCard(t)));
+        }
+
+        function createTransactionCard(transaction) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.style.marginBottom = 'var(--space-4)';
+            const hasMatches = transaction.matches && transaction.matches.length > 0;
+
+            card.innerHTML = `
+                <div class="card-body" style="padding: var(--space-4);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-3);">
+                        <div>
+                            <div style="font-size: 24px; font-weight: 700; color: var(--color-primary);">
+                                $${transaction.amount.toFixed(2)}
+                            </div>
+                            <div style="color: var(--color-text-light); margin-top: 4px;">
+                                ${formatTransactionDate(transaction.date)}
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-weight: 500;">${transaction.description}</div>
+                            ${transaction.reference ? `<div style="color: var(--color-text-light); font-size: 14px;">Ref: ${transaction.reference}</div>` : ''}
+                        </div>
+                    </div>
+                    ${hasMatches ? `
+                        <div style="border-top: 1px solid var(--color-border); padding-top: var(--space-3);">
+                            <div style="font-weight: 600; margin-bottom: var(--space-3);">Possible Matches:</div>
+                            ${transaction.matches.map(match => `
+                                <div style="background: ${match.confidence >= 0.9 ? '#e8f5e9' : '#fff9c4'}; padding: var(--space-3); border-radius: 4px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600;">${match.tenant} - ${match.property}</div>
+                                        <div style="font-size: 14px; color: var(--color-text-light); margin-top: 4px;">
+                                            Expected: $${match.amount.toFixed(2)} on ${formatTransactionDate(match.date)}
+                                        </div>
+                                        <div style="font-size: 13px; color: var(--color-text-light); margin-top: 4px;">
+                                            ${match.reason}
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; gap: var(--space-3); align-items: center;">
+                                        <div style="background: white; padding: 6px 12px; border-radius: 4px; font-weight: 600;">
+                                            ${Math.round(match.confidence * 100)}%
+                                        </div>
+                                        <button class="btn btn-success" onclick="approveMatch('${transaction.id}', '${match.paymentId}')" style="padding: 8px 16px;">
+                                            ✓ Approve
+                                        </button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : `
+                        <div style="background: #fff3cd; padding: var(--space-3); border-radius: 4px; text-align: center; color: #856404;">
+                            ⚠️ No automatic matches found
+                        </div>
+                    `}
+                </div>
+            `;
+            return card;
+        }
+
+        function approveMatch(transactionId, paymentId) {
+            paymentsStore.update(paymentId, { status: 'matched', matchedTransactionId: transactionId });
+            transactionsStore.update(transactionId, { matched: true, matchedPaymentId: paymentId });
+
+            const allTransactions = transactionsStore.getAll();
+            const matched = allTransactions.filter(t => t.matched).length;
+            displayTransactions(allTransactions, matched, allTransactions.length - matched);
+
+            renderTable();
+            updateDashboard();
+            alert('✓ Transaction matched successfully!');
+        }
+
+        function formatTransactionDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
     </script>
 </body>
 </html>
