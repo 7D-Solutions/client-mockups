@@ -1,16 +1,3 @@
--- Compatibility view: exposes calibration_due_date and synonyms expected by services
-CREATE OR REPLACE VIEW v_gauge_calibrations AS
-SELECT
-  id,
-  gauge_id,
-  calibration_date,
-  due_date AS calibration_due_date,
-  certificate_number,
-  calibrated_by,
-  calibration_company,
-  passed AS calibration_result,
-  notes AS calibration_notes,
-  document_path,
-  created_at,
-  created_by
-FROM gauge_calibrations;
+version https://git-lfs.github.com/spec/v1
+oid sha256:5f8b378e2869b55b12c3bad3ee5cb4755d9c647909d6d3e4e75421bc2dc3f250
+size 406
