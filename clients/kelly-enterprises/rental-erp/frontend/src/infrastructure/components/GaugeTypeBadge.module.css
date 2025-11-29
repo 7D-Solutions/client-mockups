@@ -1,0 +1,28 @@
+/* GaugeTypeBadge.module.css - Set/Spare indicator badge */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-2);
+  border-radius: 9999px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-normal);
+  text-transform: uppercase;
+  margin-left: var(--space-2);
+  letter-spacing: var(--letter-spacing-wide);
+  height: 18px;
+  vertical-align: middle;
+}
+
+/* Spare: Amber/yellow badge for spare gauges */
+.spare {
+  background: #fef3c7; /* Amber-100 */
+  color: #92400e; /* Amber-900 */
+}
+
+/* Set: Blue badge for gauge sets */
+.set {
+  background: #dbeafe; /* Blue-100 */
+  color: #1e40af; /* Blue-800 */
+}

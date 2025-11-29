@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legacy Frontend Buttons Visual Reference</title>
+    
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+        }
+        
+        h2 {
+            color: #555;
+            margin-top: 30px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        
+        h3 {
+            color: #666;
+            margin-top: 20px;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .button-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .label {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+        
+        /* Base button styles from legacy system */
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        button:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        /* Legacy button classes */
+        .checkout-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .checkout-btn:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+        
+        .checkin-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .checkin-btn:hover:not(:disabled) {
+            background-color: #218838;
+        }
+        
+        .transfer-btn {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .transfer-btn:hover:not(:disabled) {
+            background-color: #138496;
+        }
+        
+        .edit-btn {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .edit-btn:hover:not(:disabled) {
+            background-color: #138496;
+        }
+        
+        .save-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .save-btn:hover:not(:disabled) {
+            background-color: #218838;
+        }
+        
+        .cancel-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .cancel-btn:hover:not(:disabled) {
+            background-color: #5a6268;
+        }
+        
+        .danger-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .danger-btn:hover:not(:disabled) {
+            background-color: #c82333;
+        }
+        
+        .warning-btn {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .warning-btn:hover:not(:disabled) {
+            background-color: #e0a800;
+        }
+        
+        .pending-btn {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .status-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .status-btn.pending {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .login-btn {
+            background-color: #007bff;
+            color: white;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+        }
+        
+        .logout-btn {
+            background-color: #dc3545;
+            color: white;
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+        
+        .nav-tab {
+            background-color: #e9ecef;
+            color: #495057;
+            border: 1px solid #dee2e6;
+            padding: 10px 20px;
+            border-radius: 0;
+        }
+        
+        .nav-tab.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        
+        .nav-tab:hover:not(.active) {
+            background-color: #dee2e6;
+        }
+        
+        /* Transfer receive button special styling */
+        .transfer-receive-btn {
+            background-color: #17a2b8;
+            color: white;
+            position: relative;
+        }
+        
+        .badge {
+            background-color: #dc3545;
+            color: white;
+            border-radius: 10px;
+            padding: 2px 6px;
+            font-size: 11px;
+            margin-left: 5px;
+        }
+        
+        /* Icon-only buttons */
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #666;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .close-btn:hover {
+            color: #000;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+        }
+        
+        /* Loading state */
+        .loading {
+            opacity: 0.7;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #333;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .note {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+        
+        .divider {
+            height: 1px;
+            background-color: #e0e0e0;
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Legacy Frontend Buttons - Visual Reference</h1>
+        <p>This document shows exactly how buttons appear in the Fire-Proof ERP legacy frontend with their icons and styling.</p>
+        
+        <h2>Authentication & System</h2>
+        <div class="button-group">
+            <div class="button-item">
+                <button class="login-btn">Sign In</button>
+                <span class="label">Login Button</span>
+            </div>
+            <div class="button-item">
+                <button class="login-btn loading">
+                    <span class="spinner"></span>
+                    Signing in...
+                </button>
+                <span class="label">Login Loading State</span>
+            </div>
+            <div class="button-item">
+                <button class="logout-btn">Logout</button>
+                <span class="label">Logout Button</span>
+            </div>
+        </div>
+        
+        <h2>Primary Gauge Actions</h2>
+        <div class="button-group">
+            <div class="button-item">
+                <button class="edit-btn">
+                    <i class="fas fa-edit"></i>
+                    Edit
+                </button>
+                <span class="label">Edit Gauge</span>
+            </div>
+            <div class="button-item">
+                <button class="checkout-btn">
+                    <i class="fas fa-upload"></i>
+                    Checkout
+                </button>
+                <span class="label">Check Out Gauge</span>
+            </div>
+            <div class="button-item">
+                <button class="checkin-btn">
+                    <i class="fas fa-download"></i>
+                    Checkin
+                </button>
+                <span class="label">Check In Gauge</span>
+            </div>
+            <div class="button-item">
+                <button class="transfer-btn">
+                    <i class="fas fa-exchange-alt"></i>
+                    Transfer
+                </button>
+                <span class="label">Transfer Gauge</span>
+            </div>
+        </div>
+        
+        <h2>Status Buttons (Disabled States)</h2>
+        <div class="button-group">
+            <div class="button-item">
+                <button class="pending-btn" disabled>
+                    <i class="fas fa-clipboard-check"></i>
+                    Pending QC
+                </button>
+                <span class="label">QC Status</span>
+            </div>
+            <div class="button-item">
+                <button class="danger-btn" disabled>
+                    <i class="fas fa-ban"></i>
+                    Out of Service
+                </button>
+                <span class="label">Service Status</span>
+            </div>
+            <div class="button-item">
+                <button class="danger-btn" disabled>
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Calibration Due
+                </button>
+                <span class="label">Calibration Status</span>
+            </div>
+            <div class="button-item">
+                <button class="status-btn pending" disabled>
+                    <i class="fas fa-unlock-alt"></i>
+                    Pending Unseal
+                </button>
+                <span class="label">Unseal Status</span>
+            </div>
+        </div>
+        
+        <h2>Transfer Workflow</h2>
+        <div class="button-group">
+            <div class="button-item">
+                <button class="transfer-receive-btn">
+                    <i class="fas fa-inbox"></i>
+                    Pending Transfers
+                    <span class="badge">3</span>
+                </button>
+                <span class="label">Transfer Notifications</span>
+            </div>
+            <div class="button-item">
+                <button class="save-btn">
+                    <i class="fas fa-check"></i>
+                    Accept Transfer
+                </button>
+                <span class="label">Accept Transfer</span>
+            </div>
+            <div class="button-item">
+                <button class="danger-btn">
+                    <i class="fas fa-times"></i>
+                    Reject Transfer
+                </button>
+                <span class="label">Reject Transfer</span>
+            </div>
+            <div class="button-item">
+                <button class="cancel-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Go Back
+                </button>
+                <span class="label">Go Back</span>
+            </div>
+        </div>
+        
+        <h2>Modal Action Buttons</h2>
+        <div class="button-group">
+            <div class="button-item">
+                <button class="save-btn">
+                    <i class="fas fa-save"></i>
+                    Save Changes
+                </button>
+                <span class="label">Save Button</span>
+            </div>
+            <div class="button-item">
+                <button class="save-btn">
+                    <i class="fas fa-plus"></i>
+                    Create Gauge
+                </button>
+                <span class="label">Create Button</span>
+            </div>
+            <div class="button-item">
+                <button class="cancel-btn">Cancel</button>
+                <span class="label">Cancel Button</span>
+            </div>
+            <div class="button-item">
+                <button class="close-btn">×</button>
+                <span class="label">Close Modal</span>
+            </div>
+        </div>
+        
+        <h2>Confirmation Dialog Buttons</h2>
+        <div class="button-group">
+            <div class="button-item">
+                <button class="save-btn">
+                    <i class="fas fa-check"></i>
+                    Yes, Check Out
+                </button>
+                <span class="label">Confirm Checkout</span>
+            </div>
+            <div class="button-item">
+                <button class="save-btn">
+                    <i class="fas fa-check"></i>
+                    Yes, Check-in
+                </button>
+                <span class="label">Confirm Checkin</span>
+            </div>
+            <div class="button-item">
+                <button class="save-btn">
+                    <i class="fas fa-check"></i>
+                    Yes, Save Changes
+                </button>
+                <span class="label">Confirm Save</span>
+            </div>
+            <div class="button-item">
+                <button class="danger-btn">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                </button>
+                <span class="label">Cancel Action</span>
+            </div>
+        </div>
+        
+        <h2>Admin Panel Actions</h2>
+        <div class="button-group">
+            <div class="button-item">
+                <button class="save-btn">
+                    <i class="fas fa-user-plus"></i>
+                    Add User
+                </button>
+                <span class="label">Add New User</span>
+            </div>
+            <div class="button-item">
+                <button class="edit-btn">
+                    <i class="fas fa-edit"></i>
+                    Edit User
+                </button>
+                <span class="label">Edit User</span>
+            </div>
+            <div class="button-item">
+                <button class="warning-btn">
+                    <i class="fas fa-key"></i>
+                    Reset Password
+                </button>
+                <span class="label">Reset Password</span>
+            </div>
+            <div class="button-item">
+                <button class="danger-btn">
+                    <i class="fas fa-trash"></i>
+                    Delete User
+                </button>
+                <span class="label">Delete User</span>
+            </div>
+        </div>
+        
+        <h2>System Operations</h2>
+        <div class="button-group">
+            <div class="button-item">
+                <button class="save-btn">
+                    <i class="fas fa-database"></i>
+                    Database Backup
+                </button>
+                <span class="label">Backup Database</span>
+            </div>
+            <div class="button-item">
+                <button class="edit-btn">
+                    <i class="fas fa-download"></i>
+                    Export Audit Log
+                </button>
+                <span class="label">Export Logs</span>
+            </div>
+            <div class="button-item">
+                <button class="warning-btn">
+                    <i class="fas fa-broom"></i>
+                    Clear Cache
+                </button>
+                <span class="label">Clear Cache</span>
+            </div>
+            <div class="button-item">
+                <button class="save-btn">
+                    <i class="fas fa-cog"></i>
+                    Save Settings
+                </button>
+                <span class="label">Save Settings</span>
+            </div>
+        </div>
+        
+        <h2>Report Generation</h2>
+        <div class="button-group">
+            <div class="button-item">
+                <button class="save-btn">
+                    <i class="fas fa-chart-bar"></i>
+                    Generate Report
+                </button>
+                <span class="label">Generate Report</span>
+            </div>
+            <div class="button-item">
+                <button class="edit-btn">
+                    <i class="fas fa-file-download"></i>
+                    Export PDF
+                </button>
+                <span class="label">Export as PDF</span>
+            </div>
+            <div class="button-item">
+                <button class="edit-btn">
+                    <i class="fas fa-eye"></i>
+                    View Report
+                </button>
+                <span class="label">View Report</span>
+            </div>
+        </div>
+        
+        <h2>Navigation Tabs</h2>
+        <div class="button-group">
+            <div class="button-item">
+                <button class="nav-tab active">
+                    All
+                    <span class="badge" style="background: white; color: #007bff;">45</span>
+                </button>
+                <span class="label">Active Tab with Count</span>
+            </div>
+            <div class="button-item">
+                <button class="nav-tab">
+                    Thread Gauges
+                    <span class="badge" style="background: #6c757d; color: white;">12</span>
+                </button>
+                <span class="label">Inactive Tab</span>
+            </div>
+            <div class="button-item">
+                <button class="nav-tab">
+                    Large Equipment
+                    <span class="badge" style="background: #6c757d; color: white;">8</span>
+                </button>
+                <span class="label">Equipment Tab</span>
+            </div>
+        </div>
+        
+        <h2>User Dashboard Tabs</h2>
+        <div class="button-group">
+            <div class="button-item">
+                <button class="nav-tab active">My Personal Tools</button>
+                <span class="label">Personal Tools Tab</span>
+            </div>
+            <div class="button-item">
+                <button class="nav-tab">Items I've Checked Out</button>
+                <span class="label">Checked Out Tab</span>
+            </div>
+            <div class="button-item">
+                <button class="nav-tab">Pending Transfers</button>
+                <span class="label">Transfers Tab</span>
+            </div>
+        </div>
+        
+        <h2>QC Approval Actions</h2>
+        <div class="button-group">
+            <div class="button-item">
+                <button class="save-btn">
+                    <i class="fas fa-check-circle"></i>
+                    Approve
+                </button>
+                <span class="label">Approve Single</span>
+            </div>
+            <div class="button-item">
+                <button class="danger-btn">
+                    <i class="fas fa-times-circle"></i>
+                    Reject
+                </button>
+                <span class="label">Reject Single</span>
+            </div>
+            <div class="button-item">
+                <button class="save-btn">
+                    <i class="fas fa-check-double"></i>
+                    Bulk Approve
+                </button>
+                <span class="label">Approve Multiple</span>
+            </div>
+            <div class="button-item">
+                <button class="danger-btn">
+                    <i class="fas fa-times"></i>
+                    Bulk Reject
+                </button>
+                <span class="label">Reject Multiple</span>
+            </div>
+        </div>
+        
+        <h2>Loading States</h2>
+        <div class="button-group">
+            <div class="button-item">
+                <button class="save-btn loading" disabled>
+                    <span class="spinner"></span>
+                    Accepting...
+                </button>
+                <span class="label">Accept Loading</span>
+            </div>
+            <div class="button-item">
+                <button class="danger-btn loading" disabled>
+                    <span class="spinner"></span>
+                    Rejecting...
+                </button>
+                <span class="label">Reject Loading</span>
+            </div>
+            <div class="button-item">
+                <button class="save-btn loading" disabled>
+                    <span class="spinner"></span>
+                    Saving...
+                </button>
+                <span class="label">Save Loading</span>
+            </div>
+        </div>
+        
+        <h2>Special Features</h2>
+        <div class="button-group">
+            <div class="button-item">
+                <button class="warning-btn">
+                    <i class="fas fa-unlock"></i>
+                    Request to Unseal
+                </button>
+                <span class="label">Unseal Request</span>
+            </div>
+            <div class="button-item">
+                <button class="edit-btn">
+                    <i class="fas fa-certificate"></i>
+                    View Certificate
+                </button>
+                <span class="label">View Certificate</span>
+            </div>
+            <div class="button-item">
+                <button class="save-btn">
+                    <i class="fas fa-file-download"></i>
+                    Download Certificate
+                </button>
+                <span class="label">Download Certificate</span>
+            </div>
+        </div>
+        
+        <div class="divider"></div>
+        
+        <div class="note">
+            <h3>📋 Implementation Notes</h3>
+            <ul>
+                <li>All icons use FontAwesome 6.0 (fas/far classes)</li>
+                <li>Icons consistently appear before text with 8px gap</li>
+                <li>Loading states show a spinner and change text</li>
+                <li>Disabled buttons have 0.6 opacity and no hover effects</li>
+                <li>Badge counts appear inline for tabs and notifications</li>
+                <li>Color coding: Blue (primary actions), Green (save/success), Red (danger/delete), Teal (edit/info), Gray (cancel/secondary)</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

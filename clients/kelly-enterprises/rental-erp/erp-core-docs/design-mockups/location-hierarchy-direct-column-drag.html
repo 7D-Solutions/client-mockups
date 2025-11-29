@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Hierarchy - Direct Column Drag</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            padding: 16px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .info-banner {
+            padding: 16px 24px;
+            background: #e3f2fd;
+            border-bottom: 1px solid #bbdefb;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .info-icon {
+            font-size: 20px;
+        }
+
+        .info-text {
+            font-size: 14px;
+            color: #1565c0;
+        }
+
+        .info-text strong {
+            font-weight: 600;
+        }
+
+        .controls {
+            padding: 12px 24px;
+            background: #fafafa;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #fafafa;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            user-select: none;
+        }
+
+        th.center {
+            text-align: center;
+        }
+
+        /* Draggable columns */
+        th.draggable {
+            cursor: move;
+            transition: all 0.2s;
+        }
+
+        th.draggable:hover {
+            background: #f0f0f0;
+        }
+
+        th.draggable:active {
+            cursor: grabbing;
+        }
+
+        th.dragging {
+            opacity: 0.4;
+            background: #e3f2fd;
+        }
+
+        th.drag-over-left {
+            border-left: 3px solid #1976d2;
+        }
+
+        th.drag-over-right {
+            border-right: 3px solid #1976d2;
+        }
+
+        /* Drag handle indicator */
+        th.draggable::before {
+            content: '⋮⋮';
+            position: absolute;
+            left: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: #999;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        th.draggable:hover::before {
+            opacity: 1;
+        }
+
+        /* Locked columns */
+        th.locked {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        th.locked::after {
+            content: '🔒';
+            font-size: 10px;
+            margin-left: 4px;
+            opacity: 0.5;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        td {
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        td.center {
+            text-align: center;
+        }
+
+        .item-id {
+            font-weight: 600;
+            color: #1976d2;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .location-code {
+            font-weight: 600;
+            color: #1976d2;
+            cursor: pointer;
+        }
+
+        .location-code:hover {
+            text-decoration: underline;
+        }
+
+        .column-small {
+            width: 100px;
+        }
+
+        .column-medium {
+            width: 130px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Inventory Dashboard</h1>
+        </div>
+
+        <div class="info-banner">
+            <div class="info-icon">👆</div>
+            <div class="info-text">
+                <strong>Drag column headers to reorder!</strong> Grab any column header (except Location which is locked) and drag it left or right to change the order.
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="pagination">
+                <span style="font-size: 14px; color: #666;">1 of 2</span>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr id="tableHeader">
+                    <th>ITEM ID</th>
+                    <th>ITEM NAME</th>
+                    <th class="center">TYPE</th>
+                    <th class="center column-medium draggable" draggable="true" data-col="facility">FACILITY</th>
+                    <th class="center column-medium draggable" draggable="true" data-col="building">BUILDING</th>
+                    <th class="center column-medium draggable" draggable="true" data-col="zone">ZONE</th>
+                    <th class="center column-small locked" data-col="location">LOCATION</th>
+                    <th class="center">QTY</th>
+                    <th class="center">LAST MOVED</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr>
+                    <td><span class="item-id">SP-0001</span></td>
+                    <td>NPT 3/4-14 RING GO</td>
+                    <td class="center"><span class="badge">Gauge</span></td>
+                    <td class="center" data-col="facility">Main Facility</td>
+                    <td class="center" data-col="building">Building 1</td>
+                    <td class="center" data-col="zone">QC</td>
+                    <td class="center" data-col="location"><span class="location-code">L1</span></td>
+                    <td class="center">1</td>
+                    <td class="center">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SP-0002</span></td>
+                    <td>UN 7/8-9 RING GO</td>
+                    <td class="center"><span class="badge">Gauge</span></td>
+                    <td class="center" data-col="facility">Main Facility</td>
+                    <td class="center" data-col="building">Building 1</td>
+                    <td class="center" data-col="zone">QC</td>
+                    <td class="center" data-col="location"><span class="location-code">L1</span></td>
+                    <td class="center">1</td>
+                    <td class="center">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SP-0003</span></td>
+                    <td>UN 7/16-14 PLUG GO</td>
+                    <td class="center"><span class="badge">Gauge</span></td>
+                    <td class="center" data-col="facility">Main Facility</td>
+                    <td class="center" data-col="building">Building 1</td>
+                    <td class="center" data-col="zone">Shipping</td>
+                    <td class="center" data-col="location"><span class="location-code">E2</span></td>
+                    <td class="center">1</td>
+                    <td class="center">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SET-0001</span></td>
+                    <td>ACME 1-1/4-5 RING GO</td>
+                    <td class="center"><span class="badge">Gauge</span></td>
+                    <td class="center" data-col="facility">Main Facility</td>
+                    <td class="center" data-col="building">Building 2</td>
+                    <td class="center" data-col="zone">Tool Crib</td>
+                    <td class="center" data-col="location"><span class="location-code">C4</span></td>
+                    <td class="center">1</td>
+                    <td class="center">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SET-0002</span></td>
+                    <td>NPT 1/2-14 RING GO</td>
+                    <td class="center"><span class="badge">Gauge</span></td>
+                    <td class="center" data-col="facility">Main Facility</td>
+                    <td class="center" data-col="building">Building 1</td>
+                    <td class="center" data-col="zone">Bulk Storage</td>
+                    <td class="center" data-col="location"><span class="location-code">A5</span></td>
+                    <td class="center">1</td>
+                    <td class="center">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SET-0003</span></td>
+                    <td>ACME 3/4-10 PLUG GO</td>
+                    <td class="center"><span class="badge">Gauge</span></td>
+                    <td class="center" data-col="facility">Main Facility</td>
+                    <td class="center" data-col="building">Building 2</td>
+                    <td class="center" data-col="zone">Shop Floor</td>
+                    <td class="center" data-col="location"><span class="location-code">F3</span></td>
+                    <td class="center">1</td>
+                    <td class="center">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SP-0004</span></td>
+                    <td>NPT 1-11.5 RING GO</td>
+                    <td class="center"><span class="badge">Gauge</span></td>
+                    <td class="center" data-col="facility">Main Facility</td>
+                    <td class="center" data-col="building">Building 1</td>
+                    <td class="center" data-col="zone">QC</td>
+                    <td class="center" data-col="location"><span class="location-code">L2</span></td>
+                    <td class="center">1</td>
+                    <td class="center">11/4/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SP-0005</span></td>
+                    <td>UN 5/8-18 PLUG GO</td>
+                    <td class="center"><span class="badge">Gauge</span></td>
+                    <td class="center" data-col="facility">Main Facility</td>
+                    <td class="center" data-col="building">Building 1</td>
+                    <td class="center" data-col="zone">Receiving</td>
+                    <td class="center" data-col="location"><span class="location-code">D3</span></td>
+                    <td class="center">1</td>
+                    <td class="center">11/4/2025</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let draggedColumn = null;
+        let draggedIndex = null;
+
+        const draggableHeaders = document.querySelectorAll('th.draggable');
+
+        draggableHeaders.forEach((header, index) => {
+            header.addEventListener('dragstart', handleDragStart);
+            header.addEventListener('dragend', handleDragEnd);
+            header.addEventListener('dragover', handleDragOver);
+            header.addEventListener('dragleave', handleDragLeave);
+            header.addEventListener('drop', handleDrop);
+        });
+
+        function handleDragStart(e) {
+            draggedColumn = this;
+            draggedIndex = Array.from(this.parentNode.children).indexOf(this);
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            document.querySelectorAll('th').forEach(th => {
+                th.classList.remove('drag-over-left', 'drag-over-right');
+            });
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+
+            if (this === draggedColumn || this.classList.contains('locked')) {
+                return false;
+            }
+
+            e.dataTransfer.dropEffect = 'move';
+
+            // Determine which side to show the drop indicator
+            const rect = this.getBoundingClientRect();
+            const midpoint = rect.left + rect.width / 2;
+
+            this.classList.remove('drag-over-left', 'drag-over-right');
+
+            if (e.clientX < midpoint) {
+                this.classList.add('drag-over-left');
+            } else {
+                this.classList.add('drag-over-right');
+            }
+
+            return false;
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over-left', 'drag-over-right');
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+
+            if (this === draggedColumn || this.classList.contains('locked')) {
+                return false;
+            }
+
+            const dropIndex = Array.from(this.parentNode.children).indexOf(this);
+            const rect = this.getBoundingClientRect();
+            const midpoint = rect.left + rect.width / 2;
+            const insertBefore = e.clientX < midpoint;
+
+            // Move column in header
+            const headerRow = document.getElementById('tableHeader');
+            if (insertBefore) {
+                headerRow.insertBefore(draggedColumn, this);
+            } else {
+                headerRow.insertBefore(draggedColumn, this.nextSibling);
+            }
+
+            // Move corresponding cells in all body rows
+            const colId = draggedColumn.dataset.col;
+            const targetColId = this.dataset.col;
+
+            const bodyRows = document.querySelectorAll('#tableBody tr');
+            bodyRows.forEach(row => {
+                const draggedCell = row.querySelector(`td[data-col="${colId}"]`);
+                const targetCell = row.querySelector(`td[data-col="${targetColId}"]`);
+
+                if (draggedCell && targetCell) {
+                    if (insertBefore) {
+                        row.insertBefore(draggedCell, targetCell);
+                    } else {
+                        row.insertBefore(draggedCell, targetCell.nextSibling);
+                    }
+                }
+            });
+
+            // Save column order
+            saveColumnOrder();
+
+            return false;
+        }
+
+        function saveColumnOrder() {
+            const headerRow = document.getElementById('tableHeader');
+            const order = Array.from(headerRow.children)
+                .filter(th => th.dataset.col)
+                .map(th => th.dataset.col);
+            localStorage.setItem('columnOrder', JSON.stringify(order));
+        }
+
+        function loadColumnOrder() {
+            const saved = localStorage.getItem('columnOrder');
+            if (saved) {
+                const order = JSON.parse(saved);
+                const headerRow = document.getElementById('tableHeader');
+
+                // Get reference points (first 3 fixed columns and last 2 fixed columns)
+                const fixedStart = Array.from(headerRow.children).slice(0, 3);
+                const fixedEnd = Array.from(headerRow.children).slice(-2);
+
+                // Reorder dynamic columns
+                order.forEach(colId => {
+                    const header = headerRow.querySelector(`th[data-col="${colId}"]`);
+                    if (header) {
+                        headerRow.insertBefore(header, fixedEnd[0]);
+                    }
+                });
+
+                // Reorder body cells to match
+                const bodyRows = document.querySelectorAll('#tableBody tr');
+                bodyRows.forEach(row => {
+                    const fixedStartCells = Array.from(row.children).slice(0, 3);
+                    const fixedEndCells = Array.from(row.children).slice(-2);
+
+                    order.forEach(colId => {
+                        const cell = row.querySelector(`td[data-col="${colId}"]`);
+                        if (cell) {
+                            row.insertBefore(cell, fixedEndCells[0]);
+                        }
+                    });
+                });
+            }
+        }
+
+        // Load saved order on page load
+        window.addEventListener('DOMContentLoaded', loadColumnOrder);
+    </script>
+</body>
+</html>

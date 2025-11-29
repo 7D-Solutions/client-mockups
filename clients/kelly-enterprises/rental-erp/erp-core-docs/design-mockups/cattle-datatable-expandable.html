@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cattle Management - DataTable View</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-primary: #007bff;
+            --color-primary-dark: #0056b3;
+            --color-success: #28a745;
+            --color-warning: #ffc107;
+            --color-danger: #dc3545;
+            --color-border: #dee2e6;
+            --color-border-light: #e9ecef;
+            --color-bg-light: #f8f9fa;
+            --color-text: #333;
+            --color-text-light: #666;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 20px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            color: var(--color-text);
+        }
+
+        .page-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: var(--space-5);
+        }
+
+        .page-header {
+            background: white;
+            padding: var(--space-5);
+            border-radius: 8px;
+            margin-bottom: var(--space-5);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .page-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-4);
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .btn-success {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #1e7e34;
+        }
+
+        .filters-section {
+            display: flex;
+            gap: var(--space-3);
+            flex-wrap: wrap;
+            padding-top: var(--space-4);
+            border-top: 1px solid var(--color-border-light);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .filter-input,
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .datatable-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .datatable-toolbar {
+            padding: var(--space-4);
+            border-bottom: 1px solid var(--color-border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--color-bg-light);
+        }
+
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .record-count {
+            font-size: 14px;
+            color: var(--color-text-light);
+            font-weight: 500;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 5px;
+            background: white;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            padding: 3px;
+        }
+
+        .view-btn {
+            padding: 6px 12px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--color-text-light);
+            transition: all 0.2s;
+        }
+
+        .view-btn.active {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .datatable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .datatable thead {
+            background: var(--color-bg-light);
+            border-bottom: 2px solid var(--color-border);
+        }
+
+        .datatable th {
+            padding: var(--space-3) var(--space-4);
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--color-text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .datatable th.sortable {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .datatable th.sortable:hover {
+            background: #e9ecef;
+        }
+
+        .datatable th .sort-icon {
+            margin-left: 5px;
+            opacity: 0.3;
+        }
+
+        .datatable th.sorted .sort-icon {
+            opacity: 1;
+        }
+
+        .datatable tbody tr {
+            border-bottom: 1px solid var(--color-border-light);
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .datatable tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .datatable tbody tr.expanded {
+            background: #e7f3ff;
+        }
+
+        .datatable tbody tr.expanded:hover {
+            background: #d4e9ff;
+        }
+
+        .datatable td {
+            padding: var(--space-3) var(--space-4);
+            font-size: 14px;
+            color: var(--color-text);
+        }
+
+        .expand-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+            transition: transform 0.2s;
+            font-size: 16px;
+        }
+
+        .expanded .expand-icon {
+            transform: rotate(90deg);
+        }
+
+        .cow-id {
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pregnant {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-dry {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-sold {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        .expanded-row {
+            display: none;
+        }
+
+        .expanded-row.show {
+            display: table-row;
+        }
+
+        .expanded-content {
+            padding: 0;
+            background: #f8f9fa;
+            border-top: 2px solid var(--color-primary);
+        }
+
+        .expanded-inner {
+            padding: var(--space-5);
+        }
+
+        .history-tabs {
+            display: flex;
+            gap: var(--space-2);
+            margin-bottom: var(--space-4);
+            border-bottom: 2px solid var(--color-border);
+        }
+
+        .history-tab {
+            padding: var(--space-3) var(--space-5);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-text-light);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            position: relative;
+            bottom: -2px;
+        }
+
+        .history-tab:hover {
+            color: var(--color-primary);
+        }
+
+        .history-tab.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-5);
+            padding: var(--space-4);
+            background: white;
+            border-radius: 6px;
+        }
+
+        .summary-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .summary-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--color-text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .summary-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .history-table thead {
+            background: #f8f9fa;
+        }
+
+        .history-table th {
+            padding: var(--space-3);
+            text-align: left;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--color-text);
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--color-border);
+        }
+
+        .history-table td {
+            padding: var(--space-3);
+            font-size: 13px;
+            border-bottom: 1px solid var(--color-border-light);
+        }
+
+        .history-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .gender-badge {
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .gender-male {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .gender-female {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .activity-type {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+        }
+
+        .activity-icon {
+            font-size: 16px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--space-5);
+            color: var(--color-text-light);
+            font-style: italic;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-4);
+            border-top: 1px solid var(--color-border-light);
+            background: var(--color-bg-light);
+        }
+
+        .pagination-info {
+            font-size: 14px;
+            color: var(--color-text-light);
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        .page-btn {
+            padding: 6px 12px;
+            border: 1px solid var(--color-border);
+            background: white;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-btn.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .highlight-metric {
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        .action-link {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .action-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-header-top">
+                <h1 class="page-title">🐄 Cattle Management</h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary">📊 Export Report</button>
+                    <button class="btn btn-success">➕ Add New Cow</button>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-section">
+                <div class="filter-group">
+                    <label class="filter-label">Search</label>
+                    <input type="text" class="filter-input" placeholder="Tag ID, Breed..." style="width: 250px;">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Status</label>
+                    <select class="filter-select" style="width: 150px;">
+                        <option>All Status</option>
+                        <option>Active</option>
+                        <option>Pregnant</option>
+                        <option>Dry</option>
+                        <option>Sold</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Breed</label>
+                    <select class="filter-select" style="width: 150px;">
+                        <option>All Breeds</option>
+                        <option>Angus</option>
+                        <option>Hereford</option>
+                        <option>Charolais</option>
+                        <option>Simmental</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Age Range</label>
+                    <select class="filter-select" style="width: 130px;">
+                        <option>All Ages</option>
+                        <option>0-2 years</option>
+                        <option>2-5 years</option>
+                        <option>5+ years</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- DataTable Container -->
+        <div class="datatable-container">
+            <!-- Toolbar -->
+            <div class="datatable-toolbar">
+                <div class="toolbar-left">
+                    <span class="record-count">Showing <strong>32</strong> cows</span>
+                </div>
+                <div class="view-toggle">
+                    <button class="view-btn active">📋 Table</button>
+                    <button class="view-btn">📇 Cards</button>
+                    <button class="view-btn">📊 Analytics</button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-wrapper">
+                <table class="datatable">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;"></th>
+                            <th class="sortable">Tag ID <span class="sort-icon">▼</span></th>
+                            <th class="sortable">Breed <span class="sort-icon">▼</span></th>
+                            <th class="sortable">Age <span class="sort-icon">▼</span></th>
+                            <th class="sortable">Weight <span class="sort-icon">▼</span></th>
+                            <th>Status</th>
+                            <th class="sortable">Total Calves <span class="sort-icon">▼</span></th>
+                            <th class="sortable">Last Calving <span class="sort-icon">▼</span></th>
+                            <th>Current Calf</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Row 1: Cow #A-1247 -->
+                        <tr class="cow-row" data-cow-id="A-1247">
+                            <td><span class="expand-icon">▶</span></td>
+                            <td><span class="cow-id">#A-1247</span></td>
+                            <td>Black Angus</td>
+                            <td>4.2 years</td>
+                            <td>1,280 lbs</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td><strong>5</strong></td>
+                            <td>Feb 12, 2024</td>
+                            <td><a href="#" class="action-link">#A-1247-C5</a></td>
+                            <td><a href="#" class="action-link">View</a> | <a href="#" class="action-link">Edit</a></td>
+                        </tr>
+                        <tr class="expanded-row" data-cow-id="A-1247">
+                            <td colspan="10" class="expanded-content">
+                                <div class="expanded-inner">
+                                    <!-- Summary -->
+                                    <div class="summary-grid">
+                                        <div class="summary-item">
+                                            <span class="summary-label">Purchase Date</span>
+                                            <span class="summary-value">May 10, 2020</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Color/Markings</span>
+                                            <span class="summary-value">Solid Black</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Avg Weaning Wt</span>
+                                            <span class="summary-value highlight-metric">542 lbs</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Body Condition</span>
+                                            <span class="summary-value">6/9 (Good)</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Dam ID</span>
+                                            <span class="summary-value">#A-0892</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Sire ID</span>
+                                            <span class="summary-value">#BULL-027</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tabs -->
+                                    <div class="history-tabs">
+                                        <button class="history-tab active" data-tab="calves">📊 Calf History (5)</button>
+                                        <button class="history-tab" data-tab="work">🏥 Work History (23)</button>
+                                    </div>
+
+                                    <!-- Calf History Tab -->
+                                    <div class="tab-content active" data-tab="calves">
+                                        <table class="history-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Calf ID</th>
+                                                    <th>Birth Date</th>
+                                                    <th>Age</th>
+                                                    <th>Gender</th>
+                                                    <th>Birth Weight</th>
+                                                    <th>Current/Weaning Weight</th>
+                                                    <th>Weaning Age</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td><strong>#A-1247-C5</strong></td>
+                                                    <td>Feb 12, 2024</td>
+                                                    <td>9 months</td>
+                                                    <td><span class="gender-badge gender-male">Male</span></td>
+                                                    <td>82 lbs</td>
+                                                    <td><strong>387 lbs</strong> (current)</td>
+                                                    <td>—</td>
+                                                    <td><span class="status-badge status-active">Nursing</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>#A-1247-C4</strong></td>
+                                                    <td>Mar 05, 2023</td>
+                                                    <td>1.7 years</td>
+                                                    <td><span class="gender-badge gender-female">Female</span></td>
+                                                    <td>78 lbs</td>
+                                                    <td>548 lbs</td>
+                                                    <td>7.5 months</td>
+                                                    <td><span class="status-badge status-active">Weaned - Kept</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>#A-1247-C3</strong></td>
+                                                    <td>Feb 18, 2022</td>
+                                                    <td>2.7 years</td>
+                                                    <td><span class="gender-badge gender-male">Male</span></td>
+                                                    <td>85 lbs</td>
+                                                    <td>562 lbs</td>
+                                                    <td>8 months</td>
+                                                    <td><span class="status-badge status-sold">Sold</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>#A-1247-C2</strong></td>
+                                                    <td>Mar 22, 2021</td>
+                                                    <td>3.6 years</td>
+                                                    <td><span class="gender-badge gender-female">Female</span></td>
+                                                    <td>76 lbs</td>
+                                                    <td>535 lbs</td>
+                                                    <td>7 months</td>
+                                                    <td><span class="status-badge status-active">Weaned - Heifer</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>#A-1247-C1</strong></td>
+                                                    <td>Apr 01, 2020</td>
+                                                    <td>4.6 years</td>
+                                                    <td><span class="gender-badge gender-male">Male</span></td>
+                                                    <td>80 lbs</td>
+                                                    <td>540 lbs</td>
+                                                    <td>8.5 months</td>
+                                                    <td><span class="status-badge status-sold">Sold</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- Work History Tab -->
+                                    <div class="tab-content" data-tab="work">
+                                        <table class="history-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Activity Type</th>
+                                                    <th>Details</th>
+                                                    <th>Administered By</th>
+                                                    <th>Notes</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Nov 8, 2024</td>
+                                                    <td>
+                                                        <span class="activity-type">
+                                                            <span class="activity-icon">💉</span>
+                                                            Vaccination
+                                                        </span>
+                                                    </td>
+                                                    <td>Cattle Master 4 (IBR, BVD, PI3, BRSV)</td>
+                                                    <td>Dr. Sarah Williams</td>
+                                                    <td>Annual vaccination, no reactions</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Nov 5, 2024</td>
+                                                    <td>
+                                                        <span class="activity-type">
+                                                            <span class="activity-icon">🐛</span>
+                                                            Deworming
+                                                        </span>
+                                                    </td>
+                                                    <td>Ivermectin Pour-On (58ml)</td>
+                                                    <td>John Smith</td>
+                                                    <td>Fall deworming program</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Oct 15, 2024</td>
+                                                    <td>
+                                                        <span class="activity-type">
+                                                            <span class="activity-icon">⚖️</span>
+                                                            Weighing
+                                                        </span>
+                                                    </td>
+                                                    <td>Weight: 1,280 lbs</td>
+                                                    <td>John Smith</td>
+                                                    <td>Monthly weight check, +15 lbs</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Sep 20, 2024</td>
+                                                    <td>
+                                                        <span class="activity-type">
+                                                            <span class="activity-icon">🦶</span>
+                                                            Hoof Trim
+                                                        </span>
+                                                    </td>
+                                                    <td>Routine hoof maintenance</td>
+                                                    <td>Mike Johnson</td>
+                                                    <td>All hooves in good condition</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Aug 12, 2024</td>
+                                                    <td>
+                                                        <span class="activity-type">
+                                                            <span class="activity-icon">🔬</span>
+                                                            Pregnancy Test
+                                                        </span>
+                                                    </td>
+                                                    <td>Ultrasound - Not Pregnant</td>
+                                                    <td>Dr. Sarah Williams</td>
+                                                    <td>Post-calving check, healthy</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 2: Cow #H-2031 -->
+                        <tr class="cow-row" data-cow-id="H-2031">
+                            <td><span class="expand-icon">▶</span></td>
+                            <td><span class="cow-id">#H-2031</span></td>
+                            <td>Hereford</td>
+                            <td>3.7 years</td>
+                            <td>1,340 lbs</td>
+                            <td><span class="status-badge status-pregnant">Pregnant</span></td>
+                            <td><strong>3</strong></td>
+                            <td>Feb 28, 2024</td>
+                            <td><a href="#" class="action-link">#H-2031-C3</a></td>
+                            <td><a href="#" class="action-link">View</a> | <a href="#" class="action-link">Edit</a></td>
+                        </tr>
+                        <tr class="expanded-row" data-cow-id="H-2031">
+                            <td colspan="10" class="expanded-content">
+                                <div class="expanded-inner">
+                                    <div class="summary-grid">
+                                        <div class="summary-item">
+                                            <span class="summary-label">Purchase Date</span>
+                                            <span class="summary-value">Jan 15, 2021</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Color/Markings</span>
+                                            <span class="summary-value">Red/White Face</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Avg Weaning Wt</span>
+                                            <span class="summary-value highlight-metric">568 lbs</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Body Condition</span>
+                                            <span class="summary-value">7/9 (Excellent)</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Due Date</span>
+                                            <span class="summary-value highlight-metric">Jan 15, 2025</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Days Pregnant</span>
+                                            <span class="summary-value highlight-metric">~210 days</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="history-tabs">
+                                        <button class="history-tab active" data-tab="calves">📊 Calf History (3)</button>
+                                        <button class="history-tab" data-tab="work">🏥 Work History (18)</button>
+                                    </div>
+
+                                    <div class="tab-content active" data-tab="calves">
+                                        <table class="history-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Calf ID</th>
+                                                    <th>Birth Date</th>
+                                                    <th>Age</th>
+                                                    <th>Gender</th>
+                                                    <th>Birth Weight</th>
+                                                    <th>Current/Weaning Weight</th>
+                                                    <th>Weaning Age</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td><strong>#H-2031-C3</strong></td>
+                                                    <td>Feb 28, 2024</td>
+                                                    <td>8.3 months</td>
+                                                    <td><span class="gender-badge gender-male">Male</span></td>
+                                                    <td>88 lbs</td>
+                                                    <td><strong>412 lbs</strong> (current)</td>
+                                                    <td>—</td>
+                                                    <td><span class="status-badge status-active">Nursing</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>#H-2031-C2</strong></td>
+                                                    <td>Jan 12, 2023</td>
+                                                    <td>1.8 years</td>
+                                                    <td><span class="gender-badge gender-female">Female</span></td>
+                                                    <td>82 lbs</td>
+                                                    <td>575 lbs</td>
+                                                    <td>8 months</td>
+                                                    <td><span class="status-badge status-active">Weaned - Heifer</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>#H-2031-C1</strong></td>
+                                                    <td>Feb 5, 2022</td>
+                                                    <td>2.8 years</td>
+                                                    <td><span class="gender-badge gender-male">Male</span></td>
+                                                    <td>90 lbs</td>
+                                                    <td>585 lbs</td>
+                                                    <td>8.5 months</td>
+                                                    <td><span class="status-badge status-sold">Sold</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="tab-content" data-tab="work">
+                                        <table class="history-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Activity Type</th>
+                                                    <th>Details</th>
+                                                    <th>Administered By</th>
+                                                    <th>Notes</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Nov 8, 2024</td>
+                                                    <td>
+                                                        <span class="activity-type">
+                                                            <span class="activity-icon">💉</span>
+                                                            Vaccination
+                                                        </span>
+                                                    </td>
+                                                    <td>Cattle Master 4</td>
+                                                    <td>Dr. Sarah Williams</td>
+                                                    <td>Annual vaccination, safe for pregnancy</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Nov 5, 2024</td>
+                                                    <td>
+                                                        <span class="activity-type">
+                                                            <span class="activity-icon">🏥</span>
+                                                            Treatment
+                                                        </span>
+                                                    </td>
+                                                    <td>Pink Eye - LA-200 (10ml IM)</td>
+                                                    <td>Dr. Sarah Williams</td>
+                                                    <td>Right eye infection, improving</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Oct 10, 2024</td>
+                                                    <td>
+                                                        <span class="activity-type">
+                                                            <span class="activity-icon">🔬</span>
+                                                            Pregnancy Test
+                                                        </span>
+                                                    </td>
+                                                    <td>Ultrasound - Pregnant (~120 days)</td>
+                                                    <td>Dr. Sarah Williams</td>
+                                                    <td>Healthy fetus, due Jan 15, 2025</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 3: Cow #A-1198 -->
+                        <tr class="cow-row" data-cow-id="A-1198">
+                            <td><span class="expand-icon">▶</span></td>
+                            <td><span class="cow-id">#A-1198</span></td>
+                            <td>Red Angus</td>
+                            <td>5.1 years</td>
+                            <td>1,195 lbs</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td><strong>7</strong></td>
+                            <td>Jan 28, 2024</td>
+                            <td><a href="#" class="action-link">#A-1198-C7</a></td>
+                            <td><a href="#" class="action-link">View</a> | <a href="#" class="action-link">Edit</a></td>
+                        </tr>
+                        <tr class="expanded-row" data-cow-id="A-1198">
+                            <td colspan="10" class="expanded-content">
+                                <div class="expanded-inner">
+                                    <p class="empty-state">Click tabs above to view detailed history...</p>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 4: Cow #C-3412 -->
+                        <tr class="cow-row" data-cow-id="C-3412">
+                            <td><span class="expand-icon">▶</span></td>
+                            <td><span class="cow-id">#C-3412</span></td>
+                            <td>Charolais</td>
+                            <td>6.3 years</td>
+                            <td>1,420 lbs</td>
+                            <td><span class="status-badge status-dry">Dry</span></td>
+                            <td><strong>6</strong></td>
+                            <td>Mar 18, 2024</td>
+                            <td><a href="#" class="action-link">#C-3412-C6</a></td>
+                            <td><a href="#" class="action-link">View</a> | <a href="#" class="action-link">Edit</a></td>
+                        </tr>
+                        <tr class="expanded-row" data-cow-id="C-3412">
+                            <td colspan="10" class="expanded-content">
+                                <div class="expanded-inner">
+                                    <p class="empty-state">Click tabs above to view detailed history...</p>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 5: Cow #S-5678 -->
+                        <tr class="cow-row" data-cow-id="S-5678">
+                            <td><span class="expand-icon">▶</span></td>
+                            <td><span class="cow-id">#S-5678</span></td>
+                            <td>Simmental</td>
+                            <td>2.9 years</td>
+                            <td>1,310 lbs</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td><strong>2</strong></td>
+                            <td>Apr 22, 2024</td>
+                            <td><a href="#" class="action-link">#S-5678-C2</a></td>
+                            <td><a href="#" class="action-link">View</a> | <a href="#" class="action-link">Edit</a></td>
+                        </tr>
+                        <tr class="expanded-row" data-cow-id="S-5678">
+                            <td colspan="10" class="expanded-content">
+                                <div class="expanded-inner">
+                                    <p class="empty-state">Click tabs above to view detailed history...</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <div class="pagination-info">
+                    Showing 1-5 of 32 cows
+                </div>
+                <div class="pagination-controls">
+                    <button class="page-btn" disabled>Previous</button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn">4</button>
+                    <button class="page-btn">5</button>
+                    <button class="page-btn">6</button>
+                    <button class="page-btn">7</button>
+                    <button class="page-btn">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Row expansion functionality
+        document.querySelectorAll('.cow-row').forEach(row => {
+            row.addEventListener('click', function(e) {
+                // Don't expand if clicking on action links
+                if (e.target.classList.contains('action-link')) {
+                    e.preventDefault();
+                    console.log('Action clicked:', e.target.textContent);
+                    return;
+                }
+
+                const cowId = this.dataset.cowId;
+                const expandedRow = document.querySelector(`.expanded-row[data-cow-id="${cowId}"]`);
+                const isExpanded = this.classList.contains('expanded');
+
+                // Close all other expanded rows
+                document.querySelectorAll('.cow-row').forEach(r => r.classList.remove('expanded'));
+                document.querySelectorAll('.expanded-row').forEach(r => r.classList.remove('show'));
+
+                // Toggle current row
+                if (!isExpanded) {
+                    this.classList.add('expanded');
+                    expandedRow.classList.add('show');
+                }
+            });
+        });
+
+        // Tab switching functionality
+        document.querySelectorAll('.history-tab').forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent row collapse
+
+                const tabName = this.dataset.tab;
+                const expandedRow = this.closest('.expanded-inner');
+
+                // Update active tab
+                expandedRow.querySelectorAll('.history-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                // Update active content
+                expandedRow.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                    if (content.dataset.tab === tabName) {
+                        content.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Sortable columns
+        document.querySelectorAll('.sortable').forEach(th => {
+            th.addEventListener('click', function() {
+                // Remove sorted class from all
+                document.querySelectorAll('.sortable').forEach(t => t.classList.remove('sorted'));
+                this.classList.add('sorted');
+                console.log('Sorting by:', this.textContent);
+            });
+        });
+
+        // View toggle
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                console.log('View changed to:', this.textContent);
+            });
+        });
+
+        // Pagination
+        document.querySelectorAll('.page-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (!this.disabled) {
+                    document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+                    if (!isNaN(this.textContent)) {
+                        this.classList.add('active');
+                    }
+                    console.log('Page changed to:', this.textContent);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

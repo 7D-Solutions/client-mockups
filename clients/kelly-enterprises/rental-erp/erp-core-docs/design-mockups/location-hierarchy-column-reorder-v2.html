@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Hierarchy - Visual Column Reordering</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            padding: 16px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .controls {
+            padding: 12px 24px;
+            background: #fafafa;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .left-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .column-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: white;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .column-btn:hover {
+            background: #f5f5f5;
+            border-color: #1976d2;
+        }
+
+        .column-btn-icon {
+            font-size: 16px;
+        }
+
+        /* Dropdown menu */
+        .column-menu {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            background: white;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            padding: 0;
+            min-width: 320px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .column-menu.active {
+            display: block;
+        }
+
+        .column-menu-header {
+            padding: 12px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 1px solid #e0e0e0;
+            background: #fafafa;
+        }
+
+        .column-list {
+            padding: 8px;
+        }
+
+        /* Draggable column items with sidebar-style */
+        .column-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 4px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            cursor: move;
+            transition: all 0.2s;
+            gap: 10px;
+            user-select: none;
+        }
+
+        .column-item:hover {
+            border-color: #1976d2;
+            background: #f8f9fa;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .column-item.dragging {
+            opacity: 0.4;
+            cursor: grabbing;
+        }
+
+        .column-item.drag-over {
+            border-color: #1976d2;
+            border-style: dashed;
+            background: #e3f2fd;
+        }
+
+        .column-item.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: #f5f5f5;
+        }
+
+        .column-item.locked:hover {
+            border-color: #e0e0e0;
+            background: #f5f5f5;
+            box-shadow: none;
+        }
+
+        .drag-handle {
+            font-size: 20px;
+            color: #999;
+            cursor: move;
+            display: flex;
+            align-items: center;
+            padding: 0 4px;
+        }
+
+        .column-item.locked .drag-handle {
+            color: #ccc;
+        }
+
+        .column-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            margin: 0;
+            flex-shrink: 0;
+        }
+
+        .column-item.locked .column-checkbox {
+            cursor: not-allowed;
+        }
+
+        .column-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            flex: 1;
+        }
+
+        .column-item.locked .column-label {
+            color: #999;
+        }
+
+        .lock-icon {
+            font-size: 16px;
+            color: #999;
+        }
+
+        /* Placeholder for drop position */
+        .drop-placeholder {
+            height: 48px;
+            margin-bottom: 4px;
+            border: 2px dashed #1976d2;
+            border-radius: 6px;
+            background: #e3f2fd;
+            display: none;
+        }
+
+        .drop-placeholder.active {
+            display: block;
+        }
+
+        .column-menu-footer {
+            padding: 12px 16px;
+            background: #fafafa;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .reset-btn {
+            padding: 6px 12px;
+            background: white;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #666;
+        }
+
+        .reset-btn:hover {
+            background: #f5f5f5;
+            border-color: #999;
+            color: #333;
+        }
+
+        .footer-note {
+            font-size: 11px;
+            color: #999;
+            font-style: italic;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #fafafa;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        th.center {
+            text-align: center;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        td {
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        td.center {
+            text-align: center;
+        }
+
+        .item-id {
+            font-weight: 600;
+            color: #1976d2;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .location-code {
+            font-weight: 600;
+            color: #1976d2;
+            cursor: pointer;
+        }
+
+        .location-code:hover {
+            text-decoration: underline;
+        }
+
+        .column-small {
+            width: 100px;
+        }
+
+        .column-medium {
+            width: 130px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 999;
+            display: none;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay" id="overlay"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Inventory Dashboard</h1>
+        </div>
+
+        <div class="controls">
+            <div class="left-controls">
+                <div class="column-btn" id="columnBtn">
+                    <span class="column-btn-icon">⚙️</span>
+                    <span>Columns</span>
+                    <span style="font-size: 12px; color: #999;">▼</span>
+
+                    <div class="column-menu" id="columnMenu">
+                        <div class="column-menu-header">
+                            Drag to reorder • Toggle to show/hide
+                        </div>
+
+                        <div class="column-list" id="columnList">
+                            <!-- Column items will be dynamically generated here -->
+                        </div>
+
+                        <div class="column-menu-footer">
+                            <button class="reset-btn" onclick="resetToDefault()">↺ Reset to Default</button>
+                            <span class="footer-note">Location is locked</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pagination">
+                <span style="font-size: 14px; color: #666;">1 of 2</span>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr id="tableHeader">
+                    <th>ITEM ID</th>
+                    <th>ITEM NAME</th>
+                    <th class="center">TYPE</th>
+                    <!-- Dynamic columns -->
+                    <th class="center">QTY</th>
+                    <th class="center">LAST MOVED</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+
+    <script>
+        const sampleData = [
+            { id: 'SP-0001', name: 'NPT 3/4-14 RING GO', type: 'Gauge', facility: 'Main Facility', building: 'Building 1', zone: 'QC', location: 'L1', qty: 1, lastMoved: '11/5/2025' },
+            { id: 'SP-0002', name: 'UN 7/8-9 RING GO', type: 'Gauge', facility: 'Main Facility', building: 'Building 1', zone: 'QC', location: 'L1', qty: 1, lastMoved: '11/5/2025' },
+            { id: 'SP-0003', name: 'UN 7/16-14 PLUG GO', type: 'Gauge', facility: 'Main Facility', building: 'Building 1', zone: 'Shipping', location: 'E2', qty: 1, lastMoved: '11/5/2025' },
+            { id: 'SET-0001', name: 'ACME 1-1/4-5 RING GO', type: 'Gauge', facility: 'Main Facility', building: 'Building 2', zone: 'Tool Crib', location: 'C4', qty: 1, lastMoved: '11/5/2025' },
+            { id: 'SET-0002', name: 'NPT 1/2-14 RING GO', type: 'Gauge', facility: 'Main Facility', building: 'Building 1', zone: 'Bulk Storage', location: 'A5', qty: 1, lastMoved: '11/5/2025' }
+        ];
+
+        const defaultColumns = [
+            { id: 'facility', label: 'Facility / Plant', visible: true },
+            { id: 'building', label: 'Building', visible: true },
+            { id: 'zone', label: 'Zone', visible: true },
+            { id: 'location', label: 'Location', visible: true, locked: true }
+        ];
+
+        let columns = JSON.parse(localStorage.getItem('columnConfig')) || [...defaultColumns];
+        let draggedItem = null;
+
+        const columnBtn = document.getElementById('columnBtn');
+        const columnMenu = document.getElementById('columnMenu');
+        const overlay = document.getElementById('overlay');
+        const columnList = document.getElementById('columnList');
+
+        columnBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            columnMenu.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+
+        overlay.addEventListener('click', () => {
+            columnMenu.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+
+        function renderColumnMenu() {
+            columnList.innerHTML = '';
+
+            columns.forEach((col, index) => {
+                const item = document.createElement('div');
+                item.className = `column-item ${col.locked ? 'locked' : ''}`;
+                item.draggable = !col.locked;
+                item.dataset.index = index;
+
+                const handleIcon = col.locked ? '🔒' : '⋮⋮';
+
+                item.innerHTML = `
+                    <span class="drag-handle">${handleIcon}</span>
+                    <input type="checkbox" class="column-checkbox"
+                           ${col.visible ? 'checked' : ''}
+                           ${col.locked ? 'disabled' : ''}
+                           onchange="toggleColumn(${index})">
+                    <span class="column-label">${col.label}</span>
+                `;
+
+                if (!col.locked) {
+                    item.addEventListener('dragstart', handleDragStart);
+                    item.addEventListener('dragend', handleDragEnd);
+                    item.addEventListener('dragover', handleDragOver);
+                    item.addEventListener('dragleave', handleDragLeave);
+                    item.addEventListener('drop', handleDrop);
+                }
+
+                columnList.appendChild(item);
+            });
+        }
+
+        function handleDragStart(e) {
+            draggedItem = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            document.querySelectorAll('.column-item').forEach(item => {
+                item.classList.remove('drag-over');
+            });
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+
+            if (this === draggedItem || this.classList.contains('locked')) {
+                return false;
+            }
+
+            e.dataTransfer.dropEffect = 'move';
+            this.classList.add('drag-over');
+            return false;
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+
+            if (this === draggedItem || this.classList.contains('locked')) {
+                return false;
+            }
+
+            const fromIndex = parseInt(draggedItem.dataset.index);
+            const toIndex = parseInt(this.dataset.index);
+
+            // Reorder array
+            const [movedItem] = columns.splice(fromIndex, 1);
+            columns.splice(toIndex, 0, movedItem);
+
+            saveAndRender();
+            return false;
+        }
+
+        function toggleColumn(index) {
+            columns[index].visible = !columns[index].visible;
+            saveAndRender();
+        }
+
+        function resetToDefault() {
+            columns = JSON.parse(JSON.stringify(defaultColumns));
+            saveAndRender();
+        }
+
+        function saveAndRender() {
+            localStorage.setItem('columnConfig', JSON.stringify(columns));
+            renderColumnMenu();
+            renderTable();
+        }
+
+        function renderTable() {
+            const header = document.getElementById('tableHeader');
+            const tbody = document.getElementById('tableBody');
+
+            // Clear existing dynamic columns
+            const existingDynamicHeaders = header.querySelectorAll('.dynamic-col');
+            existingDynamicHeaders.forEach(h => h.remove());
+
+            // Insert dynamic column headers
+            const qtyHeader = header.children[3];
+            columns.forEach(col => {
+                if (col.visible) {
+                    const th = document.createElement('th');
+                    th.className = 'center column-medium dynamic-col';
+                    th.textContent = col.label.toUpperCase();
+                    header.insertBefore(th, qtyHeader);
+                }
+            });
+
+            // Render rows
+            tbody.innerHTML = '';
+            sampleData.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><span class="item-id">${row.id}</span></td>
+                    <td>${row.name}</td>
+                    <td class="center"><span class="badge">${row.type}</span></td>
+                    ${columns.filter(c => c.visible).map(col =>
+                        `<td class="center">${col.id === 'location' ? `<span class="location-code">${row[col.id]}</span>` : row[col.id]}</td>`
+                    ).join('')}
+                    <td class="center">${row.qty}</td>
+                    <td class="center">${row.lastMoved}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderColumnMenu();
+            renderTable();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,652 @@
+# 🎯 Fireproof Gauge System - Complete System Specifications
+*Comprehensive Interface and Workflow Design - CRITICAL IMPLEMENTATION GUIDE*
+
+> **⚠️ IMPORTANT**: This document represents extensive design work completed July 30, 2025 through detailed Q&A sessions. Every specification here was carefully considered and represents the definitive system behavior. This is not conceptual - this is the exact implementation specification.
+
+## 📋 Design Session Summary
+**Date:** July 30, 2025  
+**Duration:** Extensive multi-hour design session  
+**Method:** Systematic Q&A through 6 core design areas  
+**Participants:** System architect and domain expert  
+**Status:** Complete functional specification ready for implementation  
+
+**This document answers THE critical question:** *"Exactly how should every part of the system work?"*
+
+## 🚨 Implementation Priority
+The specifications below are **production-ready definitions** that should be implemented exactly as specified. No assumptions, no interpretations - this is the definitive system behavior.
+
+---
+
+## 1. Edit Interface Structure
+
+### Permission Model
+- **Admin Only**: Edit button only appears for Admin users
+- **Regular Users**: No edit button visible, no edit access
+
+### Edit Mode Flow
+1. **Admin sees "Edit" button** in details view
+2. **Click "Edit"** → Details view switches to edit mode
+3. **All fields become editable** except timestamps and history
+4. **"Save" and "Cancel" buttons** appear
+5. **Save with validation errors** → Highlight invalid fields + show general "missing fields" message
+6. **Cancel** → Confirm dialog "Are you sure? You'll lose unsaved changes"
+7. **Successful save** → Return to view mode with updated data
+
+### Field Editability
+- **Editable (Descriptive Only)**: 
+  - Manufacturer (typo corrections)
+  - Model number (typo corrections)
+  - Serial number (if missing)
+  - Storage location
+  - Notes/comments
+- **Never Editable (Identity & Operational)**: 
+  - Gauge ID
+  - Type (caliper, micrometer, thread gauge, etc.)
+  - Size/specifications (thread class, range, etc.)
+  - Seal status
+  - Calibration due date
+  - Unsealed date
+  - All timestamps and history
+- **Edit Restrictions**: Admin/QC roles only can edit
+
+---
+
+## 2. Status Management
+
+### Automatic Status Changes
+- **Daily Background Job**: Runs just after midnight
+- **Individual Logging**: Each gauge status change logged in audit trail
+- **Checked-Out Behavior**: Gauges stay checked out but show calibration due notification
+- **Notification Scope**: All users notified (person with checkout + Admin/QC)
+
+### Manual Status Changes
+- **Admin Override**: Can manually change any status transition
+- **Reason Required**: Dropdown for reason + custom text field
+- **Audit Logging**: All manual changes logged with who/when/why
+
+### Status Behavior
+- **Single Status**: "Calibration due" regardless of how overdue
+- **Permission Levels**: User authority determines who can make calibration decisions
+- **All Changes Logged**: Both automatic and manual status changes
+
+---
+
+## 3. Calibration Workflow Details
+
+### Decision Authority
+- **Permission-Based**: User authority levels determine calibration decision rights
+- **Future Design**: Permission system needs to be designed for user creation
+
+### Due Date Calculations
+- **Sealed Gauges**: 
+  - Due date = unseal date + frequency (NOT certificate date)
+  - Certificate date is stored for records but ignored for calculation
+  - Calibration cycle starts when seal is broken, not when calibrated
+- **Unsealed Gauges**: 
+  - Due date = certificate calibration date + frequency
+  - Uses actual calibration date from certificate
+
+### Documentation Requirements
+- **Send Out & On-Site**: Upload certificates OR select from server
+- **Internal**: Custom-built calibration form *(needs future design)*
+- **Failed Calibrations**: Store failure type (dropdown + custom text) but not certificates *(edge case for future)*
+
+### Certificate Handling
+- **Unsealed**: Use certificate date for due date calculation
+- **Sealed**: Ignore certificate date, store for records only
+
+### Workflow Simplifications
+- **No Expected Return Date**: Removed from workflow
+- **Failed Calibration Types**: Dropdown list + custom text option
+
+### Send to Calibration Process
+- **Access Control**: QC/Admin roles only
+- **Batch Selection**: Allow selecting multiple gauges to send together
+- **Tracking**: Simple status change to "at_calibration" (no vendor tracking initially)
+- **No Batch Relationships**: Don't track which gauges were sent together
+- **Future Enhancement**: Full tracking with vendor, tracking numbers, expected return dates
+
+### Receive from Calibration Process
+- **Access Control**: QC/Admin roles only
+- **Required Upload**: Certificate upload is mandatory (not optional)
+- **Data Capture**:
+  - Pass/Fail status (required)
+  - Certificate number/reference (required)
+  - Notes from calibration service (optional)
+  - New calibration due date (regular gauges only, NOT sealable gauges)
+- **Automatic Seal Status**: All gauges return from calibration as SEALED
+- **Failed Calibrations**: 
+  - Automatically move to "out_of_service" status
+  - Likely to be soft deleted but data retained for records
+
+---
+
+## 4. User Experience Flows
+
+### Search & Organization
+- **Sort Order**: By size
+- **Search Bar**: Available for quick finding
+- **Categories**: 3 main categories (2 existing + NPT)
+- **Sub-Categories**: Metric and Standard for plug and ring gauges
+- **Location Display**: Show on all checkout-able gauge cards
+- **Search Results**: Same info as main list
+
+### Checkout Flows
+- **Regular Gauges**: Immediate checkout with confirmation window
+- **Sealed Gauges**: Requires QC/Admin approval → "Pending QC" status → User notified *(notification system details for future)*
+- **Calibration Due Gauges**: 
+  - CANNOT be checked out - system prevents checkout entirely
+  - Error message: "This gauge is calibration due and cannot be checked out"
+  - Visual indicator: Red flashing in row view to warn all users
+  - Must be calibrated before returning to service
+- **Race Conditions**: Show error message with who has it checked out
+
+### Return Flows
+1. **User Return**: Goes to "gauge bin" → "Pending QC" status
+2. **QC Acceptance**: "Was this returned to [Location]?"
+   - **Yes**: Accept with that location
+   - **No**: Choose "Select Bin Location" OR "Pending QC" (optional reason/note)
+3. **Visibility**: "Pending QC" gauges visible to everyone
+4. **History Access**: Everyone can see who returned it and when
+
+### Interaction Design
+- **Confirmations**: Required for important actions, checkout, calibration
+- **No Keyboard Shortcuts**: Mouse/touch interactions only
+- **No Time Limits**: Gauges can stay "Pending QC" indefinitely
+
+---
+
+## 5. Business Rules
+
+### Seal Management
+- **Authorization Tracking**: Record who authorized seal breaks (QC/Admin who approved checkout)
+- **Sealed Status Rules**: 
+  - Sealed gauges CANNOT enter service while sealed - must be unsealed first
+  - Gauges return from calibration automatically as SEALED
+  - Calibration due date for sealable gauges is set when unsealed (not from certificate)
+
+### Checkout Rules
+- **No Limits**: Unlimited checkouts per person
+- **Checkout Restrictions**: 
+  - Can only checkout gauges with status "available"
+  - Cannot checkout calibration_due gauges
+  - Cannot checkout sealed gauges (must request unseal first)
+  - Cannot checkout gauges pending_qc or pending_transfer
+
+### Status Change Rules
+- **Out of Service**: 
+  - Gauge flagged for return → All parties notified
+  - **Location Tracking Critical**: Physical location must be kept current
+    - Examples: "Repair Shop", "Quarantine Bin - Building A", "Calibration Lab"
+    - Update location whenever gauge is physically moved
+    - Enables finding gauge for repair/calibration/disposal
+  - Remains out of service until repaired, calibrated, or retired
+- **Damage Assessment**: Only Admin can mark as damaged, after return
+- **User Condition Selection**: Users choose "Good", "Damaged", "Needs Cleaning" when returning
+
+### Return Process
+- **Who Can Return**: 
+  - ANYONE can return ANY gauge (not restricted to checkout person)
+  - Example: John checks out gauge → Mary can return it
+  - Rationale: User might be absent/leave company, flexibility needed
+- **Condition Options**: "Good", "Damaged", "Needs Cleaning"
+- **Damaged Handling**: Flagged but follows same workflow
+- **Consistent Process**: Same QC process regardless of condition
+- **Transfer Requirements**: 
+  - ONLY the person who checked out can initiate transfer (security measure)
+  - Gauge must be in checked_out status to transfer
+  - Example: John checks out → only John can transfer to Mary
+
+### Data Management
+- **Audit History**: Kept forever
+- **Retired Gauges**: Only viewable by Admin when specifically chosen
+- **Unique Identifiers**: Gauge IDs must be unique (no duplicates)
+- **Required Fields**: *(Need to flesh out later)*
+
+---
+
+## 6. Error Handling
+
+### Database Failures
+- **Retry Logic**: Auto-retry once → Manual retry option with Retry/Cancel buttons
+- **Transaction Safety**: Rollback prevents partial updates
+
+### System Availability
+- **Server Downtime**: Maintenance message → Auto-retry every 30 seconds → Resume when available
+- **Connection Loss**: Show "Connection lost" → User restarts action with fresh data when reconnected
+
+### User Input Validation
+- **Live Validation**: While typing + Final validation on save
+- **Error Display**: Highlight invalid fields + general "missing fields" message
+
+### Unexpected Errors
+- **Generic Messages**: "Something went wrong" (no technical details to users)
+- **Problem Reporting**: "Report Problem" button → Automatically captures system details + user description
+
+---
+
+## 7. Permission System Architecture
+
+### User Role Hierarchy
+System uses a 5-tier role hierarchy with clear authority levels:
+
+1. **Super Admin** (highest authority)
+2. **Admin** 
+3. **QC Supervisor**
+4. **QC** (Quality Control)
+5. **Regular Users/Operators** (lowest authority)
+
+### User Creation Authority
+- **Super Admin**: Can create all role types
+- **Admin**: Can create QC Supervisor, QC, and Regular Users (cannot create Super Admins or other Admins)
+- **Other Roles**: Cannot create users
+
+### Permission Model: Flexible Role-Based with Individual Overrides
+
+The system uses a **hybrid permission model** with three layers:
+
+1. **Base Role Permissions** - Default permissions assigned to each role
+2. **Customizable Role Defaults** - Ability to modify what permissions each role gets by default via frontend
+3. **Individual User Overrides** - Grant or revoke specific permissions for any user regardless of their base role
+
+This allows maximum flexibility where a Regular User could be granted "Accept Calibration Certificates" permission without changing their role.
+
+### Calibration Decision Authority Matrix
+
+All calibration decisions can be made by **Super Admin, Admin, QC Supervisor, and QC** (all roles except Regular Users):
+- Send gauge out for external calibration ✓
+- Perform internal calibration ✓
+- Mark gauge as failed calibration ✓
+- Change gauge calibration frequency ✓
+
+**Note**: Individual permissions can override these defaults through the frontend permission management interface.
+
+---
+
+## 8. Required Fields and Data Entry
+
+**Implementation Note**: For complete Thread Gauge standardization implementation details including decimal format, gauge ID structure (SP/SR/MP/MR), companion gauge system, and serial number tracking, see [GAUGE_STANDARDIZATION_COMPLETE_SPEC.md](../Fireproof%20Docs/GAUGE_STANDARDIZATION_COMPLETE_SPEC.md).
+
+### Equipment Type Hierarchy
+
+The system uses a **category-driven data entry workflow** that ensures consistency:
+
+**Step 1: Select Equipment Type**
+- Thread Gauge
+- Hand Tool
+- Large Equipment
+- Calibration Standards
+
+**Step 2: Select Category** (determines all subsequent fields and formats)
+- Thread Gauge → ACME, Metric, Standard, NPT, STI, Spiralock (all with Plug/Ring options)
+- Hand Tool → Calipers, Micrometers, Depth Gauges, Dial Indicators, Pin Gauges, Bore Gauges, Feeler Gauges
+- Large Equipment → CMM, Optical Comparator, Height Gauge, etc.
+- Calibration Standards → Gauge Blocks, Master Ring, Master Pin, Deltronic Pins
+
+**Step 3: Category-Specific Fields**
+- Required fields and naming formats are determined by the selected category
+- Data entry interface adapts to enforce category-specific standardization
+
+### Data Entry Standardization Rules
+
+All formats follow industry standards (ANSI/ASME):
+
+**Thread Gauge Standards:**
+1. Thread Size Format: `1/2-20 2B` (no spaces except before class)
+2. Metric Thread Format: `M10x1.5 6g` (lowercase 'x', no spaces)
+3. NPT Format: `1/2-14 NPT` (with thread count and space before NPT)
+4. GO/NO GO Format: `GO` and `NO GO` (uppercase, two words)
+5. Naming Convention: `1/2-20 2B Thread Plug Gauge` (Title Case)
+
+**Hand Tool Standards:**
+1. Tool Naming: Range first → `0-6" Digital Caliper`, `0-1" Outside Micrometer`
+2. Range Format: `0-6"` (no spaces, quotes for inches)
+3. Abbreviations: `OD` and `ID` (no periods)
+
+**Large Equipment Standards:**
+- CMM Format: `CMM - [Manufacturer] [Model] [X/Y/Z]`
+- Optical Comparator Format: `Optical Comparator - [Manufacturer] [Model] [Size]`
+- Height Gauge Format: `Height Gauge - [Manufacturer] [Size] [Type]`
+
+**Date Format (System-wide):** `MM/DD/YYYY`
+
+### Required Fields by Equipment Type
+
+#### Thread Gauges
+**Mandatory:**
+1. Gauge ID/Number
+2. Gauge Name/Description
+3. Gauge Type (plug, ring, etc.)
+4. Location (where it's stored)
+5. Calibration Frequency
+6. Category/Sub-category
+7. Size/Measurement
+
+**System Behavior**: When gauge is unsealed, system automatically logs unseal date and calculates next calibration due date.
+
+#### Hand Tools
+**Mandatory:**
+1. Tool ID/Number
+2. Tool Name/Description
+3. Tool Type
+4. Location (where it's stored)
+5. Calibration Frequency
+6. Category
+7. Size/Range
+8. Manufacturer
+9. Resolution/Accuracy
+
+**Optional:** Serial Number
+
+#### Large Equipment
+**Mandatory:**
+1. Equipment ID/Number
+2. Equipment Name/Description
+3. Equipment Type
+4. Calibration Frequency
+5. Category
+6. Size/Capacity
+7. Manufacturer
+8. Serial Number
+9. Model Number
+10. Resolution/Accuracy
+
+**Optional:** Location (may be fixed installation)
+
+#### Calibration Standards
+**Mandatory:**
+1. Standard ID/Number
+2. Standard Description
+3. Standard Type (category)
+4. Certification/Traceability Number
+5. Original Certification Date
+6. Storage Location
+
+**Special Handling:**
+- Not sent out for calibration - Come with manufacturer's certification only
+- No recalibration workflow - Permanent certification
+- No expiration dates - Standards don't expire
+- QC use only - Cannot be checked out by regular users
+- Simplified status - Active or Retired only (no calibration due status)
+
+---
+
+## 9. Internal Calibration Form System
+
+### Scope and Application
+
+- **Internal calibration only applies to Hand Tools** (Calipers, Micrometers, Depth Gauges, etc.)
+- Thread Gauges and Large Equipment are sent out for external calibration
+- Forms are category-specific (different form per hand tool type)
+- Template customization identified as future enhancement
+
+### Standardized Calibration Process
+
+All hand tools follow a **3-point verification pattern**:
+
+1. **Zero/Reference Point Check**
+2. **Three Test Points:**
+   - Near minimum of range
+   - Middle of range
+   - Near maximum of range
+3. **Repeatability** - Each measurement taken 3 times
+
+### Form Structure
+
+**Hand Tool Internal Calibration Form includes:**
+
+1. **Header Information:**
+   - Tool ID/Number (auto-populated)
+   - Tool Description (auto-populated)
+   - Calibration Date: MM/DD/YYYY
+   - Technician Name (from login)
+
+2. **Calibration Measurements:**
+   - Zero/Reference Point: _______ Pass ☐ Fail ☐
+   - Test Point 1: _______ Pass ☐ Fail ☐
+   - Test Point 2: _______ Pass ☐ Fail ☐
+   - Test Point 3: _______ Pass ☐ Fail ☐
+
+3. **Results:**
+   - Overall Result: Pass ☐ Fail ☐
+   - Adjustment Performed: Yes ☐ No ☐
+   - Calibration Standard Used: [Dropdown of active standards]
+
+4. **Certification:**
+   - ☐ "I certify this calibration was performed correctly"
+   - [Submit Button]
+
+### Pass/Fail Criteria
+
+- **Calipers**: ±0.001" tolerance
+- **Micrometers**: ±0.0001" tolerance
+- **Other tools**: Category-specific tolerances
+
+### Digital Signature Process
+
+- Single signature model (technician only)
+- Implemented as checkbox certification + submit
+- System captures username and timestamp
+- No confirmation needed for Pass results
+- Confirmation dialog for Fail results: "Are you sure? This tool will be marked as failed calibration"
+
+### Failed Calibration Workflow
+
+1. **Immediate Action**: Tool automatically marked "Out of Service"
+2. **Repair Process**: Triggered if repair possible
+3. **Adjustment Tracking**: Records if adjustment was performed (even for passed tools)
+
+---
+
+## 10. Notification System
+
+### Delivery Methods
+
+**User-configurable notification delivery:**
+1. **In-app notifications** - Immediate implementation
+2. **Email notifications** - Future phase (not priority)
+3. **Text/SMS notifications** - Future phase (not priority)
+
+Users can choose their preferred delivery method(s) for each notification type.
+
+### Notification Triggers
+
+**All notifications are sent immediately except calibration summaries:**
+
+1. **Calibration due while gauge checked out** - Immediate alert to user and QC/Admin
+2. **Sealed gauge checkout approval needed** - Immediate to QC/Admin
+3. **Sealed gauge checkout approved/denied** - Immediate to requester
+4. **Gauge marked "Out of Service"** - Immediate to all affected parties
+5. **Gauge return pending QC acceptance** - Immediate to QC
+6. **Failed calibration alerts** - Immediate to QC/Admin and gauge holder
+7. **System maintenance announcements** - Immediate to all users
+8. **Permission changes** - Immediate to affected user
+9. **Daily/weekly calibration due summaries** - Scheduled per user preference
+
+### Notification Content
+
+**Detailed notification format** - All relevant information included:
+
+Example Failed Calibration notification:
+- Tool ID and full description
+- Calibration technician name
+- Date/time of failure
+- Specific measurements that failed
+- Current tool status
+- Direct link to view full details
+- Action required (if any)
+
+### User Preference Settings
+
+**Comprehensive notification control panel:**
+
+1. **Delivery Method Selection**
+   - Toggle in-app on/off
+   - Toggle email on/off (future)
+   - Toggle text on/off (future)
+   - Set preferences per notification type
+
+2. **Summary Frequency**
+   - Daily or Weekly for calibration due summaries
+   - Delivery time selection
+
+3. **Notification Type Management**
+   - Opt in/out of specific notification categories
+   - Set importance levels
+
+4. **Quiet Hours**
+   - Define hours when notifications shouldn't be sent
+   - Emergency override for critical alerts
+
+5. **Escalation Preferences**
+   - Option to CC supervisor on certain alerts
+   - Define escalation rules
+
+### Message Template System
+
+**Admin-customizable templates with:**
+
+1. **Template Management**
+   - Admin users can edit all message templates
+   - Preview before saving
+   - Version control for templates
+
+2. **Template Features**
+   - Variable placeholders: `{gauge_id}`, `{user_name}`, `{due_date}`, etc.
+   - Rich formatting support (future phase)
+   - Multiple language support (future phase)
+
+3. **Template Categories**
+   - One template per notification type
+   - Subject line and body customization
+   - Default templates provided
+
+---
+
+## 11. System Recovery Tool (Super Admin Only)
+
+### Purpose and Access
+- **Access Control**: Super Admin role only - highest level of system authority
+- **Purpose**: Reset gauges stuck in invalid states when normal workflows cannot resolve issues
+- **Audit Trail**: All recovery actions logged with who/when/why
+
+### Search and Discovery
+- **Search Method**: Search by specific gauge ID (no automatic "stuck" detection)
+- **Display Information**: 
+  - Current status and any pending operations
+  - Active transfers, unseal requests, or QC states
+  - Available recovery actions based on current state
+
+### Recovery Actions for Unsealed Gauges
+- **Reset to Base State**: 
+  - Clear all pending operations (transfers, QC status, ghost assignments)
+  - Set status to "available" or "calibration_due" based on calibration_due_date
+  - Does NOT modify any dates or calibration information
+  - Simple reset: "Make this gauge normal again"
+- **Stuck States That Can Be Fixed**:
+  - Stuck in pending_transfer (transfer exists but won't complete/cancel)
+  - Stuck in pending_qc (gauge returned but QC can't process)
+  - Ghost checkouts (gauge shows checked out but no active assignment)
+  - Orphaned assignments (assignment exists but gauge shows available)
+- **How "Stuck" is Determined**: User reports issue, not automatic detection
+
+### Recovery Actions for Sealed Gauges
+- **Limited Actions**: Sealed gauges rarely get stuck since they can't be checked out
+- **Reset Options**: Cancel any pending unseal requests
+
+### Recovery Actions for Unseal Requests
+- **Stuck Unseal States**:
+  - pending_approval: Request submitted but never approved/rejected
+  - pending_unseal: Approved but physical unseal never completed
+- **Recovery Action**: Cancel the request, gauge remains sealed, allow new request
+
+### Recovery Reason Documentation
+- **Auto-Generated Reason**: System pre-fills reason like "Stuck in pending_approval since 2025-01-28 (4 days)"
+- **Editable**: Super Admin can modify reason to add context
+- **Example**: "Stuck in pending_approval since 2025-01-28 (4 days) - QC personnel was out sick"
+
+### Confirmation Requirements
+- **Show What Will Happen**: Display list of actions that will be taken
+- **Example**: "This will cancel 1 transfer, clear pending_qc status. Continue?"
+- **Audit Logging**: Complete record of state before and after recovery
+
+---
+
+## 12. Unseal Request Enhancements
+
+### Alternative Gauge Suggestions
+- **When Shown**: During unseal request submission (after user selects sealed gauge)
+- **Matching Criteria**: 
+  - Must match EXACT gauge type and size
+  - Example: 1/4-20 UNC 2B thread gauge only matches other 1/4-20 UNC 2B gauges
+  - Thread class matters: 2B ≠ 2A (these are NOT interchangeable)
+- **User Flow**:
+  1. User requests to unseal a specific gauge
+  2. System shows: "These unsealed gauges match your requirements:"
+  3. User can select an alternative OR continue with unseal request
+  4. If continuing, user is notified that alternatives exist
+
+### Standardized Gauge Matching
+- **Thread Gauges**: Must match size, pitch, class, and type (plug/ring)
+- **Hand Tools**: Must match type and range
+- **Implementation Note**: Requires standardized data entry (see Section 8)
+
+---
+
+## 13. Future Design Requirements
+
+### Minor Operational Clarifications
+- **Who can perform internal calibrations?** (vs who can authorize them)
+- **Equipment retirement permission** - Who can retire gauges/equipment?
+- **Calibration Standards editing** - Can they be edited after creation or read-only?
+- **User deactivation workflow** - What happens to their checked-out gauges and pending notifications?
+
+### Edge Cases from Original Specs
+- **Failed calibration certificate storage** (marked as edge case)
+- **Problem reporting system details** (auto-capture of system errors)
+
+### Advanced Features for Future Phases
+- Department/location-based permissions
+- Email/SMS notification delivery
+- Enhanced reporting and analytics
+- System integration APIs
+- Template customization for calibration forms
+
+### 📊 Design Completeness Status
+- **✅ Fully Specified**: All core system functionality including permissions, data entry, calibration forms, and notifications
+- **🔶 Minor Gaps**: Operational clarifications that can be resolved during implementation
+- **📋 Future Enhancements**: Advanced features clearly separated for later phases
+
+---
+
+## Document Maintenance
+
+### **Version History**
+
+| Version | Date | Changes Made | Author | Impact |
+|---------|------|--------------|--------|--------|
+| 1.0 | 2025-07-30 | Initial complete system specifications from comprehensive Q&A design session | System Architect | Complete |
+| 2.0 | 2025-01-30 | Filled all 4 critical design gaps: Permission System, Required Fields (4 equipment types), Internal Calibration Forms, Notification System | System Architect | Major |
+| 3.0 | 2025-08-07 | Major business logic refinements: Edit restrictions, Calibration workflows, System Recovery Tool, Unseal enhancements, Checkout/return rules | System Architect | Major |
+
+**Change Impact Levels:**
+- **Major**: Behavioral changes, new workflows, modified business rules
+- **Minor**: Clarifications, edge case additions, permission updates  
+- **Patch**: Typos, formatting, cross-reference corrections
+
+### **Update Guidelines**
+When updating specifications:
+1. **Always update Implementation Guide** if technical approach changes
+2. **Consider Vision Document** if strategic direction shifts
+3. **Document the reasoning** behind specification changes
+4. **Test that changes don't conflict** with existing requirements
+
+---
+
+## Related Documents
+- **[Vision Document](GAUGE_TRACKING_SYSTEM_VISION.md)** - Strategic direction and user experience goals
+- **[Implementation Guide](IMPLEMENTATION_GUIDE.md)** - Technical development roadmap and architecture
+
+---
+
+*Document Version 3.0 | Created: July 30, 2025 | Updated: August 7, 2025 | Status: Complete*

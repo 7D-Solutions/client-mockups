@@ -1,0 +1,319 @@
+/* Inventory Dashboard Styles - Based on v3 Mockup */
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 24px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerTitle {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.headerActions {
+  display: flex;
+  gap: 12px;
+}
+
+/* Stats Bar */
+.statsBar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 24px 32px;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.statCard {
+  background: white;
+  padding: 16px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.statLabel {
+  font-size: 12px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.statValue {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.statSubtext {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+/* Filters */
+.filters {
+  padding: 20px 32px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.filterGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filterLabel {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.filterInput,
+.filterSelect {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+}
+
+.filterSelect {
+  min-width: 140px;
+}
+
+.filterInput {
+  min-width: 200px;
+}
+
+.filterInput:focus,
+.filterSelect:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Table */
+.tableContainer {
+  padding: 24px 32px;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.thead {
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tbody .tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background 0.1s;
+  cursor: pointer;
+}
+
+.tbody .tr:hover {
+  background: #f9fafb;
+}
+
+.td {
+  padding: 16px;
+  font-size: 14px;
+  color: #1f2937;
+  vertical-align: top;
+}
+
+/* Location Code */
+.locationCode {
+  font-weight: 600;
+  color: #667eea;
+  font-family: 'Courier New', monospace;
+  cursor: pointer;
+}
+
+.locationCode:hover {
+  text-decoration: underline;
+}
+
+/* Location Description */
+.locationDesc {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+/* Item List */
+.itemList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+/* Gauge items - Blue */
+.gaugeLink {
+  color: #2563eb;
+  text-decoration: none;
+  font-size: 13px;
+  font-family: 'Courier New', monospace;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline;
+  width: auto;
+}
+
+.gaugeLink:hover {
+  text-decoration: underline;
+  color: #1e40af;
+}
+
+/* Tool items - Orange */
+.toolLink {
+  color: #ea580c;
+  text-decoration: none;
+  font-size: 13px;
+  font-family: 'Courier New', monospace;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline;
+  width: auto;
+}
+
+.toolLink:hover {
+  text-decoration: underline;
+  color: #c2410c;
+}
+
+/* Part items - Green */
+.partLink {
+  color: #059669;
+  font-size: 13px;
+  font-family: 'Courier New', monospace;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline;
+  width: auto;
+  text-decoration: none;
+}
+
+.partLink:hover {
+  text-decoration: underline;
+  color: #047857;
+}
+
+.partQty {
+  color: #6b7280;
+  font-size: 12px;
+  margin-left: 4px;
+}
+
+/* Empty Cell */
+.emptyCell {
+  color: #d1d5db;
+  text-align: center;
+  font-size: 16px;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 32px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.paginationInfo {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .headerActions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .statsBar {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .filters {
+    padding: 16px;
+  }
+
+  .filterGroup {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .filterInput,
+  .filterSelect {
+    width: 100%;
+  }
+
+  .tableContainer {
+    padding: 16px;
+  }
+
+  .th,
+  .td {
+    padding: 12px 8px;
+    font-size: 12px;
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    align-items: flex-start;
+  }
+}

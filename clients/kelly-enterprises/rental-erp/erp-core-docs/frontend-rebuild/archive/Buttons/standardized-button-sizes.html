@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Standardized Button Sizes - Design System</title>
+    
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            color: #212529;
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+        }
+        
+        .header p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Section */
+        .section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background: #f8f9fa;
+            padding: 1.5rem 2rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .section-header h2 {
+            font-size: 1.5rem;
+            color: #495057;
+            margin: 0;
+        }
+        
+        .section-content {
+            padding: 2rem;
+        }
+        
+        /* Size comparison grid */
+        .size-comparison {
+            display: grid;
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+        
+        .size-row {
+            display: grid;
+            grid-template-columns: 150px 1fr auto;
+            align-items: center;
+            gap: 2rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .size-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .button-examples {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .specs {
+            font-family: monospace;
+            font-size: 0.875rem;
+            color: #6c757d;
+            white-space: nowrap;
+        }
+        
+        /* Current button styles (problematic) */
+        .current-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 500;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .current-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .current-small {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+        
+        .current-medium {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+        
+        .current-large {
+            padding: 12px 24px;
+            font-size: 16px;
+        }
+        
+        /* Proposed standardized button styles */
+        .new-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            border-radius: 0.375rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            line-height: 1;
+        }
+        
+        .new-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        /* Proposed sizes with better scaling */
+        .new-xs {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.75rem;
+            min-height: 1.75rem;
+        }
+        
+        .new-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            min-height: 2.25rem;
+        }
+        
+        .new-md {
+            padding: 0.625rem 1.25rem;
+            font-size: 1rem;
+            min-height: 2.5rem;
+        }
+        
+        .new-lg {
+            padding: 0.75rem 1.5rem;
+            font-size: 1.125rem;
+            min-height: 3rem;
+        }
+        
+        .new-xl {
+            padding: 1rem 2rem;
+            font-size: 1.25rem;
+            min-height: 3.5rem;
+        }
+        
+        /* Icon sizing */
+        .new-xs svg,
+        .new-xs i { font-size: 0.75rem; }
+        
+        .new-sm svg,
+        .new-sm i { font-size: 0.875rem; }
+        
+        .new-md svg,
+        .new-md i { font-size: 1rem; }
+        
+        .new-lg svg,
+        .new-lg i { font-size: 1.125rem; }
+        
+        .new-xl svg,
+        .new-xl i { font-size: 1.25rem; }
+        
+        /* Comparison sections */
+        .comparison-block {
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .comparison-block h3 {
+            color: #495057;
+            margin-bottom: 1rem;
+            font-size: 1.125rem;
+        }
+        
+        .issue {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+        
+        .solution {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+        
+        /* Use case examples */
+        .use-cases {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .use-case-card {
+            padding: 1.5rem;
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+        }
+        
+        .use-case-card h4 {
+            color: #007bff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .use-case-card p {
+            color: #6c757d;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Responsive table */
+        .specs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+        }
+        
+        .specs-table th,
+        .specs-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .specs-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .specs-table code {
+            background: #f8f9fa;
+            padding: 0.125rem 0.25rem;
+            border-radius: 3px;
+            font-size: 0.875rem;
+        }
+        
+        /* Visual height comparison */
+        .height-comparison {
+            display: flex;
+            align-items: flex-end;
+            gap: 1rem;
+            margin: 2rem 0;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .height-bar {
+            flex: 1;
+            background: #007bff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 500;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Standardized Button Sizes</h1>
+        <p>Consistent sizing system for modern button implementation</p>
+    </header>
+    
+    <div class="container">
+        <!-- Current Issues -->
+        <div class="section">
+            <div class="section-header">
+                <h2>Current Button Size Issues</h2>
+            </div>
+            <div class="section-content">
+                <div class="issue">
+                    <h3>⚠️ Issue: Inconsistent Font Sizes</h3>
+                    <p>Small and Medium buttons both use 14px font size, making them hard to distinguish</p>
+                    <div class="button-examples">
+                        <button class="current-button current-small">Small (14px)</button>
+                        <button class="current-button current-medium">Medium (14px)</button>
+                        <button class="current-button current-large">Large (16px)</button>
+                    </div>
+                </div>
+                
+                <div class="issue">
+                    <h3>⚠️ Issue: Limited Size Options</h3>
+                    <p>Only 3 sizes available (sm, md, lg) - missing extra small for compact UI and extra large for hero CTAs</p>
+                </div>
+                
+                <div class="issue">
+                    <h3>⚠️ Issue: Inconsistent Scaling</h3>
+                    <p>Padding doesn't scale proportionally with font size</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Proposed Solution -->
+        <div class="section">
+            <div class="section-header">
+                <h2>Proposed Standardized Sizes</h2>
+            </div>
+            <div class="section-content">
+                <div class="solution">
+                    <h3>✅ Solution: 5-Size System with Consistent Scaling</h3>
+                    <p>Each size has distinct visual hierarchy with proportional padding and font sizes</p>
+                </div>
+                
+                <div class="size-comparison">
+                    <div class="size-row">
+                        <div class="size-label">Extra Small (xs)</div>
+                        <div class="button-examples">
+                            <button class="new-button new-xs">Button</button>
+                            <button class="new-button new-xs">
+                                <i class="fas fa-check"></i>
+                                Save
+                            </button>
+                            <button class="new-button new-xs">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="specs">12px font • 6px/12px padding • 28px height</div>
+                    </div>
+                    
+                    <div class="size-row">
+                        <div class="size-label">Small (sm)</div>
+                        <div class="button-examples">
+                            <button class="new-button new-sm">Button</button>
+                            <button class="new-button new-sm">
+                                <i class="fas fa-save"></i>
+                                Save
+                            </button>
+                            <button class="new-button new-sm">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                        <div class="specs">14px font • 8px/16px padding • 36px height</div>
+                    </div>
+                    
+                    <div class="size-row">
+                        <div class="size-label">Medium (md)</div>
+                        <div class="button-examples">
+                            <button class="new-button new-md">Button</button>
+                            <button class="new-button new-md">
+                                <i class="fas fa-upload"></i>
+                                Check Out
+                            </button>
+                            <button class="new-button new-md">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <div class="specs">16px font • 10px/20px padding • 40px height</div>
+                    </div>
+                    
+                    <div class="size-row">
+                        <div class="size-label">Large (lg)</div>
+                        <div class="button-examples">
+                            <button class="new-button new-lg">Button</button>
+                            <button class="new-button new-lg">
+                                <i class="fas fa-download"></i>
+                                Download Report
+                            </button>
+                            <button class="new-button new-lg">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                        <div class="specs">18px font • 12px/24px padding • 48px height</div>
+                    </div>
+                    
+                    <div class="size-row">
+                        <div class="size-label">Extra Large (xl)</div>
+                        <div class="button-examples">
+                            <button class="new-button new-xl">Button</button>
+                            <button class="new-button new-xl">
+                                <i class="fas fa-rocket"></i>
+                                Get Started
+                            </button>
+                            <button class="new-button new-xl">
+                                <i class="fas fa-sign-in-alt"></i>
+                            </button>
+                        </div>
+                        <div class="specs">20px font • 16px/32px padding • 56px height</div>
+                    </div>
+                </div>
+                
+                <!-- Visual height comparison -->
+                <h3 style="margin-top: 2rem; color: #495057;">Visual Height Comparison</h3>
+                <div class="height-comparison">
+                    <div class="height-bar" style="height: 28px;">xs<br>28px</div>
+                    <div class="height-bar" style="height: 36px;">sm<br>36px</div>
+                    <div class="height-bar" style="height: 40px;">md<br>40px</div>
+                    <div class="height-bar" style="height: 48px;">lg<br>48px</div>
+                    <div class="height-bar" style="height: 56px;">xl<br>56px</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Technical Specifications -->
+        <div class="section">
+            <div class="section-header">
+                <h2>Technical Specifications</h2>
+            </div>
+            <div class="section-content">
+                <table class="specs-table">
+                    <thead>
+                        <tr>
+                            <th>Size</th>
+                            <th>Font Size</th>
+                            <th>Padding (Y/X)</th>
+                            <th>Min Height</th>
+                            <th>Icon Size</th>
+                            <th>CSS Class</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>xs</strong></td>
+                            <td>12px (0.75rem)</td>
+                            <td>6px/12px</td>
+                            <td>28px (1.75rem)</td>
+                            <td>12px</td>
+                            <td><code>size="xs"</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>sm</strong></td>
+                            <td>14px (0.875rem)</td>
+                            <td>8px/16px</td>
+                            <td>36px (2.25rem)</td>
+                            <td>14px</td>
+                            <td><code>size="sm"</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>md</strong></td>
+                            <td>16px (1rem)</td>
+                            <td>10px/20px</td>
+                            <td>40px (2.5rem)</td>
+                            <td>16px</td>
+                            <td><code>size="md"</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>lg</strong></td>
+                            <td>18px (1.125rem)</td>
+                            <td>12px/24px</td>
+                            <td>48px (3rem)</td>
+                            <td>18px</td>
+                            <td><code>size="lg"</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>xl</strong></td>
+                            <td>20px (1.25rem)</td>
+                            <td>16px/32px</td>
+                            <td>56px (3.5rem)</td>
+                            <td>20px</td>
+                            <td><code>size="xl"</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Use Cases -->
+        <div class="section">
+            <div class="section-header">
+                <h2>Use Case Guidelines</h2>
+            </div>
+            <div class="section-content">
+                <div class="use-cases">
+                    <div class="use-case-card">
+                        <h4>Extra Small (xs)</h4>
+                        <p>Table row actions, compact toolbars, inline form buttons, pagination</p>
+                        <button class="new-button new-xs">Edit</button>
+                        <button class="new-button new-xs">Delete</button>
+                    </div>
+                    
+                    <div class="use-case-card">
+                        <h4>Small (sm)</h4>
+                        <p>Secondary actions, modal footers, form groups, navigation</p>
+                        <button class="new-button new-sm">Cancel</button>
+                        <button class="new-button new-sm">Close</button>
+                    </div>
+                    
+                    <div class="use-case-card">
+                        <h4>Medium (md) - Default</h4>
+                        <p>Primary actions, form submissions, standard CTAs</p>
+                        <button class="new-button new-md">Save Changes</button>
+                        <button class="new-button new-md">Submit</button>
+                    </div>
+                    
+                    <div class="use-case-card">
+                        <h4>Large (lg)</h4>
+                        <p>Important actions, page headers, empty states</p>
+                        <button class="new-button new-lg">Create New Gauge</button>
+                        <button class="new-button new-lg">Generate Report</button>
+                    </div>
+                    
+                    <div class="use-case-card">
+                        <h4>Extra Large (xl)</h4>
+                        <p>Hero sections, landing pages, onboarding flows</p>
+                        <button class="new-button new-xl">Get Started</button>
+                        <button class="new-button new-xl">Sign In</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Implementation Guide -->
+        <div class="section">
+            <div class="section-header">
+                <h2>Implementation Guide</h2>
+            </div>
+            <div class="section-content">
+                <h3 style="color: #495057; margin-bottom: 1rem;">TypeScript Interface Update</h3>
+                <pre style="background: #f8f9fa; padding: 1rem; border-radius: 6px; overflow-x: auto;">
+<code>interface ButtonProps {
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';  // Extended from 3 to 5 sizes
+  // ... other props
+}</code></pre>
+
+                <h3 style="color: #495057; margin: 2rem 0 1rem;">Usage Examples</h3>
+                <pre style="background: #f8f9fa; padding: 1rem; border-radius: 6px; overflow-x: auto;">
+<code>// Extra small - for tight spaces
+&lt;Button size="xs" variant="secondary"&gt;Edit&lt;/Button&gt;
+
+// Small - for secondary actions
+&lt;Button size="sm" variant="danger"&gt;Delete&lt;/Button&gt;
+
+// Medium (default) - for primary actions
+&lt;Button size="md" variant="primary"&gt;Save Changes&lt;/Button&gt;
+
+// Large - for important CTAs
+&lt;Button size="lg" variant="success"&gt;Complete Order&lt;/Button&gt;
+
+// Extra large - for hero sections
+&lt;Button size="xl" variant="primary"&gt;Start Free Trial&lt;/Button&gt;</code></pre>
+            </div>
+        </div>
+        
+        <!-- Migration Notes -->
+        <div class="section">
+            <div class="section-header">
+                <h2>Migration Strategy</h2>
+            </div>
+            <div class="section-content">
+                <div class="comparison-block">
+                    <h3>Size Mapping</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li>✓ Current <code>sm</code> → New <code>xs</code> or <code>sm</code> (context-dependent)</li>
+                        <li>✓ Current <code>md</code> → New <code>md</code> (no change)</li>
+                        <li>✓ Current <code>lg</code> → New <code>lg</code> (slightly adjusted)</li>
+                    </ul>
+                </div>
+                
+                <div class="comparison-block">
+                    <h3>Benefits</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li>✓ Clear visual hierarchy with 5 distinct sizes</li>
+                        <li>✓ Consistent scaling ratio between sizes</li>
+                        <li>✓ Better accessibility with minimum touch targets</li>
+                        <li>✓ Flexibility for different UI contexts</li>
+                        <li>✓ Modern design system alignment</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

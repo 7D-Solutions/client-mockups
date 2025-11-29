@@ -1,0 +1,131 @@
+.container {
+  margin-bottom: 1rem;
+}
+
+.label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.inputWrapper {
+  position: relative;
+}
+
+.input {
+  width: 100%;
+  border: 1px solid var(--color-border-default);
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  background-color: var(--color-background);
+}
+
+/* Size variants using shared component size system */
+.inputSM {
+  padding: calc(var(--component-size-sm-padding-y) - 2px) var(--component-size-sm-padding-x);
+  font-size: var(--component-size-sm-font-size);
+  min-height: var(--component-size-sm-min-height);
+}
+
+.inputMD {
+  padding: calc(var(--component-size-md-padding-y) - 2px) var(--component-size-md-padding-x);
+  font-size: var(--component-size-md-font-size);
+  min-height: var(--component-size-md-min-height);
+}
+
+.inputLG {
+  padding: calc(var(--component-size-lg-padding-y) - 2px) var(--component-size-lg-padding-x);
+  font-size: var(--component-size-lg-font-size);
+  min-height: var(--component-size-lg-min-height);
+}
+
+.input:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.inputError {
+  border-color: var(--color-danger);
+}
+
+.dropdown {
+  position: fixed; /* Changed from absolute to fixed to prevent body scroll */
+  max-height: 200px; /* Show ~5 items to prevent running off screen */
+  overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  background-color: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  margin-top: 0.25rem;
+  z-index: 10000; /* Higher z-index to ensure it's above modal */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  min-width: 200px; /* Ensure dropdown has minimum width */
+
+  /* Ensure scrolling works properly */
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: var(--color-gray-400) transparent; /* Firefox */
+}
+
+/* Custom scrollbar for webkit browsers */
+.dropdown::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dropdown::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dropdown::-webkit-scrollbar-thumb {
+  background-color: var(--color-gray-400);
+  border-radius: 4px;
+}
+
+.dropdown::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-gray-500);
+}
+
+.option {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-bottom: 1px solid var(--color-border-light);
+  transition: background-color 0.15s ease;
+  background-color: #ffffff;
+}
+
+.option:last-child {
+  border-bottom: none;
+}
+
+.option:hover {
+  background-color: #f5f5f5;
+}
+
+.optionSelected {
+  background-color: #e6f2ff;
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.optionSelected:hover {
+  background-color: #e6f2ff;
+}
+
+.error {
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+  margin-top: 0.25rem;
+}
+
+.noResults {
+  padding: 0.75rem 1rem;
+  text-align: center;
+  color: var(--color-gray-500);
+  font-size: var(--font-size-sm);
+  font-style: italic;
+  background-color: #ffffff;
+}

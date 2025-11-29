@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Work Orders - Production Module</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --color-primary: #2563eb; --color-success: #10b981; --color-warning: #f59e0b;
+            --color-danger: #ef4444; --color-gray-50: #f9fafb; --color-gray-800: #1f2937;
+            --color-border: #e5e7eb;
+        }
+        body { font-family: system-ui, sans-serif; background: var(--color-gray-50); }
+        .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+        .card { background: white; border-radius: 8px; border: 1px solid var(--color-border); }
+        .header { padding: 24px; border-bottom: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; }
+        h1 { font-size: 24px; font-weight: 600; }
+        .btn { padding: 8px 16px; border-radius: 6px; border: 1px solid var(--color-border); background: white; cursor: pointer; }
+        .btn-primary { background: var(--color-primary); color: white; border-color: var(--color-primary); }
+        .filter-bar { padding: 16px; border-bottom: 1px solid var(--color-border); background: var(--color-gray-50); display: flex; gap: 12px; flex-wrap: wrap; }
+        input, select { padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 6px; font-size: 14px; }
+        input { flex: 1; min-width: 250px; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        thead { background: var(--color-gray-50); }
+        th { padding: 12px 16px; text-align: left; font-weight: 600; font-size: 12px; text-transform: uppercase; color: #374151; }
+        td { padding: 12px 16px; border-bottom: 1px solid var(--color-border); }
+        tbody tr:hover { background: var(--color-gray-50); cursor: pointer; }
+        .wo-number { font-weight: 600; color: var(--color-primary); }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+        .badge-new { background: #dbeafe; color: var(--color-primary); }
+        .badge-inprogress { background: #fef3c7; color: var(--color-warning); }
+        .badge-complete { background: #d1fae5; color: var(--color-success); }
+        .badge-onhold { background: #fee2e2; color: var(--color-danger); }
+        .priority-high { color: var(--color-danger); font-weight: 600; }
+        .priority-medium { color: var(--color-warning); }
+        .priority-normal { color: #6b7280; }
+        .footer { padding: 16px; border-top: 1px solid var(--color-border); display: flex; justify-content: space-between; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <h1><i class="fas fa-industry"></i> Work Orders</h1>
+                <button class="btn btn-primary"><i class="fas fa-plus"></i> New Work Order</button>
+            </div>
+            <div class="filter-bar">
+                <input type="text" placeholder="Search by WO#, customer, or part number...">
+                <select><option>All Statuses</option><option>New</option><option>In Progress</option><option>Complete</option><option>On Hold</option></select>
+                <select><option>All Priorities</option><option>High</option><option>Medium</option><option>Normal</option></select>
+                <select><option>All Customers</option><option>ABC Corp</option><option>Mountain Mfg</option><option>Tech Industries</option></select>
+                <button class="btn">Clear</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>WO NUMBER</th>
+                        <th>CUSTOMER</th>
+                        <th>PART NUMBER</th>
+                        <th>DESCRIPTION</th>
+                        <th style="text-align: center;">STATUS</th>
+                        <th style="text-align: center;">PRIORITY</th>
+                        <th style="text-align: right;">QUANTITY</th>
+                        <th style="text-align: center;">DUE DATE</th>
+                        <th style="text-align: center;">PROGRESS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="wo-number">WO-2847</span></td>
+                        <td>ABC Corp</td>
+                        <td>P-45678</td>
+                        <td>Precision Bracket Assembly</td>
+                        <td style="text-align: center;"><span class="badge badge-complete">Complete</span></td>
+                        <td style="text-align: center;"><span class="priority-normal">Normal</span></td>
+                        <td style="text-align: right;">50</td>
+                        <td style="text-align: center;">2025-11-08</td>
+                        <td style="text-align: center;">50/50 (100%)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="wo-number">WO-2848</span></td>
+                        <td>Mountain Mfg</td>
+                        <td>P-12345</td>
+                        <td>Custom Machined Housing</td>
+                        <td style="text-align: center;"><span class="badge badge-inprogress">In Progress</span></td>
+                        <td style="text-align: center;"><span class="priority-high">High</span></td>
+                        <td style="text-align: right;">25</td>
+                        <td style="text-align: center;">2025-11-12</td>
+                        <td style="text-align: center;">18/25 (72%)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="wo-number">WO-2849</span></td>
+                        <td>Tech Industries</td>
+                        <td>P-98765</td>
+                        <td>Aluminum Heat Sink</td>
+                        <td style="text-align: center;"><span class="badge badge-new">New</span></td>
+                        <td style="text-align: center;"><span class="priority-medium">Medium</span></td>
+                        <td style="text-align: right;">100</td>
+                        <td style="text-align: center;">2025-11-20</td>
+                        <td style="text-align: center;">0/100 (0%)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="wo-number">WO-2850</span></td>
+                        <td>ABC Corp</td>
+                        <td>P-55555</td>
+                        <td>Steel Mounting Plate</td>
+                        <td style="text-align: center;"><span class="badge badge-inprogress">In Progress</span></td>
+                        <td style="text-align: center;"><span class="priority-normal">Normal</span></td>
+                        <td style="text-align: right;">75</td>
+                        <td style="text-align: center;">2025-11-15</td>
+                        <td style="text-align: center;">32/75 (43%)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="wo-number">WO-2851</span></td>
+                        <td>Mountain Mfg</td>
+                        <td>P-67890</td>
+                        <td>Precision Shaft</td>
+                        <td style="text-align: center;"><span class="badge badge-onhold">On Hold</span></td>
+                        <td style="text-align: center;"><span class="priority-high">High</span></td>
+                        <td style="text-align: right;">10</td>
+                        <td style="text-align: center;">2025-11-10</td>
+                        <td style="text-align: center;">5/10 (50%)</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="footer">
+                <div>Showing 1-5 of 24 work orders</div>
+                <div>Page 1 of 5</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

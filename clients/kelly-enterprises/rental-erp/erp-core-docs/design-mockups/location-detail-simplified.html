@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Detail - Simplified (No Tabs)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; padding: 20px; }
+        .page-container { max-width: 1200px; margin: 0 auto; }
+
+        /* Header Section - Compact */
+        .page-header {
+            background: white;
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e0e0e0;
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .title { font-size: 28px; font-weight: 600; color: #212121; }
+        .badge {
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge-success { background: #e8f5e9; color: #2e7d32; }
+        .badge-info { background: #e3f2fd; color: #1976d2; }
+        .description { color: #757575; font-size: 14px; margin-bottom: 8px; }
+        .metadata {
+            display: flex;
+            gap: 24px;
+            color: #9e9e9e;
+            font-size: 13px;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .btn:hover { background: #f5f5f5; }
+        .btn-primary { background: #1976d2; color: white; border-color: #1976d2; }
+        .btn-primary:hover { background: #1565c0; }
+
+        /* Content Section */
+        .content-section {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e0e0e0;
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #212121;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .count-badge {
+            background: #f5f5f5;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            text-align: left;
+            padding: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #757575;
+            text-transform: uppercase;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        th:nth-child(2), th:nth-child(3) {
+            text-align: center;
+        }
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #f5f5f5;
+            font-size: 14px;
+        }
+        td:nth-child(2), td:nth-child(3) {
+            text-align: center;
+        }
+        tr:hover { background: #fafafa; cursor: pointer; }
+        .gauge-id { font-weight: 600; color: #1976d2; }
+
+        /* History Section - Collapsible */
+        .history-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px 24px;
+            border: 1px solid #e0e0e0;
+        }
+        .history-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px 0;
+        }
+        .history-toggle h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #212121;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toggle-icon {
+            font-size: 20px;
+            color: #757575;
+            transition: transform 0.2s;
+        }
+        .toggle-icon.open {
+            transform: rotate(180deg);
+        }
+        .history-content {
+            margin-top: 16px;
+            display: none;
+        }
+        .history-content.open {
+            display: block;
+        }
+        .history-table td {
+            font-size: 13px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: #9e9e9e;
+        }
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .note {
+            background: #e8f5e9;
+            border: 1px solid #4caf50;
+            border-radius: 4px;
+            padding: 12px 16px;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .note strong { color: #2e7d32; }
+    </style>
+    <script>
+        function toggleHistory() {
+            const content = document.getElementById('history-content');
+            const icon = document.getElementById('toggle-icon');
+
+            content.classList.toggle('open');
+            icon.classList.toggle('open');
+        }
+    </script>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Back Button -->
+        <div style="margin-bottom: 12px;">
+            <button class="btn">← Back to Storage Locations</button>
+        </div>
+
+        <!-- Compact Header -->
+        <div class="page-header">
+            <div class="header-top">
+                <div class="header-title">
+                    <h1 class="title">A1</h1>
+                    <span class="badge badge-success">Active</span>
+                    <span class="badge badge-info">Bin</span>
+                </div>
+                <button class="btn btn-primary">✏️ Edit Location</button>
+            </div>
+            <p class="description">Primary storage bin for calibrated gauges</p>
+            <div class="metadata">
+                <span>📦 2 items</span>
+                <span>📍 Warehouse A - Zone 1</span>
+                <span>🕒 Last updated: 2 days ago</span>
+            </div>
+        </div>
+
+        <!-- Items in Location -->
+        <div class="content-section">
+            <div class="section-header">
+                <div class="section-title">
+                    🔧 Gauges in this Location
+                    <span class="count-badge">2</span>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Gauge ID</th>
+                        <th>Status</th>
+                        <th>Quantity</th>
+                        <th>Last Moved</th>
+                        <th>Moved By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr onclick="window.location.href='#'">
+                        <td class="gauge-id">CAS71786A</td>
+                        <td><span class="badge badge-success">Available</span></td>
+                        <td>1</td>
+                        <td style="color: #757575;">10/30/2024 2:45 PM</td>
+                        <td style="color: #757575;">John Smith</td>
+                    </tr>
+                    <tr onclick="window.location.href='#'">
+                        <td class="gauge-id">SP0028A</td>
+                        <td><span class="badge badge-success">Available</span></td>
+                        <td>1</td>
+                        <td style="color: #757575;">10/30/2024 9:30 AM</td>
+                        <td style="color: #757575;">Jane Doe</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Movement History - Collapsible -->
+        <div class="history-section">
+            <div class="history-toggle" onclick="toggleHistory()">
+                <h3>
+                    📊 Movement History
+                </h3>
+                <span id="toggle-icon" class="toggle-icon">▼</span>
+            </div>
+            <div id="history-content" class="history-content">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>Item</th>
+                            <th>Action</th>
+                            <th>From/To</th>
+                            <th>User</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="color: #757575;">10/30/2024 2:45 PM</td>
+                            <td class="gauge-id">SP0028A</td>
+                            <td>Moved In</td>
+                            <td>From: B3</td>
+                            <td>John Smith</td>
+                        </tr>
+                        <tr>
+                            <td style="color: #757575;">10/30/2024 9:30 AM</td>
+                            <td class="gauge-id">CAS71786A</td>
+                            <td>Moved In</td>
+                            <td>From: Calibration Lab</td>
+                            <td>Jane Doe</td>
+                        </tr>
+                        <tr>
+                            <td style="color: #757575;">10/29/2024 3:15 PM</td>
+                            <td class="gauge-id">TG-12345</td>
+                            <td>Moved Out</td>
+                            <td>To: C2</td>
+                            <td>John Smith</td>
+                        </tr>
+                        <tr>
+                            <td style="color: #757575;">10/28/2024 11:20 AM</td>
+                            <td class="gauge-id">SP0028A</td>
+                            <td>Moved In</td>
+                            <td>From: Receiving</td>
+                            <td>Admin</td>
+                        </tr>
+                        <tr>
+                            <td style="color: #757575;">10/27/2024 4:05 PM</td>
+                            <td class="gauge-id">CAS71786A</td>
+                            <td>Moved Out</td>
+                            <td>To: Calibration Lab</td>
+                            <td>Jane Doe</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>✅ Simplified Location Detail - Single Section Pattern</strong><br>
+            ✅ No tabs - single focused view of what's in the location<br>
+            ✅ Clean, scannable table with all essential info<br>
+            ✅ Optional collapsible history (click to expand/collapse)<br>
+            ✅ Zero unnecessary clicks - see items immediately<br>
+            ✅ Action button (Edit) clearly visible in header<br>
+            ✅ Metadata inline in header (items count, warehouse, last update)<br>
+            📊 Perfect for locations with single item types (gauges only, tools only, etc.)
+        </div>
+    </div>
+</body>
+</html>

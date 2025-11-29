@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand Tool Form - Tabbed Layout</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            padding: 1.5rem;
+            color: #1a202c;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f7fafc;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            color: #718096;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            background: #edf2f7;
+            color: #2d3748;
+        }
+
+        .tab.active {
+            color: #3182ce;
+            border-bottom-color: #3182ce;
+            background: white;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 1.5rem;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3182ce;
+            box-shadow: 0 0 0 3px rgba(49,130,206,0.1);
+        }
+
+        .name-row {
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-end;
+        }
+
+        .name-row .form-group {
+            flex: 1;
+        }
+
+        button {
+            padding: 8px 16px;
+            background: #3182ce;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        button:hover {
+            background: #2c5282;
+        }
+
+        .tab-indicator {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: #48bb78;
+            border-radius: 50%;
+            margin-left: 0.5rem;
+        }
+    </style>
+    <script>
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Create Hand Tool - Tabbed Layout</h1>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('basic')">
+                Basic Info
+                <span class="tab-indicator"></span>
+            </button>
+            <button class="tab" onclick="switchTab('specs')">
+                Specifications
+            </button>
+            <button class="tab" onclick="switchTab('tracking')">
+                Tracking
+            </button>
+            <button class="tab" onclick="switchTab('details')">
+                Details
+            </button>
+        </div>
+
+        <!-- Tab 1: Basic Info -->
+        <div id="basic" class="tab-content active">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Tool Type</label>
+                    <select>
+                        <option>Caliper</option>
+                        <option>Micrometer</option>
+                        <option>Height Gauge</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Format</label>
+                    <select>
+                        <option>Digital</option>
+                        <option>Dial</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Gauge ID</label>
+                    <input type="text" value="CA0001" placeholder="Auto-generated">
+                </div>
+                <div class="form-group">
+                    <label>Ownership Type</label>
+                    <select>
+                        <option>Company Owned</option>
+                        <option>Customer Owned</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Specifications -->
+        <div id="specs" class="tab-content">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Range Min</label>
+                    <input type="number" step="0.001">
+                </div>
+                <div class="form-group">
+                    <label>Range Max</label>
+                    <input type="number" step="0.001">
+                </div>
+                <div class="form-group full-width">
+                    <label>Measurement Unit</label>
+                    <select>
+                        <option>Inches (")</option>
+                        <option>Millimeters (mm)</option>
+                        <option>Centimeters (cm)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Resolution</label>
+                    <input type="number" step="0.0001" placeholder="e.g., 0.001">
+                </div>
+                <div class="form-group">
+                    <label>Accuracy</label>
+                    <input type="text" placeholder="e.g., ±0.002 inch">
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Tracking -->
+        <div id="tracking" class="tab-content">
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label>Serial Number (S/N)</label>
+                    <input type="text" placeholder="Enter serial number">
+                </div>
+                <div class="form-group">
+                    <label>Bin Location</label>
+                    <input type="text" placeholder="e.g., A1, B3">
+                </div>
+                <div class="form-group">
+                    <label>Calibration Frequency (days)</label>
+                    <input type="number" placeholder="365" min="1">
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Details -->
+        <div id="details" class="tab-content">
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label>Manufacturer</label>
+                    <input type="text" placeholder="e.g., Mitutoyo, Starrett">
+                </div>
+                <div class="form-group full-width">
+                    <label>Model Number</label>
+                    <input type="text" placeholder="e.g., CD-12">
+                </div>
+                <div class="name-row full-width">
+                    <div class="form-group">
+                        <label>Gauge Name</label>
+                        <input type="text" placeholder="Auto-generated or custom">
+                    </div>
+                    <button>Generate Name</button>
+                </div>
+            </div>
+        </div>
+
+        <div style="padding: 1rem 1.5rem; background: #f7fafc; border-top: 1px solid #e2e8f0; font-size: 13px; color: #4a5568;">
+            <strong>Layout:</strong> Fields organized in logical tabs<br>
+            <strong>Vertical Space:</strong> Minimal - only one tab visible at a time<br>
+            <strong>Pros:</strong> Clean, organized, no scrolling within tabs, progressive disclosure<br>
+            <strong>Cons:</strong> Requires clicking between tabs, can't see all fields at once
+        </div>
+    </div>
+</body>
+</html>

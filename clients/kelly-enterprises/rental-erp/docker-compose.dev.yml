@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ${COMPOSE_PROJECT_NAME:-rental-erp}-modular-backend-dev
+    ports:
+      - "${API_PORT:-8001}:8000"
+    env_file:
+      - ./backend/.env
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=${DB_HOST:-host.docker.internal}
+      - DB_PORT=${DB_PORT:-3308}
+      - DB_USER=${DB_USER:-root}
+      - DB_PASS=${DB_PASSWORD:-fireproof_root_sandbox}
+      - DB_NAME=${DB_NAME:-fai_db_sandbox}
+      - JWT_SECRET=${JWT_SECRET:-your-secret-key-here}
+      - SESSION_SECRET=${SESSION_SECRET:-your-session-secret}
+      - FRONTEND_URL=http://frontend:3000
+      - DROPBOX_ACCESS_TOKEN=${DROPBOX_ACCESS_TOKEN}
+      - DROPBOX_ROOT_PATH=${DROPBOX_ROOT_PATH:-/certificates}
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: node --watch src/server.js
+    networks:
+      - erp-network
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    labels:
+      - "com.fireproof.component=backend"
+      - "com.fireproof.stack=modular"
+      - "com.fireproof.mode=development"
+
+  frontend:
+    image: node:18-alpine
+    container_name: ${COMPOSE_PROJECT_NAME:-rental-erp}-modular-frontend-dev
+    working_dir: /app
+    ports:
+      - "3002:3001"  # Vite configured port
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:8001
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    depends_on:
+      - backend
+    networks:
+      - erp-network
+    restart: unless-stopped
+    labels:
+      - "com.fireproof.component=frontend"
+      - "com.fireproof.stack=modular"
+      - "com.fireproof.mode=development"
+
+networks:
+  erp-network:
+    name: ${COMPOSE_PROJECT_NAME:-rental-erp}-network
+    driver: bridge
+    labels:
+      - "com.fireproof.network=internal"

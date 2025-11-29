@@ -1,0 +1,168 @@
+/* Column Management Styles */
+
+/* Edit Mode Button */
+.customizeBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  transition: all 0.2s ease;
+}
+
+.customizeBtn:hover {
+  background: #f5f5f5;
+  border-color: #bbb;
+}
+
+.customizeBtn:active {
+  background: #e8e8e8;
+}
+
+.customizeBtn.active {
+  background: #007bff;
+  border-color: #007bff;
+  color: white;
+}
+
+/* Minimal table overrides - only add column management features */
+.columnManagedTable {
+  table-layout: auto; /* Allow columns to size based on content */
+}
+
+/* Column width hints - let name columns grow */
+.columnManagedTable th,
+.columnManagedTable td {
+  white-space: nowrap; /* Prevent wrapping by default */
+}
+
+/* Allow name/description columns to wrap and grow */
+.columnManagedTable th[data-column="name"],
+.columnManagedTable td[data-column="name"] {
+  white-space: normal;
+  min-width: 200px;
+  width: auto;
+}
+
+.columnManagedTable th,
+.columnManagedTable td {
+  position: relative; /* Only needed for checkbox positioning */
+}
+
+.columnManagedTable th.center,
+.columnManagedTable td.center {
+  text-align: center;
+}
+
+.columnManagedTable th.right,
+.columnManagedTable td.right {
+  text-align: right;
+}
+
+.columnManagedTable th.left,
+.columnManagedTable td.left {
+  text-align: left;
+}
+
+/* Column Headers - minimal styles for drag functionality only */
+.columnHeader {
+  user-select: none;
+}
+
+.columnHeader.locked {
+  /* Locked columns - no special styling */
+}
+
+.columnHeader.draggable {
+  /* Draggable columns - no special styling until edit mode */
+}
+
+/* Drag State Visual Feedback - only visible during drag */
+.columnHeader.dragging {
+  opacity: 0.5;
+}
+
+.columnHeader.dropTarget {
+  border-left: 3px solid #007bff;
+}
+
+/* Checkbox Above Headers */
+.headerCheckbox {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  z-index: 100;
+  pointer-events: none;
+  margin-bottom: 8px;
+}
+
+.columnManagedTable.editMode .headerCheckbox {
+  display: block !important;
+}
+
+.headerCheckbox input[type="checkbox"] {
+  margin: 0;
+  cursor: pointer;
+  pointer-events: auto;
+  width: 16px;
+  height: 16px;
+}
+
+.headerCheckboxLabel {
+  display: none;
+}
+
+/* Edit Mode Styles - visual indicators for drag capability */
+.columnManagedTable.editMode {
+  /* Table itself doesn't change appearance */
+}
+
+.columnManagedTable.editMode .columnHeader {
+  /* Headers don't change padding - checkboxes are absolutely positioned */
+}
+
+/* Show move cursor and subtle highlight for draggable columns in edit mode */
+.columnManagedTable.editMode .columnHeader.draggable {
+  cursor: move !important;
+  background-color: rgba(0, 123, 255, 0.05);
+}
+
+.columnManagedTable.editMode .columnHeader.draggable:hover {
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+/* Drag handle indicator - only visible in edit mode */
+.columnManagedTable.editMode .columnHeader.draggable::before {
+  content: '⋮⋮';
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: #666;
+  opacity: 0.6;
+  letter-spacing: -2px;
+}
+
+.columnManagedTable.editMode .columnHeader.draggable:hover::before {
+  opacity: 1;
+  color: #007bff;
+}
+
+/* Hidden Columns */
+.hidden {
+  display: none !important;
+}
+
+/* Minimal transitions */
+.customizeBtn {
+  transition: all 0.2s ease;
+}

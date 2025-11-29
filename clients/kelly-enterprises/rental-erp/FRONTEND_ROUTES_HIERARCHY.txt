@@ -1,0 +1,60 @@
+FRONTEND ROUTING HIERARCHY
+==================================================
+
+App Root
+│
+├── / (redirect to /gauges/list)
+├── /dashboard (redirect to /gauges/my-gauges)
+│
+├── /gauges/* ──── Gauge Module (GaugeProvider)
+│   ├── / (GaugeList)
+│   ├── /list (GaugeList)
+│   ├── /my-gauges (MyGauges)
+│   ├── /inventory (→ /gauges/list)
+│   ├── /qc (QCPage)
+│   ├── /create (CreateGaugePage)
+│   ├── /sets/:setId (SetDetailsPage) [Phase 1]
+│   ├── /calibration-management (CalibrationManagementPage) [Phase 3]
+│   ├── /returned-customer-gauges (ReturnedCustomerGaugesPage) [Phase 4]
+│   ├── /spare-inventory (SpareInventoryPage) [Phase 5]
+│   └── /detail/:id (→ /gauges?open={id}) [Legacy redirect]
+│
+├── /admin/* ────── Admin Module
+│   ├── / (AdminDashboard)
+│   ├── /dashboard (AdminDashboard)
+│   ├── /users (UserManagement)
+│   ├── /roles (RoleManagement)
+│   ├── /settings (SystemSettings)
+│   ├── /audit (AuditLogs)
+│   ├── /gauges (GaugeManagement)
+│   ├── /facilities (FacilityManagementPage)
+│   ├── /buildings (BuildingManagementPage)
+│   └── /zones (ZoneManagementPage)
+│
+├── /inventory/* ── Inventory Module
+│   ├── / (InventoryDashboard)
+│   ├── /locations (StorageLocationsPage)
+│   ├── /location/:locationCode (LocationDetailPage)
+│   └── /movements (MovementHistoryPage)
+│
+├── /user/* ────── User Module (UserProvider)
+│   ├── / (UserProfile)
+│   ├── /profile (UserProfile)
+│   └── /settings (UserSettings)
+│
+├── /test/* ────── Development Test Routes (Production Removal)
+│   ├── /buttons (ButtonTest)
+│   ├── /css (CSSTest)
+│   ├── /error-boundary (ErrorBoundaryTest)
+│   └── /icons (IconTest)
+│
+└── * (catch-all → /gauges/list)
+
+==================================================
+KEY FEATURES:
+- All module routes wrapped with ErrorBoundary
+- Gauge & User modules wrapped with context providers
+- Query params for advanced features: ?open={gaugeId}
+- Phase-based gauge features (Phases 1-5)
+- Three-level location hierarchy (Facility→Building→Zone)
+==================================================

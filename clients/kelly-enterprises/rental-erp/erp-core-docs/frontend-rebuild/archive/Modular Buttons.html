@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fire-Proof ERP - Button Visual Showcase</title>
+    <style>
+        /* Global styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 2rem;
+            color: #212529;
+        }
+
+        /* Container styles */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #212529;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #6c757d;
+        }
+
+        .section {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .button-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 0.375rem;
+            border: 1px solid #e9ecef;
+        }
+
+        .button-label {
+            font-size: 0.875rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        /* Base button styles from Button.module.css */
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            transition: all 200ms;
+            cursor: pointer;
+            border: none;
+            position: relative;
+            text-decoration: none;
+        }
+
+        .button:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #fff, 0 0 0 4px currentColor;
+        }
+
+        .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Size variants */
+        .small {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        .medium {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+        }
+
+        .large {
+            padding: 0.75rem 1.5rem;
+            font-size: 1.125rem;
+        }
+
+        /* Color variants */
+        .primary,
+        .default {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .primary:hover:not(:disabled),
+        .default:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+
+        .secondary {
+            background-color: #4b5563;
+            color: white;
+        }
+
+        .secondary:hover:not(:disabled) {
+            background-color: #374151;
+        }
+
+        .success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .success:hover:not(:disabled) {
+            background-color: #218838;
+        }
+
+        .warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .warning:hover:not(:disabled) {
+            background-color: #e0a800;
+        }
+
+        .danger {
+            background-color: #dc2626;
+            color: white;
+        }
+
+        .danger:hover:not(:disabled) {
+            background-color: #b91c1c;
+        }
+
+        .info {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        .info:hover:not(:disabled) {
+            background-color: #138496;
+        }
+
+        .outline {
+            background-color: white;
+            color: #374151;
+            border: 2px solid #d1d5db;
+        }
+
+        .outline:hover:not(:disabled) {
+            border-color: #9ca3af;
+            background-color: #f9fafb;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            animation: spin 1s linear infinite;
+            height: 1rem;
+            width: 1rem;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Special button styles */
+        .close-button {
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            cursor: pointer;
+            color: #6c757d;
+        }
+
+        .close-button:hover {
+            color: #343a40;
+        }
+
+        .tab-button {
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            padding: 0.75rem 1rem;
+            color: #6c757d;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .tab-button.active {
+            color: #007bff;
+            border-bottom-color: #007bff;
+        }
+
+        .icon-button {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            color: #495057;
+        }
+
+        .icon-button:hover {
+            background: #e9ecef;
+        }
+
+        /* Variant showcase */
+        .variant-showcase {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+
+        /* Info box */
+        .info-box {
+            background: #e7f3ff;
+            border: 1px solid #b8daff;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-box h4 {
+            color: #004085;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box p {
+            color: #004085;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fire-Proof ERP - Button Visual Showcase</h1>
+        
+        <div class="info-box">
+            <h4>About This Showcase</h4>
+            <p>This document displays all buttons as they appear in the Fire-Proof ERP frontend application. 
+            The buttons are organized by module and show their actual visual appearance with proper styling.</p>
+        </div>
+
+        <div class="section">
+            <h2>Button Variants</h2>
+            <p>The application uses 8 button variants for different purposes:</p>
+            <div class="variant-showcase">
+                <button class="button primary medium">Primary</button>
+                <button class="button secondary medium">Secondary</button>
+                <button class="button success medium">Success</button>
+                <button class="button warning medium">Warning</button>
+                <button class="button danger medium">Danger</button>
+                <button class="button info medium">Info</button>
+                <button class="button outline medium">Outline</button>
+                <button class="button primary medium" disabled>Disabled</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Button Sizes</h2>
+            <div class="variant-showcase">
+                <button class="button primary small">Small Button</button>
+                <button class="button primary medium">Medium Button</button>
+                <button class="button primary large">Large Button</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Authentication & Login</h2>
+            <div class="button-grid">
+                <div class="button-item">
+                    <span class="button-label">Login Screen</span>
+                    <button class="button primary medium">Sign In</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Login Loading</span>
+                    <button class="button primary medium" disabled>
+                        <svg class="spinner" fill="none" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                            <circle opacity="0.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path opacity="0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Signing in...
+                    </button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Header Logout</span>
+                    <button class="button secondary small">Logout</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Navigation & Tabs</h2>
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                <button class="tab-button active">Gauge Management</button>
+                <button class="tab-button">My Dashboard</button>
+                <button class="tab-button">Admin</button>
+            </div>
+            <h3>Dashboard Tabs</h3>
+            <div style="display: flex; gap: 1rem;">
+                <button class="tab-button active">My Personal Tools</button>
+                <button class="tab-button">Items I've Checked Out</button>
+                <button class="tab-button">Pending Transfers</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Gauge Operations</h2>
+            <div class="button-grid">
+                <div class="button-item">
+                    <span class="button-label">Create Gauge</span>
+                    <button class="button primary medium">Create New Gauge</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Check Out</span>
+                    <button class="button primary medium">Checkout</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Check In</span>
+                    <button class="button success medium">Check In</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Return</span>
+                    <button class="button success medium">Return</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Transfer</span>
+                    <button class="button info medium">Transfer</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Transfer Gauge</span>
+                    <button class="button primary medium">Transfer Gauge</button>
+                </div>
+            </div>
+
+            <h3>Gauge Status Buttons</h3>
+            <div class="button-grid">
+                <div class="button-item">
+                    <span class="button-label">Pending QC</span>
+                    <button class="button warning medium" disabled>Pending QC</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Out of Service</span>
+                    <button class="button danger medium" disabled>Out of Service</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Calibration Due</span>
+                    <button class="button warning medium" disabled>Calibration Due</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Pending Unseal</span>
+                    <button class="button info medium" disabled>Pending Unseal</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>QC Operations</h2>
+            <div class="button-grid">
+                <div class="button-item">
+                    <span class="button-label">Open QC Modal</span>
+                    <button class="button primary medium">Open QC Approvals</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Approve Item</span>
+                    <button class="button success small">Approve</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Fail Item</span>
+                    <button class="button danger small">Fail</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Bulk Approve</span>
+                    <button class="button success medium">Approve QC</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Bulk Fail</span>
+                    <button class="button danger medium">Fail QC</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Review</span>
+                    <button class="button info medium">Review</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Transfer Operations</h2>
+            <div class="button-grid">
+                <div class="button-item">
+                    <span class="button-label">Accept Transfer</span>
+                    <button class="button success medium">Accept Transfer</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Reject Transfer</span>
+                    <button class="button danger medium">Reject Transfer</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Cancel Transfer</span>
+                    <button class="button warning medium">Cancel Transfer</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Transfer Pending</span>
+                    <button class="button warning medium">Transfer Pending</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Transfer Waiting</span>
+                    <button class="button info medium">Transfer Waiting</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Admin Operations</h2>
+            <div class="button-grid">
+                <div class="button-item">
+                    <span class="button-label">Add User</span>
+                    <button class="button primary medium">Add New User</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Create User</span>
+                    <button class="button primary medium">Create User</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Edit User</span>
+                    <button class="button info small">Edit</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Reset Password</span>
+                    <button class="button warning small">Reset Password</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Delete User</span>
+                    <button class="button danger small">Delete</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Edit Profile</span>
+                    <button class="button primary medium">Edit Profile</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Modal Actions</h2>
+            <div class="button-grid">
+                <div class="button-item">
+                    <span class="button-label">Save Changes</span>
+                    <button class="button primary medium">Save Changes</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Cancel</span>
+                    <button class="button secondary medium">Cancel</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Close</span>
+                    <button class="button secondary medium">Close</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Close Button (X)</span>
+                    <button class="close-button">×</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Done</span>
+                    <button class="button primary medium">Done</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Go Back</span>
+                    <button class="button secondary medium">Go Back</button>
+                </div>
+            </div>
+
+            <h3>Confirmation Dialogs</h3>
+            <div class="button-grid">
+                <div class="button-item">
+                    <span class="button-label">Confirm Save</span>
+                    <button class="button primary medium">Yes, Save Changes</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Confirm Accept</span>
+                    <button class="button success medium">Yes, Accept Transfer</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Confirm Reject</span>
+                    <button class="button danger medium">Yes, Reject Transfer</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Utility Buttons</h2>
+            <div class="button-grid">
+                <div class="button-item">
+                    <span class="button-label">Clear Filters</span>
+                    <button class="button outline medium">Clear Filters</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Clear All</span>
+                    <button class="button outline medium">Clear All</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Retry</span>
+                    <button class="button primary medium">Retry</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Show/Hide Password</span>
+                    <button class="icon-button">Show</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Copy</span>
+                    <button class="icon-button">Copy</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Copied</span>
+                    <button class="icon-button">✓ Copied</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Navigation Buttons</h2>
+            <div class="button-grid">
+                <div class="button-item">
+                    <span class="button-label">Back Button</span>
+                    <button class="button secondary medium">← Back</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Back to List</span>
+                    <button class="button secondary medium">← Back to List</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Previous Page</span>
+                    <button class="button outline small">Previous</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Next Page</span>
+                    <button class="button outline small">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Special States</h2>
+            <h3>Loading States</h3>
+            <div class="button-grid">
+                <div class="button-item">
+                    <span class="button-label">Creating...</span>
+                    <button class="button primary medium" disabled>
+                        <svg class="spinner" fill="none" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                            <circle opacity="0.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path opacity="0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Creating...
+                    </button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Saving...</span>
+                    <button class="button primary medium" disabled>
+                        <svg class="spinner" fill="none" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                            <circle opacity="0.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path opacity="0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Saving...
+                    </button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Processing...</span>
+                    <button class="button primary medium" disabled>
+                        <svg class="spinner" fill="none" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                            <circle opacity="0.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path opacity="0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Processing...
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Sealed Gauge Operations</h2>
+            <div class="button-grid">
+                <div class="button-item">
+                    <span class="button-label">Request Unseal</span>
+                    <button class="button warning medium">Request Unseal</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Submitting Request</span>
+                    <button class="button warning medium" disabled>
+                        <svg class="spinner" fill="none" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                            <circle opacity="0.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path opacity="0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Submitting...
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>User Settings</h2>
+            <div class="button-grid">
+                <div class="button-item">
+                    <span class="button-label">Change Password</span>
+                    <button class="button primary medium">Change Password</button>
+                </div>
+                <div class="button-item">
+                    <span class="button-label">Save Preferences</span>
+                    <button class="button success medium">Save Preferences</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Sort Buttons</h2>
+            <div style="display: flex; gap: 0.5rem;">
+                <button class="icon-button">Serial #</button>
+                <button class="icon-button">Type</button>
+                <button class="icon-button">Status</button>
+                <button class="icon-button">Date</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

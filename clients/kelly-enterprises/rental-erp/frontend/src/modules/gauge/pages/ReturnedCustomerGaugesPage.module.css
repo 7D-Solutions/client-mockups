@@ -1,0 +1,180 @@
+/* Phase 4: Returned Customer Gauges Page Styles */
+
+.returnedCustomerGaugesPage {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  margin: 0;
+  color: #333;
+}
+
+.headerInfo {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.totalCount {
+  padding: 0.5rem 1rem;
+  background: #e9ecef;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  color: #495057;
+  font-weight: 500;
+}
+
+.accessDenied {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+.accessDenied h2 {
+  margin-top: 0;
+}
+
+.filtersCard {
+  margin-bottom: 1.5rem;
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.searchInput {
+  flex: 1;
+  max-width: 500px;
+}
+
+.gaugeList {
+  display: flex;
+  flex-direction: column;
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: 1.5fr 2fr 1.5fr 1fr 1fr;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+  font-weight: 600;
+  color: #495057;
+}
+
+.gaugeRow {
+  display: grid;
+  grid-template-columns: 1.5fr 2fr 1.5fr 1fr 1fr;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid #dee2e6;
+  transition: background-color 0.2s;
+}
+
+.gaugeRow:hover {
+  background: #f8f9fa;
+}
+
+.gaugeRow:last-child {
+  border-bottom: none;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.col strong {
+  color: #212529;
+  font-size: 1rem;
+}
+
+.setPair {
+  font-size: 0.75rem;
+  color: #0d6efd;
+  font-weight: 500;
+}
+
+.gaugeName {
+  color: #495057;
+  font-size: 0.9rem;
+}
+
+.gaugeSpecs {
+  font-size: 0.875rem;
+  color: #6c757d;
+  font-family: monospace;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #6c757d;
+}
+
+.emptyState p {
+  margin: 0.5rem 0;
+  font-style: italic;
+}
+
+.paginationContainer {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .tableHeader,
+  .gaugeRow {
+    grid-template-columns: 1fr 1.5fr 1fr 1fr 1fr;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .returnedCustomerGaugesPage {
+    padding: 1rem;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .tableHeader {
+    display: none;
+  }
+
+  .gaugeRow {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .col {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .col::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #495057;
+  }
+}

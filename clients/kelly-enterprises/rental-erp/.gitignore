@@ -1,0 +1,139 @@
+# Dependencies
+node_modules/
+*/node_modules/
+**/node_modules/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.production
+
+# Build outputs
+dist/
+build/
+*.zip
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test coverage
+coverage/
+backend/coverage/
+*.lcov
+.nyc_output
+
+# Test scripts and temporary files
+test-*.js
+verify-*.js
+check-*.js
+debug-*.js
+*-audit*.js
+*-test*.js
+*-check*.js
+*-verify*.js
+*-debug*.js
+setup-*.js
+activate-*.js
+analyze-*.js
+compare-*.js
+equivalence-*.js
+quick-*.js
+simple-*.js
+manual-*.js
+final-*.js
+comprehensive-*.js
+docker-*.js
+update-*.js
+fix-*.js
+create-*.js
+*-test.sh
+*-tests.sh
+final-*.sh
+fix-*.sh
+cleanup-*.sh
+fast-*.sh
+
+# Sculptor sync scripts (local development)
+sculptor-*.sh
+test-sculptor-*.sh
+
+# Temporary JSON files
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+
+# Documentation and status files
+STEP*.md
+MIGRATION*.md
+REFACTORING*.md
+backend/*.md
+!backend/README.md
+
+# Test and migration scripts in subdirectories
+backend/test-*.js
+backend/scripts/test-*.js
+backend/scripts/verify-*.js
+backend/migrations/test-*.js
+backend/migrations/verify-*.js
+backend/migrations/fix-*.js
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
+/tmp/
+/temp/
+
+# Backend specific
+backend/logs/
+backend/coverage/
+backend/node_modules/
+backend/*.log
+backend/token.json
+backend/test-*.js
+backend/verify-*.js
+backend/check-*.js
+
+# Docker
+.dockerignore
+
+# Review/cleanup folders
+review-for-delete/
+
+# Database dumps - REMOVED to track MySQL dumps
+# /*.sql
+# *_db_*.sql
+# railway_*.sql
+
+# Claude Code settings (local configuration)
+.claude/settings.json
+
+# Temporary screenshots
+erp-core-docs/frontend-rebuild/screenshots/Screenshot_*.png
+
+# Fireproof Gauge System specific ignores
+"Fireproof Gauge System"/backend/test-*.js
+"Fireproof Gauge System"/backend/verify-*.js
+"Fireproof Gauge System"/backend/check-*.js
+"Fireproof Gauge System"/backend/debug-*.js
+"Fireproof Gauge System"/backend/audit-*.js
+"Fireproof Gauge System"/backend/*.sql
+"Fireproof Gauge System"/backend/scripts/
+"Fireproof Gauge System"/backend/migrations/
+backend/src/modules/admin/routes/run-migration.js
+# erp-core-docs/database rebuild/dump/  # REMOVED to track MySQL dumps

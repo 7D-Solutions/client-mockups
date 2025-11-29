@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Side-by-Side Comparison: Options 2 vs 3</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #e0e0e0; padding: 20px; }
+
+        .comparison-header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .comparison-header h1 {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+        .comparison-header p {
+            color: #757575;
+            font-size: 14px;
+        }
+
+        .comparison-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .option-panel {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            border: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        .option-panel:hover {
+            border-color: #1976d2;
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.15);
+        }
+        .option-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .iframe-container {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            background: #f5f5f5;
+        }
+        iframe {
+            width: 100%;
+            height: 800px;
+            border: none;
+        }
+
+        .pros-cons {
+            margin-top: 16px;
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+        .pros-cons h4 {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .pros-cons ul {
+            margin-left: 20px;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+        .pros { color: #2e7d32; }
+        .cons { color: #d32f2f; }
+
+        .decision-guide {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-top: 20px;
+        }
+        .decision-guide h2 {
+            font-size: 20px;
+            margin-bottom: 16px;
+            color: #212121;
+        }
+        .decision-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+        .decision-table th, .decision-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .decision-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .decision-table td {
+            font-size: 13px;
+        }
+        .recommendation {
+            background: #e3f2fd;
+            border: 2px solid #1976d2;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .recommendation h3 {
+            color: #1565c0;
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="comparison-header">
+        <h1>📊 Detail Page Layout Comparison</h1>
+        <p>Compare Option 2 (Sticky Toolbar) vs Option 3 (Tabs Pattern) side-by-side</p>
+    </div>
+
+    <div class="comparison-container">
+        <!-- Option 2 -->
+        <div class="option-panel">
+            <div class="option-title">Option 2: Sticky Toolbar Pattern</div>
+            <div class="iframe-container">
+                <iframe src="detail-page-option-2-sticky-toolbar.html"></iframe>
+            </div>
+            <div class="pros-cons">
+                <h4 class="pros">✅ Pros:</h4>
+                <ul class="pros">
+                    <li>Sticky toolbar keeps actions always accessible</li>
+                    <li>More space for prominent header</li>
+                    <li>Natural scrolling for long content</li>
+                    <li>Familiar enterprise ERP pattern</li>
+                    <li>Easy to scan all items at once</li>
+                </ul>
+                <h4 class="cons" style="margin-top: 12px;">❌ Cons:</h4>
+                <ul class="cons">
+                    <li>More scrolling required for long lists</li>
+                    <li>All content always visible (less organization)</li>
+                    <li>Different pattern from gauge detail</li>
+                    <li>Can feel cluttered with many sections</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Option 3 -->
+        <div class="option-panel">
+            <div class="option-title">Option 3: Tabs Pattern (Interactive)</div>
+            <div class="iframe-container">
+                <iframe src="detail-page-option-3-tabs-pattern.html"></iframe>
+            </div>
+            <div class="pros-cons">
+                <h4 class="pros">✅ Pros:</h4>
+                <ul class="pros">
+                    <li>Matches existing gauge detail pattern</li>
+                    <li>Clean separation of concerns (details vs items)</li>
+                    <li>Fixed height prevents layout shifts</li>
+                    <li>Easy to add new tabs (History, Reports, etc.)</li>
+                    <li>Better for complex data with multiple views</li>
+                </ul>
+                <h4 class="cons" style="margin-top: 12px;">❌ Cons:</h4>
+                <ul class="cons">
+                    <li>Requires clicks to see different content</li>
+                    <li>Fixed height may feel restrictive</li>
+                    <li>Can't see all data at once</li>
+                    <li>Less common for page-based views</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="decision-guide">
+        <h2>🎯 Decision Matrix</h2>
+        <table class="decision-table">
+            <thead>
+                <tr>
+                    <th>Criteria</th>
+                    <th>Option 2: Sticky Toolbar</th>
+                    <th>Option 3: Tabs Pattern</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Consistency</strong></td>
+                    <td>Different from gauge detail</td>
+                    <td>✅ Matches gauge detail exactly</td>
+                </tr>
+                <tr>
+                    <td><strong>Scalability</strong></td>
+                    <td>Gets long with many items</td>
+                    <td>✅ Easy to add tabs without clutter</td>
+                </tr>
+                <tr>
+                    <td><strong>Information Density</strong></td>
+                    <td>✅ See everything at once</td>
+                    <td>Organized by context</td>
+                </tr>
+                <tr>
+                    <td><strong>User Familiarity</strong></td>
+                    <td>Common ERP pattern</td>
+                    <td>✅ Your users already know gauge tabs</td>
+                </tr>
+                <tr>
+                    <td><strong>Mobile Responsive</strong></td>
+                    <td>✅ Natural scrolling</td>
+                    <td>Tabs work well on mobile</td>
+                </tr>
+                <tr>
+                    <td><strong>Action Accessibility</strong></td>
+                    <td>✅ Sticky toolbar always visible</td>
+                    <td>Actions in header (always visible)</td>
+                </tr>
+                <tr>
+                    <td><strong>Future Features</strong></td>
+                    <td>Add more sections → more scroll</td>
+                    <td>✅ Add tabs: History, Reports, Settings</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="recommendation">
+            <h3>💡 Recommendation</h3>
+            <p style="margin-bottom: 12px;"><strong>Choose Option 3 (Tabs Pattern) if:</strong></p>
+            <ul style="margin-left: 20px; line-height: 1.8;">
+                <li>You want <strong>consistency</strong> across your application (matches gauge detail)</li>
+                <li>You plan to add more features like <strong>History, Reports, or Settings</strong></li>
+                <li>You prefer <strong>organized, focused views</strong> over seeing everything at once</li>
+                <li>Your users are already familiar with the <strong>tabbed pattern</strong> from gauge details</li>
+            </ul>
+
+            <p style="margin: 16px 0 12px;"><strong>Choose Option 2 (Sticky Toolbar) if:</strong></p>
+            <ul style="margin-left: 20px; line-height: 1.8;">
+                <li>You prefer a <strong>traditional page layout</strong> with natural scrolling</li>
+                <li>Users need to <strong>quickly scan all items</strong> without clicking tabs</li>
+                <li>You want a more <strong>dashboard-like feel</strong></li>
+                <li>Location pages have <strong>significantly different needs</strong> than gauge pages</li>
+            </ul>
+
+            <p style="margin-top: 20px; padding: 12px; background: #fff; border-left: 4px solid #1976d2; font-weight: 500;">
+                🎯 <strong>My Recommendation:</strong> Option 3 - It provides better consistency, is more scalable for future features, and your users are already trained on this pattern from the gauge detail modal. The tabs organize weakly-related content (location metadata vs. items stored there) which follows industry best practices.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

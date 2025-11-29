@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gauge History - Modal Tab View</title>
+  <style>
+    /* Design System Variables */
+    :root {
+      --color-primary: #0066cc;
+      --color-primary-hover: #0052a3;
+      --color-success: #28a745;
+      --color-warning: #ffc107;
+      --color-danger: #dc3545;
+      --color-text-primary: #212529;
+      --color-text-secondary: #6c757d;
+      --color-text-muted: #adb5bd;
+      --color-border: #dee2e6;
+      --color-border-light: #e9ecef;
+      --color-bg-light: #f8f9fa;
+      --color-bg-white: #ffffff;
+      --color-bg-hover: #f1f3f5;
+
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+
+      --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-size-xs: 11px;
+      --font-size-sm: 12px;
+      --font-size-base: 14px;
+
+      --radius-sm: 3px;
+      --radius-md: 4px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-family);
+      font-size: var(--font-size-base);
+      color: var(--color-text-primary);
+      background: var(--color-bg-light);
+      padding: var(--space-4);
+    }
+
+    /* Modal Simulation */
+    .modal-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid var(--color-border-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-primary);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-md);
+    }
+
+    .modal-close:hover {
+      background: var(--color-bg-hover);
+    }
+
+    /* Tabs */
+    .modal-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--color-border-light);
+      background: var(--color-bg-light);
+    }
+
+    .tab {
+      padding: var(--space-3) var(--space-5);
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: var(--font-size-base);
+      color: var(--color-text-secondary);
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .tab:hover {
+      background: var(--color-bg-hover);
+    }
+
+    .tab.active {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-primary);
+      background: white;
+    }
+
+    /* Tab Content */
+    .tab-content {
+      padding: var(--space-4);
+      height: 500px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Compact Toolbar */
+    .compact-toolbar {
+      display: flex;
+      gap: var(--space-2);
+      margin-bottom: var(--space-3);
+      flex-wrap: wrap;
+    }
+
+    .search-compact {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .search-compact input {
+      width: 100%;
+      padding: var(--space-2) var(--space-2) var(--space-2) 28px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-size: var(--font-size-sm);
+    }
+
+    .search-compact input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+    }
+
+    .search-compact::before {
+      content: '🔍';
+      position: absolute;
+      left: var(--space-2);
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 12px;
+    }
+
+    .btn-compact {
+      padding: var(--space-2) var(--space-3);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: white;
+      font-size: var(--font-size-sm);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .btn-compact:hover {
+      background: var(--color-bg-hover);
+      border-color: var(--color-primary);
+    }
+
+    /* Quick Filters - Compact */
+    .quick-filters-compact {
+      display: flex;
+      gap: var(--space-2);
+      margin-bottom: var(--space-3);
+      flex-wrap: wrap;
+    }
+
+    .quick-filter-compact {
+      padding: 4px var(--space-3);
+      background: var(--color-bg-light);
+      border: 1px solid var(--color-border-light);
+      border-radius: 12px;
+      font-size: var(--font-size-xs);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quick-filter-compact:hover {
+      background: var(--color-bg-hover);
+    }
+
+    .quick-filter-compact.active {
+      background: var(--color-primary);
+      color: white;
+      border-color: var(--color-primary);
+    }
+
+    /* Compact Table */
+    .table-wrapper {
+      flex: 1;
+      overflow: auto;
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-md);
+    }
+
+    .table-compact {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--font-size-sm);
+    }
+
+    .table-compact thead {
+      background: var(--color-bg-light);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .table-compact th {
+      padding: var(--space-2) var(--space-3);
+      text-align: left;
+      font-weight: 600;
+      font-size: var(--font-size-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--color-text-secondary);
+      border-bottom: 2px solid var(--color-border);
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .table-compact th:hover {
+      background: var(--color-bg-hover);
+    }
+
+    .table-compact th.sortable::after {
+      content: ' ⇅';
+      opacity: 0.3;
+      font-size: 10px;
+    }
+
+    .table-compact th.sorted-desc::after {
+      content: ' ↓';
+      opacity: 1;
+      color: var(--color-primary);
+    }
+
+    .table-compact tbody tr {
+      border-bottom: 1px solid var(--color-border-light);
+      transition: background 0.1s;
+    }
+
+    .table-compact tbody tr:hover {
+      background: var(--color-bg-hover);
+    }
+
+    .table-compact td {
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--font-size-sm);
+    }
+
+    /* Compact Badges */
+    .badge-compact {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge-checkout { background: #fff3cd; color: #856404; }
+    .badge-return { background: #d4edda; color: #155724; }
+    .badge-calibrate { background: #d1ecf1; color: #0c5460; }
+    .badge-qc-pass { background: #d4edda; color: #155724; }
+    .badge-qc-fail { background: #f8d7da; color: #721c24; }
+    .badge-transfer { background: #e2e3e5; color: #383d41; }
+    .badge-unseal { background: #fff3cd; color: #856404; }
+
+    /* Status Change - Compact */
+    .status-change-compact {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+    }
+
+    .status-arrow {
+      margin: 0 4px;
+    }
+
+    /* Pagination - Compact */
+    .pagination-compact {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: var(--space-3);
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--color-border-light);
+      font-size: var(--font-size-xs);
+    }
+
+    .pagination-info {
+      color: var(--color-text-secondary);
+    }
+
+    .pagination-controls {
+      display: flex;
+      gap: var(--space-2);
+      align-items: center;
+    }
+
+    .page-size {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+
+    .page-size select {
+      padding: 2px var(--space-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-xs);
+    }
+
+    .page-btn {
+      padding: 4px var(--space-2);
+      border: 1px solid var(--color-border);
+      background: white;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: var(--font-size-xs);
+      min-width: 28px;
+      transition: all 0.2s;
+    }
+
+    .page-btn:hover:not(:disabled) {
+      background: var(--color-bg-hover);
+    }
+
+    .page-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .page-btn.active {
+      background: var(--color-primary);
+      color: white;
+      border-color: var(--color-primary);
+    }
+
+    /* Modal Footer */
+    .modal-footer {
+      padding: var(--space-4);
+      border-top: 1px solid var(--color-border-light);
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--space-3);
+    }
+
+    .btn-footer {
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      font-size: var(--font-size-base);
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .btn-footer.btn-primary {
+      background: var(--color-primary);
+      color: white;
+    }
+
+    .btn-footer.btn-success {
+      background: var(--color-success);
+      color: white;
+    }
+
+    .btn-footer.btn-secondary {
+      background: var(--color-text-secondary);
+      color: white;
+    }
+
+    .btn-footer:hover {
+      opacity: 0.9;
+    }
+
+    /* Demo Note */
+    .demo-note {
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      border-radius: var(--radius-md);
+      padding: var(--space-3);
+      margin-bottom: var(--space-3);
+      font-size: var(--font-size-sm);
+      color: #856404;
+    }
+
+    /* Truncate text */
+    .truncate {
+      max-width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  </style>
+</head>
+<body>
+  <div class="modal-container">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <div class="modal-title">Test NO GO Gauge SP1762481050</div>
+      <button class="modal-close">×</button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="modal-tabs">
+      <button class="tab">📋 Details</button>
+      <button class="tab active">🕐 History</button>
+      <button class="tab">📄 Calibration Certs</button>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+      <div class="demo-note">
+        <strong>📊 Compact DataTable for Modal</strong> - Designed to fit within the History tab, replacing card layout with searchable table
+      </div>
+
+      <!-- Compact Toolbar -->
+      <div class="compact-toolbar">
+        <div class="search-compact">
+          <input type="text" placeholder="Search history...">
+        </div>
+        <button class="btn-compact">🔽 Filter</button>
+        <button class="btn-compact">📅 Dates</button>
+        <button class="btn-compact">📤 Export</button>
+      </div>
+
+      <!-- Quick Filters -->
+      <div class="quick-filters-compact">
+        <button class="quick-filter-compact">All</button>
+        <button class="quick-filter-compact active">Last 30d</button>
+        <button class="quick-filter-compact">Checkouts</button>
+        <button class="quick-filter-compact">Calibrations</button>
+        <button class="quick-filter-compact">QC Events</button>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrapper">
+        <table class="table-compact">
+          <thead>
+            <tr>
+              <th class="sortable sorted-desc">Date</th>
+              <th class="sortable">Action</th>
+              <th class="sortable">User</th>
+              <th class="sortable">Department</th>
+              <th>Notes</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>11/09/25 14:23</td>
+              <td><span class="badge-compact badge-return">Return</span></td>
+              <td>John Smith</td>
+              <td>QC Lab</td>
+              <td class="truncate">Returned after inspection, condition good</td>
+              <td><span class="status-change-compact">checked_out<span class="status-arrow">→</span>available</span></td>
+            </tr>
+            <tr>
+              <td>11/08/25 09:15</td>
+              <td><span class="badge-compact badge-checkout">Checkout</span></td>
+              <td>Emily Johnson</td>
+              <td>Production</td>
+              <td class="truncate">Job #12345 - Part inspection</td>
+              <td><span class="status-change-compact">available<span class="status-arrow">→</span>checked_out</span></td>
+            </tr>
+            <tr>
+              <td>11/05/25 11:45</td>
+              <td><span class="badge-compact badge-calibrate">Calibration</span></td>
+              <td>Mike Wilson</td>
+              <td>Cal Lab</td>
+              <td class="truncate">Annual calibration - Passed</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>11/04/25 16:30</td>
+              <td><span class="badge-compact badge-qc-pass">QC Pass</span></td>
+              <td>Sarah Davis</td>
+              <td>QC Lab</td>
+              <td class="truncate">Pre-calibration inspection passed</td>
+              <td><span class="status-change-compact">pending<span class="status-arrow">→</span>available</span></td>
+            </tr>
+            <tr>
+              <td>11/03/25 10:22</td>
+              <td><span class="badge-compact badge-return">Return</span></td>
+              <td>Tom Anderson</td>
+              <td>Assembly</td>
+              <td class="truncate">Returned from assembly line</td>
+              <td><span class="status-change-compact">checked_out<span class="status-arrow">→</span>pending</span></td>
+            </tr>
+            <tr>
+              <td>10/30/25 08:00</td>
+              <td><span class="badge-compact badge-checkout">Checkout</span></td>
+              <td>Robert Miller</td>
+              <td>Assembly</td>
+              <td class="truncate">Long-term checkout for project</td>
+              <td><span class="status-change-compact">available<span class="status-arrow">→</span>checked_out</span></td>
+            </tr>
+            <tr>
+              <td>10/25/25 13:45</td>
+              <td><span class="badge-compact badge-transfer">Transfer</span></td>
+              <td>Admin User</td>
+              <td>-</td>
+              <td class="truncate">Building B → Building A</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>10/20/25 15:10</td>
+              <td><span class="badge-compact badge-return">Return</span></td>
+              <td>Lisa Brown</td>
+              <td>Receiving</td>
+              <td class="truncate">Returned from vendor repair</td>
+              <td><span class="status-change-compact">in_repair<span class="status-arrow">→</span>available</span></td>
+            </tr>
+            <tr>
+              <td>10/15/25 09:30</td>
+              <td><span class="badge-compact badge-qc-fail">QC Fail</span></td>
+              <td>Sarah Davis</td>
+              <td>QC Lab</td>
+              <td class="truncate">Failed - out of tolerance</td>
+              <td><span class="status-change-compact">available<span class="status-arrow">→</span>in_repair</span></td>
+            </tr>
+            <tr>
+              <td>10/12/25 11:00</td>
+              <td><span class="badge-compact badge-checkout">Checkout</span></td>
+              <td>Chris Taylor</td>
+              <td>Engineering</td>
+              <td class="truncate">Engineering verification test</td>
+              <td><span class="status-change-compact">available<span class="status-arrow">→</span>checked_out</span></td>
+            </tr>
+            <tr>
+              <td>10/12/25 11:45</td>
+              <td><span class="badge-compact badge-return">Return</span></td>
+              <td>Chris Taylor</td>
+              <td>Engineering</td>
+              <td class="truncate">Quick verification completed</td>
+              <td><span class="status-change-compact">checked_out<span class="status-arrow">→</span>available</span></td>
+            </tr>
+            <tr>
+              <td>10/08/25 14:20</td>
+              <td><span class="badge-compact badge-unseal">Unseal</span></td>
+              <td>Mike Wilson</td>
+              <td>Cal Lab</td>
+              <td class="truncate">Unsealed set for calibration</td>
+              <td><span class="status-change-compact">sealed<span class="status-arrow">→</span>available</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination-compact">
+        <div class="pagination-info">
+          Showing <strong>1-12</strong> of <strong>87</strong>
+        </div>
+        <div class="pagination-controls">
+          <div class="page-size">
+            <span>Rows:</span>
+            <select>
+              <option>10</option>
+              <option selected>25</option>
+              <option>50</option>
+            </select>
+          </div>
+          <button class="page-btn" disabled>‹</button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <button class="page-btn">4</button>
+          <button class="page-btn">›</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <button class="btn-footer btn-primary">🔗 Pair</button>
+      <button class="btn-footer btn-success">✏️ Edit</button>
+      <button class="btn-footer btn-secondary">Close</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Sortable headers
+      const headers = document.querySelectorAll('.table-compact th.sortable');
+      headers.forEach(header => {
+        header.addEventListener('click', () => {
+          headers.forEach(h => h.classList.remove('sorted-desc', 'sorted-asc'));
+          if (header.classList.contains('sorted-desc')) {
+            header.classList.remove('sorted-desc');
+            header.classList.add('sorted-asc');
+          } else {
+            header.classList.add('sorted-desc');
+          }
+        });
+      });
+
+      // Quick filters
+      const filters = document.querySelectorAll('.quick-filter-compact');
+      filters.forEach(filter => {
+        filter.addEventListener('click', () => {
+          filters.forEach(f => f.classList.remove('active'));
+          filter.classList.add('active');
+        });
+      });
+
+      // Page buttons
+      const pageButtons = document.querySelectorAll('.page-btn:not(:disabled)');
+      pageButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+          if (btn.textContent.match(/^\d+$/)) {
+            btn.classList.add('active');
+          }
+        });
+      });
+
+      console.log('✅ Modal-friendly compact DataTable mockup loaded');
+    });
+  </script>
+</body>
+</html>

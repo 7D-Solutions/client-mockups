@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Property Rental Tracker - Enhanced</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-primary: #FF5A5F;
+            --color-primary-dark: #E84A4F;
+            --color-success: #00A699;
+            --color-warning: #FFB400;
+            --color-danger: #dc3545;
+            --color-info: #008489;
+            --color-border: #dee2e6;
+            --color-border-light: #e9ecef;
+            --color-bg-light: #f8f9fa;
+            --color-text: #333;
+            --color-text-light: #666;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 20px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            color: var(--color-text);
+        }
+
+        .page-container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: var(--space-5);
+        }
+
+        .page-header {
+            background: white;
+            padding: var(--space-5);
+            border-radius: 8px;
+            margin-bottom: var(--space-5);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .page-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-4);
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--color-text);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* Property Selector */
+        .property-selector {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: var(--space-4);
+            border-radius: 8px;
+            margin-bottom: var(--space-4);
+        }
+
+        .property-selector-header {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: var(--space-3);
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .property-tabs {
+            display: flex;
+            gap: var(--space-2);
+            flex-wrap: wrap;
+        }
+
+        .property-tab {
+            background: rgba(255,255,255,0.2);
+            padding: var(--space-3) var(--space-4);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .property-tab:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .property-tab.active {
+            background: white;
+            color: #764ba2;
+            border-color: white;
+        }
+
+        .property-name {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .property-stats {
+            font-size: 11px;
+            margin-top: 4px;
+            opacity: 0.8;
+        }
+
+        /* Property Comparison Grid */
+        .property-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-5);
+        }
+
+        .property-card {
+            background: white;
+            padding: var(--space-5);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-top: 4px solid var(--color-primary);
+        }
+
+        .property-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: var(--space-4);
+        }
+
+        .property-card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .property-card-address {
+            font-size: 12px;
+            color: var(--color-text-light);
+            margin-top: 4px;
+        }
+
+        .property-metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-2) 0;
+            border-bottom: 1px solid var(--color-border-light);
+        }
+
+        .property-metric:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: var(--color-text-light);
+        }
+
+        .metric-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-5);
+        }
+
+        .stat-card {
+            background: white;
+            padding: var(--space-5);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .stat-subtext {
+            font-size: 13px;
+            color: var(--color-text-light);
+            margin-top: 4px;
+        }
+
+        /* View Toggle */
+        .view-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: var(--space-5);
+        }
+
+        .view-toolbar {
+            padding: var(--space-4);
+            border-bottom: 1px solid var(--color-border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--color-bg-light);
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 5px;
+            background: white;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            padding: 3px;
+        }
+
+        .view-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-text-light);
+            transition: all 0.2s;
+        }
+
+        .view-btn.active {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        /* Calendar View */
+        .calendar-container {
+            display: none;
+            padding: var(--space-5);
+        }
+
+        .calendar-container.active {
+            display: block;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-4);
+        }
+
+        .calendar-month {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            background: var(--color-border-light);
+            border: 1px solid var(--color-border-light);
+        }
+
+        .calendar-day-header {
+            background: var(--color-bg-light);
+            padding: var(--space-2);
+            text-align: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .calendar-day {
+            background: white;
+            min-height: 100px;
+            padding: var(--space-2);
+            position: relative;
+        }
+
+        .calendar-day.other-month {
+            background: #fafafa;
+            opacity: 0.5;
+        }
+
+        .calendar-day.today {
+            background: #fff3f3;
+        }
+
+        .day-number {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .calendar-booking {
+            font-size: 10px;
+            padding: 2px 4px;
+            margin: 2px 0;
+            border-radius: 3px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .booking-airbnb {
+            background: #ffe7e7;
+            color: #c92a2a;
+            border-left: 3px solid #FF5A5F;
+        }
+
+        .booking-vrbo {
+            background: #e7f3ff;
+            color: #004085;
+            border-left: 3px solid #0066CC;
+        }
+
+        .booking-bookingcom {
+            background: #e7f7ff;
+            color: #0c5460;
+            border-left: 3px solid #003580;
+        }
+
+        .booking-direct {
+            background: #d4edda;
+            color: #155724;
+            border-left: 3px solid #28a745;
+        }
+
+        .calendar-blocked {
+            background: #e2e3e5;
+            color: #383d41;
+            font-size: 10px;
+            padding: 2px 4px;
+            margin: 2px 0;
+            border-radius: 3px;
+        }
+
+        /* Bookings List View */
+        .bookings-container {
+            display: none;
+        }
+
+        .bookings-container.active {
+            display: block;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .datatable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .datatable thead {
+            background: var(--color-bg-light);
+            border-bottom: 2px solid var(--color-border);
+        }
+
+        .datatable th {
+            padding: var(--space-3) var(--space-4);
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--color-text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .datatable tbody tr {
+            border-bottom: 1px solid var(--color-border-light);
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .datatable tbody tr:hover {
+            background: #fff5f5;
+        }
+
+        .datatable td {
+            padding: var(--space-3) var(--space-4);
+            font-size: 14px;
+            color: var(--color-text);
+        }
+
+        .platform-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .platform-airbnb {
+            background: #ffe7e7;
+            color: #c92a2a;
+        }
+
+        .platform-vrbo {
+            background: #e7f3ff;
+            color: #004085;
+        }
+
+        .platform-bookingcom {
+            background: #e7f7ff;
+            color: #0c5460;
+        }
+
+        .platform-direct {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-completed {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .currency {
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        .currency.positive {
+            color: var(--color-success);
+        }
+
+        .rating {
+            color: var(--color-warning);
+            font-weight: 700;
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: var(--space-4);
+            padding: var(--space-4);
+            background: var(--color-bg-light);
+            border-radius: 6px;
+            margin-bottom: var(--space-4);
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .legend-label {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .filters-section {
+            display: flex;
+            gap: var(--space-3);
+            flex-wrap: wrap;
+            padding: var(--space-4);
+            border-bottom: 1px solid var(--color-border-light);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .filter-input,
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+        }
+
+        /* Analytics View */
+        .analytics-container {
+            display: none;
+            padding: var(--space-5);
+        }
+
+        .analytics-container.active {
+            display: block;
+        }
+
+        .chart-placeholder {
+            background: var(--color-bg-light);
+            border-radius: 8px;
+            padding: var(--space-5);
+            text-align: center;
+            color: var(--color-text-light);
+            margin-bottom: var(--space-4);
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed var(--color-border);
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-4);
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-header-top">
+                <h1 class="page-title">
+                    🏠 Multi-Property Rental Tracker
+                </h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary">📊 Export Report</button>
+                    <button class="btn btn-success">➕ New Booking</button>
+                    <button class="btn btn-primary">🏘️ Add Property</button>
+                </div>
+            </div>
+
+            <!-- Property Selector -->
+            <div class="property-selector">
+                <div class="property-selector-header">📍 Select Property</div>
+                <div class="property-tabs">
+                    <div class="property-tab active">
+                        <div class="property-name">📊 All Properties</div>
+                        <div class="property-stats">3 properties • 82% avg occupancy</div>
+                    </div>
+                    <div class="property-tab">
+                        <div class="property-name">🏡 Downtown Cottage</div>
+                        <div class="property-stats">78% occupancy • $171/night</div>
+                    </div>
+                    <div class="property-tab">
+                        <div class="property-name">🏖️ Beach House</div>
+                        <div class="property-stats">85% occupancy • $245/night</div>
+                    </div>
+                    <div class="property-tab">
+                        <div class="property-name">🏔️ Mountain Cabin</div>
+                        <div class="property-stats">83% occupancy • $189/night</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Property Comparison Cards -->
+        <div class="property-comparison">
+            <div class="property-card">
+                <div class="property-card-header">
+                    <div>
+                        <div class="property-card-title">🏡 Downtown Cottage</div>
+                        <div class="property-card-address">123 Main St, Austin, TX</div>
+                    </div>
+                </div>
+                <div class="property-metric">
+                    <span class="metric-label">2024 Revenue</span>
+                    <span class="metric-value currency positive">$48,750</span>
+                </div>
+                <div class="property-metric">
+                    <span class="metric-label">Occupancy Rate</span>
+                    <span class="metric-value">78%</span>
+                </div>
+                <div class="property-metric">
+                    <span class="metric-label">Avg Nightly Rate</span>
+                    <span class="metric-value">$171</span>
+                </div>
+                <div class="property-metric">
+                    <span class="metric-label">Avg Rating</span>
+                    <span class="metric-value">4.8 ⭐</span>
+                </div>
+                <div class="property-metric">
+                    <span class="metric-label">Total Bookings</span>
+                    <span class="metric-value">32</span>
+                </div>
+            </div>
+
+            <div class="property-card" style="border-top-color: #0066CC;">
+                <div class="property-card-header">
+                    <div>
+                        <div class="property-card-title">🏖️ Beach House</div>
+                        <div class="property-card-address">456 Ocean Blvd, Galveston, TX</div>
+                    </div>
+                </div>
+                <div class="property-metric">
+                    <span class="metric-label">2024 Revenue</span>
+                    <span class="metric-value currency positive">$72,450</span>
+                </div>
+                <div class="property-metric">
+                    <span class="metric-label">Occupancy Rate</span>
+                    <span class="metric-value">85%</span>
+                </div>
+                <div class="property-metric">
+                    <span class="metric-label">Avg Nightly Rate</span>
+                    <span class="metric-value">$245</span>
+                </div>
+                <div class="property-metric">
+                    <span class="metric-label">Avg Rating</span>
+                    <span class="metric-value">4.9 ⭐</span>
+                </div>
+                <div class="property-metric">
+                    <span class="metric-label">Total Bookings</span>
+                    <span class="metric-value">28</span>
+                </div>
+            </div>
+
+            <div class="property-card" style="border-top-color: #003580;">
+                <div class="property-card-header">
+                    <div>
+                        <div class="property-card-title">🏔️ Mountain Cabin</div>
+                        <div class="property-card-address">789 Pine Ridge Rd, Breckenridge, CO</div>
+                    </div>
+                </div>
+                <div class="property-metric">
+                    <span class="metric-label">2024 Revenue</span>
+                    <span class="metric-value currency positive">$58,920</span>
+                </div>
+                <div class="property-metric">
+                    <span class="metric-label">Occupancy Rate</span>
+                    <span class="metric-value">83%</span>
+                </div>
+                <div class="property-metric">
+                    <span class="metric-label">Avg Nightly Rate</span>
+                    <span class="metric-value">$189</span>
+                </div>
+                <div class="property-metric">
+                    <span class="metric-label">Avg Rating</span>
+                    <span class="metric-value">4.7 ⭐</span>
+                </div>
+                <div class="property-metric">
+                    <span class="metric-label">Total Bookings</span>
+                    <span class="metric-value">26</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Combined Statistics (All Properties) -->
+        <div class="stats-bar">
+            <div class="stat-card" style="border-left-color: var(--color-success);">
+                <div class="stat-label">Total Revenue (All)</div>
+                <div class="stat-value">$180,120</div>
+                <div class="stat-subtext">Across 3 properties</div>
+            </div>
+            <div class="stat-card" style="border-left-color: var(--color-info);">
+                <div class="stat-label">Combined Occupancy</div>
+                <div class="stat-value">82%</div>
+                <div class="stat-subtext">Average across portfolio</div>
+            </div>
+            <div class="stat-card" style="border-left-color: var(--color-warning);">
+                <div class="stat-label">Total Bookings</div>
+                <div class="stat-value">86</div>
+                <div class="stat-subtext">Year to date 2024</div>
+            </div>
+            <div class="stat-card" style="border-left-color: var(--color-primary);">
+                <div class="stat-label">Avg Portfolio Rating</div>
+                <div class="stat-value">4.8 ⭐</div>
+                <div class="stat-subtext">Based on 78 reviews</div>
+            </div>
+        </div>
+
+        <!-- View Container -->
+        <div class="view-container">
+            <!-- View Toolbar -->
+            <div class="view-toolbar">
+                <div style="font-size: 14px; font-weight: 600; color: #666;">
+                    📅 Showing: Downtown Cottage • November 2024
+                </div>
+                <div class="view-toggle">
+                    <button class="view-btn" data-view="bookings">📋 Bookings List</button>
+                    <button class="view-btn active" data-view="calendar">📅 Calendar View</button>
+                    <button class="view-btn" data-view="analytics">📊 Analytics</button>
+                </div>
+            </div>
+
+            <!-- Platform Legend -->
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #FF5A5F;"></div>
+                    <div class="legend-label">Airbnb</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #0066CC;"></div>
+                    <div class="legend-label">VRBO</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #003580;"></div>
+                    <div class="legend-label">Booking.com</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #28a745;"></div>
+                    <div class="legend-label">Direct Booking</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #6c757d;"></div>
+                    <div class="legend-label">Blocked/Personal</div>
+                </div>
+            </div>
+
+            <!-- Calendar View -->
+            <div class="calendar-container active">
+                <div class="calendar-header">
+                    <button class="btn btn-secondary btn-sm">← Previous</button>
+                    <div class="calendar-month">November 2024</div>
+                    <button class="btn btn-secondary btn-sm">Next →</button>
+                </div>
+
+                <div class="calendar-grid">
+                    <!-- Day Headers -->
+                    <div class="calendar-day-header">Sun</div>
+                    <div class="calendar-day-header">Mon</div>
+                    <div class="calendar-day-header">Tue</div>
+                    <div class="calendar-day-header">Wed</div>
+                    <div class="calendar-day-header">Thu</div>
+                    <div class="calendar-day-header">Fri</div>
+                    <div class="calendar-day-header">Sat</div>
+
+                    <!-- Previous Month Days -->
+                    <div class="calendar-day other-month">
+                        <div class="day-number">27</div>
+                    </div>
+                    <div class="calendar-day other-month">
+                        <div class="day-number">28</div>
+                    </div>
+                    <div class="calendar-day other-month">
+                        <div class="day-number">29</div>
+                    </div>
+                    <div class="calendar-day other-month">
+                        <div class="day-number">30</div>
+                    </div>
+                    <div class="calendar-day other-month">
+                        <div class="day-number">31</div>
+                    </div>
+
+                    <!-- November 1-2 -->
+                    <div class="calendar-day">
+                        <div class="day-number">1</div>
+                        <div class="calendar-booking booking-bookingcom" title="Jennifer M. - Cancelled">
+                            Jennifer M. (Cancelled)
+                        </div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">2</div>
+                        <div class="calendar-booking booking-bookingcom" title="Jennifer M. - Cancelled">
+                            Jennifer M. (Cancelled)
+                        </div>
+                    </div>
+
+                    <!-- November 3-9 (Available) -->
+                    <div class="calendar-day">
+                        <div class="day-number">3</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">4</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">5</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">6</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">7</div>
+                    </div>
+
+                    <!-- November 8-14 (Michael Chen - VRBO) -->
+                    <div class="calendar-day">
+                        <div class="day-number">8</div>
+                        <div class="calendar-booking booking-vrbo" title="Michael Chen - VRBO">
+                            Michael C. - VRBO
+                        </div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">9</div>
+                        <div class="calendar-booking booking-vrbo">
+                            Michael C. - VRBO
+                        </div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">10</div>
+                        <div class="calendar-booking booking-vrbo">
+                            Michael C. - VRBO
+                        </div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">11</div>
+                        <div class="calendar-booking booking-vrbo">
+                            Michael C. - VRBO
+                        </div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">12</div>
+                        <div class="calendar-booking booking-vrbo">
+                            Michael C. - VRBO
+                        </div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">13</div>
+                        <div class="calendar-booking booking-vrbo">
+                            Michael C. - VRBO
+                        </div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">14</div>
+                        <div class="calendar-booking booking-vrbo">
+                            Michael C. - VRBO
+                        </div>
+                    </div>
+
+                    <!-- November 15-17 (Sarah Johnson - Airbnb) -->
+                    <div class="calendar-day today">
+                        <div class="day-number">15 (Today)</div>
+                        <div class="calendar-booking booking-airbnb" title="Sarah Johnson - Airbnb">
+                            Sarah J. - Airbnb
+                        </div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">16</div>
+                        <div class="calendar-booking booking-airbnb">
+                            Sarah J. - Airbnb
+                        </div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">17</div>
+                        <div class="calendar-booking booking-airbnb">
+                            Sarah J. - Airbnb
+                        </div>
+                    </div>
+
+                    <!-- November 18-24 (Available) -->
+                    <div class="calendar-day">
+                        <div class="day-number">18</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">19</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">20</div>
+                        <div class="calendar-blocked">🔒 Blocked</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">21</div>
+                        <div class="calendar-blocked">🔒 Blocked</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">22</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">23</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">24</div>
+                    </div>
+
+                    <!-- November 25-27 (Amanda Wilson - Direct) -->
+                    <div class="calendar-day">
+                        <div class="day-number">25</div>
+                        <div class="calendar-booking booking-direct" title="Amanda Wilson - Direct">
+                            Amanda W. - Direct
+                        </div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">26</div>
+                        <div class="calendar-booking booking-direct">
+                            Amanda W. - Direct
+                        </div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">27</div>
+                        <div class="calendar-booking booking-direct">
+                            Amanda W. - Direct
+                        </div>
+                    </div>
+
+                    <!-- November 28-30 -->
+                    <div class="calendar-day">
+                        <div class="day-number">28</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">29</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">30</div>
+                    </div>
+
+                    <!-- Next Month Days -->
+                    <div class="calendar-day other-month">
+                        <div class="day-number">1</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bookings List View -->
+            <div class="bookings-container">
+                <div class="filters-section">
+                    <div class="filter-group">
+                        <label class="filter-label">Platform</label>
+                        <select class="filter-select" style="width: 150px;">
+                            <option>All Platforms</option>
+                            <option>Airbnb</option>
+                            <option>VRBO</option>
+                            <option>Booking.com</option>
+                            <option>Direct Booking</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Status</label>
+                        <select class="filter-select" style="width: 150px;">
+                            <option>All Bookings</option>
+                            <option>Confirmed</option>
+                            <option>Completed</option>
+                            <option>Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Date Range</label>
+                        <input type="date" class="filter-input" style="width: 140px;">
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="datatable">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Platform</th>
+                                <th>Property</th>
+                                <th>Guest Name</th>
+                                <th>Check-In</th>
+                                <th>Nights</th>
+                                <th>Revenue</th>
+                                <th>Rating</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>BK-2024-032</strong></td>
+                                <td><span class="platform-badge platform-airbnb">Airbnb</span></td>
+                                <td>Downtown Cottage</td>
+                                <td>Sarah Johnson</td>
+                                <td>Nov 15, 2024</td>
+                                <td>3</td>
+                                <td><span class="currency positive">$525.00</span></td>
+                                <td><span class="rating">5.0 ⭐</span></td>
+                                <td><span class="status-badge status-completed">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>BK-2024-031</strong></td>
+                                <td><span class="platform-badge platform-vrbo">VRBO</span></td>
+                                <td>Downtown Cottage</td>
+                                <td>Michael Chen</td>
+                                <td>Nov 8, 2024</td>
+                                <td>7</td>
+                                <td><span class="currency positive">$1,225.00</span></td>
+                                <td><span class="rating">4.8 ⭐</span></td>
+                                <td><span class="status-badge status-completed">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>BK-2024-033</strong></td>
+                                <td><span class="platform-badge platform-direct">Direct</span></td>
+                                <td>Downtown Cottage</td>
+                                <td>Amanda Wilson</td>
+                                <td>Nov 25, 2024</td>
+                                <td>3</td>
+                                <td><span class="currency positive">$525.00</span></td>
+                                <td>—</td>
+                                <td><span class="status-badge status-confirmed">Confirmed</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>BK-2024-045</strong></td>
+                                <td><span class="platform-badge platform-airbnb">Airbnb</span></td>
+                                <td>Beach House</td>
+                                <td>Robert Davis</td>
+                                <td>Nov 12, 2024</td>
+                                <td>5</td>
+                                <td><span class="currency positive">$1,175.00</span></td>
+                                <td><span class="rating">4.9 ⭐</span></td>
+                                <td><span class="status-badge status-completed">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>BK-2024-052</strong></td>
+                                <td><span class="platform-badge platform-bookingcom">Booking.com</span></td>
+                                <td>Mountain Cabin</td>
+                                <td>Lisa Anderson</td>
+                                <td>Nov 18, 2024</td>
+                                <td>4</td>
+                                <td><span class="currency positive">$756.00</span></td>
+                                <td>—</td>
+                                <td><span class="status-badge status-confirmed">Confirmed</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Analytics View -->
+            <div class="analytics-container">
+                <div class="analytics-grid">
+                    <div>
+                        <h3 style="margin-bottom: 15px;">Revenue Trends</h3>
+                        <div class="chart-placeholder">
+                            📈 Revenue Chart<br>
+                            <small>(Line chart showing monthly revenue trends across all properties)</small>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 style="margin-bottom: 15px;">Booking Platform Distribution</h3>
+                        <div class="chart-placeholder">
+                            🥧 Platform Pie Chart<br>
+                            <small>(Airbnb: 45%, VRBO: 30%, Booking.com: 15%, Direct: 10%)</small>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 style="margin-bottom: 15px;">Occupancy Rate by Property</h3>
+                        <div class="chart-placeholder">
+                            📊 Bar Chart<br>
+                            <small>(Comparing occupancy rates across 3 properties)</small>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 style="margin-bottom: 15px;">Average Nightly Rate Trends</h3>
+                        <div class="chart-placeholder">
+                            📉 ADR Chart<br>
+                            <small>(Monthly average daily rate trends)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Property Tab Selection
+        document.querySelectorAll('.property-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.property-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                console.log('Property selected:', this.querySelector('.property-name').textContent);
+            });
+        });
+
+        // View Toggle
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const viewType = this.dataset.view;
+
+                // Update active button
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                // Hide all views
+                document.querySelector('.calendar-container').classList.remove('active');
+                document.querySelector('.bookings-container').classList.remove('active');
+                document.querySelector('.analytics-container').classList.remove('active');
+
+                // Show selected view
+                if (viewType === 'calendar') {
+                    document.querySelector('.calendar-container').classList.add('active');
+                } else if (viewType === 'bookings') {
+                    document.querySelector('.bookings-container').classList.add('active');
+                } else if (viewType === 'analytics') {
+                    document.querySelector('.analytics-container').classList.add('active');
+                }
+            });
+        });
+
+        // Calendar booking click
+        document.querySelectorAll('.calendar-booking').forEach(booking => {
+            booking.addEventListener('click', function(e) {
+                e.stopPropagation();
+                console.log('Booking clicked:', this.textContent);
+                alert('View booking details: ' + this.textContent);
+            });
+        });
+    </script>
+</body>
+</html>

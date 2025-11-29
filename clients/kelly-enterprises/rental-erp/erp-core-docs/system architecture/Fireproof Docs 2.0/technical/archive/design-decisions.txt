@@ -1,0 +1,231 @@
+DATABASE DESIGN DECISIONS
+=========================
+Date: 2025-08-18
+Purpose: Document key design decisions for the modular ERP database architecture
+
+TABLE OF CONTENTS
+-----------------
+1. NULL Column Optimization
+2. Status Change Tracking Pattern
+3. Event System Design
+4. Soft Delete Strategy
+5. Module Separation Principles
+6. Table Naming Conventions
+
+==============================================================================
+1. NULL COLUMN OPTIMIZATION
+==============================================================================
+
+PRINCIPLE: Eliminate wasteful NULLs while keeping legitimate optional fields
+
+REMOVED (Wasteful NULLs):
+-------------------------
+✗ core_user_roles.expires_at
+  - Reason: No temporary role assignments
+  - Decision: Remove entirely
+
+✗ core_user_permission_overrides.expires_at
+  - Reason: Permission overrides don't expire
+  - Decision: Remove entirely
+
+✗ gauge_items.manufacturer, model_number, purchase_date, purchase_price
+  - Reason: Belongs in future purchasing module, not gauge tracking
+  - Decision: Remove entirely
+
+✗ gauge_transfers.approval_notes
+  - Reason: Notes rarely used when accepting/rejecting
+  - Decision: Remove entirely
+
+✗ gauge_calibrations.environmental_conditions
+  - Reason: Not needed for gauge tracking
+  - Decision: Remove entirely
+
+✗ gauge_current_state (entire approach)
+  - Reason: All fields NULL when gauge available
+  - Decision: Replace with gauge_active_checkouts (only exists when checked out)
+
+KEPT (Legitimate NULLs):
+------------------------
+✓ core_users.locked_until
+  - Reason: Performance - checked on every login
+  - Decision: Keep in users table despite NULL for most users
+
+✓ core_events.target_module_id, entity_type, entity_id
+  - Reason: Not all events have targets or relate to entities
+  - Decision: Keep as nullable fields
+
+✓ gauge_items.custom_id
+  - Reason: Customer choice - may use system IDs only
+  - Decision: Keep as nullable
+
+✓ gauge_items.companion_gauge_id
+  - Reason: Only thread gauges have GO/NO GO companions
+  - Decision: Keep as nullable
+
+✓ gauge_calibrations.document_path
+  - Reason: Certificate number required, but document upload optional
+  - Decision: Keep as nullable
+
+✓ core_notifications.read_at, expires_at
+  - Reason: NULL until read, not all notifications expire
+  - Decision: Keep as nullable
+
+✓ gauge_transactions.related_user_id, job_number, location, notes
+  - Reason: Optional transaction details
+  - Decision: Keep as nullable
+
+✓ core_audit_log.user_id, ip_address, user_agent
+  - Reason: System actions don't have user context
+  - Decision: Keep as nullable
+
+==============================================================================
+2. STATUS CHANGE TRACKING PATTERN
+==============================================================================
+
+PRINCIPLE: Use single timestamp + status instead of multiple timestamp fields
+
+PATTERN:
+--------
+status ENUM('pending','accepted','rejected','cancelled') NOT NULL
+status_changed_at TIMESTAMP NULL
+status_changed_by INT NULL
+
+APPLIED TO:
+-----------
+- gauge_transfers (replaced accepted_at, rejected_at)
+- gauge_unseal_requests (replaced approved_at, rejected_at)
+
+BENEFITS:
+---------
+- Eliminates one timestamp always being NULL
+- Cleaner queries
+- Status already tells us what happened
+
+==============================================================================
+3. EVENT SYSTEM DESIGN
+==============================================================================
+
+PRINCIPLE: Need-to-know targeted events, not broadcasts
+
+KEY DECISIONS:
+--------------
+1. Most module operations stay internal (no events)
+2. Events only when another module must take action
+3. Always specify target_module_id (no broadcasts)
+4. Events are rare, not routine
+
+EXAMPLES OF INTERNAL OPERATIONS (No Events):
+--------------------------------------------
+- Gauge checkout/return
+- User transfers
+- Adding notes
+- Routine calibrations
+- Status updates
+
+EXAMPLES OF CROSS-MODULE EVENTS:
+--------------------------------
+- gauge → inventory: 'asset.retired' (remove from available tools)
+- gauge → quality: 'calibration.failed' (may need reinspection)
+- auth → [specific module]: 'permission.revoked' (clear caches)
+
+EVENT TABLE STRUCTURE:
+----------------------
+core_events:
+  event_type VARCHAR(100) NOT NULL
+  source_module_id VARCHAR(50) NOT NULL
+  target_module_id VARCHAR(50) NOT NULL  -- Always required
+  entity_type VARCHAR(50)                -- NULL for system events
+  entity_id INT                          -- NULL for system events
+  payload JSON NOT NULL
+
+==============================================================================
+4. SOFT DELETE STRATEGY
+==============================================================================
+
+PRINCIPLE: Simple is_deleted flag, no timestamp
+
+PATTERN:
+--------
+is_deleted BOOLEAN DEFAULT FALSE
+
+REASONING:
+----------
+- Deletion timestamp rarely needed
+- Can get from audit_log if required
+- Saves space on every table
+- Simpler queries
+
+IMPLEMENTATION:
+---------------
+- Add is_deleted to all business tables
+- Default all queries to WHERE is_deleted = FALSE
+- Admin queries can include deleted records
+
+==============================================================================
+5. MODULE SEPARATION PRINCIPLES
+==============================================================================
+
+PRINCIPLE: True module independence through clear boundaries
+
+TABLE PREFIXES:
+---------------
+Core Tables: core_*
+- core_users, core_roles, core_permissions
+- core_events, core_notifications
+- core_audit_log
+
+Module Tables: [module]_*
+- gauge_items, gauge_calibrations
+- inventory_stock, inventory_transactions
+- quality_inspections, quality_criteria
+
+INTERACTION RULES:
+------------------
+1. Modules NEVER query other module's tables directly
+2. Core tables are the ONLY shared tables
+3. Communication through events only when necessary
+4. Each module tracks its own state internally
+
+FOREIGN KEY RULES:
+------------------
+- Module tables can reference core_users
+- Module tables can reference core_* tables
+- Module tables CANNOT reference other module tables
+- Exception: gauge companion relationships (same module)
+
+==============================================================================
+6. TABLE NAMING CONVENTIONS
+==============================================================================
+
+NAMING PATTERNS:
+----------------
+- Entities: Plural (users, gauges, notifications)
+- Join tables: table1_table2 (user_roles, gauge_transfers)
+- Status tracking: entity_active_* (gauge_active_checkouts)
+- History tables: entity_*_history (gauge_companion_history)
+- Config tables: module_config (not configuration)
+
+AVOID:
+------
+- Redundant words: gauge_items (just 'gauges')
+- Unclear abbreviations: cal_std_specs
+- Mixed naming: some singular, some plural
+
+SPECIAL CASES:
+--------------
+gauge_current_state → gauge_active_checkouts
+- Reason: Only track active checkouts, not all states
+- Benefit: Eliminates NULL columns for available gauges
+
+==============================================================================
+SUMMARY
+==============================================================================
+
+These design decisions prioritize:
+1. Efficiency - No wasted NULL columns
+2. Clarity - Consistent patterns across tables
+3. Modularity - True independence between modules
+4. Simplicity - Straightforward queries and maintenance
+
+All decisions based on actual usage patterns and business requirements,
+not theoretical possibilities.

@@ -1,0 +1,202 @@
+name: 'Architecture Validation'
+
+on:
+  push:
+    branches: [ main, development-core ]
+    paths:
+      - 'frontend/src/**'
+  pull_request:
+    branches: [ main, development-core ]
+    paths:
+      - 'frontend/src/**'
+
+jobs:
+  architecture-validation:
+    name: 'Validate Frontend Architecture'
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ./frontend
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run ESLint Architecture Rules
+      run: |
+        echo "🔍 Running ESLint with architecture rules..."
+        npm run lint
+      continue-on-error: true
+      id: eslint
+      
+    - name: Run Architecture Validator
+      run: |
+        echo "🏗️ Running architecture validation..."
+        npm run architecture:validate
+      id: arch-validator
+      
+    - name: Generate Infrastructure Usage Report
+      run: |
+        echo "📊 Generating infrastructure usage report..."
+        npm run architecture:report
+      continue-on-error: true
+      
+    - name: Upload Architecture Reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: architecture-reports
+        path: |
+          frontend/reports/
+        retention-days: 30
+        
+    - name: Comment PR with Architecture Status
+      if: github.event_name == 'pull_request' && (failure() || success())
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const path = require('path');
+          
+          let comment = '## 🏗️ Architecture Validation Results\n\n';
+          
+          // ESLint results
+          if ('${{ steps.eslint.outcome }}' === 'failure') {
+            comment += '❌ **ESLint Architecture Rules**: Failed\n';
+            comment += '- Custom modal implementations detected\n';
+            comment += '- Hardcoded colors found\n';
+            comment += '- Please use infrastructure components\n\n';
+          } else {
+            comment += '✅ **ESLint Architecture Rules**: Passed\n\n';
+          }
+          
+          // Architecture validator results
+          if ('${{ steps.arch-validator.outcome }}' === 'failure') {
+            comment += '❌ **Architecture Validation**: Failed\n';
+            comment += '- Infrastructure adoption rate below threshold\n';
+            comment += '- Too many architectural violations\n\n';
+          } else {
+            comment += '✅ **Architecture Validation**: Passed\n\n';
+          }
+          
+          comment += '### 📋 Next Steps\n';
+          comment += '- Review infrastructure component documentation\n';
+          comment += '- Use `npm run lint:fix` to auto-fix violations\n';
+          comment += '- Check uploaded reports for detailed analysis\n\n';
+          
+          comment += '### 🔗 Resources\n';
+          comment += '- [Infrastructure Components](../src/infrastructure/components/)\n';
+          comment += '- [Architecture Guidelines](../docs/architecture.md)\n';
+          comment += '- [Migration Guide](../docs/migration-guide.md)\n';
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+          
+    - name: Fail if architecture validation failed
+      if: steps.arch-validator.outcome == 'failure'
+      run: |
+        echo "❌ Architecture validation failed!"
+        echo "💡 Review the architecture report for detailed guidance"
+        exit 1
+        
+  infrastructure-compliance:
+    name: 'Check Infrastructure Compliance'
+    runs-on: ubuntu-latest
+    needs: architecture-validation
+    if: always()
+    
+    defaults:
+      run:
+        working-directory: ./frontend
+        
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Check for new custom modal implementations
+      run: |
+        echo "🔍 Checking for new custom modal implementations..."
+        
+        # Get list of changed files
+        git fetch origin ${{ github.base_ref }}
+        CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- src/)
+        
+        if [ -z "$CHANGED_FILES" ]; then
+          echo "No frontend files changed"
+          exit 0
+        fi
+        
+        echo "Changed files: $CHANGED_FILES"
+        
+        # Check for modal patterns in changed files
+        MODAL_VIOLATIONS=""
+        for file in $CHANGED_FILES; do
+          if [[ $file =~ \.(ts|tsx)$ ]] && [[ ! $file =~ ^src/infrastructure/ ]]; then
+            if grep -l "modalOverlay\|modal-overlay\|className.*modal\|position.*fixed.*z-index" "$file" 2>/dev/null; then
+              MODAL_VIOLATIONS="$MODAL_VIOLATIONS $file"
+            fi
+          fi
+        done
+        
+        if [ ! -z "$MODAL_VIOLATIONS" ]; then
+          echo "❌ Custom modal implementations detected in:"
+          echo "$MODAL_VIOLATIONS"
+          echo ""
+          echo "💡 Please use the infrastructure Modal component instead:"
+          echo "   import { Modal } from '../infrastructure/components'"
+          exit 1
+        fi
+        
+        echo "✅ No new custom modal implementations detected"
+        
+    - name: Check infrastructure import patterns
+      run: |
+        echo "🔍 Checking infrastructure import patterns..."
+        
+        # Check for proper infrastructure imports
+        IMPORT_VIOLATIONS=""
+        git fetch origin ${{ github.base_ref }}
+        CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- src/)
+        
+        for file in $CHANGED_FILES; do
+          if [[ $file =~ \.(ts|tsx)$ ]] && [[ ! $file =~ ^src/infrastructure/ ]]; then
+            if grep -l "import.*from.*'\.\.\/components'" "$file" 2>/dev/null; then
+              IMPORT_VIOLATIONS="$IMPORT_VIOLATIONS $file"
+            fi
+          fi
+        done
+        
+        if [ ! -z "$IMPORT_VIOLATIONS" ]; then
+          echo "⚠️ Potentially incorrect import patterns detected in:"
+          echo "$IMPORT_VIOLATIONS"
+          echo ""
+          echo "💡 Consider using infrastructure components:"
+          echo "   import { Component } from '../infrastructure/components'"
+        fi
+        
+        echo "✅ Import pattern check completed"

@@ -1,0 +1,117 @@
+/* Tooltip wrapper */
+/* DO NOT CHANGE: inline-block required to preserve flex/grid layouts */
+.tooltipWrapper {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+
+/* Allow full width for block-level children like textareas */
+.tooltipWrapper:has(textarea) {
+  display: block;
+  width: 100%;
+}
+
+/* Fixed tooltip (portal-based) */
+.tooltipFixed {
+  background: #1f2937;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  white-space: normal;
+  max-width: 280px;
+  pointer-events: none;
+  font-weight: 400;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* Tooltip content */
+.tooltip {
+  position: absolute;
+  background: #1f2937;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  white-space: normal;
+  min-width: 180px;
+  max-width: 280px;
+  z-index: 1000;
+  pointer-events: none;
+  font-weight: 400;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Arrow for tooltip */
+.tooltipArrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+}
+
+/* Position: Top */
+.tooltip.top {
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(calc(-50% + var(--tooltip-offset, 0px)));
+}
+
+.tooltip.top .tooltipArrow {
+  top: 100%;
+  left: 50%;
+  transform: translateX(calc(-50% - var(--tooltip-offset, 0px)));
+  border-top-color: #1f2937;
+}
+
+/* Position: Bottom */
+.tooltip.bottom {
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(calc(-50% + var(--tooltip-offset, 0px)));
+}
+
+.tooltip.bottom .tooltipArrow {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(calc(-50% - var(--tooltip-offset, 0px)));
+  border-bottom-color: #1f2937;
+}
+
+/* Position: Left */
+.tooltip.left {
+  right: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.tooltip.left .tooltipArrow {
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-left-color: #1f2937;
+}
+
+/* Position: Right */
+.tooltip.right {
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.tooltip.right .tooltipArrow {
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-right-color: #1f2937;
+}
+
+/* Allow text wrapping for longer tooltips (when explicitly needed) */
+.tooltip.wrap {
+  white-space: normal;
+  word-wrap: break-word;
+  max-width: 300px;
+}

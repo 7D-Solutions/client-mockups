@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Trade Dashboard - Fire-Proof ERP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .header p {
+            opacity: 0.9;
+            margin-top: 0.25rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-left: 4px solid #2a5298;
+        }
+
+        .stat-card.positive {
+            border-left-color: #10b981;
+        }
+
+        .stat-card.negative {
+            border-left-color: #ef4444;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-top: 0.5rem;
+            color: #1e3c72;
+        }
+
+        .stat-value.positive {
+            color: #10b981;
+        }
+
+        .stat-value.negative {
+            color: #ef4444;
+        }
+
+        .stat-change {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-change.up {
+            color: #10b981;
+        }
+
+        .stat-change.down {
+            color: #ef4444;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e3c72;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .recent-trades {
+            list-style: none;
+        }
+
+        .trade-item {
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .trade-item:last-child {
+            border-bottom: none;
+        }
+
+        .trade-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .trade-symbol {
+            font-weight: 600;
+            color: #1e3c72;
+            font-size: 1rem;
+        }
+
+        .trade-action {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .trade-action.buy {
+            color: #10b981;
+        }
+
+        .trade-action.sell {
+            color: #ef4444;
+        }
+
+        .trade-value {
+            text-align: right;
+        }
+
+        .trade-amount {
+            font-weight: 600;
+            color: #1e3c72;
+        }
+
+        .trade-time {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+
+        .portfolio-list {
+            list-style: none;
+        }
+
+        .portfolio-item {
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .portfolio-item:last-child {
+            border-bottom: none;
+        }
+
+        .portfolio-symbol {
+            font-weight: 600;
+            color: #1e3c72;
+        }
+
+        .portfolio-shares {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .portfolio-value {
+            font-weight: 600;
+        }
+
+        .portfolio-gain {
+            font-size: 0.875rem;
+            font-weight: 500;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+        }
+
+        .portfolio-gain.positive {
+            color: #10b981;
+            background: #d1fae5;
+        }
+
+        .portfolio-gain.negative {
+            color: #ef4444;
+            background: #fee2e2;
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border-radius: 6px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #2a5298;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1e3c72;
+        }
+
+        @media (max-width: 968px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 Stock Trade Dashboard</h1>
+        <p>Real-time portfolio overview and trading activity</p>
+    </div>
+
+    <div class="container">
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Portfolio Value</div>
+                <div class="stat-value">$127,450.32</div>
+                <div class="stat-change up">▲ $3,240.12 (2.61%)</div>
+            </div>
+
+            <div class="stat-card positive">
+                <div class="stat-label">Total Gain/Loss</div>
+                <div class="stat-value positive">+$18,450.32</div>
+                <div class="stat-change up">▲ 16.9% All Time</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Day's Gain/Loss</div>
+                <div class="stat-value positive">+$2,340.50</div>
+                <div class="stat-change up">▲ 1.87% Today</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Cash Available</div>
+                <div class="stat-value">$12,549.68</div>
+                <div class="stat-change">Ready to trade</div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="content-grid">
+            <!-- Performance Chart -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Portfolio Performance</h2>
+                    <button class="btn btn-primary">View Details</button>
+                </div>
+                <div class="card-content">
+                    <div class="chart-placeholder">
+                        [Interactive Line Chart: Portfolio Value Over Time]
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Trades -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Recent Trades</h2>
+                    <a href="stock-trade-history.html" class="btn btn-primary">View All</a>
+                </div>
+                <div class="card-content" style="padding: 0;">
+                    <ul class="recent-trades">
+                        <li class="trade-item">
+                            <div class="trade-info">
+                                <span class="trade-symbol">AAPL</span>
+                                <span class="trade-action buy">BUY • 50 shares</span>
+                            </div>
+                            <div class="trade-value">
+                                <div class="trade-amount">$8,750.00</div>
+                                <div class="trade-time">2 hours ago</div>
+                            </div>
+                        </li>
+                        <li class="trade-item">
+                            <div class="trade-info">
+                                <span class="trade-symbol">TSLA</span>
+                                <span class="trade-action sell">SELL • 25 shares</span>
+                            </div>
+                            <div class="trade-value">
+                                <div class="trade-amount">$6,125.00</div>
+                                <div class="trade-time">5 hours ago</div>
+                            </div>
+                        </li>
+                        <li class="trade-item">
+                            <div class="trade-info">
+                                <span class="trade-symbol">MSFT</span>
+                                <span class="trade-action buy">BUY • 30 shares</span>
+                            </div>
+                            <div class="trade-value">
+                                <div class="trade-amount">$10,470.00</div>
+                                <div class="trade-time">Yesterday</div>
+                            </div>
+                        </li>
+                        <li class="trade-item">
+                            <div class="trade-info">
+                                <span class="trade-symbol">GOOGL</span>
+                                <span class="trade-action buy">BUY • 20 shares</span>
+                            </div>
+                            <div class="trade-value">
+                                <div class="trade-amount">$2,780.00</div>
+                                <div class="trade-time">2 days ago</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Holdings Overview -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Current Holdings</h2>
+                <a href="stock-trade-entry.html" class="btn btn-primary">+ New Trade</a>
+            </div>
+            <div class="card-content" style="padding: 0;">
+                <ul class="portfolio-list">
+                    <li class="portfolio-item">
+                        <div>
+                            <div class="portfolio-symbol">AAPL - Apple Inc.</div>
+                            <div class="portfolio-shares">150 shares @ $175.00 avg</div>
+                        </div>
+                        <div class="portfolio-value">$26,250.00</div>
+                        <div class="portfolio-gain positive">+$2,250.00 (+9.4%)</div>
+                    </li>
+                    <li class="portfolio-item">
+                        <div>
+                            <div class="portfolio-symbol">MSFT - Microsoft Corp.</div>
+                            <div class="portfolio-shares">80 shares @ $349.00 avg</div>
+                        </div>
+                        <div class="portfolio-value">$27,920.00</div>
+                        <div class="portfolio-gain positive">+$1,840.00 (+7.1%)</div>
+                    </li>
+                    <li class="portfolio-item">
+                        <div>
+                            <div class="portfolio-symbol">GOOGL - Alphabet Inc.</div>
+                            <div class="portfolio-shares">120 shares @ $139.00 avg</div>
+                        </div>
+                        <div class="portfolio-value">$16,680.00</div>
+                        <div class="portfolio-gain positive">+$960.00 (+6.1%)</div>
+                    </li>
+                    <li class="portfolio-item">
+                        <div>
+                            <div class="portfolio-symbol">TSLA - Tesla Inc.</div>
+                            <div class="portfolio-shares">100 shares @ $245.00 avg</div>
+                        </div>
+                        <div class="portfolio-value">$24,500.00</div>
+                        <div class="portfolio-gain negative">-$500.00 (-2.0%)</div>
+                    </li>
+                    <li class="portfolio-item">
+                        <div>
+                            <div class="portfolio-symbol">AMZN - Amazon.com Inc.</div>
+                            <div class="portfolio-shares">200 shares @ $155.50 avg</div>
+                        </div>
+                        <div class="portfolio-value">$31,100.00</div>
+                        <div class="portfolio-gain positive">+$3,100.00 (+11.1%)</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,11 @@
+# Updated health check to /health endpoint  
+[build]
+builder = "dockerfile"
+
+[deploy]
+healthcheckPath = "/health"
+healthcheckTimeout = 60
+
+[variables]
+NODE_ENV = "production"
+VITE_API_URL = "/api"

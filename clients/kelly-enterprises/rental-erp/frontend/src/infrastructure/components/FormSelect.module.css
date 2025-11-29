@@ -1,0 +1,79 @@
+.container {
+  margin-bottom: 1rem;
+}
+
+.label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.required {
+  color: var(--color-danger);
+  font-weight: 600;
+}
+
+.select {
+  width: 100%;
+  border: 1px solid var(--color-border-default);
+  border-radius: 0.5rem;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 3rem;
+  text-align: center;
+}
+
+/* Size variants using shared component size system */
+.selectSM {
+  padding: calc(var(--component-size-sm-padding-y) - 2px) var(--component-size-sm-padding-x);
+  font-size: var(--component-size-sm-font-size);
+  min-height: var(--component-size-sm-min-height);
+}
+
+.selectMD {
+  padding: calc(var(--component-size-md-padding-y) - 2px) var(--component-size-md-padding-x);
+  font-size: var(--component-size-md-font-size);
+  min-height: var(--component-size-md-min-height);
+}
+
+.selectLG {
+  padding: calc(var(--component-size-lg-padding-y) - 2px) var(--component-size-lg-padding-x);
+  font-size: var(--component-size-lg-font-size);
+  min-height: var(--component-size-lg-min-height);
+}
+
+.select:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.select:hover {
+  border-color: var(--color-gray-400);
+}
+
+.select option {
+  padding: 0.5rem;
+  background-color: white;
+  color: var(--color-text-primary);
+  text-align: center;
+}
+
+.selectError {
+  border-color: var(--color-danger);
+}
+
+.error {
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+  margin-top: 0.25rem;
+}

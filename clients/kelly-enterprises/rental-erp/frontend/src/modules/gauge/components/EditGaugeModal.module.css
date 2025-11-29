@@ -1,0 +1,19 @@
+/* EditGaugeModal Layout */
+
+.twoColumnGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.calibrationGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+
+/* Override FormSection spacing for tighter layout */
+.twoColumnGrid :global(.section),
+.formSection :global(.section) {
+  margin-bottom: var(--space-4);
+}

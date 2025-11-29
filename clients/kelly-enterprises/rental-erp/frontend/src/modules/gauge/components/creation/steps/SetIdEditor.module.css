@@ -1,0 +1,110 @@
+.container {
+  background-color: var(--color-gray-50);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+  border: 2px solid var(--color-primary);
+}
+
+.containerEditing {
+  background-color: #fef3c7;
+  border-color: #f59e0b;
+}
+
+.label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-gray-600);
+  margin-bottom: var(--space-2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.editableRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.inputWrapper {
+  flex: 1;
+}
+
+.input {
+  width: 100%;
+  font-size: 18px;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+  padding: var(--space-2);
+  border: 2px solid #f59e0b;
+  border-radius: var(--radius-sm);
+  background-color: white;
+  outline: none;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #f59e0b;
+}
+
+.inputError {
+  border-color: var(--color-danger);
+}
+
+.buttonGroup {
+  display: flex;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.displayBox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-sm);
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.displayBox:hover {
+  background-color: var(--color-gray-50);
+}
+
+.displayValue {
+  flex: 1;
+  font-size: 18px;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+  color: var(--color-text-primary);
+}
+
+.editIcon {
+  font-size: 12px;
+  color: var(--color-gray-400);
+}
+
+.errorBox {
+  margin-top: var(--space-1);
+  padding: var(--space-2);
+  background-color: #fee2e2;
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-sm);
+  color: #dc2626;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.helpText {
+  font-size: 11px;
+  color: var(--color-gray-600);
+  margin-top: var(--space-1);
+}

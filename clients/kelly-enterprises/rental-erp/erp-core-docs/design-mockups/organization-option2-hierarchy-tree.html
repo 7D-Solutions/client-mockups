@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Option 2: Hierarchical Tree View (MOST INTUITIVE)</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header h1 {
+      font-size: 24px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+    .btn-primary:hover { background: #1d4ed8; }
+    .content {
+      padding: 24px;
+    }
+    .tree {
+      border-left: 2px solid #e0e0e0;
+      padding-left: 0;
+    }
+    .tree-item {
+      margin-bottom: 4px;
+    }
+    .tree-node {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+    .tree-node:hover {
+      background: #f8f8f8;
+      border-color: #e0e0e0;
+    }
+    .tree-node.expanded {
+      background: #f0f9ff;
+      border-color: #bfdbfe;
+    }
+    .expand-icon {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 8px;
+      color: #666;
+      font-size: 14px;
+      transition: transform 0.2s;
+    }
+    .expand-icon.expanded {
+      transform: rotate(90deg);
+    }
+    .node-icon {
+      font-size: 18px;
+      margin-right: 12px;
+    }
+    .node-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .node-label {
+      font-weight: 500;
+      color: #1a1a1a;
+    }
+    .node-code {
+      color: #666;
+      font-size: 13px;
+      margin-left: 8px;
+    }
+    .node-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: #666;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .badge-success { background: #dcfce7; color: #166534; }
+    .children {
+      margin-left: 40px;
+      border-left: 2px solid #e0e0e0;
+      margin-top: 4px;
+      padding-left: 12px;
+    }
+    .level-facility { }
+    .level-building { opacity: 0.95; }
+    .level-zone { opacity: 0.9; }
+    .level-location { opacity: 0.85; }
+    .actions-menu {
+      display: flex;
+      gap: 8px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .tree-node:hover .actions-menu {
+      opacity: 1;
+    }
+    .action-btn {
+      padding: 4px 8px;
+      border: 1px solid #e0e0e0;
+      background: white;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+    .action-btn:hover {
+      background: #f8f8f8;
+      border-color: #2563eb;
+      color: #2563eb;
+    }
+    .breadcrumb {
+      background: #f8f8f8;
+      padding: 12px 24px;
+      font-size: 14px;
+      color: #666;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .breadcrumb span {
+      color: #2563eb;
+      cursor: pointer;
+    }
+    .description {
+      background: #f0f9ff;
+      padding: 16px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      border-left: 4px solid #2563eb;
+      font-size: 14px;
+      color: #1e40af;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <h1>📍 Organization Structure</h1>
+      </div>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn btn-primary">+ Add Facility</button>
+        <button class="btn" style="background: #e5e7eb; color: #374151;">Expand All</button>
+      </div>
+    </div>
+
+    <div class="breadcrumb">
+      <span>All Organizations</span> › Main Plant › Building A
+    </div>
+
+    <div class="content">
+      <div class="description">
+        <strong>💡 Navigate your organization:</strong> Click ▶ to expand/collapse. The hierarchy is: Facility → Building → Zone. Click location counts to view Storage Locations in the Inventory module.
+      </div>
+
+      <div class="tree">
+        <!-- Facility 1 -->
+        <div class="tree-item level-facility">
+          <div class="tree-node expanded">
+            <div class="expand-icon expanded">▶</div>
+            <div class="node-icon">🏢</div>
+            <div class="node-content">
+              <div>
+                <span class="node-label">Main Plant</span>
+                <span class="node-code">FAC-001</span>
+              </div>
+              <div class="node-meta">
+                <span>5 buildings</span>
+                <span class="badge badge-success">Active</span>
+                <div class="actions-menu">
+                  <button class="action-btn">✏️ Edit</button>
+                  <button class="action-btn">➕ Add Building</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="children">
+            <!-- Building 1 -->
+            <div class="tree-item level-building">
+              <div class="tree-node expanded">
+                <div class="expand-icon expanded">▶</div>
+                <div class="node-icon">🏛️</div>
+                <div class="node-content">
+                  <div>
+                    <span class="node-label">Building A</span>
+                    <span class="node-code">BLD-001</span>
+                  </div>
+                  <div class="node-meta">
+                    <span>3 zones</span>
+                    <span class="badge badge-success">Active</span>
+                    <div class="actions-menu">
+                      <button class="action-btn">✏️ Edit</button>
+                      <button class="action-btn">➕ Add Zone</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="children">
+                <!-- Zone 1 -->
+                <div class="tree-item level-zone">
+                  <div class="tree-node">
+                    <div class="expand-icon"></div>
+                    <div class="node-icon">📐</div>
+                    <div class="node-content">
+                      <div>
+                        <span class="node-label">Production Floor</span>
+                        <span class="node-code">ZONE-A1</span>
+                      </div>
+                      <div class="node-meta">
+                        <a href="/inventory/locations?zone=ZONE-A1" style="color: #2563eb; text-decoration: none; margin-right: 12px;">📦 12 locations</a>
+                        <span class="badge badge-success">Active</span>
+                        <div class="actions-menu">
+                          <button class="action-btn">✏️ Edit</button>
+                          <button class="action-btn">🔗 View Locations</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Zone 2 -->
+                <div class="tree-item level-zone">
+                  <div class="tree-node">
+                    <div class="expand-icon"></div>
+                    <div class="node-icon">📐</div>
+                    <div class="node-content">
+                      <div>
+                        <span class="node-label">Assembly Area</span>
+                        <span class="node-code">ZONE-A2</span>
+                      </div>
+                      <div class="node-meta">
+                        <a href="/inventory/locations?zone=ZONE-A2" style="color: #2563eb; text-decoration: none; margin-right: 12px;">📦 8 locations</a>
+                        <span class="badge badge-success">Active</span>
+                        <div class="actions-menu">
+                          <button class="action-btn">✏️ Edit</button>
+                          <button class="action-btn">🔗 View Locations</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Zone 3 -->
+                <div class="tree-item level-zone">
+                  <div class="tree-node">
+                    <div class="expand-icon"></div>
+                    <div class="node-icon">📐</div>
+                    <div class="node-content">
+                      <div>
+                        <span class="node-label">QC Lab</span>
+                        <span class="node-code">ZONE-A3</span>
+                      </div>
+                      <div class="node-meta">
+                        <a href="/inventory/locations?zone=ZONE-A3" style="color: #2563eb; text-decoration: none; margin-right: 12px;">📦 6 locations</a>
+                        <span class="badge badge-success">Active</span>
+                        <div class="actions-menu">
+                          <button class="action-btn">✏️ Edit</button>
+                          <button class="action-btn">🔗 View Locations</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Building 2 (collapsed) -->
+            <div class="tree-item level-building">
+              <div class="tree-node">
+                <div class="expand-icon">▶</div>
+                <div class="node-icon">🏛️</div>
+                <div class="node-content">
+                  <div>
+                    <span class="node-label">Building B</span>
+                    <span class="node-code">BLD-002</span>
+                  </div>
+                  <div class="node-meta">
+                    <span>2 zones</span>
+                    <span class="badge badge-success">Active</span>
+                    <div class="actions-menu">
+                      <button class="action-btn">✏️ Edit</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Facility 2 (collapsed) -->
+        <div class="tree-item level-facility">
+          <div class="tree-node">
+            <div class="expand-icon">▶</div>
+            <div class="node-icon">🏢</div>
+            <div class="node-content">
+              <div>
+                <span class="node-label">Warehouse A</span>
+                <span class="node-code">FAC-002</span>
+              </div>
+              <div class="node-meta">
+                <span>2 buildings</span>
+                <span class="badge badge-success">Active</span>
+                <div class="actions-menu">
+                  <button class="action-btn">✏️ Edit</button>
+                  <button class="action-btn">➕ Add Building</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 20px; padding: 20px; background: white; border-radius: 8px; max-width: 1400px; margin: 20px auto;">
+    <h3 style="margin-bottom: 12px; color: #059669;">✅ Pros (RECOMMENDED)</h3>
+    <ul style="color: #666; line-height: 1.8;">
+      <li><strong>Highly intuitive</strong> - Shows exact hierarchical relationships</li>
+      <li><strong>Quick navigation</strong> - Expand/collapse to drill down</li>
+      <li><strong>Context awareness</strong> - Always see where you are in the hierarchy</li>
+      <li><strong>Inline actions</strong> - Edit or add child items without leaving the view</li>
+      <li><strong>Visual clarity</strong> - Icons and indentation make structure obvious</li>
+      <li><strong>3-level hierarchy</strong> - Facility → Building → Zone (clean separation from Inventory)</li>
+      <li><strong>Smart navigation</strong> - Links to filtered Storage Locations page for zone details</li>
+    </ul>
+
+    <h3 style="margin-top: 20px; margin-bottom: 12px; color: #dc2626;">❌ Cons</h3>
+    <ul style="color: #666; line-height: 1.8;">
+      <li>Can become long if you have many facilities/buildings</li>
+      <li>Might need search/filter for large organizations</li>
+      <li>Less suited for comparing items side-by-side than table view</li>
+    </ul>
+
+    <h3 style="margin-top: 20px; margin-bottom: 12px; color: #10b981;">🔗 Integration with Inventory</h3>
+    <ul style="color: #666; line-height: 1.8;">
+      <li><strong>Zone level stops here</strong> - No duplicate Storage Location management</li>
+      <li><strong>Location count links</strong> - Click "📦 12 locations" to view filtered locations</li>
+      <li><strong>"View Locations" button</strong> - Quick navigation to /inventory/locations?zone=ZONE-A1</li>
+      <li><strong>Single source of truth</strong> - Inventory Locations page remains the CRUD interface for locations</li>
+    </ul>
+  </div>
+
+  <script>
+    // Toggle tree node expansion
+    function toggleNode(expandIcon) {
+      const treeItem = expandIcon.closest('.tree-item');
+      const childrenContainer = treeItem.querySelector(':scope > .children');
+
+      if (childrenContainer) {
+        const isExpanded = expandIcon.classList.contains('expanded');
+
+        if (isExpanded) {
+          // Collapse
+          childrenContainer.style.display = 'none';
+          expandIcon.classList.remove('expanded');
+          expandIcon.closest('.tree-node').classList.remove('expanded');
+        } else {
+          // Expand
+          childrenContainer.style.display = 'block';
+          expandIcon.classList.add('expanded');
+          expandIcon.closest('.tree-node').classList.add('expanded');
+        }
+      }
+    }
+
+    // Expand all nodes
+    function expandAll() {
+      document.querySelectorAll('.children').forEach(children => {
+        children.style.display = 'block';
+      });
+      document.querySelectorAll('.expand-icon').forEach(icon => {
+        icon.classList.add('expanded');
+      });
+      document.querySelectorAll('.tree-node').forEach(node => {
+        if (node.parentElement.querySelector('.children')) {
+          node.classList.add('expanded');
+        }
+      });
+    }
+
+    // Collapse all nodes
+    function collapseAll() {
+      document.querySelectorAll('.children').forEach(children => {
+        children.style.display = 'none';
+      });
+      document.querySelectorAll('.expand-icon').forEach(icon => {
+        icon.classList.remove('expanded');
+      });
+      document.querySelectorAll('.tree-node').forEach(node => {
+        node.classList.remove('expanded');
+      });
+    }
+
+    // Event delegation for expand icons
+    document.addEventListener('click', (e) => {
+      const expandIcon = e.target.closest('.expand-icon');
+      if (expandIcon) {
+        toggleNode(expandIcon);
+        e.stopPropagation();
+      }
+    });
+
+    // Expand All button
+    document.addEventListener('DOMContentLoaded', () => {
+      const expandButton = document.querySelector('.header .btn:not(.btn-primary)');
+      if (expandButton) {
+        expandButton.addEventListener('click', () => {
+          const isExpanded = document.querySelector('.children[style*="display: block"]');
+          if (isExpanded) {
+            collapseAll();
+            expandButton.textContent = 'Expand All';
+          } else {
+            expandAll();
+            expandButton.textContent = 'Collapse All';
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

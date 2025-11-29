@@ -1,0 +1,178 @@
+/* Phase 6: Add Gauge Wizard Styles */
+
+.wizardContent {
+  padding: var(--space-4);
+  min-height: 300px;
+}
+
+.stepDescription {
+  margin: 0 0 var(--space-5) 0;
+  font-size: var(--font-size-base);
+  color: var(--color-gray-600);
+  text-align: center;
+}
+
+/* Equipment Type Selection (Step 1) */
+.equipmentTypeSelection {
+  display: flex;
+  flex-direction: column;
+}
+
+.equipmentGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.equipmentCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6) var(--space-4);
+  background: var(--color-white);
+  border: 2px solid var(--color-gray-300);
+  border-radius: var(--border-radius-lg);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  min-height: 150px;
+}
+
+.equipmentCard:hover {
+  border-color: var(--color-primary);
+  background: var(--color-gray-50);
+  box-shadow: 0 4px 8px rgba(13, 110, 253, 0.15);
+  transform: translateY(-2px);
+}
+
+.equipmentCard:active {
+  transform: translateY(0);
+}
+
+.equipmentIcon {
+  font-size: 3rem;
+  margin-bottom: var(--space-4);
+}
+
+.equipmentLabel {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-gray-900);
+}
+
+/* Thread Options Selection (Step 2) */
+.threadOptionsSelection {
+  display: flex;
+  flex-direction: column;
+}
+
+.stepHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.optionsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.optionCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-5);
+  background: var(--color-white);
+  border: 2px solid var(--color-gray-300);
+  border-radius: var(--border-radius-lg);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-align: left;
+  width: 100%;
+}
+
+.optionCard:hover {
+  border-color: var(--color-primary);
+  background: var(--color-gray-50);
+  box-shadow: 0 2px 8px rgba(13, 110, 253, 0.15);
+}
+
+.optionContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1;
+}
+
+.optionTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-gray-900);
+}
+
+.optionDescription {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-600);
+  line-height: 1.4;
+}
+
+.selectArrow {
+  font-size: var(--font-size-base);
+  color: var(--color-primary);
+  font-weight: 600;
+  margin-left: var(--space-4);
+  white-space: nowrap;
+}
+
+/* Form Steps (Category, Details, Review) */
+.formStep {
+  padding: var(--space-2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .wizardContent {
+    padding: var(--space-3);
+  }
+
+  .equipmentGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  .equipmentCard {
+    min-height: 120px;
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .equipmentIcon {
+    font-size: 2.5rem;
+    margin-bottom: var(--space-3);
+  }
+
+  .equipmentLabel {
+    font-size: var(--font-size-sm);
+  }
+
+  .optionCard {
+    padding: var(--space-4);
+  }
+
+  .optionTitle {
+    font-size: var(--font-size-base);
+  }
+
+  .optionDescription {
+    font-size: var(--font-size-xs);
+  }
+
+  .selectArrow {
+    font-size: var(--font-size-sm);
+  }
+
+  .formStep {
+    padding: var(--space-1);
+  }
+}

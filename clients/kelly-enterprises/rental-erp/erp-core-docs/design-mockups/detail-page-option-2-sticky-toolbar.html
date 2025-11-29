@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option 2: Sticky Toolbar Pattern</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; padding: 20px; }
+        .page-container { max-width: 1200px; margin: 0 auto; }
+
+        /* Header Section - Separated title and toolbar */
+        .page-header {
+            background: white;
+            border-radius: 8px 8px 0 0;
+            padding: 20px 24px 16px;
+            border: 1px solid #e0e0e0;
+            border-bottom: none;
+        }
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        .title { font-size: 28px; font-weight: 600; color: #212121; }
+        .badge {
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge-success { background: #e8f5e9; color: #2e7d32; }
+        .badge-info { background: #e3f2fd; color: #1976d2; }
+        .description { color: #757575; font-size: 14px; margin-bottom: 4px; }
+        .metadata { color: #9e9e9e; font-size: 13px; }
+
+        /* Sticky Toolbar */
+        .toolbar {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-top: 1px solid #e0e0e0;
+            border-radius: 0 0 8px 8px;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .toolbar-left {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            font-size: 14px;
+            color: #757575;
+        }
+        .toolbar-right {
+            display: flex;
+            gap: 8px;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary { background: #1976d2; color: white; border-color: #1976d2; }
+
+        /* Content Sections */
+        .content-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e0e0e0;
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #212121;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .count-badge {
+            background: #f5f5f5;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            text-align: left;
+            padding: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #757575;
+            text-transform: uppercase;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        tr:hover { background: #fafafa; }
+
+        .note {
+            background: #e8f5e9;
+            border: 1px solid #4caf50;
+            border-radius: 4px;
+            padding: 12px 16px;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .note strong { color: #2e7d32; }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Back Button -->
+        <div style="margin-bottom: 12px;">
+            <button class="btn">← Back to Locations</button>
+        </div>
+
+        <!-- Header (larger, more prominence) -->
+        <div class="page-header">
+            <div class="header-title">
+                <h1 class="title">A1</h1>
+                <span class="badge badge-success">Active</span>
+                <span class="badge badge-info">Bin</span>
+            </div>
+            <p class="description">Primary storage bin for calibrated gauges</p>
+            <p class="metadata">Created: Jan 15, 2024 • Last updated: 2 days ago</p>
+        </div>
+
+        <!-- Sticky Toolbar (separates actions from header) -->
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <span>📦 <strong>2</strong> items</span>
+                <span>•</span>
+                <span>📍 Warehouse A - Zone 1</span>
+            </div>
+            <div class="toolbar-right">
+                <button class="btn">📊 Export</button>
+                <button class="btn">🔄 Refresh</button>
+                <button class="btn btn-primary">✏️ Edit</button>
+            </div>
+        </div>
+
+        <!-- Content Section: Gauges -->
+        <div class="content-section">
+            <div class="section-header">
+                <div class="section-title">
+                    🔧 Gauges
+                    <span class="count-badge">2</span>
+                </div>
+                <button class="btn" style="font-size: 13px;">+ Add Item</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Gauge ID</th>
+                        <th>Quantity</th>
+                        <th>Last Moved</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="cursor: pointer;">
+                        <td style="font-weight: 600;">CAS71786A</td>
+                        <td>1</td>
+                        <td style="color: #757575;">10/30/2024</td>
+                    </tr>
+                    <tr style="cursor: pointer;">
+                        <td style="font-weight: 600;">SP0028A</td>
+                        <td>1</td>
+                        <td style="color: #757575;">10/30/2024</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Content Section: Tools (example) -->
+        <div class="content-section">
+            <div class="section-header">
+                <div class="section-title">
+                    🔨 Tools
+                    <span class="count-badge">0</span>
+                </div>
+                <button class="btn" style="font-size: 13px;">+ Add Item</button>
+            </div>
+            <div style="text-align: center; padding: 40px; color: #9e9e9e;">
+                No tools in this location
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>Option 2: Sticky Toolbar Pattern</strong><br>
+            ✅ Prominent header with more info<br>
+            ✅ Sticky toolbar keeps actions accessible while scrolling<br>
+            ✅ Toolbar provides contextual metrics<br>
+            ✅ Section-level actions for contextual operations<br>
+            ✅ Professional enterprise look<br>
+            📊 Best for: Long pages with multiple sections, SAP/Oracle style
+        </div>
+    </div>
+</body>
+</html>

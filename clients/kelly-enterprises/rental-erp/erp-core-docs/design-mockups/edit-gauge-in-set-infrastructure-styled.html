@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Individual Gauge in Set - Infrastructure Styled</title>
+  <style>
+    :root {
+      /* Colors from infrastructure */
+      --color-primary: #3b82f6;
+      --color-border-light: #e5e7eb;
+      --color-border-default: #d1d5db;
+      --color-text-primary: #111827;
+      --color-text-secondary: #6b7280;
+      --color-danger: #ef4444;
+      --color-success: #10b981;
+      --color-bg-subtle: #f9fafb;
+      --color-gray-100: #f3f4f6;
+
+      /* Typography */
+      --font-size-xs: 0.75rem;
+      --font-size-sm: 0.875rem;
+      --font-size-md: 1rem;
+      --font-weight-medium: 500;
+      --font-weight-bold: 700;
+
+      /* Spacing */
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-6: 1.5rem;
+
+      /* Component sizes */
+      --component-size-md-padding-y: 0.625rem;
+      --component-size-md-padding-x: 0.75rem;
+      --component-size-md-font-size: 0.875rem;
+      --component-size-md-min-height: 2.5rem;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: white;
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 28px;
+    }
+
+    .mockup-wrapper {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .modal-overlay {
+      padding: 40px;
+      background: rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 800px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--color-border-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .set-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #dbeafe;
+      color: #1e40af;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+    }
+
+    .modal-close:hover {
+      background: var(--color-gray-100);
+    }
+
+    .modal-body {
+      padding: 24px;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    .info-banner {
+      background: #dbeafe;
+      border: 2px solid var(--color-primary);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: start;
+      gap: 12px;
+    }
+
+    .info-banner-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .info-banner-text {
+      font-size: 14px;
+      color: #1e40af;
+      line-height: 1.5;
+    }
+
+    .info-banner-text strong {
+      font-weight: 600;
+    }
+
+    /* Two-column grid layout */
+    .two-column-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+    }
+
+    /* FormSection styles from infrastructure */
+    .form-section {
+      margin-bottom: var(--space-6);
+    }
+
+    .form-section-title {
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: var(--space-3);
+      padding-bottom: var(--space-2);
+      border-bottom: 2px solid var(--color-border-light);
+    }
+
+    /* DetailRow styles from infrastructure */
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.25rem;
+    }
+
+    .detail-row-label {
+      font-weight: var(--font-weight-medium);
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-sm);
+    }
+
+    .detail-row-value {
+      color: var(--color-text-primary);
+      font-size: var(--font-size-sm);
+    }
+
+    /* FormInput styles from infrastructure */
+    .form-input-container {
+      margin-bottom: 1rem;
+    }
+
+    .form-input-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: var(--color-text-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .form-input-label.disabled {
+      color: var(--color-text-secondary);
+    }
+
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      border: 1px solid var(--color-border-default);
+      border-radius: 0.5rem;
+      transition: all 0.2s ease;
+      padding: calc(var(--component-size-md-padding-y) - 2px) var(--component-size-md-padding-x);
+      font-size: var(--component-size-md-font-size);
+      min-height: var(--component-size-md-min-height);
+      font-family: inherit;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+    }
+
+    .form-input:disabled,
+    .form-textarea:disabled {
+      background: var(--color-gray-100);
+      color: var(--color-text-secondary);
+      cursor: not-allowed;
+      border-color: var(--color-border-light);
+    }
+
+    .form-textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    /* Tooltip */
+    .tooltip-wrapper {
+      position: relative;
+      display: inline-flex;
+    }
+
+    .tooltip-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      background: var(--color-text-secondary);
+      color: white;
+      border-radius: 50%;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: help;
+    }
+
+    .tooltip-icon.locked {
+      background: var(--color-danger);
+    }
+
+    .tooltip-text {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1f2937;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      white-space: nowrap;
+      z-index: 1000;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      font-weight: 400;
+    }
+
+    .tooltip-wrapper:hover .tooltip-text {
+      opacity: 1;
+    }
+
+    .tooltip-text::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: #1f2937;
+    }
+
+    /* Modal Actions (footer) */
+    .modal-actions {
+      padding: 16px 24px;
+      border-top: 1px solid var(--color-border-light);
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .actions-left,
+    .actions-right {
+      display: flex;
+      gap: 12px;
+    }
+
+    /* Buttons from infrastructure */
+    .btn {
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 40px;
+    }
+
+    .btn-cancel {
+      background: var(--color-gray-100);
+      color: var(--color-text-primary);
+    }
+
+    .btn-cancel:hover {
+      background: var(--color-border-light);
+    }
+
+    .btn-save {
+      background: var(--color-success);
+      color: white;
+    }
+
+    .btn-save:hover {
+      background: #059669;
+    }
+
+    .btn-view-set {
+      background: var(--color-primary);
+      color: white;
+    }
+
+    .btn-view-set:hover {
+      background: #2563eb;
+    }
+
+    @media (max-width: 768px) {
+      .two-column-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .modal-actions {
+        flex-direction: column;
+      }
+
+      .actions-left,
+      .actions-right {
+        width: 100%;
+        justify-content: flex-end;
+      }
+
+      .actions-left {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Edit Individual Gauge in Set - Infrastructure Component Styling</h1>
+
+    <div class="mockup-wrapper">
+      <div class="modal-overlay">
+        <div class="modal">
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <div class="modal-title-section">
+              <div class="modal-title">Edit Gauge: Test Gauge 17623722290943A</div>
+              <span class="set-badge">🔗 Part of SET1762372290943</span>
+            </div>
+            <button class="modal-close">×</button>
+          </div>
+
+          <!-- Modal Body -->
+          <div class="modal-body">
+            <!-- Info Banner -->
+            <div class="info-banner">
+              <div class="info-banner-icon">ℹ️</div>
+              <div class="info-banner-text">
+                <strong>This gauge is part of a set.</strong><br>
+                Location and set membership are managed at the set level. Use "View Set" to manage the set.
+              </div>
+            </div>
+
+            <!-- Two-column grid layout -->
+            <div class="two-column-grid">
+              <!-- Column 1: Basic Information & Set Information -->
+              <div>
+                <!-- Basic Information -->
+                <div class="form-section">
+                  <div class="form-section-title">Basic Information</div>
+
+                  <div class="detail-row">
+                    <span class="detail-row-label">Gauge ID:</span>
+                    <span class="detail-row-value">SN_17623722290943A</span>
+                  </div>
+
+                  <div class="form-input-container">
+                    <label class="form-input-label">Name</label>
+                    <input type="text" class="form-input" value="Test Gauge 17623722290943A" placeholder="Gauge name">
+                  </div>
+
+                  <div class="form-input-container">
+                    <label class="form-input-label disabled">
+                      Category
+                      <span class="tooltip-wrapper">
+                        <span class="tooltip-icon locked">🔒</span>
+                        <span class="tooltip-text">Cannot change category for gauges in a set</span>
+                      </span>
+                    </label>
+                    <input type="text" class="form-input" value="Thread Gauge" disabled>
+                  </div>
+
+                  <div class="form-input-container">
+                    <label class="form-input-label disabled">
+                      Type
+                      <span class="tooltip-wrapper">
+                        <span class="tooltip-icon locked">🔒</span>
+                        <span class="tooltip-text">Cannot change ownership type for gauges in a set</span>
+                      </span>
+                    </label>
+                    <input type="text" class="form-input" value="Company" disabled>
+                  </div>
+                </div>
+
+                <!-- Set Information (Read-Only) -->
+                <div class="form-section">
+                  <div class="form-section-title">Set Information (Read-Only)</div>
+
+                  <div class="form-input-container">
+                    <label class="form-input-label disabled">
+                      Set ID
+                      <span class="tooltip-wrapper">
+                        <span class="tooltip-icon locked">🔒</span>
+                        <span class="tooltip-text">Use 'Unpair Set' on set detail page</span>
+                      </span>
+                    </label>
+                    <input type="text" class="form-input" value="SET1762372290943" disabled>
+                  </div>
+
+                  <div class="form-input-container">
+                    <label class="form-input-label disabled">
+                      Location
+                      <span class="tooltip-wrapper">
+                        <span class="tooltip-icon locked">🔒</span>
+                        <span class="tooltip-text">Location managed at set level - use "View Set"</span>
+                      </span>
+                    </label>
+                    <input type="text" class="form-input" value="A1" disabled>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Column 2: Editable Specifications -->
+              <div>
+                <!-- Specifications (Editable) -->
+                <div class="form-section">
+                  <div class="form-section-title">Specifications</div>
+
+                  <div class="form-input-container">
+                    <label class="form-input-label">Serial Number</label>
+                    <input type="text" class="form-input" value="SN_17623722290943A" placeholder="Serial number">
+                  </div>
+
+                  <div class="form-input-container">
+                    <label class="form-input-label">Model Number</label>
+                    <input type="text" class="form-input" value="TG-500" placeholder="Model number">
+                  </div>
+
+                  <div class="form-input-container">
+                    <label class="form-input-label">Manufacturer</label>
+                    <input type="text" class="form-input" value="Starrett" placeholder="Manufacturer name">
+                  </div>
+                </div>
+
+                <!-- Thread Specifications (Read-Only for paired gauges) -->
+                <div class="form-section">
+                  <div class="form-section-title">Thread Specifications (Read-Only)</div>
+
+                  <div class="form-input-container">
+                    <label class="form-input-label disabled">
+                      Thread Size
+                      <span class="tooltip-wrapper">
+                        <span class="tooltip-icon locked">🔒</span>
+                        <span class="tooltip-text">Cannot edit thread specs for paired gauges</span>
+                      </span>
+                    </label>
+                    <input type="text" class="form-input" value=".500-20" disabled>
+                  </div>
+
+                  <div class="form-input-container">
+                    <label class="form-input-label disabled">
+                      Thread Type
+                      <span class="tooltip-wrapper">
+                        <span class="tooltip-icon locked">🔒</span>
+                        <span class="tooltip-text">Cannot edit thread specs for paired gauges</span>
+                      </span>
+                    </label>
+                    <input type="text" class="form-input" value="standard" disabled>
+                  </div>
+
+                  <div class="form-input-container">
+                    <label class="form-input-label disabled">
+                      Thread Class
+                      <span class="tooltip-wrapper">
+                        <span class="tooltip-icon locked">🔒</span>
+                        <span class="tooltip-text">Cannot edit thread specs for paired gauges</span>
+                      </span>
+                    </label>
+                    <input type="text" class="form-input" value="2A" disabled>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Full-width sections -->
+            <div class="form-section">
+              <div class="form-section-title">Additional Information</div>
+
+              <div class="form-input-container">
+                <label class="form-input-label">
+                  Calibration Frequency (days)
+                </label>
+                <input type="number" class="form-input" value="365" min="1">
+              </div>
+
+              <div class="form-input-container">
+                <label class="form-input-label">
+                  Notes
+                </label>
+                <textarea class="form-textarea" placeholder="Condition observations, damage reports, etc.">Gauge shows minor wear on threads. Functional condition good.</textarea>
+              </div>
+            </div>
+
+            <!-- Calibration Information (Read-Only) -->
+            <div class="form-section">
+              <div class="form-section-title">Calibration Information (Read-Only)</div>
+
+              <div class="two-column-grid">
+                <div class="form-input-container">
+                  <label class="form-input-label disabled">
+                    Calibration Due
+                    <span class="tooltip-wrapper">
+                      <span class="tooltip-icon locked">🔒</span>
+                      <span class="tooltip-text">System-managed based on unseal/service events</span>
+                    </span>
+                  </label>
+                  <input type="text" class="form-input" value="12/31/2025" disabled>
+                </div>
+
+                <div class="form-input-container">
+                  <label class="form-input-label disabled">
+                    Last Calibration
+                    <span class="tooltip-wrapper">
+                      <span class="tooltip-icon locked">🔒</span>
+                      <span class="tooltip-text">System-managed based on unseal/service events</span>
+                    </span>
+                  </label>
+                  <input type="text" class="form-input" value="11/05/2025" disabled>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal Actions (Footer) -->
+          <div class="modal-actions">
+            <div class="actions-left">
+              <button class="btn btn-view-set">🔗 View Set</button>
+            </div>
+            <div class="actions-right">
+              <button class="btn btn-cancel">Cancel</button>
+              <button class="btn btn-save">💾 Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

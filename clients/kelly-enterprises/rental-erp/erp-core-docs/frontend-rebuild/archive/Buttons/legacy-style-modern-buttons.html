@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legacy Style Modern Buttons - Approval Preview</title>
+    
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            color: #212529;
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            font-size: 1.125rem;
+            opacity: 0.9;
+        }
+        
+        .approval-notice {
+            background: #ffc107;
+            color: #212529;
+            padding: 1rem 2rem;
+            text-align: center;
+            font-weight: 600;
+            border-bottom: 3px solid #e0a800;
+        }
+        
+        .approval-notice i {
+            margin-right: 0.5rem;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Comparison Section */
+        .comparison-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background: #f8f9fa;
+            padding: 1.5rem 2rem;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        .section-header h2 {
+            font-size: 1.5rem;
+            color: #495057;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .button-comparison {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            padding: 2rem;
+            gap: 2rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .button-comparison:last-child {
+            border-bottom: none;
+        }
+        
+        @media (max-width: 768px) {
+            .button-comparison {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .vs-divider {
+                transform: rotate(90deg);
+                margin: 1rem auto;
+            }
+        }
+        
+        .button-side {
+            text-align: center;
+        }
+        
+        .button-label {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .button-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .button-code {
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: #6c757d;
+            background: #f8f9fa;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+        }
+        
+        .vs-divider {
+            font-size: 1.5rem;
+            color: #adb5bd;
+            font-weight: 300;
+        }
+        
+        /* Current Modern Button Styles (for reference) */
+        .modern-current {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            transition: all 200ms;
+            cursor: pointer;
+            border: none;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+        }
+        
+        .modern-current:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Current modern variants */
+        .modern-current.primary {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .modern-current.success {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .modern-current.info {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .modern-current.danger {
+            background-color: #dc2626;
+            color: white;
+        }
+        
+        .modern-current.warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .modern-current.secondary {
+            background-color: #4b5563;
+            color: white;
+        }
+        
+        /* NEW: Modern Buttons with Legacy Styling */
+        .button-legacy-style {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .button-legacy-style:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .button-legacy-style:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        /* Legacy color mappings for modern buttons */
+        .button-legacy-style.checkout {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .button-legacy-style.checkout:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+        
+        .button-legacy-style.checkin {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .button-legacy-style.checkin:hover:not(:disabled) {
+            background-color: #218838;
+        }
+        
+        .button-legacy-style.transfer {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .button-legacy-style.transfer:hover:not(:disabled) {
+            background-color: #138496;
+        }
+        
+        .button-legacy-style.edit {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .button-legacy-style.save {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .button-legacy-style.save:hover:not(:disabled) {
+            background-color: #218838;
+        }
+        
+        .button-legacy-style.cancel {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .button-legacy-style.cancel:hover:not(:disabled) {
+            background-color: #5a6268;
+        }
+        
+        .button-legacy-style.danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .button-legacy-style.danger:hover:not(:disabled) {
+            background-color: #c82333;
+        }
+        
+        .button-legacy-style.warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .button-legacy-style.warning:hover:not(:disabled) {
+            background-color: #e0a800;
+        }
+        
+        .button-legacy-style.pending {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        /* Special cases */
+        .button-legacy-style.login {
+            background-color: #007bff;
+            color: white;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+        }
+        
+        .button-legacy-style.logout {
+            background-color: #dc3545;
+            color: white;
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+        
+        /* Implementation note */
+        .implementation-note {
+            background: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        
+        .implementation-note h3 {
+            color: #0056b3;
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+        }
+        
+        .implementation-note code {
+            background: white;
+            padding: 0.125rem 0.25rem;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 0.875rem;
+        }
+        
+        /* Summary section */
+        .summary {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 3rem;
+        }
+        
+        .summary h2 {
+            font-size: 1.75rem;
+            color: #212529;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .benefit-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 6px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .benefit-card h4 {
+            color: #0056b3;
+            margin-bottom: 0.5rem;
+        }
+        
+        .benefit-card p {
+            color: #6c757d;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Legacy Style Modern Buttons</h1>
+        <p>Preview of modern button components styled to match legacy appearance</p>
+    </header>
+    
+    <div class="approval-notice">
+        <i class="fas fa-exclamation-triangle"></i>
+        FOR APPROVAL: These modern buttons are styled to look exactly like the legacy buttons
+    </div>
+    
+    <div class="container">
+        <!-- Implementation Note -->
+        <div class="implementation-note">
+            <h3>Implementation Approach</h3>
+            <p>The buttons below show how modern React components can be styled to look exactly like the legacy buttons while providing all the benefits of:</p>
+            <ul style="margin: 0.5rem 0 0 1.5rem;">
+                <li>TypeScript support for type safety</li>
+                <li>Component-based architecture for reusability</li>
+                <li>Prop-based configuration instead of multiple CSS classes</li>
+                <li>Consistent behavior and accessibility features</li>
+            </ul>
+            <p style="margin-top: 1rem;">Usage example: <code>&lt;Button variant="checkout"&gt;Check Out&lt;/Button&gt;</code></p>
+        </div>
+        
+        <!-- Primary Actions -->
+        <div class="comparison-section">
+            <div class="section-header">
+                <h2><i class="fas fa-tools"></i> Primary Actions</h2>
+            </div>
+            
+            <div class="button-comparison">
+                <div class="button-side">
+                    <div class="button-label">Current Modern Style</div>
+                    <div class="button-wrapper">
+                        <button class="modern-current primary">
+                            <i class="fas fa-upload"></i>
+                            Check Out
+                        </button>
+                        <code class="button-code">variant="primary"</code>
+                    </div>
+                </div>
+                <div class="vs-divider">→</div>
+                <div class="button-side">
+                    <div class="button-label">With Legacy Styling</div>
+                    <div class="button-wrapper">
+                        <button class="button-legacy-style checkout">
+                            <i class="fas fa-upload"></i>
+                            Check Out
+                        </button>
+                        <code class="button-code">variant="checkout"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-comparison">
+                <div class="button-side">
+                    <div class="button-label">Current Modern Style</div>
+                    <div class="button-wrapper">
+                        <button class="modern-current success">
+                            <i class="fas fa-download"></i>
+                            Check In
+                        </button>
+                        <code class="button-code">variant="success"</code>
+                    </div>
+                </div>
+                <div class="vs-divider">→</div>
+                <div class="button-side">
+                    <div class="button-label">With Legacy Styling</div>
+                    <div class="button-wrapper">
+                        <button class="button-legacy-style checkin">
+                            <i class="fas fa-download"></i>
+                            Check In
+                        </button>
+                        <code class="button-code">variant="checkin"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-comparison">
+                <div class="button-side">
+                    <div class="button-label">Current Modern Style</div>
+                    <div class="button-wrapper">
+                        <button class="modern-current info">
+                            <i class="fas fa-exchange-alt"></i>
+                            Transfer
+                        </button>
+                        <code class="button-code">variant="info"</code>
+                    </div>
+                </div>
+                <div class="vs-divider">→</div>
+                <div class="button-side">
+                    <div class="button-label">With Legacy Styling</div>
+                    <div class="button-wrapper">
+                        <button class="button-legacy-style transfer">
+                            <i class="fas fa-exchange-alt"></i>
+                            Transfer
+                        </button>
+                        <code class="button-code">variant="transfer"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-comparison">
+                <div class="button-side">
+                    <div class="button-label">Current Modern Style</div>
+                    <div class="button-wrapper">
+                        <button class="modern-current info">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <code class="button-code">variant="info"</code>
+                    </div>
+                </div>
+                <div class="vs-divider">→</div>
+                <div class="button-side">
+                    <div class="button-label">With Legacy Styling</div>
+                    <div class="button-wrapper">
+                        <button class="button-legacy-style edit">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <code class="button-code">variant="edit"</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal Actions -->
+        <div class="comparison-section">
+            <div class="section-header">
+                <h2><i class="fas fa-window-restore"></i> Modal Actions</h2>
+            </div>
+            
+            <div class="button-comparison">
+                <div class="button-side">
+                    <div class="button-label">Current Modern Style</div>
+                    <div class="button-wrapper">
+                        <button class="modern-current success">
+                            <i class="fas fa-save"></i>
+                            Save Changes
+                        </button>
+                        <code class="button-code">variant="success"</code>
+                    </div>
+                </div>
+                <div class="vs-divider">→</div>
+                <div class="button-side">
+                    <div class="button-label">With Legacy Styling</div>
+                    <div class="button-wrapper">
+                        <button class="button-legacy-style save">
+                            <i class="fas fa-save"></i>
+                            Save Changes
+                        </button>
+                        <code class="button-code">variant="save"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-comparison">
+                <div class="button-side">
+                    <div class="button-label">Current Modern Style</div>
+                    <div class="button-wrapper">
+                        <button class="modern-current secondary">Cancel</button>
+                        <code class="button-code">variant="secondary"</code>
+                    </div>
+                </div>
+                <div class="vs-divider">→</div>
+                <div class="button-side">
+                    <div class="button-label">With Legacy Styling</div>
+                    <div class="button-wrapper">
+                        <button class="button-legacy-style cancel">Cancel</button>
+                        <code class="button-code">variant="cancel"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-comparison">
+                <div class="button-side">
+                    <div class="button-label">Current Modern Style</div>
+                    <div class="button-wrapper">
+                        <button class="modern-current danger">
+                            <i class="fas fa-trash"></i>
+                            Delete
+                        </button>
+                        <code class="button-code">variant="danger"</code>
+                    </div>
+                </div>
+                <div class="vs-divider">→</div>
+                <div class="button-side">
+                    <div class="button-label">With Legacy Styling</div>
+                    <div class="button-wrapper">
+                        <button class="button-legacy-style danger">
+                            <i class="fas fa-trash"></i>
+                            Delete
+                        </button>
+                        <code class="button-code">variant="danger"</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-comparison">
+                <div class="button-side">
+                    <div class="button-label">Current Modern Style</div>
+                    <div class="button-wrapper">
+                        <button class="modern-current warning">
+                            <i class="fas fa-key"></i>
+                            Reset
+                        </button>
+                        <code class="button-code">variant="warning"</code>
+                    </div>
+                </div>
+                <div class="vs-divider">→</div>
+                <div class="button-side">
+                    <div class="button-label">With Legacy Styling</div>
+                    <div class="button-wrapper">
+                        <button class="button-legacy-style warning">
+                            <i class="fas fa-key"></i>
+                            Reset
+                        </button>
+                        <code class="button-code">variant="warning"</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Summary -->
+        <div class="summary">
+            <h2>Benefits of This Approach</h2>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <h4>Familiar Look</h4>
+                    <p>Users see exactly the same buttons they're used to - no visual changes or learning curve</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>Modern Architecture</h4>
+                    <p>Behind the scenes: TypeScript, props-based API, single component to maintain</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>Easy Migration</h4>
+                    <p>Replace class names with variant props: <code>class="checkout-btn"</code> → <code>variant="checkout"</code></p>
+                </div>
+                <div class="benefit-card">
+                    <h4>Consistent Behavior</h4>
+                    <p>All buttons share the same hover effects, disabled states, and accessibility features</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>Future Flexibility</h4>
+                    <p>Easy to add new variants or modify styles globally from one component</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>Type Safety</h4>
+                    <p>TypeScript ensures you can't use invalid variants or props</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

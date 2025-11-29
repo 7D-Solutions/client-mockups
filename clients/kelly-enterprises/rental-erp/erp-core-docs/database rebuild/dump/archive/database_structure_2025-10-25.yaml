@@ -1,0 +1,2451 @@
+# Database Structure - Fire-Proof ERP Sandbox
+# Version: 1.0.0
+# Generated from live database
+# Generated at: 2025-10-25T09:23:24.207-05:00 CST
+# WARNING: This is a snapshot. Always verify against actual database.
+
+metadata:
+  version: 1.0.0
+  generator: generate-database-yaml.js
+  timestamp: 2025-10-25T09:23:24.214-05:00 CST
+  warnings:
+    - Missing table: gauge_calibrations (referenced by foreign keys)
+    - Contains 11 stored procedures
+    - Contains 1 scheduled event: expire_transfer_requests
+
+database: fai_db_sandbox
+character_set: utf8mb4
+collation: utf8mb4_0900_ai_ci
+table_count: 40
+
+# Table List (40 tables):
+# 1. certificates
+# 2. companion_history
+# 3. core_audit_log
+# 4. core_enabled_modules
+# 5. core_event_subscriptions
+# 6. core_events
+# 7. core_login_attempts
+# 8. core_module_config
+# 9. core_modules
+# 10. core_navigation
+# 11. core_notification_preferences
+# 12. core_notification_templates
+# 13. core_notifications
+# 14. core_permissions
+# 15. core_role_permissions
+# 16. core_roles
+# 17. core_sessions
+# 18. core_user_module_access
+# 19. core_user_permission_overrides
+# 20. core_user_roles
+# 21. core_users
+# 22. gauge_active_checkouts
+# 23. gauge_calibration_failures
+# 24. gauge_calibration_schedule
+# 25. gauge_calibration_standard_specifications
+# 26. gauge_calibrations
+# 27. gauge_categories
+# 28. gauge_companion_history
+# 29. gauge_hand_tool_specifications
+# 30. gauge_id_config
+# 31. gauge_large_equipment_specifications
+# 32. gauge_notes
+# 33. gauge_qc_checks
+# 34. gauge_system_config
+# 35. gauge_thread_specifications
+# 36. gauge_transactions
+# 37. gauge_transfers
+# 38. gauge_unseal_requests
+# 39. gauges
+# 40. rejection_reasons
+
+tables:
+  - name: certificates
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: gauge_id
+        type: int
+        nullable: false
+      - name: dropbox_path
+        type: varchar(500)
+        nullable: false
+        unique: true
+      - name: custom_name
+        type: varchar(255)
+        nullable: true
+      - name: file_size
+        type: int
+        nullable: false
+      - name: file_extension
+        type: varchar(10)
+        nullable: false
+      - name: uploaded_by
+        type: int
+        nullable: false
+      - name: uploaded_at
+        type: datetime
+        nullable: false
+        default: CURRENT_TIMESTAMP
+    indexes:
+      - name: idx_gauge_id
+        columns: [gauge_id]
+        unique: false
+      - name: idx_uploaded_at
+        columns: [uploaded_at]
+        unique: false
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+      - name: unique_dropbox_path
+        columns: [dropbox_path]
+        unique: true
+      - name: uploaded_by
+        columns: [uploaded_by]
+        unique: false
+    foreign_keys:
+      - name: certificates_ibfk_1
+        column: gauge_id
+        references: gauges.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+      - name: certificates_ibfk_2
+        column: uploaded_by
+        references: core_users.id
+        on_update: NO ACTION
+
+  - name: companion_history
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: go_gauge_id
+        type: int
+        nullable: false
+      - name: nogo_gauge_id
+        type: int
+        nullable: false
+      - name: action
+        type: varchar(50)
+        nullable: false
+      - name: performed_by
+        type: int
+        nullable: false
+      - name: performed_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+      - name: reason
+        type: text
+        nullable: true
+      - name: metadata
+        type: json
+        nullable: true
+    indexes:
+      - name: idx_action_type
+        columns: [action, performed_at]
+        unique: false
+      - name: idx_go_gauge_history
+        columns: [go_gauge_id, performed_at]
+        unique: false
+      - name: idx_nogo_gauge_history
+        columns: [nogo_gauge_id, performed_at]
+        unique: false
+      - name: performed_by
+        columns: [performed_by]
+        unique: false
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+    foreign_keys:
+      - name: companion_history_ibfk_1
+        column: go_gauge_id
+        references: gauges.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+      - name: companion_history_ibfk_2
+        column: nogo_gauge_id
+        references: gauges.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+      - name: companion_history_ibfk_3
+        column: performed_by
+        references: core_users.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+
+  - name: core_audit_log
+    columns:
+      - name: id
+        type: bigint
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: user_id
+        type: int
+        nullable: true
+      - name: module_id
+        type: varchar(50)
+        nullable: false
+      - name: action
+        type: varchar(100)
+        nullable: false
+      - name: entity_type
+        type: varchar(50)
+        nullable: true
+      - name: entity_id
+        type: int
+        nullable: true
+      - name: old_values
+        type: json
+        nullable: true
+      - name: new_values
+        type: json
+        nullable: true
+      - name: ip_address
+        type: varchar(45)
+        nullable: true
+      - name: user_agent
+        type: varchar(255)
+        nullable: true
+      - name: created_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+    indexes:
+      - name: idx_created
+        columns: [created_at]
+        unique: false
+      - name: idx_entity
+        columns: [entity_type, entity_id, created_at]
+        unique: false
+      - name: idx_user_action
+        columns: [user_id, action, created_at]
+        unique: false
+      - name: module_id
+        columns: [module_id]
+        unique: false
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+    foreign_keys:
+      - name: core_audit_log_ibfk_1
+        column: user_id
+        references: core_users.id
+        on_delete: SET NULL
+        on_update: NO ACTION
+      - name: core_audit_log_ibfk_2
+        column: module_id
+        references: core_modules.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+
+  - name: core_enabled_modules
+    columns:
+      - name: module_id
+        type: varchar(50)
+        nullable: false
+        primary_key: true
+      - name: enabled_by
+        type: int
+        nullable: false
+      - name: enabled_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+    indexes:
+      - name: enabled_by
+        columns: [enabled_by]
+        unique: false
+      - name: PRIMARY
+        columns: [module_id]
+        unique: true
+    foreign_keys:
+      - name: core_enabled_modules_ibfk_1
+        column: module_id
+        references: core_modules.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+      - name: core_enabled_modules_ibfk_2
+        column: enabled_by
+        references: core_users.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+
+  - name: core_event_subscriptions
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: module_id
+        type: varchar(50)
+        nullable: false
+      - name: event_type
+        type: varchar(100)
+        nullable: false
+      - name: handler_endpoint
+        type: varchar(255)
+        nullable: true
+      - name: priority
+        type: int
+        nullable: true
+        default: 100
+      - name: is_active
+        type: tinyint(1)
+        nullable: true
+        default: 1
+    indexes:
+      - name: idx_event_priority
+        columns: [event_type, priority]
+        unique: false
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+      - name: unique_subscription
+        columns: [module_id, event_type]
+        unique: true
+    foreign_keys:
+      - name: core_event_subscriptions_ibfk_1
+        column: module_id
+        references: core_modules.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+
+  - name: core_events
+    columns:
+      - name: id
+        type: bigint
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: event_type
+        type: varchar(100)
+        nullable: false
+      - name: source_module_id
+        type: varchar(50)
+        nullable: false
+      - name: target_module_id
+        type: varchar(50)
+        nullable: false
+      - name: entity_type
+        type: varchar(50)
+        nullable: true
+      - name: entity_id
+        type: int
+        nullable: true
+      - name: payload
+        type: json
+        nullable: false
+      - name: status
+        type: enum('pending','processing','completed','failed')
+        nullable: true
+        default: pending
+      - name: retry_count
+        type: int
+        nullable: true
+        default: 0
+      - name: error_message
+        type: text
+        nullable: true
+      - name: created_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+      - name: processed_at
+        type: timestamp
+        nullable: true
+    indexes:
+      - name: idx_status_created
+        columns: [status, created_at]
+        unique: false
+      - name: idx_type_entity
+        columns: [event_type, entity_type, entity_id]
+        unique: false
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+      - name: source_module_id
+        columns: [source_module_id]
+        unique: false
+      - name: target_module_id
+        columns: [target_module_id]
+        unique: false
+    foreign_keys:
+      - name: core_events_ibfk_1
+        column: source_module_id
+        references: core_modules.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+      - name: core_events_ibfk_2
+        column: target_module_id
+        references: core_modules.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+
+  - name: core_login_attempts
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: email
+        type: varchar(255)
+        nullable: false
+      - name: ip_address
+        type: varchar(45)
+        nullable: true
+      - name: success
+        type: tinyint(1)
+        nullable: false
+      - name: failure_reason
+        type: varchar(50)
+        nullable: true
+      - name: attempted_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+    indexes:
+      - name: idx_email_time
+        columns: [email, attempted_at]
+        unique: false
+      - name: idx_ip_time
+        columns: [ip_address, attempted_at]
+        unique: false
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+
+  - name: core_module_config
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: module_id
+        type: varchar(50)
+        nullable: false
+      - name: config_key
+        type: varchar(100)
+        nullable: false
+      - name: config_value
+        type: json
+        nullable: false
+      - name: updated_by
+        type: int
+        nullable: false
+      - name: updated_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+        on_update: CURRENT_TIMESTAMP
+    indexes:
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+      - name: unique_config
+        columns: [module_id, config_key]
+        unique: true
+      - name: updated_by
+        columns: [updated_by]
+        unique: false
+    foreign_keys:
+      - name: core_module_config_ibfk_1
+        column: module_id
+        references: core_modules.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+      - name: core_module_config_ibfk_2
+        column: updated_by
+        references: core_users.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+
+  - name: core_modules
+    columns:
+      - name: id
+        type: varchar(50)
+        nullable: false
+        primary_key: true
+      - name: name
+        type: varchar(100)
+        nullable: false
+      - name: version
+        type: varchar(20)
+        nullable: false
+      - name: is_core
+        type: tinyint(1)
+        nullable: true
+        default: 0
+      - name: dependencies
+        type: json
+        nullable: true
+      - name: created_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+      - name: updated_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+        on_update: CURRENT_TIMESTAMP
+    indexes:
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+
+  - name: core_navigation
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: module_id
+        type: varchar(50)
+        nullable: false
+      - name: parent_id
+        type: int
+        nullable: true
+      - name: label
+        type: varchar(100)
+        nullable: false
+      - name: path
+        type: varchar(255)
+        nullable: false
+      - name: icon
+        type: varchar(50)
+        nullable: true
+      - name: sort_order
+        type: int
+        nullable: true
+        default: 0
+      - name: required_permission_id
+        type: int
+        nullable: true
+      - name: is_active
+        type: tinyint(1)
+        nullable: true
+        default: 1
+    indexes:
+      - name: idx_module_order
+        columns: [module_id, sort_order]
+        unique: false
+      - name: idx_parent_order
+        columns: [parent_id, sort_order]
+        unique: false
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+      - name: required_permission_id
+        columns: [required_permission_id]
+        unique: false
+    foreign_keys:
+      - name: core_navigation_ibfk_1
+        column: module_id
+        references: core_modules.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+      - name: core_navigation_ibfk_2
+        column: required_permission_id
+        references: core_permissions.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+      - name: fk_navigation_parent
+        column: parent_id
+        references: core_navigation.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+
+  - name: core_notification_preferences
+    columns:
+      - name: user_id
+        type: int
+        nullable: false
+        primary_key: true
+      - name: notification_type
+        type: varchar(50)
+        nullable: false
+        primary_key: true
+      - name: delivery_methods
+        type: json
+        nullable: true
+      - name: is_enabled
+        type: tinyint(1)
+        nullable: true
+        default: 1
+      - name: updated_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+        on_update: CURRENT_TIMESTAMP
+    indexes:
+      - name: PRIMARY
+        columns: [user_id, notification_type]
+        unique: true
+    foreign_keys:
+      - name: core_notification_preferences_ibfk_1
+        column: user_id
+        references: core_users.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+
+  - name: core_notification_templates
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: module_id
+        type: varchar(50)
+        nullable: false
+      - name: type
+        type: varchar(50)
+        nullable: false
+      - name: name
+        type: varchar(100)
+        nullable: false
+      - name: subject_template
+        type: varchar(255)
+        nullable: false
+      - name: body_template
+        type: text
+        nullable: false
+      - name: variables
+        type: json
+        nullable: true
+      - name: is_active
+        type: tinyint(1)
+        nullable: true
+        default: 1
+      - name: created_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+      - name: updated_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+        on_update: CURRENT_TIMESTAMP
+    indexes:
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+      - name: unique_template
+        columns: [module_id, type, name]
+        unique: true
+    foreign_keys:
+      - name: core_notification_templates_ibfk_1
+        column: module_id
+        references: core_modules.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+
+  - name: core_notifications
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: user_id
+        type: int
+        nullable: false
+      - name: module_id
+        type: varchar(50)
+        nullable: false
+      - name: type
+        type: varchar(50)
+        nullable: false
+      - name: title
+        type: varchar(255)
+        nullable: false
+      - name: message
+        type: text
+        nullable: false
+      - name: data
+        type: json
+        nullable: true
+      - name: priority
+        type: enum('low','normal','high','urgent')
+        nullable: true
+        default: normal
+      - name: is_read
+        type: tinyint(1)
+        nullable: true
+        default: 0
+      - name: created_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+      - name: read_at
+        type: timestamp
+        nullable: true
+      - name: expires_at
+        type: timestamp
+        nullable: true
+    indexes:
+      - name: idx_expires
+        columns: [expires_at]
+        unique: false
+      - name: idx_user_unread
+        columns: [user_id, is_read, created_at]
+        unique: false
+      - name: module_id
+        columns: [module_id]
+        unique: false
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+    foreign_keys:
+      - name: core_notifications_ibfk_1
+        column: user_id
+        references: core_users.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+      - name: core_notifications_ibfk_2
+        column: module_id
+        references: core_modules.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+
+  - name: core_permissions
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: module_id
+        type: varchar(50)
+        nullable: false
+      - name: resource
+        type: varchar(50)
+        nullable: false
+      - name: action
+        type: varchar(50)
+        nullable: false
+      - name: description
+        type: text
+        nullable: true
+      - name: created_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+    indexes:
+      - name: idx_module
+        columns: [module_id]
+        unique: false
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+      - name: unique_permission
+        columns: [module_id, resource, action]
+        unique: true
+
+  - name: core_role_permissions
+    columns:
+      - name: role_id
+        type: int
+        nullable: false
+        primary_key: true
+      - name: permission_id
+        type: int
+        nullable: false
+        primary_key: true
+      - name: granted_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+    indexes:
+      - name: permission_id
+        columns: [permission_id]
+        unique: false
+      - name: PRIMARY
+        columns: [role_id, permission_id]
+        unique: true
+    foreign_keys:
+      - name: core_role_permissions_ibfk_1
+        column: role_id
+        references: core_roles.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+      - name: core_role_permissions_ibfk_2
+        column: permission_id
+        references: core_permissions.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+
+  - name: core_roles
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: name
+        type: varchar(50)
+        nullable: false
+        unique: true
+      - name: description
+        type: text
+        nullable: true
+      - name: is_system
+        type: tinyint(1)
+        nullable: true
+        default: 1
+      - name: is_active
+        type: tinyint(1)
+        nullable: true
+        default: 1
+      - name: created_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+    indexes:
+      - name: name
+        columns: [name]
+        unique: true
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+
+  - name: core_sessions
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: user_id
+        type: int
+        nullable: false
+      - name: token
+        type: varchar(255)
+        nullable: false
+        unique: true
+      - name: ip_address
+        type: varchar(45)
+        nullable: true
+      - name: user_agent
+        type: varchar(255)
+        nullable: true
+      - name: expires_at
+        type: timestamp
+        nullable: false
+      - name: created_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+    indexes:
+      - name: idx_token
+        columns: [token]
+        unique: false
+      - name: idx_user_expires
+        columns: [user_id, expires_at]
+        unique: false
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+      - name: token
+        columns: [token]
+        unique: true
+    foreign_keys:
+      - name: core_sessions_ibfk_1
+        column: user_id
+        references: core_users.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+
+  - name: core_user_module_access
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: user_id
+        type: int
+        nullable: false
+      - name: module_id
+        type: varchar(50)
+        nullable: false
+      - name: has_access
+        type: tinyint(1)
+        nullable: true
+        default: 1
+      - name: module_role_id
+        type: int
+        nullable: true
+      - name: granted_by
+        type: int
+        nullable: false
+      - name: granted_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+    indexes:
+      - name: granted_by
+        columns: [granted_by]
+        unique: false
+      - name: idx_module
+        columns: [module_id]
+        unique: false
+      - name: idx_user
+        columns: [user_id]
+        unique: false
+      - name: module_role_id
+        columns: [module_role_id]
+        unique: false
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+      - name: unique_access
+        columns: [user_id, module_id]
+        unique: true
+    foreign_keys:
+      - name: core_user_module_access_ibfk_1
+        column: user_id
+        references: core_users.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+      - name: core_user_module_access_ibfk_2
+        column: module_id
+        references: core_modules.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+      - name: core_user_module_access_ibfk_3
+        column: module_role_id
+        references: core_roles.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+      - name: core_user_module_access_ibfk_4
+        column: granted_by
+        references: core_users.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+
+  - name: core_user_permission_overrides
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: user_id
+        type: int
+        nullable: false
+      - name: permission_id
+        type: int
+        nullable: false
+      - name: granted
+        type: tinyint(1)
+        nullable: true
+        default: 1
+      - name: reason
+        type: text
+        nullable: true
+      - name: granted_by
+        type: int
+        nullable: false
+      - name: granted_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+    indexes:
+      - name: granted_by
+        columns: [granted_by]
+        unique: false
+      - name: permission_id
+        columns: [permission_id]
+        unique: false
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+      - name: unique_override
+        columns: [user_id, permission_id]
+        unique: true
+    foreign_keys:
+      - name: core_user_permission_overrides_ibfk_1
+        column: user_id
+        references: core_users.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+      - name: core_user_permission_overrides_ibfk_2
+        column: permission_id
+        references: core_permissions.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+      - name: core_user_permission_overrides_ibfk_3
+        column: granted_by
+        references: core_users.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+
+  - name: core_user_roles
+    columns:
+      - name: user_id
+        type: int
+        nullable: false
+        primary_key: true
+      - name: role_id
+        type: int
+        nullable: false
+        primary_key: true
+      - name: assigned_by
+        type: int
+        nullable: false
+      - name: assigned_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+    indexes:
+      - name: assigned_by
+        columns: [assigned_by]
+        unique: false
+      - name: PRIMARY
+        columns: [user_id, role_id]
+        unique: true
+      - name: role_id
+        columns: [role_id]
+        unique: false
+    foreign_keys:
+      - name: core_user_roles_ibfk_1
+        column: user_id
+        references: core_users.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+      - name: core_user_roles_ibfk_2
+        column: role_id
+        references: core_roles.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+      - name: core_user_roles_ibfk_3
+        column: assigned_by
+        references: core_users.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+
+  - name: core_users
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: email
+        type: varchar(255)
+        nullable: true
+      - name: password_hash
+        type: varchar(255)
+        nullable: false
+      - name: must_change_password
+        type: tinyint(1)
+        nullable: true
+        default: 0
+      - name: name
+        type: varchar(255)
+        nullable: false
+      - name: username
+        type: varchar(50)
+        nullable: true
+        unique: true
+      - name: department
+        type: varchar(100)
+        nullable: true
+      - name: phone
+        type: varchar(20)
+        nullable: true
+      - name: is_active
+        type: tinyint(1)
+        nullable: true
+        default: 1
+      - name: is_deleted
+        type: tinyint(1)
+        nullable: true
+        default: 0
+      - name: failed_login_count
+        type: int
+        nullable: true
+        default: 0
+      - name: locked_until
+        type: timestamp
+        nullable: true
+      - name: created_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+      - name: updated_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+        on_update: CURRENT_TIMESTAMP
+      - name: last_login
+        type: datetime
+        nullable: true
+    indexes:
+      - name: idx_active_deleted
+        columns: [is_active, is_deleted]
+        unique: false
+      - name: idx_department
+        columns: [department]
+        unique: false
+      - name: idx_email
+        columns: [email]
+        unique: false
+      - name: idx_must_change_password
+        columns: [must_change_password]
+        unique: false
+      - name: idx_username
+        columns: [username]
+        unique: false
+      - name: idx_username_unique
+        columns: [username]
+        unique: true
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+      - name: username
+        columns: [username]
+        unique: true
+
+  - name: gauge_active_checkouts
+    columns:
+      - name: gauge_id
+        type: int
+        nullable: false
+        primary_key: true
+      - name: checked_out_to
+        type: int
+        nullable: false
+      - name: job_number
+        type: varchar(255)
+        nullable: true
+      - name: department
+        type: varchar(100)
+        nullable: true
+      - name: checkout_date
+        type: timestamp
+        nullable: false
+        default: CURRENT_TIMESTAMP
+      - name: expected_return
+        type: date
+        nullable: true
+    indexes:
+      - name: idx_return_date
+        columns: [expected_return]
+        unique: false
+      - name: idx_user
+        columns: [checked_out_to]
+        unique: false
+      - name: PRIMARY
+        columns: [gauge_id]
+        unique: true
+    foreign_keys:
+      - name: gauge_active_checkouts_ibfk_1
+        column: gauge_id
+        references: gauges.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+      - name: gauge_active_checkouts_ibfk_2
+        column: checked_out_to
+        references: core_users.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+
+  - name: gauge_calibration_failures
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: calibration_id
+        type: int
+        nullable: false
+      - name: failure_reason
+        type: text
+        nullable: false
+      - name: corrective_action
+        type: text
+        nullable: true
+      - name: resolution_date
+        type: date
+        nullable: true
+      - name: resolved_by
+        type: int
+        nullable: true
+    indexes:
+      - name: calibration_id
+        columns: [calibration_id]
+        unique: false
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+      - name: resolved_by
+        columns: [resolved_by]
+        unique: false
+    foreign_keys:
+      - name: gauge_calibration_failures_ibfk_1
+        column: calibration_id
+        references: gauge_calibrations.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+      - name: gauge_calibration_failures_ibfk_2
+        column: resolved_by
+        references: core_users.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+
+  - name: gauge_calibration_schedule
+    columns:
+      - name: gauge_id
+        type: int
+        nullable: false
+        primary_key: true
+      - name: frequency_days
+        type: int
+        nullable: false
+      - name: last_calibration_id
+        type: int
+        nullable: true
+      - name: next_due_date
+        type: date
+        nullable: false
+      - name: auto_notify_days
+        type: int
+        nullable: true
+        default: 30
+      - name: is_active
+        type: tinyint(1)
+        nullable: true
+        default: 1
+    indexes:
+      - name: idx_due_date
+        columns: [next_due_date]
+        unique: false
+      - name: idx_next_due_date
+        columns: [next_due_date]
+        unique: false
+      - name: last_calibration_id
+        columns: [last_calibration_id]
+        unique: false
+      - name: PRIMARY
+        columns: [gauge_id]
+        unique: true
+    foreign_keys:
+      - name: gauge_calibration_schedule_ibfk_1
+        column: gauge_id
+        references: gauges.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+      - name: gauge_calibration_schedule_ibfk_2
+        column: last_calibration_id
+        references: gauge_calibrations.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+
+  - name: gauge_calibration_standard_specifications
+    columns:
+      - name: gauge_id
+        type: int
+        nullable: false
+        primary_key: true
+      - name: standard_type
+        type: varchar(50)
+        nullable: false
+      - name: nominal_value
+        type: decimal(15,6)
+        nullable: false
+      - name: uncertainty
+        type: decimal(15,6)
+        nullable: false
+      - name: uncertainty_units
+        type: varchar(20)
+        nullable: true
+        default: inches
+      - name: traceability_organization
+        type: varchar(50)
+        nullable: true
+      - name: traceability_certificate
+        type: varchar(100)
+        nullable: true
+      - name: access_restricted
+        type: tinyint(1)
+        nullable: true
+        default: 1
+      - name: created_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+      - name: updated_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+        on_update: CURRENT_TIMESTAMP
+    indexes:
+      - name: idx_nominal_value
+        columns: [nominal_value]
+        unique: false
+      - name: idx_standard_type
+        columns: [standard_type]
+        unique: false
+      - name: PRIMARY
+        columns: [gauge_id]
+        unique: true
+    foreign_keys:
+      - name: gauge_calibration_standard_specifications_ibfk_1
+        column: gauge_id
+        references: gauges.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+
+  - name: gauge_calibrations
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: gauge_id
+        type: int
+        nullable: false
+      - name: calibration_date
+        type: date
+        nullable: false
+      - name: due_date
+        type: date
+        nullable: false
+      - name: certificate_number
+        type: varchar(100)
+        nullable: false
+      - name: calibrated_by
+        type: varchar(255)
+        nullable: false
+      - name: calibration_company
+        type: varchar(255)
+        nullable: true
+      - name: passed
+        type: tinyint(1)
+        nullable: false
+        default: 1
+      - name: is_sealed
+        type: tinyint(1)
+        nullable: true
+        default: 0
+      - name: measurements
+        type: json
+        nullable: true
+      - name: notes
+        type: text
+        nullable: true
+      - name: document_path
+        type: varchar(500)
+        nullable: true
+      - name: created_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+      - name: created_by
+        type: int
+        nullable: false
+    indexes:
+      - name: created_by
+        columns: [created_by]
+        unique: false
+      - name: idx_certificate
+        columns: [certificate_number]
+        unique: false
+      - name: idx_due_date
+        columns: [due_date]
+        unique: false
+      - name: idx_gauge_date
+        columns: [gauge_id, calibration_date]
+        unique: false
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+    foreign_keys:
+      - name: gauge_calibrations_ibfk_1
+        column: gauge_id
+        references: gauges.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+      - name: gauge_calibrations_ibfk_2
+        column: created_by
+        references: core_users.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+
+  - name: gauge_categories
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: equipment_type
+        type: enum('thread_gauge','hand_tool','large_equipment','calibration_standard')
+        nullable: false
+      - name: display_order
+        type: int
+        nullable: true
+        default: 0
+      - name: name
+        type: varchar(100)
+        nullable: false
+        unique: true
+      - name: prefix
+        type: varchar(10)
+        nullable: false
+      - name: description
+        type: text
+        nullable: true
+      - name: default_calibration_days
+        type: int
+        nullable: false
+      - name: next_number
+        type: int
+        nullable: true
+        default: 1
+      - name: is_active
+        type: tinyint(1)
+        nullable: true
+        default: 1
+      - name: created_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+    indexes:
+      - name: idx_equipment_type
+        columns: [equipment_type, is_active, display_order]
+        unique: false
+      - name: name
+        columns: [name]
+        unique: true
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+
+  - name: gauge_companion_history
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: gauge_id
+        type: int
+        nullable: false
+      - name: companion_gauge_id
+        type: int
+        nullable: false
+      - name: action
+        type: enum('paired','unpaired','replaced')
+        nullable: false
+      - name: reason
+        type: varchar(255)
+        nullable: true
+      - name: changed_by
+        type: int
+        nullable: false
+      - name: created_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+    indexes:
+      - name: changed_by
+        columns: [changed_by]
+        unique: false
+      - name: companion_gauge_id
+        columns: [companion_gauge_id]
+        unique: false
+      - name: idx_gauge_history
+        columns: [gauge_id, created_at]
+        unique: false
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+    foreign_keys:
+      - name: gauge_companion_history_ibfk_1
+        column: gauge_id
+        references: gauges.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+      - name: gauge_companion_history_ibfk_2
+        column: companion_gauge_id
+        references: gauges.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+      - name: gauge_companion_history_ibfk_3
+        column: changed_by
+        references: core_users.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+
+  - name: gauge_hand_tool_specifications
+    columns:
+      - name: gauge_id
+        type: int
+        nullable: false
+        primary_key: true
+      - name: tool_type
+        type: varchar(20)
+        nullable: false
+      - name: format
+        type: varchar(20)
+        nullable: false
+      - name: range_min
+        type: decimal(10,4)
+        nullable: false
+      - name: range_max
+        type: decimal(10,4)
+        nullable: false
+      - name: range_unit
+        type: varchar(10)
+        nullable: true
+        default: inches
+      - name: resolution
+        type: decimal(10,6)
+        nullable: false
+      - name: ownership_type
+        type: varchar(20)
+        nullable: true
+        default: company
+      - name: owner_employee_id
+        type: int
+        nullable: true
+      - name: created_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+      - name: updated_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+        on_update: CURRENT_TIMESTAMP
+    indexes:
+      - name: idx_ownership
+        columns: [ownership_type, owner_employee_id]
+        unique: false
+      - name: idx_tool_type
+        columns: [tool_type, format]
+        unique: false
+      - name: owner_employee_id
+        columns: [owner_employee_id]
+        unique: false
+      - name: PRIMARY
+        columns: [gauge_id]
+        unique: true
+    foreign_keys:
+      - name: gauge_hand_tool_specifications_ibfk_1
+        column: gauge_id
+        references: gauges.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+      - name: gauge_hand_tool_specifications_ibfk_2
+        column: owner_employee_id
+        references: core_users.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+
+  - name: gauge_id_config
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: category_id
+        type: int
+        nullable: false
+      - name: gauge_type
+        type: varchar(20)
+        nullable: true
+      - name: prefix
+        type: varchar(4)
+        nullable: false
+        unique: true
+      - name: current_sequence
+        type: int
+        nullable: true
+        default: 0
+      - name: is_locked
+        type: tinyint(1)
+        nullable: true
+        default: 0
+      - name: locked_at
+        type: timestamp
+        nullable: true
+      - name: created_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+      - name: updated_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+        on_update: CURRENT_TIMESTAMP
+    indexes:
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+      - name: unique_config
+        columns: [category_id, gauge_type]
+        unique: true
+      - name: unique_prefix
+        columns: [prefix]
+        unique: true
+    foreign_keys:
+      - name: gauge_id_config_ibfk_1
+        column: category_id
+        references: gauge_categories.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+
+  - name: gauge_large_equipment_specifications
+    columns:
+      - name: gauge_id
+        type: int
+        nullable: false
+        primary_key: true
+      - name: equipment_type
+        type: varchar(50)
+        nullable: false
+      - name: capacity
+        type: varchar(100)
+        nullable: true
+      - name: accuracy_class
+        type: varchar(20)
+        nullable: true
+      - name: fixed_location
+        type: tinyint(1)
+        nullable: true
+        default: 1
+      - name: created_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+      - name: updated_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+        on_update: CURRENT_TIMESTAMP
+    indexes:
+      - name: idx_equipment_type
+        columns: [equipment_type]
+        unique: false
+      - name: idx_fixed_location
+        columns: [fixed_location]
+        unique: false
+      - name: PRIMARY
+        columns: [gauge_id]
+        unique: true
+    foreign_keys:
+      - name: gauge_large_equipment_specifications_ibfk_1
+        column: gauge_id
+        references: gauges.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+
+  - name: gauge_notes
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: gauge_id
+        type: int
+        nullable: false
+      - name: user_id
+        type: int
+        nullable: false
+      - name: note_type
+        type: enum('general','maintenance','damage','calibration','qc')
+        nullable: true
+        default: general
+      - name: note
+        type: text
+        nullable: false
+      - name: attachments
+        type: json
+        nullable: true
+      - name: created_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+    indexes:
+      - name: idx_gauge_type
+        columns: [gauge_id, note_type]
+        unique: false
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+      - name: user_id
+        columns: [user_id]
+        unique: false
+    foreign_keys:
+      - name: gauge_notes_ibfk_1
+        column: gauge_id
+        references: gauges.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+      - name: gauge_notes_ibfk_2
+        column: user_id
+        references: core_users.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+
+  - name: gauge_qc_checks
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: gauge_id
+        type: int
+        nullable: false
+      - name: checked_by
+        type: int
+        nullable: false
+      - name: check_date
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+      - name: check_type
+        type: enum('return','periodic','damage')
+        nullable: false
+      - name: passed
+        type: tinyint(1)
+        nullable: false
+      - name: findings
+        type: json
+        nullable: true
+      - name: corrective_action
+        type: text
+        nullable: true
+      - name: next_action
+        type: enum('available','calibration','repair','retire')
+        nullable: true
+    indexes:
+      - name: checked_by
+        columns: [checked_by]
+        unique: false
+      - name: idx_gauge_date
+        columns: [gauge_id, check_date]
+        unique: false
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+    foreign_keys:
+      - name: gauge_qc_checks_ibfk_1
+        column: gauge_id
+        references: gauges.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+      - name: gauge_qc_checks_ibfk_2
+        column: checked_by
+        references: core_users.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+
+  - name: gauge_system_config
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: config_key
+        type: varchar(50)
+        nullable: false
+        unique: true
+      - name: config_value
+        type: varchar(255)
+        nullable: true
+      - name: config_type
+        type: enum('string','number','boolean','json')
+        nullable: true
+        default: string
+      - name: description
+        type: varchar(255)
+        nullable: true
+      - name: is_locked
+        type: tinyint(1)
+        nullable: true
+        default: 0
+      - name: created_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+      - name: updated_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+        on_update: CURRENT_TIMESTAMP
+    indexes:
+      - name: config_key
+        columns: [config_key]
+        unique: true
+      - name: idx_config_key
+        columns: [config_key]
+        unique: false
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+
+  - name: gauge_thread_specifications
+    columns:
+      - name: gauge_id
+        type: int
+        nullable: false
+        primary_key: true
+      - name: thread_size
+        type: varchar(20)
+        nullable: false
+      - name: thread_type
+        type: varchar(20)
+        nullable: false
+      - name: thread_form
+        type: varchar(10)
+        nullable: true
+      - name: thread_class
+        type: varchar(10)
+        nullable: false
+      - name: gauge_type
+        type: varchar(10)
+        nullable: false
+      - name: gauge_suffix
+        type: char(1)
+        nullable: false
+      - name: thread_hand
+        type: varchar(5)
+        nullable: true
+        default: RH
+      - name: acme_starts
+        type: int
+        nullable: true
+        default: 1
+      - name: created_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+      - name: updated_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+        on_update: CURRENT_TIMESTAMP
+    indexes:
+      - name: idx_thread_search
+        columns: [thread_type, thread_size, gauge_type]
+        unique: false
+      - name: PRIMARY
+        columns: [gauge_id]
+        unique: true
+    foreign_keys:
+      - name: gauge_thread_specifications_ibfk_1
+        column: gauge_id
+        references: gauges.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+
+  - name: gauge_transactions
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: gauge_id
+        type: int
+        nullable: false
+      - name: user_id
+        type: int
+        nullable: false
+      - name: action
+        type: enum('checkout','return','transfer_out','transfer_in','calibrate','unseal','retire','qc_pass','qc_fail')
+        nullable: false
+      - name: related_user_id
+        type: int
+        nullable: true
+      - name: location
+        type: varchar(255)
+        nullable: true
+      - name: notes
+        type: text
+        nullable: true
+      - name: created_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+    indexes:
+      - name: idx_created
+        columns: [created_at]
+        unique: false
+      - name: idx_gauge_action
+        columns: [gauge_id, action, created_at]
+        unique: false
+      - name: idx_user_created
+        columns: [user_id, created_at]
+        unique: false
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+      - name: related_user_id
+        columns: [related_user_id]
+        unique: false
+    foreign_keys:
+      - name: gauge_transactions_ibfk_1
+        column: gauge_id
+        references: gauges.id
+        on_delete: CASCADE
+        on_update: NO ACTION
+      - name: gauge_transactions_ibfk_2
+        column: user_id
+        references: core_users.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+      - name: gauge_transactions_ibfk_3
+        column: related_user_id
+        references: core_users.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+
+  - name: gauge_transfers
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: gauge_id
+        type: int
+        nullable: false
+      - name: from_user_id
+        type: int
+        nullable: false
+      - name: to_user_id
+        type: int
+        nullable: false
+      - name: initiated_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+      - name: status
+        type: enum('pending','accepted','rejected','cancelled')
+        nullable: true
+        default: pending
+      - name: status_changed_at
+        type: timestamp
+        nullable: true
+      - name: status_changed_by
+        type: int
+        nullable: true
+      - name: reason
+        type: text
+        nullable: true
+    indexes:
+      - name: from_user_id
+        columns: [from_user_id]
+        unique: false
+      - name: gauge_id
+        columns: [gauge_id]
+        unique: false
+      - name: idx_status
+        columns: [status]
+        unique: false
+      - name: idx_to_user
+        columns: [to_user_id, status]
+        unique: false
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+      - name: status_changed_by
+        columns: [status_changed_by]
+        unique: false
+    foreign_keys:
+      - name: gauge_transfers_ibfk_1
+        column: gauge_id
+        references: gauges.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+      - name: gauge_transfers_ibfk_2
+        column: from_user_id
+        references: core_users.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+      - name: gauge_transfers_ibfk_3
+        column: to_user_id
+        references: core_users.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+      - name: gauge_transfers_ibfk_4
+        column: status_changed_by
+        references: core_users.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+
+  - name: gauge_unseal_requests
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: gauge_id
+        type: int
+        nullable: false
+      - name: requested_by
+        type: int
+        nullable: false
+      - name: requested_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+      - name: status
+        type: enum('pending','approved','rejected')
+        nullable: true
+        default: pending
+      - name: status_changed_at
+        type: timestamp
+        nullable: true
+      - name: status_changed_by
+        type: int
+        nullable: true
+      - name: reason
+        type: text
+        nullable: false
+    indexes:
+      - name: idx_gauge_status
+        columns: [gauge_id, status]
+        unique: false
+      - name: idx_status
+        columns: [status]
+        unique: false
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+      - name: requested_by
+        columns: [requested_by]
+        unique: false
+      - name: status_changed_by
+        columns: [status_changed_by]
+        unique: false
+    foreign_keys:
+      - name: gauge_unseal_requests_ibfk_1
+        column: gauge_id
+        references: gauges.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+      - name: gauge_unseal_requests_ibfk_2
+        column: requested_by
+        references: core_users.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+      - name: gauge_unseal_requests_ibfk_3
+        column: status_changed_by
+        references: core_users.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+
+  - name: gauges
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: gauge_id
+        type: varchar(20)
+        nullable: false
+        unique: true
+      - name: custom_id
+        type: varchar(50)
+        nullable: true
+        unique: true
+      - name: name
+        type: varchar(255)
+        nullable: false
+      - name: equipment_type
+        type: enum('thread_gauge','hand_tool','large_equipment','calibration_standard')
+        nullable: false
+      - name: serial_number
+        type: varchar(100)
+        nullable: false
+      - name: manufacturer
+        type: varchar(255)
+        nullable: true
+      - name: model_number
+        type: varchar(100)
+        nullable: true
+      - name: category_id
+        type: int
+        nullable: false
+      - name: status
+        type: enum('available','checked_out','calibration_due','pending_qc','out_of_service','pending_unseal','retired')
+        nullable: true
+        default: available
+      - name: companion_gauge_id
+        type: int
+        nullable: true
+      - name: is_spare
+        type: tinyint(1)
+        nullable: true
+        default: 0
+      - name: is_sealed
+        type: tinyint(1)
+        nullable: true
+        default: 0
+      - name: is_active
+        type: tinyint(1)
+        nullable: true
+        default: 1
+      - name: is_deleted
+        type: tinyint(1)
+        nullable: true
+        default: 0
+      - name: created_by
+        type: int
+        nullable: false
+      - name: created_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+      - name: updated_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+        on_update: CURRENT_TIMESTAMP
+      - name: ownership_type
+        type: enum('company','employee')
+        nullable: false
+        default: company
+      - name: employee_owner_id
+        type: int
+        nullable: true
+      - name: purchase_info
+        type: enum('company_issued','employee_reimbursed','employee_personal')
+        nullable: true
+      - name: system_gauge_id
+        type: varchar(20)
+        nullable: false
+        unique: true
+      - name: gauge_suffix
+        type: char(1)
+        nullable: true
+      - name: standardized_name
+        type: varchar(255)
+        nullable: false
+      - name: storage_location
+        type: varchar(255)
+        nullable: true
+    indexes:
+      - name: companion_gauge_id
+        columns: [companion_gauge_id]
+        unique: false
+      - name: created_by
+        columns: [created_by]
+        unique: false
+      - name: custom_id
+        columns: [custom_id]
+        unique: true
+      - name: employee_owner_id
+        columns: [employee_owner_id]
+        unique: false
+      - name: gauge_id
+        columns: [gauge_id]
+        unique: true
+      - name: idx_active_deleted
+        columns: [is_active, is_deleted]
+        unique: false
+      - name: idx_category
+        columns: [category_id]
+        unique: false
+      - name: idx_companion_detail
+        columns: [id, system_gauge_id, gauge_suffix, status]
+        unique: false
+      - name: idx_companion_gauge_id
+        columns: [companion_gauge_id]
+        unique: false
+      - name: idx_gauge_set_lookup
+        columns: [category_id, companion_gauge_id, status]
+        unique: false
+      - name: idx_gauge_suffix
+        columns: [gauge_suffix]
+        unique: false
+      - name: idx_manufacturer
+        columns: [manufacturer]
+        unique: false
+      - name: idx_model_number
+        columns: [model_number]
+        unique: false
+      - name: idx_search
+        columns: [gauge_id, custom_id, name, serial_number]
+        unique: false
+        type: FULLTEXT
+      - name: idx_spare_lookup
+        columns: [equipment_type, gauge_suffix, companion_gauge_id, status]
+        unique: false
+      - name: idx_standardization_search
+        columns: [equipment_type, category_id, is_spare, is_active, is_deleted]
+        unique: false
+      - name: idx_standardized_name
+        columns: [standardized_name]
+        unique: false
+      - name: idx_status
+        columns: [status]
+        unique: false
+      - name: idx_type
+        columns: [equipment_type]
+        unique: false
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+      - name: uk_system_gauge_id
+        columns: [system_gauge_id]
+        unique: true
+    foreign_keys:
+      - name: gauges_ibfk_1
+        column: category_id
+        references: gauge_categories.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+      - name: gauges_ibfk_2
+        column: companion_gauge_id
+        references: gauges.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+      - name: gauges_ibfk_3
+        column: created_by
+        references: core_users.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+      - name: gauges_ibfk_4
+        column: employee_owner_id
+        references: core_users.id
+        on_delete: NO ACTION
+        on_update: NO ACTION
+
+  - name: rejection_reasons
+    columns:
+      - name: id
+        type: int
+        nullable: false
+        primary_key: true
+        auto_increment: true
+      - name: reason_name
+        type: varchar(100)
+        nullable: false
+        unique: true
+      - name: action_type
+        type: enum('remove_checkout','keep_checkout')
+        nullable: false
+      - name: target_status
+        type: varchar(50)
+        nullable: true
+      - name: requires_notes
+        type: tinyint(1)
+        nullable: true
+        default: 0
+      - name: is_active
+        type: tinyint(1)
+        nullable: true
+        default: 1
+      - name: display_order
+        type: int
+        nullable: true
+        default: 0
+      - name: created_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+      - name: updated_at
+        type: timestamp
+        nullable: true
+        default: CURRENT_TIMESTAMP
+        on_update: CURRENT_TIMESTAMP
+    indexes:
+      - name: idx_active_order
+        columns: [is_active, display_order]
+        unique: false
+      - name: idx_reason_name
+        columns: [reason_name]
+        unique: false
+      - name: PRIMARY
+        columns: [id]
+        unique: true
+      - name: reason_name
+        columns: [reason_name]
+        unique: true
+
+views:
+  - name: gauge_category_equipment_map
+
+# Stored Procedures (NOT included in structure, listed for completeness)
+stored_procedures:
+  # None found
+
+# Scheduled Events (NOT included in structure, listed for completeness)
+scheduled_events:
+  # None found
+
+# Known Integrity Issues
+integrity_issues:
+  missing_tables:
+    - name: gauge_calibrations
+      referenced_by:
+        - gauge_calibration_failures.calibration_id
+        - gauge_calibration_schedule.last_calibration_id
+      impact: "Foreign key constraints exist but table is missing"
+
+relationships:
+  - from: certificates.gauge_id
+    to: gauges.id
+  - from: certificates.uploaded_by
+    to: core_users.id
+  - from: companion_history.go_gauge_id
+    to: gauges.id
+  - from: companion_history.nogo_gauge_id
+    to: gauges.id
+  - from: companion_history.performed_by
+    to: core_users.id
+  - from: core_audit_log.user_id
+    to: core_users.id
+  - from: core_audit_log.module_id
+    to: core_modules.id
+  - from: core_enabled_modules.module_id
+    to: core_modules.id
+  - from: core_enabled_modules.enabled_by
+    to: core_users.id
+  - from: core_event_subscriptions.module_id
+    to: core_modules.id
+  - from: core_events.source_module_id
+    to: core_modules.id
+  - from: core_events.target_module_id
+    to: core_modules.id
+  - from: core_module_config.module_id
+    to: core_modules.id
+  - from: core_module_config.updated_by
+    to: core_users.id
+  - from: core_navigation.module_id
+    to: core_modules.id
+  - from: core_navigation.required_permission_id
+    to: core_permissions.id
+  - from: core_navigation.parent_id
+    to: core_navigation.id
+  - from: core_notification_preferences.user_id
+    to: core_users.id
+  - from: core_notification_templates.module_id
+    to: core_modules.id
+  - from: core_notifications.user_id
+    to: core_users.id
+  - from: core_notifications.module_id
+    to: core_modules.id
+  - from: core_role_permissions.role_id
+    to: core_roles.id
+  - from: core_role_permissions.permission_id
+    to: core_permissions.id
+  - from: core_sessions.user_id
+    to: core_users.id
+  - from: core_user_module_access.user_id
+    to: core_users.id
+  - from: core_user_module_access.module_id
+    to: core_modules.id
+  - from: core_user_module_access.module_role_id
+    to: core_roles.id
+  - from: core_user_module_access.granted_by
+    to: core_users.id
+  - from: core_user_permission_overrides.user_id
+    to: core_users.id
+  - from: core_user_permission_overrides.permission_id
+    to: core_permissions.id
+  - from: core_user_permission_overrides.granted_by
+    to: core_users.id
+  - from: core_user_roles.user_id
+    to: core_users.id
+  - from: core_user_roles.role_id
+    to: core_roles.id
+  - from: core_user_roles.assigned_by
+    to: core_users.id
+  - from: gauge_active_checkouts.gauge_id
+    to: gauges.id
+  - from: gauge_active_checkouts.checked_out_to
+    to: core_users.id
+  - from: gauge_calibration_failures.calibration_id
+    to: gauge_calibrations.id
+  - from: gauge_calibration_failures.resolved_by
+    to: core_users.id
+  - from: gauge_calibration_schedule.gauge_id
+    to: gauges.id
+  - from: gauge_calibration_schedule.last_calibration_id
+    to: gauge_calibrations.id
+  - from: gauge_calibration_standard_specifications.gauge_id
+    to: gauges.id
+  - from: gauge_calibrations.gauge_id
+    to: gauges.id
+  - from: gauge_calibrations.created_by
+    to: core_users.id
+  - from: gauge_companion_history.gauge_id
+    to: gauges.id
+  - from: gauge_companion_history.companion_gauge_id
+    to: gauges.id
+  - from: gauge_companion_history.changed_by
+    to: core_users.id
+  - from: gauge_hand_tool_specifications.gauge_id
+    to: gauges.id
+  - from: gauge_hand_tool_specifications.owner_employee_id
+    to: core_users.id
+  - from: gauge_id_config.category_id
+    to: gauge_categories.id
+  - from: gauge_large_equipment_specifications.gauge_id
+    to: gauges.id
+  - from: gauge_notes.gauge_id
+    to: gauges.id
+  - from: gauge_notes.user_id
+    to: core_users.id
+  - from: gauge_qc_checks.gauge_id
+    to: gauges.id
+  - from: gauge_qc_checks.checked_by
+    to: core_users.id
+  - from: gauge_thread_specifications.gauge_id
+    to: gauges.id
+  - from: gauge_transactions.gauge_id
+    to: gauges.id
+  - from: gauge_transactions.user_id
+    to: core_users.id
+  - from: gauge_transactions.related_user_id
+    to: core_users.id
+  - from: gauge_transfers.gauge_id
+    to: gauges.id
+  - from: gauge_transfers.from_user_id
+    to: core_users.id
+  - from: gauge_transfers.to_user_id
+    to: core_users.id
+  - from: gauge_transfers.status_changed_by
+    to: core_users.id
+  - from: gauge_unseal_requests.gauge_id
+    to: gauges.id
+  - from: gauge_unseal_requests.requested_by
+    to: core_users.id
+  - from: gauge_unseal_requests.status_changed_by
+    to: core_users.id
+  - from: gauges.category_id
+    to: gauge_categories.id
+  - from: gauges.companion_gauge_id
+    to: gauges.id
+  - from: gauges.created_by
+    to: core_users.id
+  - from: gauges.employee_owner_id
+    to: core_users.id

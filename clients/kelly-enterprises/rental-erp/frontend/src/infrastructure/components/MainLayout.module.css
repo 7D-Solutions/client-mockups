@@ -1,0 +1,96 @@
+/* Main Layout Styles */
+
+/* App wrapper */
+.app {
+  min-height: 100vh;
+  background: var(--color-primary);
+  margin: 0;
+  display: flex;
+}
+
+/* Container - offset by sidebar width (260px) */
+.container {
+  flex: 1;
+  margin-left: 260px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Simple Header Bar */
+.header {
+  background: white;
+  padding: 20px 30px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pageTitle {
+  font-size: 24px;
+  color: #1e293b;
+  margin: 0;
+  font-weight: 600;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.logoutBtn {
+  background: var(--color-danger);
+  color: var(--color-text-inverse);
+  border: none;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--space-1);
+  font-weight: 500;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.logoutBtn:hover {
+  background: var(--color-danger);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* Main Navigation - LEGACY (removed in favor of left sidebar) */
+/* .mainNav {
+  display: flex;
+  margin: 0 0 var(--space-3);
+}
+
+.navTabFirst {
+  border-radius: var(--space-5) 0 0 var(--space-5) !important;
+}
+
+.navTabLast {
+  border-radius: 0 var(--space-5) var(--space-5) 0 !important;
+  margin-left: -1px;
+}
+
+.navTabMiddle {
+  border-radius: 0 !important;
+  margin-left: -1px;
+} */
+
+/* Main Content */
+.mainContent {
+  flex: 1;
+  padding: 0;
+  overflow-y: auto;
+  background: #f5f5f5;
+}
+
+/* Responsive - hide sidebar on mobile */
+@media (max-width: 1023px) {
+  .container {
+    margin-left: 0;
+  }
+}

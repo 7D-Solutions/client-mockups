@@ -1,0 +1,162 @@
+Gotcha—here’s the tight “modular FE” structure we’ve been using/aiming for:
+
+frontend/
+  apps/
+    web/                     # App shell (routes, layouts, auth guard, error pages)
+      src/
+        app/                 # Route groups / pages (Next.js) or router config
+        providers/           # App-level providers (theme, query, i18n)
+        features/            # Feature entrypoints that compose packages
+        widgets/             # Cross-feature UI wrappers (nav, sidebar, page chrome)
+        pages/               # (If CRA/Vite + React Router)
+        index.(tsx|jsx)
+        main.(tsx|jsx)
+  packages/
+    ui/                      # Design system: atoms/molecules/organisms (shadcn/ui wrappers)
+      src/
+        components/
+        primitives/
+        theme/               # Tailwind tokens, variants, global CSS
+    icons/                   # lucide-react mappings, custom SVGR
+    lib/                     # Cross-cutting libs (http client, query, form, utils)
+      src/
+        api/                 # Typed API client (zod schemas, fetch wrappers)
+        hooks/               # Reusable hooks (useDebounce, useAuth, etc.)
+        state/               # Global store slices (if any)
+        utils/               # Pure helpers only
+    feature-<name>/          # One folder per domain feature (vertical slice)
+      src/
+        components/          # Feature-scoped UI (not in shared ui/)
+        routes/              # Feature routes (or lazy chunks)
+        api/                 # Feature endpoints/types
+        hooks/
+        model/               # State machines, adapters, selectors
+        index.ts             # Public surface of the feature
+  tooling/
+    config/                  # eslint, prettier, tsconfig bases, vite/next configs
+    scripts/                 # build, typecheck, extract i18n, generate api clients
+  .storybook/                # Storybook for ui + feature components
+  tailwind.config.ts
+  tsconfig.base.json
+  package.json               # workspaces for apps/* and packages/*
+
+Rules of the road (quick)
+
+Vertical slices first: each feature-<name> owns its UI, data access, and state; apps only compose.
+
+Design system in packages/ui: no feature imports from other features—only from ui and lib.
+
+Typed API at the edge: packages/lib/api owns schemas (Zod), fetch wrappers, and client; features call it.
+
+Router boundaries = feature boundaries: lazy-load routes per feature; keep data loaders inside features.
+
+State machines / guards: put feature-specific xstate (or equivalent) in feature-*/model.
+
+Strict imports: features can import packages/{ui,lib,icons} but not each other.
+
+Testing:
+
+unit: inside each feature package,
+
+integration: at app level (route/loader/wiring),
+
+visual: Storybook stories in packages/ui and feature-*/components.
+
+If you want, I can generate a minimal monorepo scaffold (pnpm workspaces + Next.js + Tailwind + shadcn/ui + Storybook) that drops into frontend/ and matches this layout.
+
+You said:
+does this match the backend structure?
+ChatGPT said:
+Thought for a second
+Thought for 39s
+
+Short answer: yes—your modular FE layout matches the backend’s domain-module shape.
+Backend is organized around domains like gauge and core (RBAC/audit), and your FE “vertical slices” line up with those.
+
+Quick mapping
+
+feature-gauges ↔ backend gauge domain (tables like gauges, gauge_calibrations, gauge_transfers, etc.).
+
+feature-checkout/return ↔ gauge_active_checkouts + related gauge status transitions.
+
+feature-calibrations ↔ gauge_calibrations (+ schedule/failures).
+
+feature-transfers ↔ gauge_transfers.
+
+feature-unseal ↔ gauge_unseal_requests.
+
+feature-core (RBAC/audit/nav) ↔ core_* tables (roles, permissions, audit, navigation).
+
+Keep them in lockstep (3 checks)
+
+Names: FE feature folder names mirror backend domains (feature-gauges, feature-calibrations, feature-transfers, feature-unseal, feature-core).
+
+API client boundaries: Each feature only calls its own endpoints (generated client sits in packages/lib/api, imported by the feature).
+
+Permissions: FE uses the same role/permission keys surfaced by backend core_* (don’t duplicate strings).
+
+If you want, I can spit out a tiny checklist PR to add the feature folders and stub routes so the FE tree exactly mirrors these domains.
+
+You said:
+FRONTEND_MODULE_STRUCTURE.md
+File
+how well does this match?
+ChatGPT said:
+Thought for a second
+Thought for 17s
+
+Short take: it’s a strong match (~85–90%). Your FE modular spec lines up with the backend’s domain modules and responsibilities, and you’ve already mapped repos→components and services→API clients in the doc.
+
+What matches well
+
+Core “erp-core” slices (auth, navigation, data, notifications) mirror backend cross-cutting concerns (auth/RBAC, routing/nav, data client, notifications).
+
+Business module parity: modules/gauge, modules/admin, modules/auth align with /backend/src/modules/{gauge,admin,auth} and you’ve documented repo→UI & service→API mapping.
+
+Module descriptor + route/nav registration gives clean composition at the app shell and keeps features independent.
+
+File-size discipline and component/service/store boundaries match your Playbook rules.
+
+Gaps / deltas to close (actionable)
+
+Break out workflow subdomains
+
+Promote these from “pages under gauge” to explicit feature folders or submodules so they mirror backend repos/services:
+
+calibrations, transfers, unseal (keep checkout/return with gauge or split as checkouts).
+
+Add descriptors & routes, e.g. /modules/calibrations, /modules/transfers.
+
+API client location
+
+Doc puts API files inside each module (e.g., modules/gauge/services/gaugeApi.ts). That’s fine, but if multiple modules hit the same endpoints, consider a small shared core/data client wrapper to avoid duplication. Keep module-local types.
+
+RBAC wiring at the edge
+
+Ensure each route/nav entry uses the permission key you documented (gauge.view, etc.) with a guard HOC/RouteGuard so FE visibility matches backend enforcement. Add a tiny hasPermission() helper under core/auth.
+
+Events/UI notifications
+
+You specified a core notifications slice; add a light event bus (or React context) in core/data so modules can publish UX events (e.g., checkout success) without coupling.
+
+Types & stores
+
+Keep types/*.ts per module (already in doc). For stores, ensure selectors do not leak across modules; if global state emerges, move it to core/data as read-only queries.
+
+Repository→UI coverage
+
+You mapped Gauges/Checkouts/Transfers; add the same explicit mapping rows for UnsealRequests and Calibrations to lock parity with backend repos.
+
+Quick “done” checklist
+
+ Create frontend/src/modules/calibrations/ and transfers/ (and optionally unseal/) with index.ts, components/, services/, routes/, types/. Wire routes/nav via descriptors.
+
+ Add permission keys to all nav items + route guards in core/auth.
+
+ Add tiny eventBus.ts in core/data and emit standard events from module services; show toasts via core/notifications.
+
+ (Optional) Extract shared HTTP base to core/data/apiClient.ts; keep per-module API files thin.
+
+ Extend the mapping table to include UnsealRequestsRepo → Unseal components and CalibrationsRepo → Calibration components.
+
+If you want, I can spit out the folder stubs (files with minimal code) for calibrations/, transfers/, and unseal/ so you can drop them in and keep perfect 1:1 with the backend immediately.

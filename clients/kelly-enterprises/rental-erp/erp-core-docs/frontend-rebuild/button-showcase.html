@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fire-Proof ERP - Button Showcase</title>
+    <style>
+        /* CSS Variables from the system */
+        :root {
+            --color-primary: #3b82f6;
+            --color-primary-dark: #2563eb;
+            --color-secondary: #6b7280;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-danger: #ef4444;
+            --color-info: #3b82f6;
+            --color-text-inverse: #ffffff;
+            --color-bg-primary: #ffffff;
+            --color-gray-700: #374151;
+            
+            /* Spacing */
+            --space-2: 0.5rem;
+            --space-4: 1rem;
+            --space-8: 2rem;
+            
+            /* Component sizes */
+            --component-size-sm-padding-y: 0.375rem;
+            --component-size-sm-padding-x: 0.75rem;
+            --component-size-sm-font-size: 0.875rem;
+            --component-size-sm-min-height: 2rem;
+            
+            --component-size-md-padding-y: 0.5rem;
+            --component-size-md-padding-x: 1rem;
+            --component-size-md-font-size: 0.875rem;
+            --component-size-md-min-height: 2.5rem;
+        }
+
+        /* Base button styles */
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            font-weight: 500;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            position: relative;
+            text-decoration: none;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            margin: 0.5rem;
+        }
+
+        .button:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.25);
+        }
+
+        .button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Size variants */
+        .small {
+            padding: var(--component-size-sm-padding-y) var(--component-size-sm-padding-x);
+            font-size: var(--component-size-sm-font-size);
+            min-height: var(--component-size-sm-min-height);
+            line-height: 1;
+        }
+
+        .medium {
+            padding: var(--component-size-md-padding-y) var(--component-size-md-padding-x);
+            font-size: var(--component-size-md-font-size);
+            min-height: var(--component-size-md-min-height);
+            line-height: 1;
+        }
+
+        /* Color variants - Updated from Button.module.css */
+        .primary {
+            background-color: var(--color-primary);
+            background-image: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            color: var(--color-text-inverse);
+        }
+
+        .primary:hover:not(:disabled) {
+            background-color: var(--color-primary-dark);
+            background-image: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary-dark) 100%);
+        }
+
+        /* UPDATED Secondary - Now Rose/Red */
+        .secondary {
+            background-color: #e11d48;
+            background-image: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
+            color: var(--color-text-inverse);
+        }
+
+        .secondary:hover:not(:disabled) {
+            background-color: #be123c;
+            background-image: linear-gradient(135deg, #be123c 0%, #9f1239 100%);
+        }
+
+        /* UPDATED Outline - Blue outline for Close buttons */
+        .outline {
+            background-color: transparent;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+            box-shadow: none;
+        }
+
+        .outline:hover:not(:disabled) {
+            background-color: var(--color-primary);
+            color: var(--color-text-inverse);
+            border-color: var(--color-primary);
+        }
+
+        .success {
+            background-color: var(--color-success);
+            background-image: linear-gradient(135deg, var(--color-success) 0%, var(--color-success) 100%);
+            color: var(--color-text-inverse);
+        }
+
+        .warning {
+            background-color: var(--color-warning);
+            background-image: linear-gradient(135deg, var(--color-warning) 0%, var(--color-warning) 100%);
+            color: var(--color-text-inverse);
+        }
+
+        .danger {
+            background-color: var(--color-danger);
+            background-image: linear-gradient(135deg, var(--color-danger) 0%, var(--color-danger) 100%);
+            color: var(--color-text-inverse);
+        }
+
+        .info {
+            background-color: var(--color-info);
+            background-image: linear-gradient(135deg, var(--color-info) 0%, var(--color-info) 100%);
+            color: var(--color-text-inverse);
+        }
+
+        /* Layout styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 2rem;
+            background-color: #f3f4f6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            margin-bottom: 1rem;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .note {
+            background-color: #fef3c7;
+            border: 1px solid #f59e0b;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+        }
+
+        .color-box {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fire-Proof ERP - Button Showcase</h1>
+        
+        <div class="note">
+            <strong>⚠️ Important Changes:</strong><br>
+            • Secondary buttons are now Rose/Red (#e11d48) instead of Grey (#6b7280)<br>
+            • Cancel/Close buttons are ALWAYS positioned on the RIGHT side<br>
+            • Close buttons use "outline" variant (blue outline) for view-only modals
+        </div>
+
+        <div class="section">
+            <h2>Button Variants (Size: Medium)</h2>
+            
+            <div class="label">Primary Actions (Blue)</div>
+            <div class="button-group">
+                <button class="button primary medium">Save</button>
+                <button class="button primary medium">Submit</button>
+                <button class="button primary medium">Close</button>
+                <button class="button primary medium">View Certificate</button>
+                <button class="button primary medium">Download</button>
+                <button class="button primary medium">Checkout</button>
+            </div>
+
+            <div class="label">Secondary Actions (Rose/Red - Previously Grey)</div>
+            <div class="button-group">
+                <button class="button secondary medium">Cancel</button>
+                <button class="button secondary medium">Back</button>
+                <button class="button secondary medium">Reset</button>
+                <button class="button secondary medium">Dismiss</button>
+            </div>
+
+            <div class="label">Outline Actions (Blue Outline - For Close buttons)</div>
+            <div class="button-group">
+                <button class="button outline medium">Close</button>
+                <button class="button outline medium">Done</button>
+                <button class="button outline medium">OK</button>
+            </div>
+
+            <div class="label">Success Actions (Green)</div>
+            <div class="button-group">
+                <button class="button success medium">Approve</button>
+                <button class="button success medium">Complete</button>
+                <button class="button success medium">Checkin</button>
+                <button class="button success medium">Accept</button>
+            </div>
+
+            <div class="label">Warning Actions (Orange)</div>
+            <div class="button-group">
+                <button class="button warning medium">Pending</button>
+                <button class="button warning medium">Review</button>
+                <button class="button warning medium">Pending QC</button>
+                <button class="button warning medium">Pending Unseal</button>
+            </div>
+
+            <div class="label">Danger Actions (Red)</div>
+            <div class="button-group">
+                <button class="button danger medium">Delete</button>
+                <button class="button danger medium">Reject</button>
+                <button class="button danger medium">Out of Service</button>
+                <button class="button danger medium">Calibration Due</button>
+            </div>
+
+            <div class="label">Info Actions (Blue - Same as Primary)</div>
+            <div class="button-group">
+                <button class="button info medium">Details</button>
+                <button class="button info medium">Transfer</button>
+                <button class="button info medium">Transfer Pending</button>
+                <button class="button info medium">Transfer Waiting</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Button Sizes</h2>
+            
+            <div class="label">Small Size</div>
+            <div class="button-group">
+                <button class="button primary small">Primary</button>
+                <button class="button secondary small">Secondary</button>
+                <button class="button outline small">Outline</button>
+                <button class="button success small">Success</button>
+                <button class="button warning small">Warning</button>
+                <button class="button danger small">Danger</button>
+                <button class="button info small">Info</button>
+            </div>
+
+            <div class="label">Medium Size</div>
+            <div class="button-group">
+                <button class="button primary medium">Primary</button>
+                <button class="button secondary medium">Secondary</button>
+                <button class="button outline medium">Outline</button>
+                <button class="button success medium">Success</button>
+                <button class="button warning medium">Warning</button>
+                <button class="button danger medium">Danger</button>
+                <button class="button info medium">Info</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Disabled States</h2>
+            <div class="button-group">
+                <button class="button primary medium" disabled>Primary Disabled</button>
+                <button class="button secondary medium" disabled>Secondary Disabled</button>
+                <button class="button success medium" disabled>Success Disabled</button>
+                <button class="button warning medium" disabled>Warning Disabled</button>
+                <button class="button danger medium" disabled>Danger Disabled</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Color Reference</h2>
+            <p><span class="color-box" style="background: #3b82f6;"></span>Primary (Blue): #3b82f6</p>
+            <p><span class="color-box" style="background: #e11d48;"></span>Secondary (Rose): #e11d48 <strong>(Changed from Grey #6b7280)</strong></p>
+            <p><span class="color-box" style="background: transparent; border: 2px solid #3b82f6;"></span>Outline (Blue Border): #3b82f6 border <strong>(For Close buttons)</strong></p>
+            <p><span class="color-box" style="background: #10b981;"></span>Success (Green): #10b981</p>
+            <p><span class="color-box" style="background: #f59e0b;"></span>Warning (Orange): #f59e0b</p>
+            <p><span class="color-box" style="background: #ef4444;"></span>Danger (Red): #ef4444</p>
+            <p><span class="color-box" style="background: #3b82f6;"></span>Info (Blue): #3b82f6</p>
+        </div>
+
+        <div class="section">
+            <h2>Common Modal Button Patterns</h2>
+            <div style="background: #f9fafb; padding: 1.5rem; border-radius: 8px;">
+                <h3>View-Only Modal (Gauge Details)</h3>
+                <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 1rem;">Action buttons on left, Close on right</p>
+                <div class="button-group">
+                    <button class="button primary small">Checkout</button>
+                    <button class="button success small">Checkin</button>
+                    <button class="button info small">Transfer</button>
+                    <button class="button primary small">View Certificate</button>
+                    <button class="button primary small">Download</button>
+                    <div style="flex: 1;"></div>
+                    <button class="button outline small">Close</button>
+                </div>
+                
+                <h3>Confirmation Modals</h3>
+                <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 1rem;">Primary action on left, Cancel on right</p>
+                <div class="button-group">
+                    <button class="button primary medium">Confirm</button>
+                    <button class="button secondary medium">Cancel</button>
+                </div>
+                
+                <h3>Create/Edit Forms</h3>
+                <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 1rem;">Submit/Save on left, Cancel on right</p>
+                <div class="button-group">
+                    <button class="button primary medium">Create</button>
+                    <button class="button secondary medium">Cancel</button>
+                </div>
+                
+                <h3>Dangerous Actions</h3>
+                <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 1rem;">Danger action on left, Cancel on right</p>
+                <div class="button-group">
+                    <button class="button danger medium">Delete</button>
+                    <button class="button secondary medium">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

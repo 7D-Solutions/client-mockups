@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Hierarchy - Inline Column Edit Mode</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            padding: 16px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .controls {
+            padding: 12px 24px;
+            background: #fafafa;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .left-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .customize-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: white;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            transition: all 0.2s;
+        }
+
+        .customize-btn:hover {
+            background: #f5f5f5;
+            border-color: #1976d2;
+        }
+
+        .customize-btn.active {
+            background: #1976d2;
+            color: white;
+            border-color: #1976d2;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            position: relative;
+            table-layout: auto;
+        }
+
+        thead {
+            background: #fafafa;
+            border-bottom: 2px solid #e0e0e0;
+            position: relative;
+        }
+
+        th {
+            padding: 12px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            transition: all 0.2s;
+            white-space: nowrap;
+            width: auto;
+        }
+
+        th.center {
+            text-align: center;
+        }
+
+        /* Checkbox overlay - appears above header text */
+        .header-checkbox {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            background: #e3f2fd;
+            padding: 4px 8px;
+            border-radius: 4px 4px 0 0;
+            border: 1px solid #1976d2;
+            border-bottom: none;
+            z-index: 10;
+            margin-bottom: 0;
+        }
+
+        .edit-mode .header-checkbox {
+            display: flex;
+        }
+
+        .header-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .header-checkbox-label {
+            font-size: 9px;
+            color: #1565c0;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        /* Draggable state */
+        th.draggable {
+            cursor: move;
+            user-select: none;
+        }
+
+        th.draggable:hover {
+            background: #f0f0f0;
+        }
+
+        th.draggable::before {
+            content: '⋮⋮';
+            position: absolute;
+            left: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: #999;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        th.draggable:hover::before {
+            opacity: 1;
+        }
+
+        th.dragging {
+            opacity: 0.4;
+            background: #e3f2fd;
+        }
+
+        th.drag-over-left {
+            border-left: 3px solid #1976d2;
+        }
+
+        th.drag-over-right {
+            border-right: 3px solid #1976d2;
+        }
+
+        th.locked {
+            cursor: default;
+        }
+
+        th.hidden {
+            display: none;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        td {
+            padding: 12px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        td.center {
+            text-align: center;
+        }
+
+        td.hidden {
+            display: none;
+        }
+
+        .item-id {
+            font-weight: 600;
+            color: #1976d2;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .location-code {
+            font-weight: 600;
+            color: #1976d2;
+            cursor: pointer;
+        }
+
+        .location-code:hover {
+            text-decoration: underline;
+        }
+
+
+        .info-banner {
+            padding: 16px 24px;
+            background: #e3f2fd;
+            border-bottom: 1px solid #bbdefb;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .info-icon {
+            font-size: 20px;
+        }
+
+        .info-text {
+            font-size: 14px;
+            color: #1565c0;
+        }
+
+        .info-text strong {
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Inventory Dashboard</h1>
+        </div>
+
+        <div class="info-banner">
+            <div class="info-icon">💡</div>
+            <div class="info-text">
+                <strong>Try it:</strong> Click "Customize Columns" to enter edit mode. Uncheck boxes to mark columns for hiding, drag headers to reorder. Columns stay visible while editing. Click "Done Editing" to apply changes.
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="left-controls">
+                <button class="customize-btn" id="customizeBtn" onclick="toggleEditMode()">
+                    <span>⚙️</span>
+                    <span id="btnText">Customize Columns</span>
+                </button>
+            </div>
+
+            <div class="pagination">
+                <span style="font-size: 14px; color: #666;">1 of 2</span>
+            </div>
+        </div>
+
+        <table id="mainTable">
+            <thead>
+                <tr id="tableHeader">
+                    <th class="center locked" data-col="id">ITEM ID</th>
+                    <th class="draggable" draggable="false" data-col="name">
+                        <div class="header-checkbox">
+                            <input type="checkbox" id="check-name" checked onchange="toggleColumn('name')">
+                            <label class="header-checkbox-label" for="check-name">SHOW</label>
+                        </div>
+                        ITEM NAME
+                    </th>
+                    <th class="center draggable" draggable="false" data-col="type">
+                        <div class="header-checkbox">
+                            <input type="checkbox" id="check-type" checked onchange="toggleColumn('type')">
+                            <label class="header-checkbox-label" for="check-type">SHOW</label>
+                        </div>
+                        TYPE
+                    </th>
+                    <th class="center draggable" draggable="false" data-col="facility">
+                        <div class="header-checkbox">
+                            <input type="checkbox" id="check-facility" checked onchange="toggleColumn('facility')">
+                            <label class="header-checkbox-label" for="check-facility">SHOW</label>
+                        </div>
+                        FACILITY
+                    </th>
+                    <th class="center draggable" draggable="false" data-col="building">
+                        <div class="header-checkbox">
+                            <input type="checkbox" id="check-building" checked onchange="toggleColumn('building')">
+                            <label class="header-checkbox-label" for="check-building">SHOW</label>
+                        </div>
+                        BUILDING
+                    </th>
+                    <th class="center draggable" draggable="false" data-col="zone">
+                        <div class="header-checkbox">
+                            <input type="checkbox" id="check-zone" checked onchange="toggleColumn('zone')">
+                            <label class="header-checkbox-label" for="check-zone">SHOW</label>
+                        </div>
+                        ZONE
+                    </th>
+                    <th class="center draggable" draggable="false" data-col="location">
+                        <div class="header-checkbox">
+                            <input type="checkbox" id="check-location" checked onchange="toggleColumn('location')">
+                            <label class="header-checkbox-label" for="check-location">SHOW</label>
+                        </div>
+                        LOCATION
+                    </th>
+                    <th class="center draggable" draggable="false" data-col="qty">
+                        <div class="header-checkbox">
+                            <input type="checkbox" id="check-qty" checked onchange="toggleColumn('qty')">
+                            <label class="header-checkbox-label" for="check-qty">SHOW</label>
+                        </div>
+                        QTY
+                    </th>
+                    <th class="center draggable" draggable="false" data-col="lastMoved">
+                        <div class="header-checkbox">
+                            <input type="checkbox" id="check-lastMoved" checked onchange="toggleColumn('lastMoved')">
+                            <label class="header-checkbox-label" for="check-lastMoved">SHOW</label>
+                        </div>
+                        LAST MOVED
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr>
+                    <td class="center" data-col="id"><span class="item-id">SP-0001</span></td>
+                    <td data-col="name">NPT 3/4-14 RING GO</td>
+                    <td class="center" data-col="type"><span class="badge">Gauge</span></td>
+                    <td class="center" data-col="facility">Main Facility</td>
+                    <td class="center" data-col="building">Building 1</td>
+                    <td class="center" data-col="zone">QC</td>
+                    <td class="center" data-col="location"><span class="location-code">L1</span></td>
+                    <td class="center" data-col="qty">1</td>
+                    <td class="center" data-col="lastMoved">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td class="center" data-col="id"><span class="item-id">SP-0002</span></td>
+                    <td data-col="name">UN 7/8-9 RING GO</td>
+                    <td class="center" data-col="type"><span class="badge">Gauge</span></td>
+                    <td class="center" data-col="facility">Main Facility</td>
+                    <td class="center" data-col="building">Building 1</td>
+                    <td class="center" data-col="zone">QC</td>
+                    <td class="center" data-col="location"><span class="location-code">L1</span></td>
+                    <td class="center" data-col="qty">1</td>
+                    <td class="center" data-col="lastMoved">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td class="center" data-col="id"><span class="item-id">SP-0003</span></td>
+                    <td data-col="name">UN 7/16-14 PLUG GO</td>
+                    <td class="center" data-col="type"><span class="badge">Gauge</span></td>
+                    <td class="center" data-col="facility">Main Facility</td>
+                    <td class="center" data-col="building">Building 1</td>
+                    <td class="center" data-col="zone">Shipping</td>
+                    <td class="center" data-col="location"><span class="location-code">E2</span></td>
+                    <td class="center" data-col="qty">1</td>
+                    <td class="center" data-col="lastMoved">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td class="center" data-col="id"><span class="item-id">SET-0001</span></td>
+                    <td data-col="name">ACME 1-1/4-5 RING GO</td>
+                    <td class="center" data-col="type"><span class="badge">Gauge</span></td>
+                    <td class="center" data-col="facility">Main Facility</td>
+                    <td class="center" data-col="building">Building 2</td>
+                    <td class="center" data-col="zone">Tool Crib</td>
+                    <td class="center" data-col="location"><span class="location-code">C4</span></td>
+                    <td class="center" data-col="qty">1</td>
+                    <td class="center" data-col="lastMoved">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td class="center" data-col="id"><span class="item-id">SET-0002</span></td>
+                    <td data-col="name">NPT 1/2-14 RING GO</td>
+                    <td class="center" data-col="type"><span class="badge">Gauge</span></td>
+                    <td class="center" data-col="facility">Main Facility</td>
+                    <td class="center" data-col="building">Building 1</td>
+                    <td class="center" data-col="zone">Bulk Storage</td>
+                    <td class="center" data-col="location"><span class="location-code">A5</span></td>
+                    <td class="center" data-col="qty">1</td>
+                    <td class="center" data-col="lastMoved">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td class="center" data-col="id"><span class="item-id">SET-0003</span></td>
+                    <td data-col="name">ACME 3/4-10 PLUG GO</td>
+                    <td class="center" data-col="type"><span class="badge">Gauge</span></td>
+                    <td class="center" data-col="facility">Main Facility</td>
+                    <td class="center" data-col="building">Building 2</td>
+                    <td class="center" data-col="zone">Shop Floor</td>
+                    <td class="center" data-col="location"><span class="location-code">F3</span></td>
+                    <td class="center" data-col="qty">1</td>
+                    <td class="center" data-col="lastMoved">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td class="center" data-col="id"><span class="item-id">SP-0004</span></td>
+                    <td data-col="name">NPT 1-11.5 RING GO</td>
+                    <td class="center" data-col="type"><span class="badge">Gauge</span></td>
+                    <td class="center" data-col="facility">Main Facility</td>
+                    <td class="center" data-col="building">Building 1</td>
+                    <td class="center" data-col="zone">QC</td>
+                    <td class="center" data-col="location"><span class="location-code">L2</span></td>
+                    <td class="center" data-col="qty">1</td>
+                    <td class="center" data-col="lastMoved">11/4/2025</td>
+                </tr>
+                <tr>
+                    <td class="center" data-col="id"><span class="item-id">SP-0005</span></td>
+                    <td data-col="name">UN 5/8-18 PLUG GO</td>
+                    <td class="center" data-col="type"><span class="badge">Gauge</span></td>
+                    <td class="center" data-col="facility">Main Facility</td>
+                    <td class="center" data-col="building">Building 1</td>
+                    <td class="center" data-col="zone">Receiving</td>
+                    <td class="center" data-col="location"><span class="location-code">D3</span></td>
+                    <td class="center" data-col="qty">1</td>
+                    <td class="center" data-col="lastMoved">11/4/2025</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let isEditMode = false;
+        let draggedColumn = null;
+        let draggedIndex = null;
+
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            const mainTable = document.getElementById('mainTable');
+            const customizeBtn = document.getElementById('customizeBtn');
+            const btnText = document.getElementById('btnText');
+            const draggableHeaders = document.querySelectorAll('th.draggable');
+
+            if (isEditMode) {
+                // Enable edit mode
+                mainTable.classList.add('edit-mode');
+                customizeBtn.classList.add('active');
+                btnText.textContent = 'Done Editing';
+
+                // Show all columns while editing (so user can see what they're managing)
+                document.querySelectorAll('th[data-col], td[data-col]').forEach(cell => {
+                    cell.classList.remove('hidden');
+                });
+
+                // Enable dragging on headers
+                draggableHeaders.forEach(header => {
+                    header.draggable = true;
+                    header.addEventListener('dragstart', handleDragStart);
+                    header.addEventListener('dragend', handleDragEnd);
+                    header.addEventListener('dragover', handleDragOver);
+                    header.addEventListener('dragleave', handleDragLeave);
+                    header.addEventListener('drop', handleDrop);
+                });
+            } else {
+                // Disable edit mode
+                mainTable.classList.remove('edit-mode');
+                customizeBtn.classList.remove('active');
+                btnText.textContent = 'Customize Columns';
+
+                // NOW apply visibility changes based on checkboxes
+                applyColumnVisibility();
+
+                // Disable dragging on headers
+                draggableHeaders.forEach(header => {
+                    header.draggable = false;
+                    header.removeEventListener('dragstart', handleDragStart);
+                    header.removeEventListener('dragend', handleDragEnd);
+                    header.removeEventListener('dragover', handleDragOver);
+                    header.removeEventListener('dragleave', handleDragLeave);
+                    header.removeEventListener('drop', handleDrop);
+                });
+
+                // Save preferences
+                saveColumnOrder();
+            }
+        }
+
+        function handleDragStart(e) {
+            draggedColumn = this;
+            draggedIndex = Array.from(this.parentNode.children).indexOf(this);
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            document.querySelectorAll('th').forEach(th => {
+                th.classList.remove('drag-over-left', 'drag-over-right');
+            });
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+
+            if (this === draggedColumn || this.classList.contains('locked')) {
+                return false;
+            }
+
+            e.dataTransfer.dropEffect = 'move';
+
+            // Determine which side to show the drop indicator
+            const rect = this.getBoundingClientRect();
+            const midpoint = rect.left + rect.width / 2;
+
+            this.classList.remove('drag-over-left', 'drag-over-right');
+
+            if (e.clientX < midpoint) {
+                this.classList.add('drag-over-left');
+            } else {
+                this.classList.add('drag-over-right');
+            }
+
+            return false;
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over-left', 'drag-over-right');
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+
+            if (this === draggedColumn || this.classList.contains('locked')) {
+                return false;
+            }
+
+            const rect = this.getBoundingClientRect();
+            const midpoint = rect.left + rect.width / 2;
+            const insertBefore = e.clientX < midpoint;
+
+            // Move column in header
+            const headerRow = document.getElementById('tableHeader');
+            if (insertBefore) {
+                headerRow.insertBefore(draggedColumn, this);
+            } else {
+                headerRow.insertBefore(draggedColumn, this.nextSibling);
+            }
+
+            // Move corresponding cells in all body rows
+            const colId = draggedColumn.dataset.col;
+            const targetColId = this.dataset.col;
+
+            const bodyRows = document.querySelectorAll('#tableBody tr');
+            bodyRows.forEach(row => {
+                const draggedCell = row.querySelector(`td[data-col="${colId}"]`);
+                const targetCell = row.querySelector(`td[data-col="${targetColId}"]`);
+
+                if (draggedCell && targetCell) {
+                    if (insertBefore) {
+                        row.insertBefore(draggedCell, targetCell);
+                    } else {
+                        row.insertBefore(draggedCell, targetCell.nextSibling);
+                    }
+                }
+            });
+
+            return false;
+        }
+
+        function toggleColumn(colName) {
+            // In edit mode, just toggle the checkbox - don't hide columns yet
+            // Columns will be hidden/shown when user clicks "Done Editing"
+        }
+
+        function applyColumnVisibility() {
+            // Apply visibility based on checkbox states
+            const allColumns = ['name', 'type', 'facility', 'building', 'zone', 'location', 'qty', 'lastMoved'];
+
+            allColumns.forEach(colName => {
+                const checkbox = document.getElementById(`check-${colName}`);
+                const header = document.querySelector(`th[data-col="${colName}"]`);
+                const cells = document.querySelectorAll(`td[data-col="${colName}"]`);
+
+                if (checkbox && header) {
+                    if (checkbox.checked) {
+                        header.classList.remove('hidden');
+                        cells.forEach(cell => cell.classList.remove('hidden'));
+                    } else {
+                        header.classList.add('hidden');
+                        cells.forEach(cell => cell.classList.add('hidden'));
+                    }
+                }
+            });
+        }
+
+        function saveColumnOrder() {
+            const headerRow = document.getElementById('tableHeader');
+            const order = Array.from(headerRow.children)
+                .filter(th => th.dataset.col)
+                .map(th => ({
+                    col: th.dataset.col,
+                    visible: !th.classList.contains('hidden')
+                }));
+            localStorage.setItem('columnConfig', JSON.stringify(order));
+        }
+
+        function loadColumnOrder() {
+            const saved = localStorage.getItem('columnConfig');
+            if (saved) {
+                const config = JSON.parse(saved);
+                // Set checkbox states
+                config.forEach(item => {
+                    const checkbox = document.getElementById(`check-${item.col}`);
+                    if (checkbox) {
+                        checkbox.checked = item.visible;
+                    }
+                });
+                // Apply the visibility
+                applyColumnVisibility();
+            }
+        }
+
+        // Load saved configuration on page load
+        window.addEventListener('DOMContentLoaded', loadColumnOrder);
+    </script>
+</body>
+</html>

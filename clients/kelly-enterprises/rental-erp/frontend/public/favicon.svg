@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="fireGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff6b35;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d94f30;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Shield background -->
+  <path d="M 50 5 L 85 20 L 85 50 Q 85 80 50 95 Q 15 80 15 50 L 15 20 Z"
+        fill="url(#fireGradient)"
+        stroke="#333"
+        stroke-width="2"/>
+
+  <!-- Flame icon -->
+  <path d="M 50 30 Q 45 40 45 50 Q 45 60 50 65 Q 55 60 55 50 Q 55 40 50 30 Z"
+        fill="#fff"
+        opacity="0.9"/>
+  <path d="M 50 38 Q 47 43 47 48 Q 47 53 50 56 Q 53 53 53 48 Q 53 43 50 38 Z"
+        fill="#ffd700"
+        opacity="0.8"/>
+
+  <!-- Letter "G" for Gauge -->
+  <text x="50" y="82"
+        font-family="Arial, sans-serif"
+        font-size="24"
+        font-weight="bold"
+        fill="#fff"
+        text-anchor="middle">G</text>
+</svg>

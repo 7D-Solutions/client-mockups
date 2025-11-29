@@ -1,0 +1,311 @@
+/* PermissionSelector Component Styles */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Info Box */
+.infoBox {
+  background: var(--color-info-bg);
+  border-left: 4px solid var(--color-info);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+  border-radius: var(--radius-md);
+}
+
+.infoBoxTitle {
+  color: var(--color-info);
+  display: block;
+  margin-bottom: var(--space-1);
+  font-weight: 600;
+}
+
+.infoBoxText {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+/* Role Templates Section */
+.templateSection {
+  margin-bottom: var(--space-5);
+  padding-bottom: var(--space-4);
+  border-bottom: 2px solid var(--color-border-light);
+}
+
+.templateHeader {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+  color: var(--color-text-primary);
+}
+
+.templateButtons {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.templateButton {
+  padding: var(--space-2) var(--space-4);
+  border: 2px solid var(--color-border-light);
+  background: var(--color-bg-primary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.templateButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.templateButton:not(:disabled):hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-bg);
+  transform: translateY(calc(-1 * var(--space-1)));
+  box-shadow: 0 var(--space-1) var(--space-2) var(--color-shadow-light);
+}
+
+.templateIcon {
+  font-size: var(--font-size-lg);
+}
+
+/* Warning Box */
+.warningBox {
+  background: var(--color-warning-bg);
+  border: 2px solid var(--color-warning);
+  border-left: 4px solid var(--color-warning);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.warningIcon {
+  font-size: var(--font-size-xl);
+}
+
+.warningContent {
+  flex: 1;
+}
+
+.warningTitle {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-weight: 600;
+}
+
+.warningClose {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+  padding: 0 var(--space-2);
+}
+
+.warningClose:hover {
+  color: var(--color-text-primary);
+}
+
+/* Permission Groups */
+.groupCard {
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border-light);
+}
+
+.groupHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: 2px solid var(--color-primary);
+}
+
+.groupIconBox {
+  font-size: var(--font-size-xl);
+  width: var(--space-10);
+  height: var(--space-10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary);
+  color: var(--color-bg-primary);
+  border-radius: var(--radius-md);
+}
+
+.groupInfo {
+  flex: 1;
+}
+
+.groupTitle {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.groupDescription {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.permissionGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+
+/* Permission Item */
+.permissionItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.2s;
+  position: relative;
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+.permissionItem:hover {
+  background: var(--color-bg-primary);
+}
+
+.permissionItem.pendingAdd {
+  background: var(--color-success-bg);
+  border: 1px solid var(--color-success);
+}
+
+.permissionItem.pendingRemove {
+  background: var(--color-danger-bg);
+  border: 1px solid var(--color-danger);
+  opacity: 0.6;
+}
+
+.permissionItem.pendingAdd:hover,
+.permissionItem.pendingRemove:hover {
+  /* Maintain pending colors on hover */
+}
+
+.permissionCheckbox {
+  margin-top: var(--space-1);
+  width: var(--space-4);
+  height: var(--space-4);
+  cursor: pointer;
+}
+
+.permissionCheckbox:disabled {
+  cursor: not-allowed;
+}
+
+.permissionLabel {
+  flex: 1;
+  cursor: pointer;
+}
+
+.permissionLabel.disabled {
+  cursor: not-allowed;
+}
+
+.permissionName {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.permissionHint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+}
+
+.permissionBadge {
+  position: absolute;
+  top: calc(-1 * var(--space-1));
+  right: calc(-1 * var(--space-1));
+  color: var(--color-bg-primary);
+  font-size: var(--font-size-xs);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-round);
+  font-weight: 600;
+}
+
+.permissionBadge.new {
+  background: var(--color-success);
+}
+
+.permissionBadge.remove {
+  background: var(--color-danger);
+}
+
+/* Pending Changes Section */
+.pendingChanges {
+  background: var(--color-warning-bg);
+  border: 2px solid var(--color-warning);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.pendingChangesTitle {
+  color: var(--color-warning-dark);
+  margin-bottom: var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.pendingChangesContent {
+  display: flex;
+  gap: var(--space-4);
+  font-size: var(--font-size-sm);
+}
+
+.pendingItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.pendingItem.add {
+  color: var(--color-success-dark);
+}
+
+.pendingItem.remove {
+  color: var(--color-danger-dark);
+}
+
+/* Loading State */
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-6);
+}
+
+.loadingText {
+  color: var(--color-text-secondary);
+}
+
+/* Error State */
+.error {
+  color: var(--color-danger);
+  background-color: var(--color-danger-bg);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+}

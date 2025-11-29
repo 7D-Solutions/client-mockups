@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cattle Work History & Activities</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            padding: 20px 30px;
+            border-bottom: 2px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #1e7e34;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .filters {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .filter-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-group label {
+            font-size: 12px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .activity-type-filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .activity-filter-btn {
+            padding: 6px 14px;
+            border: 2px solid #dee2e6;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.2s;
+        }
+
+        .activity-filter-btn:hover {
+            border-color: #007bff;
+            color: #007bff;
+        }
+
+        .activity-filter-btn.active {
+            background: #007bff;
+            border-color: #007bff;
+            color: white;
+        }
+
+        .stats-bar {
+            padding: 20px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .view-btn {
+            padding: 8px 16px;
+            border: 1px solid #dee2e6;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.2s;
+        }
+
+        .view-btn.active {
+            background: #007bff;
+            border-color: #007bff;
+            color: white;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #dee2e6;
+        }
+
+        .timeline-group {
+            margin-bottom: 30px;
+        }
+
+        .timeline-date {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .timeline-item {
+            position: relative;
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            border-radius: 6px;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+        }
+
+        .timeline-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transform: translateX(2px);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -34px;
+            top: 20px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #007bff;
+        }
+
+        .timeline-item.vaccination {
+            border-left-color: #28a745;
+        }
+
+        .timeline-item.vaccination::before {
+            border-color: #28a745;
+        }
+
+        .timeline-item.treatment {
+            border-left-color: #dc3545;
+        }
+
+        .timeline-item.treatment::before {
+            border-color: #dc3545;
+        }
+
+        .timeline-item.deworming {
+            border-left-color: #ffc107;
+        }
+
+        .timeline-item.deworming::before {
+            border-color: #ffc107;
+        }
+
+        .timeline-item.weighing {
+            border-left-color: #17a2b8;
+        }
+
+        .timeline-item.weighing::before {
+            border-color: #17a2b8;
+        }
+
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+
+        .activity-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .activity-icon {
+            font-size: 20px;
+        }
+
+        .activity-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .activity-time {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .activity-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 12px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .detail-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .cattle-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .cattle-tag {
+            padding: 4px 12px;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .activity-notes {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #dee2e6;
+            font-size: 13px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .table-view {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            border-bottom: 2px solid #dee2e6;
+            position: sticky;
+            top: 0;
+        }
+
+        .table td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-vaccination {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-treatment {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-deworming {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-weighing {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .badge-hoof-trim {
+            background: #e7e8ea;
+            color: #383d41;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Work History & Activities</h1>
+            <div class="header-actions">
+                <button class="btn btn-warning">🗓️ Schedule Work</button>
+                <button class="btn btn-secondary">📊 Export Report</button>
+                <button class="btn btn-success">➕ Log Activity</button>
+            </div>
+        </div>
+
+        <div class="filters">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>Date Range</label>
+                    <input type="date" value="2024-10-01" style="width: 160px;">
+                </div>
+                <div class="filter-group">
+                    <label>To</label>
+                    <input type="date" value="2024-11-08" style="width: 160px;">
+                </div>
+                <div class="filter-group">
+                    <label>Search Cattle</label>
+                    <input type="text" placeholder="Tag ID..." style="width: 200px;">
+                </div>
+                <div class="filter-group">
+                    <label>Performed By</label>
+                    <select style="width: 180px;">
+                        <option>All Handlers</option>
+                        <option>John Smith</option>
+                        <option>Sarah Johnson</option>
+                        <option>Dr. Williams (Vet)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-row">
+                <div class="filter-group" style="flex: 1;">
+                    <label>Activity Type</label>
+                    <div class="activity-type-filters">
+                        <button class="activity-filter-btn active">All Activities</button>
+                        <button class="activity-filter-btn">💉 Vaccination</button>
+                        <button class="activity-filter-btn">🏥 Treatment</button>
+                        <button class="activity-filter-btn">🐛 Deworming</button>
+                        <button class="activity-filter-btn">⚖️ Weighing</button>
+                        <button class="activity-filter-btn">🦶 Hoof Trim</button>
+                        <button class="activity-filter-btn">🔬 Testing</button>
+                        <button class="activity-filter-btn">✂️ Castration</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value">127</div>
+                <div class="stat-label">Total Activities (30 days)</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">45</div>
+                <div class="stat-label">Vaccinations Given</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">18</div>
+                <div class="stat-label">Treatments Applied</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">32</div>
+                <div class="stat-label">Cattle Weighed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">12</div>
+                <div class="stat-label">Upcoming Tasks</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="view-toggle">
+                <button class="view-btn active">📅 Timeline View</button>
+                <button class="view-btn">📊 Table View</button>
+                <button class="view-btn">📆 Calendar View</button>
+            </div>
+
+            <!-- Timeline View -->
+            <div class="timeline">
+                <!-- November 8, 2024 -->
+                <div class="timeline-group">
+                    <div class="timeline-date">📅 November 8, 2024 (Today)</div>
+
+                    <div class="timeline-item vaccination">
+                        <div class="activity-header">
+                            <div class="activity-title">
+                                <span class="activity-icon">💉</span>
+                                <span class="activity-name">Annual Vaccination - Herd Group A</span>
+                            </div>
+                            <span class="activity-time">8:30 AM</span>
+                        </div>
+                        <div class="activity-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Vaccine Type</span>
+                                <span class="detail-value">Cattle Master 4 (IBR, BVD, PI3, BRSV)</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Batch/Lot #</span>
+                                <span class="detail-value">LOT-2024-CM4-1823</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Administered By</span>
+                                <span class="detail-value">Dr. Sarah Williams, DVM</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Cattle Count</span>
+                                <span class="detail-value">15 head</span>
+                            </div>
+                        </div>
+                        <div class="cattle-tags">
+                            <span class="cattle-tag">#A-1247</span>
+                            <span class="cattle-tag">#A-1198</span>
+                            <span class="cattle-tag">#H-2031</span>
+                            <span class="cattle-tag">#C-3412</span>
+                            <span class="cattle-tag">#S-5678</span>
+                            <span class="cattle-tag">+10 more</span>
+                        </div>
+                        <div class="activity-notes">
+                            <strong>Notes:</strong> All cattle tolerated vaccination well. No adverse reactions observed. Next booster due in 21 days.
+                        </div>
+                    </div>
+
+                    <div class="timeline-item weighing">
+                        <div class="activity-header">
+                            <div class="activity-title">
+                                <span class="activity-icon">⚖️</span>
+                                <span class="activity-name">Monthly Weight Check - Calves</span>
+                            </div>
+                            <span class="activity-time">11:00 AM</span>
+                        </div>
+                        <div class="activity-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Group</span>
+                                <span class="detail-value">2024 Spring Calves</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Avg Daily Gain</span>
+                                <span class="detail-value">2.1 lbs/day</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Performed By</span>
+                                <span class="detail-value">John Smith</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Calves Weighed</span>
+                                <span class="detail-value">8 head</span>
+                            </div>
+                        </div>
+                        <div class="cattle-tags">
+                            <span class="cattle-tag">#A-1247-C5: 387 lbs (+23)</span>
+                            <span class="cattle-tag">#H-2031-C3: 412 lbs (+28)</span>
+                            <span class="cattle-tag">#A-1198-C7: 395 lbs (+19)</span>
+                            <span class="cattle-tag">+5 more</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- November 5, 2024 -->
+                <div class="timeline-group">
+                    <div class="timeline-date">📅 November 5, 2024</div>
+
+                    <div class="timeline-item treatment">
+                        <div class="activity-header">
+                            <div class="activity-title">
+                                <span class="activity-icon">🏥</span>
+                                <span class="activity-name">Treatment - Eye Infection</span>
+                            </div>
+                            <span class="activity-time">2:15 PM</span>
+                        </div>
+                        <div class="activity-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Diagnosis</span>
+                                <span class="detail-value">Pink Eye (Infectious Bovine Keratoconjunctivitis)</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Medication</span>
+                                <span class="detail-value">LA-200 (Oxytetracycline) - 10ml IM</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Treated By</span>
+                                <span class="detail-value">Dr. Sarah Williams, DVM</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Withdrawal Period</span>
+                                <span class="detail-value">28 days (slaughter)</span>
+                            </div>
+                        </div>
+                        <div class="cattle-tags">
+                            <span class="cattle-tag">#H-2031</span>
+                        </div>
+                        <div class="activity-notes">
+                            <strong>Notes:</strong> Right eye showing cloudiness and discharge. Applied topical antibiotic ointment. Follow-up scheduled in 5 days. Keep isolated from herd.
+                        </div>
+                    </div>
+
+                    <div class="timeline-item deworming">
+                        <div class="activity-header">
+                            <div class="activity-title">
+                                <span class="activity-icon">🐛</span>
+                                <span class="activity-name">Fall Deworming Program</span>
+                            </div>
+                            <span class="activity-time">9:00 AM</span>
+                        </div>
+                        <div class="activity-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Product</span>
+                                <span class="detail-value">Ivermectin Pour-On</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Dosage</span>
+                                <span class="detail-value">1ml per 22 lbs body weight</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Administered By</span>
+                                <span class="detail-value">John Smith</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Cattle Treated</span>
+                                <span class="detail-value">32 head</span>
+                            </div>
+                        </div>
+                        <div class="cattle-tags">
+                            <span class="cattle-tag">Entire Herd - Group A, B, C</span>
+                        </div>
+                        <div class="activity-notes">
+                            <strong>Notes:</strong> Routine fall deworming. All cattle processed successfully. Weather conditions: Clear, 65°F.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- October 30, 2024 -->
+                <div class="timeline-group">
+                    <div class="timeline-date">📅 October 30, 2024</div>
+
+                    <div class="timeline-item vaccination">
+                        <div class="activity-header">
+                            <div class="activity-title">
+                                <span class="activity-icon">💉</span>
+                                <span class="activity-name">Calf Vaccination - 7-Way Clostridial</span>
+                            </div>
+                            <span class="activity-time">10:30 AM</span>
+                        </div>
+                        <div class="activity-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Vaccine Type</span>
+                                <span class="detail-value">Vision 7 (Clostridial)</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Age Group</span>
+                                <span class="detail-value">4-6 month calves</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Administered By</span>
+                                <span class="detail-value">Sarah Johnson</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Calves Vaccinated</span>
+                                <span class="detail-value">12 head</span>
+                            </div>
+                        </div>
+                        <div class="cattle-tags">
+                            <span class="cattle-tag">#A-1247-C5</span>
+                            <span class="cattle-tag">#H-2031-C3</span>
+                            <span class="cattle-tag">#A-1198-C7</span>
+                            <span class="cattle-tag">+9 more</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item weighing">
+                        <div class="activity-header">
+                            <div class="activity-title">
+                                <span class="activity-icon">⚖️</span>
+                                <span class="activity-name">Pre-Weaning Weight Check</span>
+                            </div>
+                            <span class="activity-time">1:45 PM</span>
+                        </div>
+                        <div class="activity-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Purpose</span>
+                                <span class="detail-value">Weaning Decision Assessment</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Avg Weight</span>
+                                <span class="detail-value">418 lbs (6.5 months)</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Performed By</span>
+                                <span class="detail-value">John Smith</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Status</span>
+                                <span class="detail-value">Ready for weaning</span>
+                            </div>
+                        </div>
+                        <div class="cattle-tags">
+                            <span class="cattle-tag">6 calves assessed</span>
+                        </div>
+                        <div class="activity-notes">
+                            <strong>Notes:</strong> All calves showing excellent growth rates. Recommend weaning in 2 weeks.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Activity type filter functionality
+        document.querySelectorAll('.activity-filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Don't deactivate "All Activities" unless another is clicked
+                if (!this.textContent.includes('All Activities')) {
+                    document.querySelector('.activity-filter-btn.active').classList.remove('active');
+                    this.classList.add('active');
+                }
+                console.log('Filter by:', this.textContent);
+            });
+        });
+
+        // View toggle functionality
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                console.log('Switch to:', this.textContent);
+            });
+        });
+
+        // Timeline item click
+        document.querySelectorAll('.timeline-item').forEach(item => {
+            item.addEventListener('click', function() {
+                console.log('View activity details');
+            });
+        });
+    </script>
+</body>
+</html>

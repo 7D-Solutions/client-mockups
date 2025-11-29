@@ -1,0 +1,449 @@
+Safety Net 20 — Real DB Integration Tests
+
+Backend: Fireproof ERP
+Pattern: Repo methods via Service layer
+Isolation: Transaction + rollback per test
+Assertions: DB deltas, audit log, thrown errors, service return payloads
+
+1. Calibrations (6 tests)
+
+File: tests/integration/modules/gauge/services/GaugeCalibrationService.safety.test.js
+
+recordCalibration_success_insertsRow_updatesStatus_writesAudit
+
+Seed: gauge with status available.
+
+Action: recordCalibration with pass.
+
+Assert: +1 calibration row, gauge.status → available, +1 audit row action='calibration_recorded'.
+
+recordCalibration_fail_gaugeNotFound_errorThrown_noWrites
+
+Call with invalid gauge ID.
+
+Assert: throws "Gauge not found", no calibration, no audit.
+
+recordCalibration_fail_checkedOutGauge_errorThrown_noWrites
+
+Seed: gauge with status checked_out.
+
+Action: call.
+
+Assert: throws "Cannot calibrate a gauge that is checked out", no calibration, no audit.
+
+recordCalibration_failResult_setsGaugeFailedCalibration
+
+Seed: gauge available.
+
+Action: calibration_result='fail'.
+
+Assert: gauge.status → failed_calibration, audit row written.
+
+recordCalibration_sealAfterCalibration_sealApplied
+
+Seed: unsealed gauge.
+
+Action: with seal_after_calibration=true.
+
+Assert: gauge becomes sealed, audit row shows sealed:true.
+
+recordCalibration_insertsDueDate_calculatedCorrectly
+
+Provide calibration_interval=30.
+
+Assert: next_due_date = today+30 days, persisted.
+
+2. Checkout/Return (5 tests)
+
+File: tests/integration/modules/gauge/repositories/CheckoutsRepo.safety.test.js
+
+checkout_success_availableGauge_createsRow_writesAudit
+
+Gauge available.
+
+Action: checkout.
+
+Assert: gauge.status → checked_out, +1 checkout row, audit written.
+
+checkout_fail_calibrationDue_blocked_error_noWrites
+
+Gauge calibration due (past due_date).
+
+Action: checkout.
+
+Assert: canonical error, no checkout row, no audit.
+
+checkout_fail_wrongRole_denied_noAudit
+
+Role viewer.
+
+Action: checkout.
+
+Assert: denied, no row written, no audit.
+
+return_success_checkedOutGauge_statusRestored_auditWritten
+
+Gauge checked out.
+
+Action: return.
+
+Assert: status restored available, audit logged.
+
+return_idempotent_multipleCalls_noDuplicateAudit
+
+Call return twice.
+
+Assert: first call → +1 audit; second call → no new audit.
+
+3. Gauges Core (3 tests)
+
+File: tests/integration/modules/gauge/repositories/GaugesRepo.safety.test.js
+
+createGauge_success_insertsRow_uniqueEnforced
+
+Insert gauge, then duplicate gauge_id.
+
+Assert: second insert fails with unique error, no audit.
+
+updateGauge_fail_missingRequiredField_errorThrown
+
+Attempt update missing required field (per schema).
+
+Assert: error, no row update, no audit.
+
+listGauges_paginationStable_sortFenceposts
+
+Seed >20 gauges.
+
+Assert: pagination stable, sort secondary by id.
+
+4. RBAC Spot Checks (2 tests)
+
+File: tests/integration/modules/core/security/RbacSpot.safety.test.js
+
+viewerRole_deniedWriteOnCalibrations_noAudit
+
+Role viewer.
+
+Action: recordCalibration.
+
+Assert: denied, no calibration, no audit.
+
+maintainerRole_allowsCalibrationAndCheckout_success
+
+Role maintainer.
+
+Action: calibration + checkout.
+
+Assert: rows created, audits written.
+
+5. Audit & Events (3 tests)
+
+File: tests/integration/modules/core/audit/AuditAndEvents.safety.test.js
+
+calibrationAction_writesAuditWithActor_oldNewDetails
+
+Run calibration.
+
+Assert: +1 audit, fields include actor, oldStatus, newStatus.
+
+checkoutAction_emitsEvent_consumerFailureDoesNotRollback
+
+Simulate consumer error.
+
+Assert: checkout row exists, audit exists, event logged.
+
+auditTable_tamperResistant_deleteForbidden
+
+Attempt delete on core_audit_logs.
+
+Assert: DB error or forbidden, row count unchanged.
+
+6. Pool/Health (1 test)
+
+File: tests/integration/health/DbPoolHealth.test.js
+
+dbPool_connectQueryRetry_success
+
+Action: run SELECT 1.
+
+Assert: succeeds, retry logic works.
+
+Execution Guardrails
+
+Wrap each test in a DB transaction → rollback after.
+
+Seed only minimal rows needed for each test.
+
+Assertions:
+
+DB deltas (COUNT(*) before/after)
+
+Gauge status transitions
+
+Audit row count & payload (action, actor, details)
+
+Error messages (Gauge not found, Cannot calibrate a gauge that is checked out)
+
+Event presence if logged
+
+This is your 20-test safety net mapped directly to your backend repos/services.
+Would you like me to now expand this into Claude-ready Jest skeletons (with file paths + test names + withTx wrappers)?
+
+You said:
+yes
+ChatGPT said:
+
+Alright — here’s the Claude-ready Jest skeletons for the Safety Net 20.
+Each file is laid out with describe/test blocks, withTx isolation, and the correct repo/service imports.
+
+1. Calibrations (6 tests)
+
+File: tests/integration/modules/gauge/services/GaugeCalibrationService.safety.test.js
+
+const { withTx, countRows } = require('../../../_utils/dbTestUtils');
+const GaugeCalibrationService = require('../../../../../../src/modules/gauge/services/GaugeCalibrationService');
+
+describe('GaugeCalibrationService — Safety Net', () => {
+  test('recordCalibration_success_insertsRow_updatesStatus_writesAudit', async () => {
+    await withTx(async (conn) => {
+      // TODO: seed gauge with status=available
+      const beforeCal = await countRows(conn, 'gauge_calibrations');
+      const beforeAudit = await countRows(conn, 'core_audit_logs');
+
+      const result = await GaugeCalibrationService.recordCalibration('GA001', {
+        calibration_result: 'pass',
+        recorded_by_user_id: 1
+      });
+
+      expect(result.success).toBe(true);
+      expect(result.result).toBe('pass');
+
+      const afterCal = await countRows(conn, 'gauge_calibrations');
+      const afterAudit = await countRows(conn, 'core_audit_logs');
+      expect(afterCal).toBe(beforeCal + 1);
+      expect(afterAudit).toBe(beforeAudit + 1);
+    });
+  });
+
+  test('recordCalibration_fail_gaugeNotFound_errorThrown_noWrites', async () => {
+    await withTx(async (conn) => {
+      const beforeAudit = await countRows(conn, 'core_audit_logs');
+      let caught;
+      try {
+        await GaugeCalibrationService.recordCalibration('FAKE123', {});
+      } catch (e) { caught = e; }
+      expect(caught.message).toContain('Gauge not found');
+      const afterAudit = await countRows(conn, 'core_audit_logs');
+      expect(afterAudit).toBe(beforeAudit);
+    });
+  });
+
+  test('recordCalibration_fail_checkedOutGauge_errorThrown_noWrites', async () => {
+    await withTx(async (conn) => {
+      // TODO: seed gauge with status=checked_out
+      let caught;
+      try {
+        await GaugeCalibrationService.recordCalibration('GA002', {});
+      } catch (e) { caught = e; }
+      expect(caught.message).toContain('Cannot calibrate a gauge that is checked out');
+    });
+  });
+
+  test('recordCalibration_failResult_setsGaugeFailedCalibration', async () => {
+    await withTx(async (conn) => {
+      // TODO: seed gauge available
+      const result = await GaugeCalibrationService.recordCalibration('GA003', {
+        calibration_result: 'fail',
+        recorded_by_user_id: 1
+      });
+      expect(result.result).toBe('fail');
+      // TODO: assert gauge.status = failed_calibration
+    });
+  });
+
+  test('recordCalibration_sealAfterCalibration_sealApplied', async () => {
+    await withTx(async (conn) => {
+      // TODO: seed unsealed gauge
+      const result = await GaugeCalibrationService.recordCalibration('GA004', {
+        seal_after_calibration: true,
+        recorded_by_user_id: 1
+      });
+      expect(result.sealed).toBe(true);
+    });
+  });
+
+  test('recordCalibration_insertsDueDate_calculatedCorrectly', async () => {
+    await withTx(async (conn) => {
+      const interval = 30;
+      const result = await GaugeCalibrationService.recordCalibration('GA005', {
+        calibration_interval: interval,
+        recorded_by_user_id: 1
+      });
+      expect(new Date(result.next_due_date)).not.toBeNull();
+    });
+  });
+});
+
+2. Checkout/Return (5 tests)
+
+File: tests/integration/modules/gauge/repositories/CheckoutsRepo.safety.test.js
+
+const { withTx } = require('../../../_utils/dbTestUtils');
+const CheckoutsRepo = require('../../../../../../src/modules/gauge/repositories/CheckoutsRepo');
+
+describe('CheckoutsRepo — Safety Net', () => {
+  test('checkout_success_availableGauge_createsRow_writesAudit', async () => {
+    await withTx(async (conn) => {
+      // TODO: seed gauge available
+      const res = await CheckoutsRepo.checkout('GA010', { userId: 1 }, conn);
+      expect(res.success).toBe(true);
+      // TODO: assert gauge.status=checked_out, +audit
+    });
+  });
+
+  test('checkout_fail_calibrationDue_blocked_error_noWrites', async () => {
+    await withTx(async (conn) => {
+      // TODO: seed gauge calibration due
+      let caught;
+      try {
+        await CheckoutsRepo.checkout('GA011', { userId: 1 }, conn);
+      } catch (e) { caught = e; }
+      expect(caught.message).toContain('calibration due');
+    });
+  });
+
+  test('checkout_fail_wrongRole_denied_noAudit', async () => {
+    await withTx(async (conn) => {
+      // TODO: call with role viewer
+    });
+  });
+
+  test('return_success_checkedOutGauge_statusRestored_auditWritten', async () => {
+    await withTx(async (conn) => {
+      // TODO: seed gauge checked_out
+      const res = await CheckoutsRepo.return('GA012', { userId: 1 }, conn);
+      expect(res.success).toBe(true);
+      // TODO: assert status available, audit written
+    });
+  });
+
+  test('return_idempotent_multipleCalls_noDuplicateAudit', async () => {
+    await withTx(async (conn) => {
+      // TODO: seed gauge checked_out
+      await CheckoutsRepo.return('GA013', { userId: 1 }, conn);
+      await CheckoutsRepo.return('GA013', { userId: 1 }, conn);
+      // TODO: assert only one audit
+    });
+  });
+});
+
+3. Gauges Core (3 tests)
+
+File: tests/integration/modules/gauge/repositories/GaugesRepo.safety.test.js
+
+const { withTx } = require('../../../_utils/dbTestUtils');
+const GaugesRepo = require('../../../../../../src/modules/gauge/repositories/GaugesRepo');
+
+describe('GaugesRepo — Safety Net', () => {
+  test('createGauge_success_insertsRow_uniqueEnforced', async () => {
+    await withTx(async (conn) => {
+      const g1 = await GaugesRepo.create({ gauge_id: 'GX001', name: 'Test Gauge' }, conn);
+      expect(g1.id).toBeDefined();
+      let caught;
+      try {
+        await GaugesRepo.create({ gauge_id: 'GX001', name: 'Duplicate' }, conn);
+      } catch (e) { caught = e; }
+      expect(caught.message).toContain('duplicate');
+    });
+  });
+
+  test('updateGauge_fail_missingRequiredField_errorThrown', async () => {
+    await withTx(async (conn) => {
+      // TODO: seed gauge
+      let caught;
+      try {
+        await GaugesRepo.update('GX002', { required_field: null }, conn);
+      } catch (e) { caught = e; }
+      expect(caught).toBeDefined();
+    });
+  });
+
+  test('listGauges_paginationStable_sortFenceposts', async () => {
+    await withTx(async (conn) => {
+      // TODO: seed 25 gauges
+      const page1 = await GaugesRepo.list({ page: 1, size: 10 }, conn);
+      const page2 = await GaugesRepo.list({ page: 2, size: 10 }, conn);
+      expect(page1.length).toBe(10);
+      expect(page2.length).toBe(10);
+    });
+  });
+});
+
+4. RBAC Spot (2 tests)
+
+File: tests/integration/modules/core/security/RbacSpot.safety.test.js
+
+describe('RBAC Spot — Safety Net', () => {
+  test('viewerRole_deniedWriteOnCalibrations_noAudit', async () => {
+    // TODO: seed viewer role
+    // Try recordCalibration
+    // Assert denied, no audit
+  });
+
+  test('maintainerRole_allowsCalibrationAndCheckout_success', async () => {
+    // TODO: seed maintainer role
+    // Perform calibration + checkout
+    // Assert success, audit written
+  });
+});
+
+5. Audit & Events (3 tests)
+
+File: tests/integration/modules/core/audit/AuditAndEvents.safety.test.js
+
+describe('Audit & Events — Safety Net', () => {
+  test('calibrationAction_writesAuditWithActor_oldNewDetails', async () => {
+    // TODO: perform calibration
+    // Assert audit row written with actor, oldStatus, newStatus
+  });
+
+  test('checkoutAction_emitsEvent_consumerFailureDoesNotRollback', async () => {
+    // TODO: simulate consumer fail
+    // Assert checkout row + audit exist
+  });
+
+  test('auditTable_tamperResistant_deleteForbidden', async () => {
+    // Attempt delete on core_audit_logs
+    let caught;
+    try {
+      await conn.query('DELETE FROM core_audit_logs WHERE id=1');
+    } catch (e) { caught = e; }
+    expect(caught).toBeDefined();
+  });
+});
+
+6. Pool/Health (1 test)
+
+File: tests/integration/health/DbPoolHealth.test.js
+
+const { getPool } = require('../_utils/dbTestUtils');
+
+describe('DB Pool Health — Safety Net', () => {
+  test('dbPool_connectQueryRetry_success', async () => {
+    const pool = await getPool();
+    const [rows] = await pool.query('SELECT 1');
+    expect(rows.length).toBe(1);
+  });
+});
+
+
+👉 These skeletons are ready for Claude to expand:
+
+Add seed helpers for gauges, roles, users.
+
+Fill TODOs with actual seeds/assertions from your schema.
+
+Hook into auditService and event bus where available.
+
+Would you like me to also generate the seed helpers (seedGauge, seedUserWithRole, etc.) so Claude can drop them into _utils/seeds.js and cut down boilerplate?

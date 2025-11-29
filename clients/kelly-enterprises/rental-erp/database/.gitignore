@@ -1,0 +1,19 @@
+# Database Backups (can be large)
+backups/full-dumps/*.sql
+backups/full-dumps/*.gz
+
+# Keep critical config backups (small, important)
+!backups/critical-config/*.sql
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Seeds (may contain sensitive data)
+seeds/*.sql
+seeds/*.csv
+
+# Keep example seeds
+!seeds/example-*.sql
+!seeds/README.md

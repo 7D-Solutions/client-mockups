@@ -1,0 +1,53 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Running pre-commit checks..."
+
+# Run ESLint to catch architectural violations
+echo "📋 Checking code architecture compliance..."
+npx eslint src/ --ext .ts,.tsx --max-warnings 0 || {
+  echo "❌ ESLint found architectural violations!"
+  echo "💡 Common fixes:"
+  echo "   - Use infrastructure Modal instead of custom modal implementations"
+  echo "   - Replace hardcoded colors with CSS custom properties"
+  echo "   - Import infrastructure components instead of creating custom ones"
+  exit 1
+}
+
+# Check for common anti-patterns
+echo "🏗️  Scanning for architectural anti-patterns..."
+
+# Check for custom modal patterns in new/modified files
+git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ts|tsx)$' | xargs grep -l "modalOverlay\|modal-overlay\|backdrop.*fixed\|position.*fixed.*z-index" && {
+  echo "❌ Custom modal implementation detected!"
+  echo "💡 Use the infrastructure Modal component instead"
+  echo "   import { Modal } from '../infrastructure/components'"
+  exit 1
+} || true
+
+# Check for hardcoded z-index values outside infrastructure
+git diff --cached --name-only --diff-filter=ACM | grep -E '\.(css|scss|ts|tsx)$' | grep -v 'infrastructure/' | xargs grep -l "z-index.*[0-9]" && {
+  echo "⚠️  Hardcoded z-index detected outside infrastructure!"
+  echo "💡 Use CSS custom properties for z-index values"
+  echo "   z-index: var(--z-modal);"
+  exit 1
+} || true
+
+# Check for duplicate button implementations
+git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ts|tsx)$' | xargs grep -l "className.*button\|styled.*button" | grep -v 'infrastructure/' && {
+  echo "⚠️  Custom button implementation detected!"
+  echo "💡 Use the infrastructure Button component instead"
+  echo "   import { Button } from '../infrastructure/components'"
+  exit 1
+} || true
+
+echo "✅ Architecture compliance checks passed!"
+
+# Type checking
+echo "🔧 Running TypeScript type check..."
+npx tsc --noEmit || {
+  echo "❌ TypeScript compilation errors found!"
+  exit 1
+}
+
+echo "✅ Pre-commit checks completed successfully!"

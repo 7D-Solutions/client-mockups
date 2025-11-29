@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Option 4: Split View Master-Detail (POWER USER)</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      height: 800px;
+      display: flex;
+      flex-direction: column;
+    }
+    .header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .header h1 {
+      font-size: 24px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+    .split-container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+    .sidebar {
+      width: 400px;
+      border-right: 1px solid #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      background: #fafafa;
+    }
+    .sidebar-header {
+      padding: 16px;
+      border-bottom: 1px solid #e0e0e0;
+      background: white;
+    }
+    .search-box {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .sidebar-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+    }
+    .tree-node {
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-bottom: 2px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tree-node:hover {
+      background: #e8e8e8;
+    }
+    .tree-node.selected {
+      background: #2563eb;
+      color: white;
+    }
+    .tree-node.selected:hover {
+      background: #1d4ed8;
+    }
+    .node-icon {
+      font-size: 16px;
+    }
+    .node-label {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .node-count {
+      font-size: 12px;
+      color: #666;
+    }
+    .tree-node.selected .node-count {
+      color: rgba(255,255,255,0.8);
+    }
+    .children {
+      margin-left: 24px;
+    }
+    .expand-icon {
+      width: 16px;
+      font-size: 12px;
+      transition: transform 0.2s;
+    }
+    .expand-icon.expanded {
+      transform: rotate(90deg);
+    }
+    .detail-pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .detail-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8f8f8;
+    }
+    .detail-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .detail-icon {
+      font-size: 32px;
+    }
+    .detail-info h2 {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+    .detail-meta {
+      font-size: 13px;
+      color: #666;
+    }
+    .detail-actions {
+      display: flex;
+      gap: 12px;
+    }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+      font-size: 14px;
+    }
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #374151;
+    }
+    .btn-secondary:hover { background: #d1d5db; }
+    .detail-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+    }
+    .form-section {
+      margin-bottom: 24px;
+    }
+    .form-section h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #1a1a1a;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #374151;
+    }
+    .form-input {
+      padding: 10px 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .children-section {
+      background: #f8f8f8;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .children-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .children-header h3 {
+      margin: 0;
+    }
+    .child-card {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 16px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .child-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .child-icon {
+      font-size: 24px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .badge-success { background: #dcfce7; color: #166534; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📍 Organization Structure</h1>
+    </div>
+
+    <div class="split-container">
+      <!-- Left Sidebar: Tree Navigation -->
+      <div class="sidebar">
+        <div class="sidebar-header">
+          <input type="text" class="search-box" placeholder="🔍 Search facilities, buildings, zones...">
+        </div>
+        <div class="sidebar-content">
+          <!-- Facility 1 -->
+          <div class="tree-node selected">
+            <span class="expand-icon expanded">▶</span>
+            <span class="node-icon">🏢</span>
+            <span class="node-label">Main Plant</span>
+            <span class="node-count">5</span>
+          </div>
+          <div class="children">
+            <div class="tree-node">
+              <span class="expand-icon expanded">▶</span>
+              <span class="node-icon">🏛️</span>
+              <span class="node-label">Building A</span>
+              <span class="node-count">3</span>
+            </div>
+            <div class="children">
+              <div class="tree-node">
+                <span class="expand-icon">▶</span>
+                <span class="node-icon">📐</span>
+                <span class="node-label">Production Floor</span>
+                <span class="node-count">12</span>
+              </div>
+              <div class="tree-node">
+                <span class="expand-icon"></span>
+                <span class="node-icon">📐</span>
+                <span class="node-label">Assembly Area</span>
+                <span class="node-count">8</span>
+              </div>
+            </div>
+            <div class="tree-node">
+              <span class="expand-icon"></span>
+              <span class="node-icon">🏛️</span>
+              <span class="node-label">Building B</span>
+              <span class="node-count">2</span>
+            </div>
+          </div>
+
+          <!-- Facility 2 -->
+          <div class="tree-node">
+            <span class="expand-icon">▶</span>
+            <span class="node-icon">🏢</span>
+            <span class="node-label">Warehouse A</span>
+            <span class="node-count">2</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Pane: Details & Editing -->
+      <div class="detail-pane">
+        <div class="detail-header">
+          <div class="detail-title">
+            <div class="detail-icon">🏢</div>
+            <div class="detail-info">
+              <h2>Main Plant</h2>
+              <div class="detail-meta">FAC-001 • Created Jan 15, 2024 • <span class="badge badge-success">Active</span></div>
+            </div>
+          </div>
+          <div class="detail-actions">
+            <button class="btn btn-secondary">Delete</button>
+            <button class="btn btn-primary">Save Changes</button>
+          </div>
+        </div>
+
+        <div class="detail-content">
+          <!-- Basic Information -->
+          <div class="form-section">
+            <h3>Basic Information</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Facility Code</label>
+                <input type="text" class="form-input" value="FAC-001">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Facility Name</label>
+                <input type="text" class="form-input" value="Main Plant">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Status</label>
+                <select class="form-input">
+                  <option selected>Active</option>
+                  <option>Inactive</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Display Order</label>
+                <input type="number" class="form-input" value="1">
+              </div>
+            </div>
+          </div>
+
+          <!-- Buildings -->
+          <div class="children-section">
+            <div class="children-header">
+              <h3>🏛️ Buildings (5)</h3>
+              <button class="btn btn-primary">+ Add Building</button>
+            </div>
+
+            <div class="child-card">
+              <div class="child-info">
+                <div class="child-icon">🏛️</div>
+                <div>
+                  <div style="font-weight: 600;">Building A</div>
+                  <div style="font-size: 13px; color: #666;">BLD-001 • 3 zones • 45 locations</div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Edit</button>
+                <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">View</button>
+              </div>
+            </div>
+
+            <div class="child-card">
+              <div class="child-info">
+                <div class="child-icon">🏛️</div>
+                <div>
+                  <div style="font-weight: 600;">Building B</div>
+                  <div style="font-size: 13px; color: #666;">BLD-002 • 2 zones • 28 locations</div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Edit</button>
+                <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">View</button>
+              </div>
+            </div>
+
+            <div class="child-card">
+              <div class="child-info">
+                <div class="child-icon">🏛️</div>
+                <div>
+                  <div style="font-weight: 600;">Building C</div>
+                  <div style="font-size: 13px; color: #666;">BLD-003 • 1 zone • 15 locations</div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Edit</button>
+                <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">View</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 20px; padding: 20px; background: white; border-radius: 8px; max-width: 1600px; margin: 20px auto;">
+    <h3 style="margin-bottom: 12px; color: #059669;">✅ Pros (POWER USERS)</h3>
+    <ul style="color: #666; line-height: 1.8;">
+      <li><strong>Maximum efficiency</strong> - View hierarchy and edit details simultaneously</li>
+      <li><strong>No context switching</strong> - Everything in one view</li>
+      <li><strong>Quick navigation</strong> - Tree on left, details on right</li>
+      <li><strong>Search functionality</strong> - Quick find in tree</li>
+      <li><strong>Professional</strong> - Feels like enterprise software</li>
+    </ul>
+
+    <h3 style="margin-top: 20px; margin-bottom: 12px; color: #dc2626;">❌ Cons</h3>
+    <ul style="color: #666; line-height: 1.8;">
+      <li>More complex interface - might overwhelm casual users</li>
+      <li>Requires wider screen (not great on mobile/tablets)</li>
+      <li>Learning curve for first-time users</li>
+    </ul>
+  </div>
+</body>
+</html>

@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fire-Proof ERP Tab Components - Comprehensive Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 1rem;
+        }
+        
+        h2 {
+            color: #34495e;
+            margin: 2rem 0 1.5rem;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        h3 {
+            color: #7f8c8d;
+            margin: 1.5rem 0 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .legacy {
+            border-left: 5px solid #e74c3c;
+        }
+        
+        .modular {
+            border-left: 5px solid #27ae60;
+        }
+        
+        .tab-preview {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .tabs-horizontal {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 2px solid #dee2e6;
+            margin-bottom: 1rem;
+        }
+        
+        .tab-button {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: none;
+            color: #6c757d;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab-button.active {
+            color: #3498db;
+            border-bottom-color: #3498db;
+        }
+        
+        .code-block {
+            background: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 12px;
+            margin-left: 0.5rem;
+        }
+        
+        .badge-legacy {
+            background: #ffe5e5;
+            color: #c0392b;
+        }
+        
+        .badge-modular {
+            background: #e8f5e9;
+            color: #27ae60;
+        }
+        
+        .badge-erp-core {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .feature-item {
+            background: #f8f9fa;
+            padding: 0.75rem;
+            border-radius: 5px;
+            border: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .icon {
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        
+        .summary-table th,
+        .summary-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .summary-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .summary-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .alert {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 5px;
+            display: flex;
+            align-items: start;
+            gap: 0.75rem;
+        }
+        
+        .alert-info {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            color: #1565c0;
+        }
+        
+        .alert-warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #856404;
+        }
+        
+        .tab-count {
+            background: #e9ecef;
+            color: #495057;
+            padding: 0.125rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Fire-Proof ERP Tab Components Analysis</h1>
+        
+        <div class="alert alert-info">
+            <span class="icon">ℹ️</span>
+            <div>
+                <strong>Analysis Summary:</strong> Found 8 unique tab implementations across legacy and modular frontends, 
+                including navigation tabs, content tabs, and specialized sub-navigation components.
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <section class="section">
+            <h2>📊 Tab Components Summary</h2>
+            <table class="summary-table">
+                <thead>
+                    <tr>
+                        <th>Component Name</th>
+                        <th>Location</th>
+                        <th>Type</th>
+                        <th>Tab Count</th>
+                        <th>Features</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Main Navigation</strong></td>
+                        <td><span class="badge badge-erp-core">ERP Core</span></td>
+                        <td>Horizontal Navigation</td>
+                        <td>3-4 tabs</td>
+                        <td>Role-based visibility, Badges</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gauge Category Tabs</strong></td>
+                        <td><span class="badge badge-modular">Modular</span></td>
+                        <td>Content Tabs</td>
+                        <td>11 categories</td>
+                        <td>Counts, Icons, Active state</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Thread Sub-Navigation</strong></td>
+                        <td><span class="badge badge-modular">Modular</span></td>
+                        <td>Sub-category Tabs</td>
+                        <td>3 tabs</td>
+                        <td>Nested navigation, Counts</td>
+                    </tr>
+                    <tr>
+                        <td><strong>User Dashboard Tabs</strong></td>
+                        <td><span class="badge badge-modular">Modular</span></td>
+                        <td>Content Tabs</td>
+                        <td>3 tabs</td>
+                        <td>Personal, Checked Out, Transfers</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Admin Panel Tabs</strong></td>
+                        <td><span class="badge badge-legacy">Legacy</span></td>
+                        <td>Content Tabs</td>
+                        <td>5-6 tabs</td>
+                        <td>Role-based, System settings</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gauge Details Modal</strong></td>
+                        <td><span class="badge badge-legacy">Legacy</span> <span class="badge badge-modular">Modular</span></td>
+                        <td>Modal Tabs</td>
+                        <td>3 tabs</td>
+                        <td>Details, History, Certs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Review Modal Tabs</strong></td>
+                        <td><span class="badge badge-legacy">Legacy</span></td>
+                        <td>Modal Tabs</td>
+                        <td>2 tabs</td>
+                        <td>Check-in, Unseal requests</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Radix UI Tabs</strong></td>
+                        <td><span class="badge badge-modular">Modular</span></td>
+                        <td>Component Library</td>
+                        <td>Flexible</td>
+                        <td>Accessible, Styled components</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Side by Side Comparison -->
+        <h2>⚖️ Side-by-Side Comparison</h2>
+        
+        <div class="comparison">
+            <div class="section legacy">
+                <h3>🏛️ Legacy Frontend Tabs</h3>
+                
+                <!-- Main Navigation -->
+                <div class="tab-preview">
+                    <h4>Main Navigation (App Level)</h4>
+                    <div class="tabs-horizontal">
+                        <button class="tab-button active">🔧 Gauge Management</button>
+                        <button class="tab-button">👤 My Dashboard</button>
+                        <button class="tab-button">🛡️ Admin Panel</button>
+                    </div>
+                    <p><strong>Location:</strong> Re-exported from @fireproof/erp-core</p>
+                    <div class="feature-grid">
+                        <div class="feature-item">✓ Role-based visibility</div>
+                        <div class="feature-item">✓ Badge support</div>
+                        <div class="feature-item">✓ Icon support</div>
+                    </div>
+                </div>
+
+                <!-- Admin Panel Tabs -->
+                <div class="tab-preview">
+                    <h4>Admin Panel Sub-tabs</h4>
+                    <div class="tabs-horizontal">
+                        <button class="tab-button active">👥 User Management</button>
+                        <button class="tab-button">⚙️ System Settings</button>
+                        <button class="tab-button">📊 Reports</button>
+                        <button class="tab-button">💾 Data Management</button>
+                        <button class="tab-button">🚫 Rejection Reasons</button>
+                        <button class="tab-button">🔧 System Recovery</button>
+                    </div>
+                    <p><strong>Location:</strong> /components/admin/AdminPanel.tsx:88-127</p>
+                    <div class="code-block">
+&lt;div className="category-tabs"&gt;
+  &lt;button 
+    className={`category-tab ${activeAdminTab === 'users' ? 'active' : ''}`}
+    onClick={() => setActiveAdminTab('users')}&gt;
+    &lt;i className="fas fa-users"&gt;&lt;/i&gt; User Management
+  &lt;/button&gt;
+  // ... more tabs
+&lt;/div&gt;</div>
+                </div>
+
+                <!-- Review Modal Tabs -->
+                <div class="tab-preview">
+                    <h4>Review Modal Tabs</h4>
+                    <div class="tabs-horizontal">
+                        <button class="tab-button active">Check-in Approvals <span class="tab-count">3</span></button>
+                        <button class="tab-button">Unseal Requests <span class="tab-count">2</span></button>
+                    </div>
+                    <p><strong>Location:</strong> /components/modals/ReviewModal.tsx</p>
+                    <div class="feature-grid">
+                        <div class="feature-item">✓ Dynamic counts</div>
+                        <div class="feature-item">✓ Conditional display</div>
+                    </div>
+                </div>
+
+                <!-- Gauge Details Modal Tabs -->
+                <div class="tab-preview">
+                    <h4>Gauge Details Modal Tabs</h4>
+                    <div class="tabs-horizontal">
+                        <button class="tab-button active">ℹ️ Details</button>
+                        <button class="tab-button">📜 History</button>
+                        <button class="tab-button">📋 Calibration Certs</button>
+                    </div>
+                    <p><strong>Location:</strong> /components/modals/GaugeDetailsModal.tsx</p>
+                </div>
+            </div>
+
+            <div class="section modular">
+                <h3>🚀 Modular Frontend Tabs</h3>
+                
+                <!-- Main Navigation -->
+                <div class="tab-preview">
+                    <h4>Main Navigation (Shared from ERP Core)</h4>
+                    <div class="tabs-horizontal">
+                        <button class="tab-button active">🔧 Gauge Management</button>
+                        <button class="tab-button">👤 My Dashboard</button>
+                        <button class="tab-button">🛡️ Admin Panel</button>
+                    </div>
+                    <p><strong>Location:</strong> Uses same ERP Core components</p>
+                </div>
+
+                <!-- Gauge Category Tabs -->
+                <div class="tab-preview">
+                    <h4>Gauge Category Tabs</h4>
+                    <div class="tabs-horizontal" style="flex-wrap: wrap;">
+                        <button class="tab-button active">All Gauges <span class="tab-count">245</span></button>
+                        <button class="tab-button">📐 Dimensional <span class="tab-count">89</span></button>
+                        <button class="tab-button">🧵 Thread <span class="tab-count">45</span></button>
+                        <button class="tab-button">🌡️ Temperature <span class="tab-count">12</span></button>
+                        <button class="tab-button">📏 Variable <span class="tab-count">23</span></button>
+                        <button class="tab-button">⚡ Electronic <span class="tab-count">15</span></button>
+                        <button class="tab-button">💧 Pressure <span class="tab-count">8</span></button>
+                        <button class="tab-button">📦 Attribute <span class="tab-count">19</span></button>
+                        <button class="tab-button">🏗️ Fixed <span class="tab-count">25</span></button>
+                        <button class="tab-button">🔍 Other <span class="tab-count">9</span></button>
+                    </div>
+                    <p><strong>Location:</strong> /modules/gauge/pages/GaugeList.tsx</p>
+                    <div class="code-block">
+&lt;div className={styles.categoryTabs}&gt;
+  &lt;button 
+    className={`${styles.categoryTab} ${activeCategory === 'all' ? styles.active : ''}`}
+    onClick={() => setActiveCategory('all')}&gt;
+    All Gauges ({filteredGauges.length})
+  &lt;/button&gt;
+  // ... more categories
+&lt;/div&gt;</div>
+                </div>
+
+                <!-- Thread Sub-Navigation -->
+                <div class="tab-preview">
+                    <h4>Thread Sub-Navigation Component</h4>
+                    <div style="background: #fff; padding: 1rem; border-radius: 8px; border: 1px solid #e0e0e0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="width: 8px; height: 8px; background: #3498db; border-radius: 50%;"></span>
+                                <h5 style="margin: 0;">Thread Gauge Types</h5>
+                            </div>
+                            <div class="tabs-horizontal" style="margin-bottom: 0;">
+                                <button class="tab-button active">All Thread <span class="tab-count">45</span></button>
+                                <button class="tab-button">Ring Gauges <span class="tab-count">22</span></button>
+                                <button class="tab-button">Plug Gauges <span class="tab-count">23</span></button>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; color: #6c757d; font-size: 0.875rem;">
+                            <span>Filter by thread gauge type for specialized inventory management</span>
+                            <span>45 items shown</span>
+                        </div>
+                    </div>
+                    <p><strong>Location:</strong> /modules/gauge/components/ThreadSubNavigation.tsx</p>
+                    <div class="feature-grid">
+                        <div class="feature-item">✓ Specialized sub-navigation</div>
+                        <div class="feature-item">✓ Dynamic counts</div>
+                        <div class="feature-item">✓ Info badges</div>
+                    </div>
+                </div>
+
+                <!-- User Dashboard Tabs -->
+                <div class="tab-preview">
+                    <h4>User Dashboard Tabs</h4>
+                    <div class="tabs-horizontal">
+                        <button class="tab-button active">🔧 My Personal Tools</button>
+                        <button class="tab-button">📤 Items I've Checked Out</button>
+                        <button class="tab-button">🔄 Pending Transfers</button>
+                    </div>
+                    <p><strong>Location:</strong> /modules/gauge/components/UserDashboard.tsx:30-49</p>
+                </div>
+
+                <!-- Radix UI Tabs Component -->
+                <div class="tab-preview">
+                    <h4>Radix UI Tabs (Infrastructure Component)</h4>
+                    <div class="code-block">
+import * as TabsPrimitive from '@radix-ui/react-tabs';
+
+export { Tabs, TabsList, TabsTrigger, TabsContent };
+
+// Usage example:
+&lt;Tabs defaultValue="tab1"&gt;
+  &lt;TabsList&gt;
+    &lt;TabsTrigger value="tab1"&gt;Tab 1&lt;/TabsTrigger&gt;
+    &lt;TabsTrigger value="tab2"&gt;Tab 2&lt;/TabsTrigger&gt;
+  &lt;/TabsList&gt;
+  &lt;TabsContent value="tab1"&gt;Content 1&lt;/TabsContent&gt;
+  &lt;TabsContent value="tab2"&gt;Content 2&lt;/TabsContent&gt;
+&lt;/Tabs&gt;</div>
+                    <p><strong>Location:</strong> /infrastructure/components/ui/Tabs.tsx</p>
+                    <div class="feature-grid">
+                        <div class="feature-item">✓ Accessible (ARIA)</div>
+                        <div class="feature-item">✓ Keyboard navigation</div>
+                        <div class="feature-item">✓ CSS Modules styling</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technical Analysis -->
+        <section class="section">
+            <h2>🔬 Technical Analysis</h2>
+            
+            <h3>Architecture Patterns</h3>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <strong>ERP Core Integration:</strong> Main navigation tabs are centralized in erp-core
+                </div>
+                <div class="feature-item">
+                    <strong>State Management:</strong> TabContext provides global tab state
+                </div>
+                <div class="feature-item">
+                    <strong>Component Libraries:</strong> Modular uses Radix UI for accessible tabs
+                </div>
+                <div class="feature-item">
+                    <strong>CSS Approach:</strong> Legacy uses global CSS, Modular uses CSS Modules
+                </div>
+            </div>
+
+            <h3>Tab Variants Found</h3>
+            <table class="summary-table">
+                <thead>
+                    <tr>
+                        <th>Variant Type</th>
+                        <th>Implementation</th>
+                        <th>Use Cases</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Horizontal Navigation</strong></td>
+                        <td>Standard horizontal tabs with active state</td>
+                        <td>Main navigation, category filters</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sub-navigation</strong></td>
+                        <td>Secondary tabs within a section</td>
+                        <td>Thread gauge types, admin sections</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Modal Tabs</strong></td>
+                        <td>Tabs within modal dialogs</td>
+                        <td>Gauge details, review approvals</td>
+                    </tr>
+                    <tr>
+                        <td><strong>With Counts</strong></td>
+                        <td>Tabs showing item counts</td>
+                        <td>Categories, pending items</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Role-based</strong></td>
+                        <td>Conditional tab visibility</td>
+                        <td>Admin panel, super admin features</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Migration Notes -->
+        <section class="section">
+            <h2>🔄 Migration & Consistency Notes</h2>
+            
+            <div class="alert alert-warning">
+                <span class="icon">⚠️</span>
+                <div>
+                    <strong>Key Differences:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>Legacy uses class-based styling with global CSS classes</li>
+                        <li>Modular uses CSS Modules with scoped styles</li>
+                        <li>Legacy has inline tab implementations</li>
+                        <li>Modular leverages Radix UI for accessibility</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Recommended Standards</h3>
+            <ol>
+                <li><strong>Use Radix UI Tabs</strong> for new implementations in modular frontend</li>
+                <li><strong>Centralize navigation tabs</strong> in ERP Core for consistency</li>
+                <li><strong>Include counts</strong> where applicable for better UX</li>
+                <li><strong>Ensure keyboard navigation</strong> works for all tab implementations</li>
+                <li><strong>Use CSS Modules</strong> for styling to avoid conflicts</li>
+                <li><strong>Implement proper ARIA labels</strong> for accessibility</li>
+            </ol>
+        </section>
+
+        <!-- Footer -->
+        <footer style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #dee2e6; text-align: center; color: #6c757d;">
+            <p>Generated on: <script>document.write(new Date().toLocaleDateString());</script></p>
+            <p>Fire-Proof ERP Tab Components Analysis - Frontend Architecture Review</p>
+        </footer>
+    </div>
+</body>
+</html>

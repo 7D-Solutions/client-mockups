@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand Tool Form - Layout Mockups Comparison</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #1a202c;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: #718096;
+            margin-bottom: 2rem;
+        }
+
+        .mockup-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+        }
+
+        .mockup-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .mockup-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        .mockup-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .mockup-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .mockup-stats {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .mockup-body {
+            padding: 1.5rem;
+        }
+
+        .mockup-description {
+            font-size: 0.95rem;
+            color: #4a5568;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .mockup-features {
+            margin-bottom: 1rem;
+        }
+
+        .feature-section {
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #718096;
+            margin-bottom: 0.25rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            font-size: 0.875rem;
+            color: #4a5568;
+        }
+
+        .feature-list li {
+            padding: 0.25rem 0;
+            padding-left: 1.25rem;
+            position: relative;
+        }
+
+        .feature-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #48bb78;
+            font-weight: bold;
+        }
+
+        .feature-list.cons li::before {
+            content: "!";
+            color: #f6ad55;
+        }
+
+        .mockup-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #3182ce;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2c5282;
+        }
+
+        .btn-secondary {
+            background: #edf2f7;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .comparison-table {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .comparison-table h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #1a202c;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 0.875rem;
+        }
+
+        td {
+            font-size: 0.875rem;
+            color: #4a5568;
+        }
+
+        .rating {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .star {
+            color: #f6ad55;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hand Tool Form Layout Mockups</h1>
+        <p class="subtitle">Compare different layout approaches for the gauge creation form</p>
+
+        <div class="mockup-grid">
+            <!-- Mockup 1: Compact Grid (Current) -->
+            <div class="mockup-card">
+                <div class="mockup-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div class="mockup-title">1. Compact Grid (Current Implementation)</div>
+                    <div class="mockup-stats">6 rows · Multi-column grid · Maximum density</div>
+                </div>
+                <div class="mockup-body">
+                    <p class="mockup-description">
+                        Highly optimized layout using multi-column grids to pack maximum information in minimal vertical space. Currently implemented in the application.
+                    </p>
+                    <div class="mockup-features">
+                        <div class="feature-section">
+                            <div class="feature-label">Pros</div>
+                            <ul class="feature-list">
+                                <li>Maximum information density</li>
+                                <li>Minimal scrolling required</li>
+                                <li>Efficient use of screen space</li>
+                                <li>Fast data entry workflow</li>
+                            </ul>
+                        </div>
+                        <div class="feature-section">
+                            <div class="feature-label">Cons</div>
+                            <ul class="feature-list cons">
+                                <li>May feel cramped on smaller screens</li>
+                                <li>Requires careful field arrangement</li>
+                                <li>Less breathing room between elements</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mockup-actions">
+                        <a href="hand-tool-form-compact-grid.html" target="_blank" class="btn btn-primary">View Mockup</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mockup 2: Two-Column -->
+            <div class="mockup-card">
+                <div class="mockup-header" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <div class="mockup-title">2. Two-Column Layout</div>
+                    <div class="mockup-stats">~8 rows · 2 columns side-by-side · Balanced</div>
+                </div>
+                <div class="mockup-body">
+                    <p class="mockup-description">
+                        Traditional two-column form layout with fields organized in left and right columns. Clean and easy to scan.
+                    </p>
+                    <div class="mockup-features">
+                        <div class="feature-section">
+                            <div class="feature-label">Pros</div>
+                            <ul class="feature-list">
+                                <li>Clean, organized appearance</li>
+                                <li>Easy to scan visually</li>
+                                <li>Less cramped feeling</li>
+                                <li>Good balance of space and density</li>
+                            </ul>
+                        </div>
+                        <div class="feature-section">
+                            <div class="feature-label">Cons</div>
+                            <ul class="feature-list cons">
+                                <li>Uses more vertical space</li>
+                                <li>Slightly more scrolling required</li>
+                                <li>Not as space-efficient as compact grid</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mockup-actions">
+                        <a href="hand-tool-form-two-column.html" target="_blank" class="btn btn-primary">View Mockup</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mockup 3: Card Sections -->
+            <div class="mockup-card">
+                <div class="mockup-header" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <div class="mockup-title">3. Card Sections Layout</div>
+                    <div class="mockup-stats">5 cards · Grouped sections · Modern design</div>
+                </div>
+                <div class="mockup-body">
+                    <p class="mockup-description">
+                        Fields grouped into logical sections displayed as cards in a grid. Modern visual hierarchy with clear section separation.
+                    </p>
+                    <div class="mockup-features">
+                        <div class="feature-section">
+                            <div class="feature-label">Pros</div>
+                            <ul class="feature-list">
+                                <li>Clear visual grouping</li>
+                                <li>Scannable sections</li>
+                                <li>Modern, polished appearance</li>
+                                <li>Logical information architecture</li>
+                            </ul>
+                        </div>
+                        <div class="feature-section">
+                            <div class="feature-label">Cons</div>
+                            <ul class="feature-list cons">
+                                <li>Requires more horizontal space</li>
+                                <li>Needs wider screen for optimal viewing</li>
+                                <li>More visual complexity</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mockup-actions">
+                        <a href="hand-tool-form-card-sections.html" target="_blank" class="btn btn-primary">View Mockup</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mockup 4: Ultra Compact -->
+            <div class="mockup-card">
+                <div class="mockup-header" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                    <div class="mockup-title">4. Ultra Compact Inline</div>
+                    <div class="mockup-stats">~10 rows · Inline labels · Spreadsheet-like</div>
+                </div>
+                <div class="mockup-body">
+                    <p class="mockup-description">
+                        Maximum density layout with inline labels and fields. Spreadsheet-style approach for power users who value efficiency.
+                    </p>
+                    <div class="mockup-features">
+                        <div class="feature-section">
+                            <div class="feature-label">Pros</div>
+                            <ul class="feature-list">
+                                <li>All fields visible without scrolling</li>
+                                <li>Spreadsheet-like efficiency</li>
+                                <li>Maximum vertical space optimization</li>
+                                <li>Fast for experienced users</li>
+                            </ul>
+                        </div>
+                        <div class="feature-section">
+                            <div class="feature-label">Cons</div>
+                            <ul class="feature-list cons">
+                                <li>Dense layout may overwhelm new users</li>
+                                <li>Requires careful scanning</li>
+                                <li>Less visual hierarchy</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mockup-actions">
+                        <a href="hand-tool-form-ultra-compact.html" target="_blank" class="btn btn-primary">View Mockup</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mockup 5: Tabbed -->
+            <div class="mockup-card">
+                <div class="mockup-header" style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);">
+                    <div class="mockup-title">5. Tabbed Interface</div>
+                    <div class="mockup-stats">4 tabs · Progressive disclosure · Minimal height</div>
+                </div>
+                <div class="mockup-body">
+                    <p class="mockup-description">
+                        Fields organized into logical tabs with progressive disclosure. Only one tab visible at a time for minimal vertical space.
+                    </p>
+                    <div class="mockup-features">
+                        <div class="feature-section">
+                            <div class="feature-label">Pros</div>
+                            <ul class="feature-list">
+                                <li>Clean, organized presentation</li>
+                                <li>No scrolling within tabs</li>
+                                <li>Progressive disclosure reduces overwhelm</li>
+                                <li>Minimal vertical space usage</li>
+                            </ul>
+                        </div>
+                        <div class="feature-section">
+                            <div class="feature-label">Cons</div>
+                            <ul class="feature-list cons">
+                                <li>Requires clicking between tabs</li>
+                                <li>Can't see all fields simultaneously</li>
+                                <li>May slow down data entry workflow</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mockup-actions">
+                        <a href="hand-tool-form-tabbed.html" target="_blank" class="btn btn-primary">View Mockup</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="comparison-table">
+            <h2>Quick Comparison</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Layout</th>
+                        <th>Vertical Space</th>
+                        <th>Visual Complexity</th>
+                        <th>Data Entry Speed</th>
+                        <th>Readability</th>
+                        <th>Best For</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1. Compact Grid</strong></td>
+                        <td>
+                            <div class="rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span>☆</span>
+                                <span>☆</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span>☆</span>
+                                <span>☆</span>
+                            </div>
+                        </td>
+                        <td>Power users, frequent data entry</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2. Two-Column</strong></td>
+                        <td>
+                            <div class="rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span>☆</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span>☆</span>
+                                <span>☆</span>
+                                <span>☆</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span>☆</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span>☆</span>
+                            </div>
+                        </td>
+                        <td>General use, balanced approach</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3. Card Sections</strong></td>
+                        <td>
+                            <div class="rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span>☆</span>
+                                <span>☆</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span>☆</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span>☆</span>
+                                <span>☆</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                            </div>
+                        </td>
+                        <td>Visual learners, modern interfaces</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4. Ultra Compact</strong></td>
+                        <td>
+                            <div class="rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span>☆</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span>☆</span>
+                                <span>☆</span>
+                                <span>☆</span>
+                            </div>
+                        </td>
+                        <td>Expert users, high-volume data entry</td>
+                    </tr>
+                    <tr>
+                        <td><strong>5. Tabbed</strong></td>
+                        <td>
+                            <div class="rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span>☆</span>
+                                <span>☆</span>
+                                <span>☆</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span>☆</span>
+                                <span>☆</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="rating">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                            </div>
+                        </td>
+                        <td>New users, wizard-style workflows</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

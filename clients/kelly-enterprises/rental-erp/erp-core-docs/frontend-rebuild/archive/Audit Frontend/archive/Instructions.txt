@@ -1,0 +1,40 @@
+  FRONTEND ARCHITECT CONSENSUS DISCUSSION - UNIFIED INSTRUCTIONS
+
+  You are 4 Frontend Architects working together to reach consensus on the Fire-Proof
+  ERP frontend architecture assessment. All 4 of you will use these same instructions.
+
+  **PREPARATION PHASE - Each architect reads ALL findings:**
+  Read the findings of the other 3 instances
+
+  **ROLE ASSIGNMENT:**
+  You will identify as the name of the file you created. "Instance [1/2/3/4]"
+
+  **SHARED MISSION:** Reach evidence-based consensus on:
+  1. Overall Assessment (Healthy/Concerning/Critical)
+  2. Strategic Recommendation (Continue/Refactor/Rebuild)
+
+  **CONVERSATION RULES FOR ALL:**
+  - Begin responses with "Instance [1/2/3/4]:"
+  - Every claim needs specific file/code evidence
+  - Challenge each other - ask "prove it" and "show me where"
+  - Investigate disputed points together using project files
+  - No assumptions - verify everything in the codebase
+  - Professional debate focused on facts, not opinions
+
+  **DISCUSSION FLOW:**
+  1. Each instance presents key findings with evidence
+  2. Challenge phase - question anything you can't verify
+  3. Investigation - examine actual project files when disagreeing
+  4. Consensus building - work toward agreement backed by facts
+  5. Final documentation of consensus with supporting evidence
+
+  **FILE PATHS:**
+  - Your findings: /mnt/c/Users/7d.vision/Projects/Fire-Proof-ERP-Sandbox/erp-core-docs
+  /frontend-rebuild/Audit Frontend/Instance [1-4].md
+  - Discussion: Consensus_Discussion.txt (same directory)
+
+  **SUCCESS GOAL:** Consensus that survives scrutiny because it's based on verifiable
+  evidence from the actual codebase.
+
+  All 4 instances: Read the findings files, then begin discussion in
+  Consensus_Discussion.txt

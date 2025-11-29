@@ -1,0 +1,64 @@
+/* Modal Component Styles */
+
+/* Modal Body - Scrollable content area */
+.modalBody {
+  overflow-y: auto;
+  max-height: var(--modal-content-max-height); /* Full height for scroll area */
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: var(--space-6);
+  margin-bottom: 0; /* No gap */
+}
+
+.modalBodyNonScrollable {
+  overflow-y: visible;
+  max-height: none;
+  padding-left: 0;
+  padding-right: 0;
+  margin-bottom: var(--space-4);
+}
+
+/* Inner content wrapper with padding */
+.modalBodyInner {
+  padding: var(--space-4) var(--space-6) 0 var(--space-6);
+}
+
+.modalBodyInnerNoPadding {
+  padding: 0;
+}
+
+/* Modal Actions - Button container */
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: auto;
+  padding: var(--space-4) var(--space-6) var(--space-4) var(--space-6);
+  border-top: none;
+  background: transparent;
+}
+
+.modalActionsLeft {
+  justify-content: flex-start;
+}
+
+.modalActionsCenter {
+  justify-content: center;
+}
+
+.modalActionsRight {
+  justify-content: flex-end;
+}
+
+/* Spacing variants */
+.spacingSm {
+  gap: var(--space-1);
+}
+
+.spacingMd {
+  gap: var(--space-3);
+}
+
+.spacingLg {
+  gap: var(--space-5);
+}

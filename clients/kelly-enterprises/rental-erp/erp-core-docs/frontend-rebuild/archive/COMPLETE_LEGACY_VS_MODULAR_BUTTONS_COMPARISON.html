@@ -1,0 +1,2014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Legacy vs Modular Buttons - Full Visual Comparison</title>
+    
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f0f2f5;
+            color: #212529;
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d3748 50%, #1e40af 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 20px,
+                rgba(255,255,255,0.03) 20px,
+                rgba(255,255,255,0.03) 40px
+            );
+            animation: slide 30s linear infinite;
+        }
+        
+        @keyframes slide {
+            from { transform: translateX(0); }
+            to { transform: translateX(50%); }
+        }
+        
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.5rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header .stats {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            font-size: 1.2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header .stats .stat {
+            background: rgba(255,255,255,0.1);
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .header .stats .stat strong {
+            font-size: 1.8rem;
+            display: block;
+            font-weight: 600;
+        }
+        
+        /* Navigation */
+        .nav {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1rem 0;
+        }
+        
+        .nav-container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            gap: 2rem;
+            overflow-x: auto;
+        }
+        
+        .nav-link {
+            padding: 0.5rem 1.5rem;
+            background: #f8f9fa;
+            border-radius: 25px;
+            text-decoration: none;
+            color: #495057;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .nav-link:hover {
+            background: #e9ecef;
+            color: #212529;
+            border-color: #007bff;
+            transform: translateY(-2px);
+        }
+        
+        /* Comparison Container */
+        .comparison-container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Section Headers */
+        .section-header {
+            background: white;
+            padding: 2rem;
+            margin: 2rem 0 1rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            text-align: center;
+            border-left: 5px solid #007bff;
+        }
+        
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: #212529;
+            margin-bottom: 0.5rem;
+            font-weight: 400;
+        }
+        
+        .section-header p {
+            color: #6c757d;
+            font-size: 1.2rem;
+        }
+        
+        /* Comparison Grid */
+        .comparison-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            overflow: hidden;
+            margin-bottom: 3rem;
+        }
+        
+        .comparison-title {
+            background: #f8f9fa;
+            padding: 1.5rem 2rem;
+            font-size: 1.8rem;
+            color: #495057;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .comparison-title i {
+            font-size: 1.5rem;
+            opacity: 0.7;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+        
+        @media (max-width: 1200px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .legacy-side {
+                border-right: none !important;
+                border-bottom: 2px solid #e9ecef;
+            }
+        }
+        
+        .comparison-side {
+            padding: 2rem;
+        }
+        
+        .legacy-side {
+            background: #f8f9fa;
+            border-right: 2px solid #e9ecef;
+        }
+        
+        .modular-side {
+            background: #ffffff;
+        }
+        
+        .side-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .legacy-label {
+            background: #e9ecef;
+            color: #495057;
+            border: 2px solid #6c757d;
+        }
+        
+        .modular-label {
+            background: #e7f3ff;
+            color: #0056b3;
+            border: 2px solid #007bff;
+        }
+        
+        /* Button Grids */
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .button-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            transition: all 0.2s ease;
+        }
+        
+        .legacy-side .button-item {
+            background: #ffffff;
+        }
+        
+        .modular-side .button-item {
+            background: #f8f9fa;
+        }
+        
+        .button-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: #007bff;
+        }
+        
+        .button-label {
+            font-size: 0.875rem;
+            color: #6c757d;
+            text-align: center;
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+        
+        .button-code {
+            font-size: 0.7rem;
+            color: #adb5bd;
+            font-family: 'Monaco', 'Consolas', monospace;
+            text-align: center;
+            margin-top: 0.25rem;
+            background: #f8f9fa;
+            padding: 0.125rem 0.375rem;
+            border-radius: 4px;
+        }
+        
+        /* Legacy Button Styles */
+        .legacy-side button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            justify-content: center;
+        }
+        
+        .legacy-side button:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .legacy-side button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        /* Legacy button classes */
+        .checkout-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .checkout-btn:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+        
+        .checkin-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .checkin-btn:hover:not(:disabled) {
+            background-color: #218838;
+        }
+        
+        .transfer-btn {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .transfer-btn:hover:not(:disabled) {
+            background-color: #138496;
+        }
+        
+        .transfer-pending-btn {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .transfer-receive-btn {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .edit-btn {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .save-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .save-btn:hover:not(:disabled) {
+            background-color: #218838;
+        }
+        
+        .cancel-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .cancel-btn:hover:not(:disabled) {
+            background-color: #5a6268;
+        }
+        
+        .danger-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .danger-btn:hover:not(:disabled) {
+            background-color: #c82333;
+        }
+        
+        .warning-btn {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .warning-btn:hover:not(:disabled) {
+            background-color: #e0a800;
+        }
+        
+        .pending-btn {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .status-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .status-btn.pending {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .login-btn {
+            background-color: #007bff;
+            color: white;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+        }
+        
+        .logout-btn {
+            background-color: #dc3545;
+            color: white;
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+        
+        .nav-tab {
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tab.active {
+            color: #007bff;
+            border-bottom-color: #007bff;
+            font-weight: 600;
+        }
+        
+        .nav-tab:hover:not(.active) {
+            color: #0056b3;
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+        
+        .eye-btn {
+            background: white;
+            border: 1px solid #ddd;
+            color: #333;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        
+        .eye-btn:hover {
+            background-color: #f0f0f0;
+            border-color: #999;
+        }
+        
+        .close-btn {
+            background: white;
+            border: 1px solid #ddd;
+            color: #666;
+            padding: 4px 12px;
+            font-size: 24px;
+            line-height: 1;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        /* Modular Button Styles */
+        .modular-side .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            transition: all 200ms;
+            cursor: pointer;
+            border: none;
+            position: relative;
+            text-decoration: none;
+        }
+        
+        .modular-side .button:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #fff, 0 0 0 4px currentColor;
+        }
+        
+        .modular-side .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Size variants */
+        .small {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        .medium {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+        }
+        
+        .large {
+            padding: 0.75rem 1.5rem;
+            font-size: 1.125rem;
+        }
+        
+        /* Color variants */
+        .primary,
+        .default {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .primary:hover:not(:disabled),
+        .default:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+        
+        .secondary {
+            background-color: #4b5563;
+            color: white;
+        }
+        
+        .secondary:hover:not(:disabled) {
+            background-color: #374151;
+        }
+        
+        .success {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .success:hover:not(:disabled) {
+            background-color: #218838;
+        }
+        
+        .warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .warning:hover:not(:disabled) {
+            background-color: #e0a800;
+        }
+        
+        .danger {
+            background-color: #dc2626;
+            color: white;
+        }
+        
+        .danger:hover:not(:disabled) {
+            background-color: #b91c1c;
+        }
+        
+        .info {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .info:hover:not(:disabled) {
+            background-color: #138496;
+        }
+        
+        .outline {
+            background-color: white;
+            color: #374151;
+            border: 2px solid #d1d5db;
+        }
+        
+        .outline:hover:not(:disabled) {
+            border-color: #9ca3af;
+            background-color: #f9fafb;
+        }
+        
+        .ghost {
+            background-color: transparent;
+            color: #374151;
+        }
+        
+        .ghost:hover:not(:disabled) {
+            background-color: #f3f4f6;
+        }
+        
+        /* Tab button styles for modular */
+        .tab-button {
+            background: transparent;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #6c757d;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-button.active {
+            color: #007bff;
+            border-bottom-color: #007bff;
+            font-weight: 600;
+        }
+        
+        .tab-button:hover:not(.active) {
+            color: #495057;
+            background-color: #f8f9fa;
+        }
+        
+        /* Loading spinner */
+        .spinner {
+            animation: spin 1s linear infinite;
+            height: 1rem;
+            width: 1rem;
+            display: inline-block;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading {
+            position: relative;
+        }
+        
+        .loading .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+        }
+        
+        /* Badge */
+        .badge {
+            background: #dc3545;
+            color: white;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 8px;
+        }
+        
+        /* Special Elements */
+        .clickable-card {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .clickable-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-color: #007bff;
+        }
+        
+        /* Close button styles */
+        .close-button {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            color: #6c757d;
+            transition: all 0.2s ease;
+        }
+        
+        .close-button:hover {
+            background-color: #f8f9fa;
+            border-color: #adb5bd;
+            color: #495057;
+        }
+        
+        .icon-button {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #495057;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+        
+        .icon-button:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+        
+        /* Summary Section */
+        .summary {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 3rem;
+            margin-top: 3rem;
+        }
+        
+        .summary h2 {
+            font-size: 2.5rem;
+            color: #212529;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-weight: 300;
+        }
+        
+        /* No Match Section */
+        .no-match-section {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        
+        .no-match-section h4 {
+            color: #856404;
+            margin-bottom: 0.5rem;
+        }
+        
+        .no-match-section p {
+            color: #856404;
+            margin: 0;
+        }
+        
+        /* Scroll to top button */
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #007bff;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .scroll-top:hover {
+            background: #0056b3;
+            transform: translateY(-4px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        /* Divider */
+        .divider {
+            height: 2px;
+            background: linear-gradient(to right, transparent, #dee2e6, transparent);
+            margin: 3rem 0;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Complete Legacy vs Modular Buttons Comparison</h1>
+        <p>Comprehensive side-by-side analysis of every button in the Fire-Proof ERP system</p>
+        <p style="margin-top: 1rem; font-size: 1rem; opacity: 0.9;">Legacy implementation vs modern component architecture</p>
+        <div class="stats">
+            <div class="stat">
+                <strong>100+</strong>
+                Legacy Buttons
+            </div>
+            <div class="stat">
+                <strong>150+</strong>
+                Modular Buttons
+            </div>
+            <div class="stat">
+                <strong>38</strong>
+                Component Files
+            </div>
+        </div>
+    </header>
+    
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="#authentication" class="nav-link">Authentication</a>
+            <a href="#primary-actions" class="nav-link">Primary Actions</a>
+            <a href="#modal-actions" class="nav-link">Modal Actions</a>
+            <a href="#status-buttons" class="nav-link">Status Buttons</a>
+            <a href="#transfer-workflow" class="nav-link">Transfer Workflow</a>
+            <a href="#user-management" class="nav-link">User Management</a>
+            <a href="#admin-operations" class="nav-link">Admin Operations</a>
+            <a href="#qc-operations" class="nav-link">QC Operations</a>
+            <a href="#navigation-tabs" class="nav-link">Navigation Tabs</a>
+            <a href="#special-features" class="nav-link">Special Features</a>
+        </div>
+    </nav>
+    
+    <div class="comparison-container">
+        <!-- Authentication & System -->
+        <section id="authentication">
+            <div class="section-header">
+                <h2>Authentication & System</h2>
+                <p>Login, logout, and authentication-related buttons</p>
+            </div>
+            
+            <div class="comparison-section">
+                <div class="comparison-title">
+                    <i class="fas fa-lock"></i>
+                    Authentication Buttons
+                </div>
+                <div class="comparison-grid">
+                    <div class="comparison-side legacy-side">
+                        <div class="side-label legacy-label">
+                            <i class="fas fa-code-branch"></i>
+                            Legacy Implementation
+                        </div>
+                        <div class="button-grid">
+                            <div class="button-item">
+                                <button class="login-btn">Sign In</button>
+                                <span class="button-label">Login Button</span>
+                                <code class="button-code">.login-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="login-btn loading" disabled>
+                                    <span class="spinner"></span>
+                                    Signing in...
+                                </button>
+                                <span class="button-label">Login Loading</span>
+                                <code class="button-code">.login-btn.loading</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="logout-btn">Logout</button>
+                                <span class="button-label">Logout Button</span>
+                                <code class="button-code">.logout-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="eye-btn">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <span class="button-label">Show Password</span>
+                                <code class="button-code">.eye-btn</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comparison-side modular-side">
+                        <div class="side-label modular-label">
+                            <i class="fas fa-cube"></i>
+                            Modular Implementation
+                        </div>
+                        <div class="button-grid">
+                            <div class="button-item">
+                                <button class="button primary medium">Login</button>
+                                <span class="button-label">Login Button</span>
+                                <code class="button-code">variant="primary"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button primary medium" disabled>
+                                    <svg class="spinner" fill="none" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                        <circle opacity="0.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path opacity="0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                    </svg>
+                                    Signing in...
+                                </button>
+                                <span class="button-label">Login Loading</span>
+                                <code class="button-code">loading={true}</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button secondary small">Logout</button>
+                                <span class="button-label">Logout Button</span>
+                                <code class="button-code">variant="secondary"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="icon-button">Show</button>
+                                <span class="button-label">Show Password</span>
+                                <code class="button-code">icon-button</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Primary Gauge Actions -->
+        <section id="primary-actions">
+            <div class="section-header">
+                <h2>Primary Gauge Actions</h2>
+                <p>Core gauge management operations</p>
+            </div>
+            
+            <div class="comparison-section">
+                <div class="comparison-title">
+                    <i class="fas fa-tools"></i>
+                    Primary Operations
+                </div>
+                <div class="comparison-grid">
+                    <div class="comparison-side legacy-side">
+                        <div class="side-label legacy-label">
+                            <i class="fas fa-code-branch"></i>
+                            Legacy Implementation
+                        </div>
+                        <div class="button-grid">
+                            <div class="button-item">
+                                <button class="edit-btn">
+                                    <i class="fas fa-edit"></i>
+                                    Edit
+                                </button>
+                                <span class="button-label">Edit Gauge</span>
+                                <code class="button-code">.edit-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="checkout-btn">
+                                    <i class="fas fa-upload"></i>
+                                    Checkout
+                                </button>
+                                <span class="button-label">Check Out</span>
+                                <code class="button-code">.checkout-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="checkin-btn">
+                                    <i class="fas fa-download"></i>
+                                    Checkin
+                                </button>
+                                <span class="button-label">Check In</span>
+                                <code class="button-code">.checkin-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="transfer-btn">
+                                    <i class="fas fa-exchange-alt"></i>
+                                    Transfer
+                                </button>
+                                <span class="button-label">Transfer</span>
+                                <code class="button-code">.transfer-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="save-btn">
+                                    <i class="fas fa-plus"></i>
+                                    Create Gauge
+                                </button>
+                                <span class="button-label">Create New</span>
+                                <code class="button-code">.save-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="checkout-btn">
+                                    Bulk Update Gauges
+                                </button>
+                                <span class="button-label">Bulk Update</span>
+                                <code class="button-code">.checkout-btn</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comparison-side modular-side">
+                        <div class="side-label modular-label">
+                            <i class="fas fa-cube"></i>
+                            Modular Implementation
+                        </div>
+                        <div class="button-grid">
+                            <div class="button-item">
+                                <button class="button info small">Edit</button>
+                                <span class="button-label">Edit Gauge</span>
+                                <code class="button-code">variant="info" size="small"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button primary medium">Checkout</button>
+                                <span class="button-label">Check Out</span>
+                                <code class="button-code">variant="primary"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button success medium">Checkin</button>
+                                <span class="button-label">Check In</span>
+                                <code class="button-code">variant="success"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button info medium">Transfer</button>
+                                <span class="button-label">Transfer</span>
+                                <code class="button-code">variant="info"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button primary medium">Create Gauge</button>
+                                <span class="button-label">Create New</span>
+                                <code class="button-code">variant="primary"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button primary medium">Return</button>
+                                <span class="button-label">Return Gauge</span>
+                                <code class="button-code">variant="primary"</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modal Actions -->
+        <section id="modal-actions">
+            <div class="section-header">
+                <h2>Modal Actions</h2>
+                <p>Common modal and dialog buttons</p>
+            </div>
+            
+            <div class="comparison-section">
+                <div class="comparison-title">
+                    <i class="fas fa-window-restore"></i>
+                    Modal Buttons
+                </div>
+                <div class="comparison-grid">
+                    <div class="comparison-side legacy-side">
+                        <div class="side-label legacy-label">
+                            <i class="fas fa-code-branch"></i>
+                            Legacy Implementation
+                        </div>
+                        <div class="button-grid">
+                            <div class="button-item">
+                                <button class="save-btn">
+                                    <i class="fas fa-save"></i>
+                                    Save Changes
+                                </button>
+                                <span class="button-label">Save</span>
+                                <code class="button-code">.save-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="cancel-btn">Cancel</button>
+                                <span class="button-label">Cancel</span>
+                                <code class="button-code">.cancel-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="cancel-btn">Close</button>
+                                <span class="button-label">Close</span>
+                                <code class="button-code">.cancel-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="close-btn">×</button>
+                                <span class="button-label">Close (X)</span>
+                                <code class="button-code">.close-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="save-btn">
+                                    <i class="fas fa-check"></i>
+                                    Yes, Proceed
+                                </button>
+                                <span class="button-label">Confirm</span>
+                                <code class="button-code">.save-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="save-btn loading" disabled>
+                                    <span class="spinner"></span>
+                                    Saving...
+                                </button>
+                                <span class="button-label">Save Loading</span>
+                                <code class="button-code">.save-btn.loading</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comparison-side modular-side">
+                        <div class="side-label modular-label">
+                            <i class="fas fa-cube"></i>
+                            Modular Implementation
+                        </div>
+                        <div class="button-grid">
+                            <div class="button-item">
+                                <button class="button primary medium">Save Changes</button>
+                                <span class="button-label">Save</span>
+                                <code class="button-code">variant="primary"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button secondary medium">Cancel</button>
+                                <span class="button-label">Cancel</span>
+                                <code class="button-code">variant="secondary"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button secondary medium">Close</button>
+                                <span class="button-label">Close</span>
+                                <code class="button-code">variant="secondary"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="close-button">×</button>
+                                <span class="button-label">Close (X)</span>
+                                <code class="button-code">close-button</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button primary medium">Submit</button>
+                                <span class="button-label">Submit</span>
+                                <code class="button-code">variant="primary"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button primary medium" disabled>
+                                    <svg class="spinner" fill="none" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                        <circle opacity="0.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path opacity="0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                    </svg>
+                                    Saving...
+                                </button>
+                                <span class="button-label">Save Loading</span>
+                                <code class="button-code">loading={true}</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Status Buttons -->
+        <section id="status-buttons">
+            <div class="section-header">
+                <h2>Status Buttons</h2>
+                <p>Disabled and status indication buttons</p>
+            </div>
+            
+            <div class="comparison-section">
+                <div class="comparison-title">
+                    <i class="fas fa-info-circle"></i>
+                    Status Indicators
+                </div>
+                <div class="comparison-grid">
+                    <div class="comparison-side legacy-side">
+                        <div class="side-label legacy-label">
+                            <i class="fas fa-code-branch"></i>
+                            Legacy Implementation
+                        </div>
+                        <div class="button-grid">
+                            <div class="button-item">
+                                <button class="pending-btn" disabled>
+                                    <i class="fas fa-clipboard-check"></i>
+                                    Pending QC
+                                </button>
+                                <span class="button-label">QC Status</span>
+                                <code class="button-code">.pending-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="danger-btn" disabled>
+                                    <i class="fas fa-ban"></i>
+                                    Out of Service
+                                </button>
+                                <span class="button-label">Service Status</span>
+                                <code class="button-code">.danger-btn:disabled</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="danger-btn" disabled>
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    Calibration Due
+                                </button>
+                                <span class="button-label">Calibration Status</span>
+                                <code class="button-code">.danger-btn:disabled</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="status-btn pending" disabled>
+                                    <i class="fas fa-unlock-alt"></i>
+                                    Pending Unseal
+                                </button>
+                                <span class="button-label">Unseal Status</span>
+                                <code class="button-code">.status-btn.pending</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comparison-side modular-side">
+                        <div class="side-label modular-label">
+                            <i class="fas fa-cube"></i>
+                            Modular Implementation
+                        </div>
+                        <div class="button-grid">
+                            <div class="button-item">
+                                <button class="button warning medium" disabled>Pending QC</button>
+                                <span class="button-label">QC Status</span>
+                                <code class="button-code">variant="warning" disabled</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button danger medium" disabled>Out of Service</button>
+                                <span class="button-label">Service Status</span>
+                                <code class="button-code">variant="danger" disabled</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button warning medium" disabled>Calibration Due</button>
+                                <span class="button-label">Calibration Status</span>
+                                <code class="button-code">variant="warning" disabled</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button info medium" disabled>Pending Unseal</button>
+                                <span class="button-label">Unseal Status</span>
+                                <code class="button-code">variant="info" disabled</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Transfer Workflow -->
+        <section id="transfer-workflow">
+            <div class="section-header">
+                <h2>Transfer Workflow</h2>
+                <p>Complete transfer operation buttons</p>
+            </div>
+            
+            <div class="comparison-section">
+                <div class="comparison-title">
+                    <i class="fas fa-exchange-alt"></i>
+                    Transfer Operations
+                </div>
+                <div class="comparison-grid">
+                    <div class="comparison-side legacy-side">
+                        <div class="side-label legacy-label">
+                            <i class="fas fa-code-branch"></i>
+                            Legacy Implementation
+                        </div>
+                        <div class="button-grid">
+                            <div class="button-item">
+                                <button class="transfer-receive-btn">
+                                    <i class="fas fa-inbox"></i>
+                                    Pending Transfers
+                                    <span class="badge">3</span>
+                                </button>
+                                <span class="button-label">Transfer Notifications</span>
+                                <code class="button-code">.transfer-receive-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="save-btn">
+                                    <i class="fas fa-check"></i>
+                                    Accept Transfer
+                                </button>
+                                <span class="button-label">Accept</span>
+                                <code class="button-code">.save-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="danger-btn">
+                                    <i class="fas fa-times"></i>
+                                    Reject Transfer
+                                </button>
+                                <span class="button-label">Reject</span>
+                                <code class="button-code">.danger-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="danger-btn">
+                                    Cancel Transfer
+                                </button>
+                                <span class="button-label">Cancel Transfer</span>
+                                <code class="button-code">.danger-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="transfer-pending-btn">
+                                    <i class="fas fa-exchange-alt"></i>
+                                    Transfer Pending
+                                </button>
+                                <span class="button-label">Transfer Status</span>
+                                <code class="button-code">.transfer-pending-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="cancel-btn">
+                                    <i class="fas fa-arrow-left"></i>
+                                    Go Back
+                                </button>
+                                <span class="button-label">Go Back</span>
+                                <code class="button-code">.cancel-btn</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comparison-side modular-side">
+                        <div class="side-label modular-label">
+                            <i class="fas fa-cube"></i>
+                            Modular Implementation
+                        </div>
+                        <div class="button-grid">
+                            <div class="button-item">
+                                <button class="button primary medium">Transfer Gauge</button>
+                                <span class="button-label">Transfer Submit</span>
+                                <code class="button-code">variant="primary"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button success medium">Accept</button>
+                                <span class="button-label">Accept</span>
+                                <code class="button-code">variant="success"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button danger medium">Reject</button>
+                                <span class="button-label">Reject</span>
+                                <code class="button-code">variant="danger"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button warning medium">Cancel Transfer</button>
+                                <span class="button-label">Cancel Transfer</span>
+                                <code class="button-code">variant="warning"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button warning medium">Transfer Pending</button>
+                                <span class="button-label">Transfer Status</span>
+                                <code class="button-code">variant="warning"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button secondary medium">Later</button>
+                                <span class="button-label">Defer Action</span>
+                                <code class="button-code">variant="secondary"</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- User Management -->
+        <section id="user-management">
+            <div class="section-header">
+                <h2>User Management</h2>
+                <p>User administration and profile management</p>
+            </div>
+            
+            <div class="comparison-section">
+                <div class="comparison-title">
+                    <i class="fas fa-users"></i>
+                    User Operations
+                </div>
+                <div class="comparison-grid">
+                    <div class="comparison-side legacy-side">
+                        <div class="side-label legacy-label">
+                            <i class="fas fa-code-branch"></i>
+                            Legacy Implementation
+                        </div>
+                        <div class="button-grid">
+                            <div class="button-item">
+                                <button class="save-btn">
+                                    <i class="fas fa-user-plus"></i>
+                                    Add User
+                                </button>
+                                <span class="button-label">Add New User</span>
+                                <code class="button-code">.save-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="edit-btn">
+                                    <i class="fas fa-edit"></i>
+                                    Edit User
+                                </button>
+                                <span class="button-label">Edit User</span>
+                                <code class="button-code">.edit-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="warning-btn">
+                                    <i class="fas fa-key"></i>
+                                    Reset Password
+                                </button>
+                                <span class="button-label">Reset Password</span>
+                                <code class="button-code">.warning-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="danger-btn">
+                                    <i class="fas fa-trash"></i>
+                                    Delete User
+                                </button>
+                                <span class="button-label">Delete User</span>
+                                <code class="button-code">.danger-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="save-btn">
+                                    Create User
+                                </button>
+                                <span class="button-label">Create User</span>
+                                <code class="button-code">.save-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="save-btn">
+                                    Update User
+                                </button>
+                                <span class="button-label">Update User</span>
+                                <code class="button-code">.save-btn</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comparison-side modular-side">
+                        <div class="side-label modular-label">
+                            <i class="fas fa-cube"></i>
+                            Modular Implementation
+                        </div>
+                        <div class="button-grid">
+                            <div class="button-item">
+                                <button class="button primary medium">Add User</button>
+                                <span class="button-label">Add New User</span>
+                                <code class="button-code">variant="primary"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button info small">View</button>
+                                <span class="button-label">View User</span>
+                                <code class="button-code">variant="info" size="small"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button warning small">Reset Password</button>
+                                <span class="button-label">Reset Password</span>
+                                <code class="button-code">variant="warning" size="small"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button danger small">Delete</button>
+                                <span class="button-label">Delete User</span>
+                                <code class="button-code">variant="danger" size="small"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button primary medium">Create User</button>
+                                <span class="button-label">Create User</span>
+                                <code class="button-code">variant="primary"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button primary medium">Change Password</button>
+                                <span class="button-label">Change Password</span>
+                                <code class="button-code">variant="primary"</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Operations -->
+        <section id="admin-operations">
+            <div class="section-header">
+                <h2>Admin Operations</h2>
+                <p>System administration and management functions</p>
+            </div>
+            
+            <div class="comparison-section">
+                <div class="comparison-title">
+                    <i class="fas fa-cogs"></i>
+                    System Operations
+                </div>
+                <div class="comparison-grid">
+                    <div class="comparison-side legacy-side">
+                        <div class="side-label legacy-label">
+                            <i class="fas fa-code-branch"></i>
+                            Legacy Implementation
+                        </div>
+                        <div class="button-grid">
+                            <div class="button-item">
+                                <button class="checkout-btn">
+                                    <i class="fas fa-database"></i>
+                                    Database Backup
+                                </button>
+                                <span class="button-label">Backup Database</span>
+                                <code class="button-code">.checkout-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="transfer-btn">
+                                    <i class="fas fa-download"></i>
+                                    Export Audit Log
+                                </button>
+                                <span class="button-label">Export Logs</span>
+                                <code class="button-code">.transfer-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="checkin-btn">
+                                    <i class="fas fa-broom"></i>
+                                    Clear Cache
+                                </button>
+                                <span class="button-label">Clear Cache</span>
+                                <code class="button-code">.checkin-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="save-btn">
+                                    <i class="fas fa-cog"></i>
+                                    Save Settings
+                                </button>
+                                <span class="button-label">Save Settings</span>
+                                <code class="button-code">.save-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="checkout-btn">
+                                    <i class="fas fa-chart-bar"></i>
+                                    Generate Report
+                                </button>
+                                <span class="button-label">Generate Report</span>
+                                <code class="button-code">.checkout-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="transfer-btn">
+                                    Export All Data
+                                </button>
+                                <span class="button-label">Export All</span>
+                                <code class="button-code">.transfer-btn</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comparison-side modular-side">
+                        <div class="side-label modular-label">
+                            <i class="fas fa-cube"></i>
+                            Modular Implementation
+                        </div>
+                        <div class="button-grid">
+                            <div class="button-item">
+                                <button class="button outline medium">Clear Filters</button>
+                                <span class="button-label">Clear Filters</span>
+                                <code class="button-code">variant="outline"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button primary medium">Add Role</button>
+                                <span class="button-label">Add Role</span>
+                                <code class="button-code">variant="primary"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button info small">Edit</button>
+                                <span class="button-label">Edit Setting</span>
+                                <code class="button-code">variant="info" size="small"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button success small">Save</button>
+                                <span class="button-label">Save Setting</span>
+                                <code class="button-code">variant="success" size="small"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button info medium">Admin Panel</button>
+                                <span class="button-label">Admin Panel</span>
+                                <code class="button-code">variant="info"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button primary medium">View All Gauges</button>
+                                <span class="button-label">View All</span>
+                                <code class="button-code">variant="primary"</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- QC Operations -->
+        <section id="qc-operations">
+            <div class="section-header">
+                <h2>QC Operations</h2>
+                <p>Quality control and approval workflows</p>
+            </div>
+            
+            <div class="comparison-section">
+                <div class="comparison-title">
+                    <i class="fas fa-clipboard-check"></i>
+                    QC Workflows
+                </div>
+                <div class="comparison-grid">
+                    <div class="comparison-side legacy-side">
+                        <div class="side-label legacy-label">
+                            <i class="fas fa-code-branch"></i>
+                            Legacy Implementation
+                        </div>
+                        <div class="button-grid">
+                            <div class="button-item">
+                                <button class="save-btn">
+                                    <i class="fas fa-check-circle"></i>
+                                    Approve
+                                </button>
+                                <span class="button-label">Approve Single</span>
+                                <code class="button-code">.save-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="danger-btn">
+                                    <i class="fas fa-times-circle"></i>
+                                    Reject
+                                </button>
+                                <span class="button-label">Reject Single</span>
+                                <code class="button-code">.danger-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="save-btn">
+                                    <i class="fas fa-check-double"></i>
+                                    Bulk Approve
+                                </button>
+                                <span class="button-label">Bulk Approve</span>
+                                <code class="button-code">.save-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="save-btn">
+                                    <i class="fas fa-check"></i>
+                                    Submit Rejection
+                                </button>
+                                <span class="button-label">Submit Rejection</span>
+                                <code class="button-code">.save-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="save-btn">
+                                    Update Status
+                                </button>
+                                <span class="button-label">Update QC Status</span>
+                                <code class="button-code">.save-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="save-btn">
+                                    Approve Removal
+                                </button>
+                                <span class="button-label">Approve Removal</span>
+                                <code class="button-code">.save-btn</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comparison-side modular-side">
+                        <div class="side-label modular-label">
+                            <i class="fas fa-cube"></i>
+                            Modular Implementation
+                        </div>
+                        <div class="button-grid">
+                            <div class="button-item">
+                                <button class="button primary medium">View QC Approvals</button>
+                                <span class="button-label">View Approvals</span>
+                                <code class="button-code">variant="primary"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button success small">Pass</button>
+                                <span class="button-label">Pass QC</span>
+                                <code class="button-code">variant="success" size="small"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button danger small">Fail</button>
+                                <span class="button-label">Fail QC</span>
+                                <code class="button-code">variant="danger" size="small"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button success medium">Approve</button>
+                                <span class="button-label">Bulk Approve</span>
+                                <code class="button-code">variant="success"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button danger medium">Fail Gauge</button>
+                                <span class="button-label">Fail Gauge</span>
+                                <code class="button-code">variant="danger"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button primary medium">Submit Review</button>
+                                <span class="button-label">Submit Review</span>
+                                <code class="button-code">variant="primary"</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation Tabs -->
+        <section id="navigation-tabs">
+            <div class="section-header">
+                <h2>Navigation Tabs</h2>
+                <p>Tab navigation and category filters</p>
+            </div>
+            
+            <div class="comparison-section">
+                <div class="comparison-title">
+                    <i class="fas fa-folder-open"></i>
+                    Tab Navigation
+                </div>
+                <div class="comparison-grid">
+                    <div class="comparison-side legacy-side">
+                        <div class="side-label legacy-label">
+                            <i class="fas fa-code-branch"></i>
+                            Legacy Implementation
+                        </div>
+                        <h4 style="margin: 1rem 0;">Admin Panel Tabs</h4>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem;">
+                            <button class="nav-tab active">User Management</button>
+                            <button class="nav-tab">System Settings</button>
+                            <button class="nav-tab">Reports</button>
+                            <button class="nav-tab">Data Management</button>
+                            <button class="nav-tab">Rejection Reasons</button>
+                            <button class="nav-tab">System Recovery</button>
+                        </div>
+                        <code class="button-code">.nav-tab / .nav-tab.active</code>
+                        
+                        <h4 style="margin: 2rem 0 1rem;">Gauge Categories</h4>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                            <button class="nav-tab active">
+                                All
+                                <span class="badge" style="background: white; color: #007bff;">45</span>
+                            </button>
+                            <button class="nav-tab">
+                                Large Equipment
+                                <span class="badge" style="background: #6c757d; color: white;">8</span>
+                            </button>
+                            <button class="nav-tab">
+                                Thread Gauges
+                                <span class="badge" style="background: #6c757d; color: white;">18</span>
+                            </button>
+                        </div>
+                        <code class="button-code">.nav-tab with .badge</code>
+                    </div>
+                    <div class="comparison-side modular-side">
+                        <div class="side-label modular-label">
+                            <i class="fas fa-cube"></i>
+                            Modular Implementation
+                        </div>
+                        <h4 style="margin: 1rem 0;">Main Navigation</h4>
+                        <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+                            <button class="tab-button active">Gauge Management</button>
+                            <button class="tab-button">Dashboard</button>
+                            <button class="tab-button">Admin</button>
+                        </div>
+                        <code class="button-code">.tab-button / .tab-button.active</code>
+                        
+                        <h4 style="margin: 2rem 0 1rem;">Modal Tabs</h4>
+                        <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                            <button class="tab-button active">Details</button>
+                            <button class="tab-button">History</button>
+                            <button class="tab-button">Certificates</button>
+                        </div>
+                        <code class="button-code">.tab-button</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Special Features -->
+        <section id="special-features">
+            <div class="section-header">
+                <h2>Special Features & Unique Buttons</h2>
+                <p>Specialized operations and unique UI elements</p>
+            </div>
+            
+            <div class="comparison-section">
+                <div class="comparison-title">
+                    <i class="fas fa-star"></i>
+                    Special Operations
+                </div>
+                <div class="comparison-grid">
+                    <div class="comparison-side legacy-side">
+                        <div class="side-label legacy-label">
+                            <i class="fas fa-code-branch"></i>
+                            Legacy Implementation
+                        </div>
+                        <div class="button-grid">
+                            <div class="button-item">
+                                <button class="warning-btn">
+                                    <i class="fas fa-unlock"></i>
+                                    Request to Unseal
+                                </button>
+                                <span class="button-label">Unseal Request</span>
+                                <code class="button-code">.warning-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="edit-btn">
+                                    <i class="fas fa-certificate"></i>
+                                    View Certificate
+                                </button>
+                                <span class="button-label">View Certificate</span>
+                                <code class="button-code">.edit-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="save-btn">
+                                    <i class="fas fa-file-download"></i>
+                                    Download Certificate
+                                </button>
+                                <span class="button-label">Download Cert</span>
+                                <code class="button-code">.save-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="save-btn">Add Note</button>
+                                <span class="button-label">Add Note</span>
+                                <code class="button-code">.save-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="save-btn">Search for Issues</button>
+                                <span class="button-label">Search Issues</span>
+                                <code class="button-code">.save-btn</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="warning-btn">Proceed with Recovery</button>
+                                <span class="button-label">Start Recovery</span>
+                                <code class="button-code">.warning-btn</code>
+                            </div>
+                        </div>
+                        
+                        <h4 style="margin: 2rem 0 1rem;">Summary Cards (Clickable)</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                            <div style="background: #28a745; color: white; padding: 20px; border-radius: 8px; cursor: pointer; text-align: center;">
+                                <h3 style="margin: 0; font-size: 24px;">45</h3>
+                                <p style="margin: 5px 0 0 0;">Current & Compliant</p>
+                            </div>
+                            <div style="background: #ffc107; color: #212529; padding: 20px; border-radius: 8px; cursor: pointer; text-align: center;">
+                                <h3 style="margin: 0; font-size: 24px;">8</h3>
+                                <p style="margin: 5px 0 0 0;">Due Soon</p>
+                            </div>
+                            <div style="background: #dc3545; color: white; padding: 20px; border-radius: 8px; cursor: pointer; text-align: center;">
+                                <h3 style="margin: 0; font-size: 24px;">3</h3>
+                                <p style="margin: 5px 0 0 0;">Issues</p>
+                            </div>
+                        </div>
+                        
+                        <h4 style="margin: 2rem 0 1rem;">Admin Alerts (Clickable)</h4>
+                        <div style="background: #fff3cd; border: 1px solid #ffeaa7; color: #856404; padding: 15px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 10px; margin-bottom: 1rem;">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span><strong>3 gauges</strong> pending QC approval</span>
+                            <i class="fas fa-chevron-right" style="margin-left: auto;"></i>
+                        </div>
+                        <div style="background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 15px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-unlock"></i>
+                            <span><strong>2 gauges</strong> have pending unseal requests</span>
+                            <i class="fas fa-chevron-right" style="margin-left: auto;"></i>
+                        </div>
+                    </div>
+                    <div class="comparison-side modular-side">
+                        <div class="side-label modular-label">
+                            <i class="fas fa-cube"></i>
+                            Modular Implementation
+                        </div>
+                        <div class="button-grid">
+                            <div class="button-item">
+                                <button class="button warning medium">Request Unseal</button>
+                                <span class="button-label">Unseal Request</span>
+                                <code class="button-code">variant="warning"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button success medium">Confirm Unsealed</button>
+                                <span class="button-label">Confirm Unsealed</span>
+                                <code class="button-code">variant="success"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button info medium">View Pending Requests</button>
+                                <span class="button-label">View Requests</span>
+                                <code class="button-code">variant="info"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button primary medium">Retry</button>
+                                <span class="button-label">Retry</span>
+                                <code class="button-code">variant="primary"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="button warning medium">QC Dashboard</button>
+                                <span class="button-label">QC Dashboard</span>
+                                <code class="button-code">variant="warning"</code>
+                            </div>
+                            <div class="button-item">
+                                <button class="icon-button">Copy Password</button>
+                                <span class="button-label">Copy Password</span>
+                                <code class="button-code">icon-button</code>
+                            </div>
+                        </div>
+                        
+                        <h4 style="margin: 2rem 0 1rem;">Executive Dashboard Cards</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;">
+                            <div class="clickable-card">
+                                <h4>Total Gauges</h4>
+                                <p style="font-size: 2rem; font-weight: bold;">425</p>
+                            </div>
+                            <div class="clickable-card">
+                                <h4>Available</h4>
+                                <p style="font-size: 2rem; font-weight: bold; color: #28a745;">312</p>
+                            </div>
+                            <div class="clickable-card">
+                                <h4>Due for Calibration</h4>
+                                <p style="font-size: 2rem; font-weight: bold; color: #ffc107;">26</p>
+                            </div>
+                        </div>
+                        
+                        <h4 style="margin: 2rem 0 1rem;">Alert Elements</h4>
+                        <div class="clickable-card" style="background: #fff3cd; border-color: #ffc107; margin-bottom: 1rem;">
+                            <p style="margin: 0;">5 gauges awaiting QC</p>
+                        </div>
+                        <div class="clickable-card" style="background: #f8d7da; border-color: #dc3545;">
+                            <p style="margin: 0;">3 unseal requests pending</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Loading States Comparison -->
+        <div class="comparison-section">
+            <div class="comparison-title">
+                <i class="fas fa-spinner"></i>
+                Loading States
+            </div>
+            <div class="comparison-grid">
+                <div class="comparison-side legacy-side">
+                    <div class="side-label legacy-label">
+                        <i class="fas fa-code-branch"></i>
+                        Legacy Loading States
+                    </div>
+                    <div class="button-grid">
+                        <div class="button-item">
+                            <button class="save-btn loading" disabled>
+                                <span class="spinner"></span>
+                                Accepting...
+                            </button>
+                            <span class="button-label">Accept Loading</span>
+                        </div>
+                        <div class="button-item">
+                            <button class="danger-btn loading" disabled>
+                                <span class="spinner"></span>
+                                Rejecting...
+                            </button>
+                            <span class="button-label">Reject Loading</span>
+                        </div>
+                        <div class="button-item">
+                            <button class="save-btn loading" disabled>
+                                <span class="spinner"></span>
+                                Creating...
+                            </button>
+                            <span class="button-label">Create Loading</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="comparison-side modular-side">
+                    <div class="side-label modular-label">
+                        <i class="fas fa-cube"></i>
+                        Modular Loading States
+                    </div>
+                    <div class="button-grid">
+                        <div class="button-item">
+                            <button class="button primary medium" disabled>
+                                <svg class="spinner" fill="none" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                    <circle opacity="0.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path opacity="0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                </svg>
+                                Creating...
+                            </button>
+                            <span class="button-label">Create Loading</span>
+                        </div>
+                        <div class="button-item">
+                            <button class="button warning medium" disabled>
+                                <svg class="spinner" fill="none" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                    <circle opacity="0.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path opacity="0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                </svg>
+                                Submitting...
+                            </button>
+                            <span class="button-label">Submit Loading</span>
+                        </div>
+                        <div class="button-item">
+                            <button class="button primary medium" disabled>
+                                <svg class="spinner" fill="none" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                    <circle opacity="0.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path opacity="0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                </svg>
+                                Processing...
+                            </button>
+                            <span class="button-label">Process Loading</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary">
+            <h2>Complete Button Inventory Summary</h2>
+            <div class="comparison-grid">
+                <div style="padding: 2rem; background: #f8f9fa; border-radius: 8px;">
+                    <h3 style="color: #495057; margin-bottom: 1.5rem;">Legacy System Analysis</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 1rem;">✓ <strong>100+ Unique Buttons</strong> - Each with custom CSS classes</li>
+                        <li style="margin-bottom: 1rem;">✓ <strong>15 Button Classes</strong> - checkout-btn, save-btn, danger-btn, etc.</li>
+                        <li style="margin-bottom: 1rem;">✓ <strong>Direct Icon Integration</strong> - FontAwesome icons inline</li>
+                        <li style="margin-bottom: 1rem;">✓ <strong>Fixed Sizes</strong> - No size variants</li>
+                        <li style="margin-bottom: 1rem;">✓ <strong>Manual Loading States</strong> - Custom spinner implementation</li>
+                        <li style="margin-bottom: 1rem;">✓ <strong>Clickable Elements</strong> - Summary cards and alerts</li>
+                    </ul>
+                </div>
+                <div style="padding: 2rem; background: #e7f3ff; border-radius: 8px;">
+                    <h3 style="color: #0056b3; margin-bottom: 1.5rem;">Modular System Analysis</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 1rem;">✓ <strong>150+ Button Combinations</strong> - From reusable components</li>
+                        <li style="margin-bottom: 1rem;">✓ <strong>8 Variants</strong> - primary, secondary, success, warning, danger, info, outline, ghost</li>
+                        <li style="margin-bottom: 1rem;">✓ <strong>3 Sizes</strong> - small, medium, large</li>
+                        <li style="margin-bottom: 1rem;">✓ <strong>Built-in States</strong> - Loading, disabled, focus</li>
+                        <li style="margin-bottom: 1rem;">✓ <strong>TypeScript Support</strong> - Full type safety</li>
+                        <li style="margin-bottom: 1rem;">✓ <strong>Accessibility</strong> - Enhanced focus rings and ARIA support</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div style="text-align: center; padding: 2rem;">
+                <h3 style="color: #212529; margin-bottom: 1rem;">Migration Benefits</h3>
+                <p style="font-size: 1.2rem; color: #6c757d; max-width: 800px; margin: 0 auto;">
+                    The modular system provides a significant improvement in maintainability, consistency, and scalability.
+                    With component-based architecture, updates to button styles or behavior can be made in one place
+                    and automatically apply across the entire application.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scroll to Top Button -->
+    <div class="scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+    
+    <script>
+        // Show/hide scroll to top button
+        window.addEventListener('scroll', function() {
+            const scrollTop = document.querySelector('.scroll-top');
+            if (window.scrollY > 500) {
+                scrollTop.style.display = 'flex';
+            } else {
+                scrollTop.style.display = 'none';
+            }
+        });
+        
+        // Smooth scroll for navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

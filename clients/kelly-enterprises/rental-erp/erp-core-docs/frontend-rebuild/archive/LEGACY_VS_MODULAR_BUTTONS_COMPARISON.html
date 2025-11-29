@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legacy vs Modular Buttons - Complete Visual Comparison</title>
+    
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            color: #212529;
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -50%;
+            width: 200%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.05) 10px,
+                rgba(255,255,255,0.05) 20px
+            );
+            animation: slide 20s linear infinite;
+        }
+        
+        @keyframes slide {
+            from { transform: translateX(0); }
+            to { transform: translateX(50%); }
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Comparison Grid */
+        .comparison-container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        @media (max-width: 1200px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+        }
+        
+        .comparison-side {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .side-header {
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .legacy-header {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+        }
+        
+        .modular-header {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+        }
+        
+        .side-header h2 {
+            font-size: 2rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+        }
+        
+        .side-header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .version-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Section Styles */
+        .section {
+            padding: 2rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .section:last-child {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: #495057;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .section-title i {
+            font-size: 1.25rem;
+            opacity: 0.7;
+        }
+        
+        /* Button Grids */
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+        
+        .button-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            transition: all 0.2s ease;
+        }
+        
+        .button-item:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .button-label {
+            font-size: 0.875rem;
+            color: #6c757d;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .button-code {
+            font-size: 0.75rem;
+            color: #adb5bd;
+            font-family: monospace;
+            text-align: center;
+            margin-top: 0.25rem;
+            background: white;
+            padding: 0.125rem 0.25rem;
+            border-radius: 4px;
+        }
+        
+        /* Legacy Button Styles */
+        .legacy-side button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .legacy-side button:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .legacy-side button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        /* Legacy button classes */
+        .checkout-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .checkout-btn:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+        
+        .checkin-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .checkin-btn:hover:not(:disabled) {
+            background-color: #218838;
+        }
+        
+        .transfer-btn {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .transfer-btn:hover:not(:disabled) {
+            background-color: #138496;
+        }
+        
+        .edit-btn {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .save-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .save-btn:hover:not(:disabled) {
+            background-color: #218838;
+        }
+        
+        .cancel-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .cancel-btn:hover:not(:disabled) {
+            background-color: #5a6268;
+        }
+        
+        .danger-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .danger-btn:hover:not(:disabled) {
+            background-color: #c82333;
+        }
+        
+        .warning-btn {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .warning-btn:hover:not(:disabled) {
+            background-color: #e0a800;
+        }
+        
+        .pending-btn {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .login-btn {
+            background-color: #007bff;
+            color: white;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+        }
+        
+        .logout-btn {
+            background-color: #dc3545;
+            color: white;
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+        
+        /* Modular Button Styles */
+        .modular-side .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            transition: all 200ms;
+            cursor: pointer;
+            border: none;
+            position: relative;
+            text-decoration: none;
+        }
+        
+        .modular-side .button:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #fff, 0 0 0 4px currentColor;
+        }
+        
+        .modular-side .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Size variants */
+        .small {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        .medium {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+        }
+        
+        .large {
+            padding: 0.75rem 1.5rem;
+            font-size: 1.125rem;
+        }
+        
+        /* Color variants */
+        .primary,
+        .default {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .primary:hover:not(:disabled),
+        .default:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+        
+        .secondary {
+            background-color: #4b5563;
+            color: white;
+        }
+        
+        .secondary:hover:not(:disabled) {
+            background-color: #374151;
+        }
+        
+        .success {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .success:hover:not(:disabled) {
+            background-color: #218838;
+        }
+        
+        .warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .warning:hover:not(:disabled) {
+            background-color: #e0a800;
+        }
+        
+        .danger {
+            background-color: #dc2626;
+            color: white;
+        }
+        
+        .danger:hover:not(:disabled) {
+            background-color: #b91c1c;
+        }
+        
+        .info {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .info:hover:not(:disabled) {
+            background-color: #138496;
+        }
+        
+        .outline {
+            background-color: white;
+            color: #374151;
+            border: 2px solid #d1d5db;
+        }
+        
+        .outline:hover:not(:disabled) {
+            border-color: #9ca3af;
+            background-color: #f9fafb;
+        }
+        
+        .ghost {
+            background-color: transparent;
+            color: #374151;
+        }
+        
+        .ghost:hover:not(:disabled) {
+            background-color: #f3f4f6;
+        }
+        
+        /* Loading spinner */
+        .spinner {
+            animation: spin 1s linear infinite;
+            height: 1rem;
+            width: 1rem;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Badge */
+        .badge {
+            background: #dc3545;
+            color: white;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 8px;
+        }
+        
+        /* Comparison Features */
+        .features-comparison {
+            margin: 3rem 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .features-header {
+            background: linear-gradient(135deg, #343a40 0%, #212529 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .features-header h2 {
+            font-size: 2rem;
+            font-weight: 300;
+        }
+        
+        .features-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .features-table th {
+            background: #f8f9fa;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        .features-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .features-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .feature-name {
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .check {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .cross {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .partial {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        
+        /* Summary */
+        .summary {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 3rem;
+            margin-top: 3rem;
+        }
+        
+        .summary h2 {
+            font-size: 2rem;
+            color: #212529;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .summary-card {
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .summary-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        
+        .summary-card.legacy {
+            background: #f8f9fa;
+            border: 2px solid #6c757d;
+        }
+        
+        .summary-card.modular {
+            background: #e7f3ff;
+            border: 2px solid #007bff;
+        }
+        
+        .summary-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #495057;
+        }
+        
+        .summary-card .count {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .summary-card.legacy .count {
+            color: #6c757d;
+        }
+        
+        .summary-card.modular .count {
+            color: #007bff;
+        }
+        
+        .summary-card p {
+            color: #6c757d;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Legacy vs Modular Buttons Comparison</h1>
+        <p>Complete visual comparison of Fire-Proof ERP button systems</p>
+        <p style="margin-top: 1rem; font-size: 1rem; opacity: 0.8;">Side-by-side analysis of legacy implementation vs new modular architecture</p>
+    </header>
+    
+    <div class="comparison-container">
+        <div class="comparison-grid">
+            <!-- Legacy Side -->
+            <div class="comparison-side legacy-side">
+                <div class="side-header legacy-header">
+                    <span class="version-badge">Legacy System</span>
+                    <h2>Legacy Frontend Buttons</h2>
+                    <p>Traditional class-based styling with direct icon integration</p>
+                </div>
+                
+                <!-- Authentication & System -->
+                <div class="section">
+                    <h3 class="section-title">
+                        <i class="fas fa-lock"></i>
+                        Authentication & System
+                    </h3>
+                    <div class="button-grid">
+                        <div class="button-item">
+                            <button class="login-btn">Sign In</button>
+                            <span class="button-label">Login Button</span>
+                            <code class="button-code">.login-btn</code>
+                        </div>
+                        <div class="button-item">
+                            <button class="logout-btn">Logout</button>
+                            <span class="button-label">Logout Button</span>
+                            <code class="button-code">.logout-btn</code>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Primary Actions -->
+                <div class="section">
+                    <h3 class="section-title">
+                        <i class="fas fa-tools"></i>
+                        Primary Actions
+                    </h3>
+                    <div class="button-grid">
+                        <div class="button-item">
+                            <button class="edit-btn">
+                                <i class="fas fa-edit"></i>
+                                Edit
+                            </button>
+                            <span class="button-label">Edit Gauge</span>
+                            <code class="button-code">.edit-btn</code>
+                        </div>
+                        <div class="button-item">
+                            <button class="checkout-btn">
+                                <i class="fas fa-upload"></i>
+                                Checkout
+                            </button>
+                            <span class="button-label">Check Out</span>
+                            <code class="button-code">.checkout-btn</code>
+                        </div>
+                        <div class="button-item">
+                            <button class="checkin-btn">
+                                <i class="fas fa-download"></i>
+                                Checkin
+                            </button>
+                            <span class="button-label">Check In</span>
+                            <code class="button-code">.checkin-btn</code>
+                        </div>
+                        <div class="button-item">
+                            <button class="transfer-btn">
+                                <i class="fas fa-exchange-alt"></i>
+                                Transfer
+                            </button>
+                            <span class="button-label">Transfer</span>
+                            <code class="button-code">.transfer-btn</code>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Modal Actions -->
+                <div class="section">
+                    <h3 class="section-title">
+                        <i class="fas fa-window-restore"></i>
+                        Modal Actions
+                    </h3>
+                    <div class="button-grid">
+                        <div class="button-item">
+                            <button class="save-btn">
+                                <i class="fas fa-save"></i>
+                                Save Changes
+                            </button>
+                            <span class="button-label">Save</span>
+                            <code class="button-code">.save-btn</code>
+                        </div>
+                        <div class="button-item">
+                            <button class="cancel-btn">Cancel</button>
+                            <span class="button-label">Cancel</span>
+                            <code class="button-code">.cancel-btn</code>
+                        </div>
+                        <div class="button-item">
+                            <button class="danger-btn">
+                                <i class="fas fa-trash"></i>
+                                Delete
+                            </button>
+                            <span class="button-label">Delete</span>
+                            <code class="button-code">.danger-btn</code>
+                        </div>
+                        <div class="button-item">
+                            <button class="warning-btn">
+                                <i class="fas fa-key"></i>
+                                Reset
+                            </button>
+                            <span class="button-label">Reset</span>
+                            <code class="button-code">.warning-btn</code>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Status Buttons -->
+                <div class="section">
+                    <h3 class="section-title">
+                        <i class="fas fa-info-circle"></i>
+                        Status Buttons
+                    </h3>
+                    <div class="button-grid">
+                        <div class="button-item">
+                            <button class="pending-btn" disabled>
+                                <i class="fas fa-clipboard-check"></i>
+                                Pending QC
+                            </button>
+                            <span class="button-label">QC Status</span>
+                            <code class="button-code">.pending-btn</code>
+                        </div>
+                        <div class="button-item">
+                            <button class="danger-btn" disabled>
+                                <i class="fas fa-ban"></i>
+                                Out of Service
+                            </button>
+                            <span class="button-label">Service Status</span>
+                            <code class="button-code">.danger-btn</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modular Side -->
+            <div class="comparison-side modular-side">
+                <div class="side-header modular-header">
+                    <span class="version-badge">Modular System</span>
+                    <h2>Modular Frontend Buttons</h2>
+                    <p>Component-based architecture with variant system</p>
+                </div>
+                
+                <!-- Authentication & System -->
+                <div class="section">
+                    <h3 class="section-title">
+                        <i class="fas fa-lock"></i>
+                        Authentication & System
+                    </h3>
+                    <div class="button-grid">
+                        <div class="button-item">
+                            <button class="button primary medium">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Sign In
+                            </button>
+                            <span class="button-label">Login Button</span>
+                            <code class="button-code">variant="primary"</code>
+                        </div>
+                        <div class="button-item">
+                            <button class="button danger small">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Logout
+                            </button>
+                            <span class="button-label">Logout Button</span>
+                            <code class="button-code">variant="danger"</code>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Primary Actions -->
+                <div class="section">
+                    <h3 class="section-title">
+                        <i class="fas fa-tools"></i>
+                        Primary Actions
+                    </h3>
+                    <div class="button-grid">
+                        <div class="button-item">
+                            <button class="button info medium">
+                                <i class="fas fa-edit"></i>
+                                Edit
+                            </button>
+                            <span class="button-label">Edit Gauge</span>
+                            <code class="button-code">variant="info"</code>
+                        </div>
+                        <div class="button-item">
+                            <button class="button primary medium">
+                                <i class="fas fa-upload"></i>
+                                Check Out
+                            </button>
+                            <span class="button-label">Check Out</span>
+                            <code class="button-code">variant="primary"</code>
+                        </div>
+                        <div class="button-item">
+                            <button class="button success medium">
+                                <i class="fas fa-download"></i>
+                                Check In
+                            </button>
+                            <span class="button-label">Check In</span>
+                            <code class="button-code">variant="success"</code>
+                        </div>
+                        <div class="button-item">
+                            <button class="button info medium">
+                                <i class="fas fa-exchange-alt"></i>
+                                Transfer
+                            </button>
+                            <span class="button-label">Transfer</span>
+                            <code class="button-code">variant="info"</code>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Modal Actions -->
+                <div class="section">
+                    <h3 class="section-title">
+                        <i class="fas fa-window-restore"></i>
+                        Modal Actions
+                    </h3>
+                    <div class="button-grid">
+                        <div class="button-item">
+                            <button class="button success medium">
+                                <i class="fas fa-save"></i>
+                                Save Changes
+                            </button>
+                            <span class="button-label">Save</span>
+                            <code class="button-code">variant="success"</code>
+                        </div>
+                        <div class="button-item">
+                            <button class="button secondary medium">Cancel</button>
+                            <span class="button-label">Cancel</span>
+                            <code class="button-code">variant="secondary"</code>
+                        </div>
+                        <div class="button-item">
+                            <button class="button danger medium">
+                                <i class="fas fa-trash"></i>
+                                Delete
+                            </button>
+                            <span class="button-label">Delete</span>
+                            <code class="button-code">variant="danger"</code>
+                        </div>
+                        <div class="button-item">
+                            <button class="button warning medium">
+                                <i class="fas fa-key"></i>
+                                Reset
+                            </button>
+                            <span class="button-label">Reset</span>
+                            <code class="button-code">variant="warning"</code>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Advanced Variants -->
+                <div class="section">
+                    <h3 class="section-title">
+                        <i class="fas fa-palette"></i>
+                        Advanced Variants
+                    </h3>
+                    <div class="button-grid">
+                        <div class="button-item">
+                            <button class="button outline medium">
+                                <i class="fas fa-file"></i>
+                                Outline
+                            </button>
+                            <span class="button-label">Outline Style</span>
+                            <code class="button-code">variant="outline"</code>
+                        </div>
+                        <div class="button-item">
+                            <button class="button ghost medium">
+                                <i class="fas fa-ghost"></i>
+                                Ghost
+                            </button>
+                            <span class="button-label">Ghost Style</span>
+                            <code class="button-code">variant="ghost"</code>
+                        </div>
+                        <div class="button-item">
+                            <button class="button primary medium" disabled>
+                                <span class="spinner">
+                                    <i class="fas fa-spinner"></i>
+                                </span>
+                                Loading
+                            </button>
+                            <span class="button-label">Loading State</span>
+                            <code class="button-code">loading={true}</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Feature Comparison Table -->
+        <div class="features-comparison">
+            <div class="features-header">
+                <h2>Feature Comparison</h2>
+            </div>
+            <table class="features-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Legacy System</th>
+                        <th>Modular System</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="feature-name">Styling Method</td>
+                        <td>Direct CSS classes (.btn-primary, .btn-danger)</td>
+                        <td>CSS Modules with variant props</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Icon Integration</td>
+                        <td>Inline FontAwesome <i> tags</td>
+                        <td>Component-based icon system</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Size Variants</td>
+                        <td><span class="cross">✗</span> Fixed sizes</td>
+                        <td><span class="check">✓</span> Small, Medium, Large</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Loading States</td>
+                        <td><span class="partial">~</span> Manual implementation</td>
+                        <td><span class="check">✓</span> Built-in loading prop</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Accessibility</td>
+                        <td><span class="partial">~</span> Basic focus styles</td>
+                        <td><span class="check">✓</span> Enhanced focus rings</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Animation</td>
+                        <td><span class="check">✓</span> Hover transitions</td>
+                        <td><span class="check">✓</span> Smooth transitions</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">TypeScript Support</td>
+                        <td><span class="cross">✗</span> No type safety</td>
+                        <td><span class="check">✓</span> Full type definitions</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Component Reusability</td>
+                        <td><span class="partial">~</span> CSS class reuse</td>
+                        <td><span class="check">✓</span> Component composition</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">State Management</td>
+                        <td>Manual class toggling</td>
+                        <td>Props-based state control</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Color Variants</td>
+                        <td>7 predefined colors</td>
+                        <td>8+ variants including outline/ghost</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Button Count</td>
+                        <td>~60 unique buttons</td>
+                        <td>150+ button combinations</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Maintenance</td>
+                        <td>Update CSS for each button type</td>
+                        <td>Update component once</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Summary -->
+        <div class="summary">
+            <h2>Migration Benefits Summary</h2>
+            <div class="summary-grid">
+                <div class="summary-card legacy">
+                    <h3>Legacy System</h3>
+                    <div class="count">60+</div>
+                    <p>Unique button implementations</p>
+                    <p style="margin-top: 1rem;">Simple class-based styling with direct implementation. Works well but requires manual updates for each button type.</p>
+                </div>
+                <div class="summary-card modular">
+                    <h3>Modular System</h3>
+                    <div class="count">150+</div>
+                    <p>Button combinations from components</p>
+                    <p style="margin-top: 1rem;">Component-based architecture with variants, sizes, and states. Single source of truth for all buttons.</p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 3rem; padding: 2rem; background: #e7f3ff; border-radius: 8px;">
+                <h3 style="color: #0056b3; margin-bottom: 1rem;">Key Advantages of Modular System</h3>
+                <ul style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; list-style: none; padding: 0;">
+                    <li style="padding-left: 1.5rem; position: relative;">
+                        <span style="position: absolute; left: 0; color: #007bff;">✓</span>
+                        <strong>Consistency:</strong> All buttons follow the same patterns
+                    </li>
+                    <li style="padding-left: 1.5rem; position: relative;">
+                        <span style="position: absolute; left: 0; color: #007bff;">✓</span>
+                        <strong>Maintainability:</strong> Update once, apply everywhere
+                    </li>
+                    <li style="padding-left: 1.5rem; position: relative;">
+                        <span style="position: absolute; left: 0; color: #007bff;">✓</span>
+                        <strong>Type Safety:</strong> TypeScript prevents usage errors
+                    </li>
+                    <li style="padding-left: 1.5rem; position: relative;">
+                        <span style="position: absolute; left: 0; color: #007bff;">✓</span>
+                        <strong>Accessibility:</strong> Built-in ARIA support
+                    </li>
+                    <li style="padding-left: 1.5rem; position: relative;">
+                        <span style="position: absolute; left: 0; color: #007bff;">✓</span>
+                        <strong>Flexibility:</strong> Easy to add new variants
+                    </li>
+                    <li style="padding-left: 1.5rem; position: relative;">
+                        <span style="position: absolute; left: 0; color: #007bff;">✓</span>
+                        <strong>Performance:</strong> Optimized rendering
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

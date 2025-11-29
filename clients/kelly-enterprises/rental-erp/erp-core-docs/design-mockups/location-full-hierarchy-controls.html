@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Full Hierarchy - 4 Levels</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            padding: 16px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .info-banner {
+            padding: 16px 24px;
+            background: #e3f2fd;
+            border-bottom: 1px solid #bbdefb;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .info-icon {
+            font-size: 20px;
+            color: #1976d2;
+        }
+
+        .info-text {
+            font-size: 14px;
+            color: #1565c0;
+        }
+
+        .info-text strong {
+            font-weight: 600;
+        }
+
+        .hierarchy-diagram {
+            padding: 20px 24px;
+            background: #fafafa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .hierarchy-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .hierarchy-item {
+            padding: 10px 20px;
+            background: #e3f2fd;
+            border-radius: 6px;
+            font-weight: 600;
+            color: #1976d2;
+            font-size: 14px;
+        }
+
+        .hierarchy-arrow {
+            font-size: 24px;
+            color: #1976d2;
+        }
+
+        .hierarchy-note {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .controls {
+            padding: 12px 24px;
+            background: #fafafa;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .control-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toggle-container input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .toggle-container label {
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #fafafa;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        th.center {
+            text-align: center;
+        }
+
+        th.hidden {
+            display: none;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        td {
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        td.center {
+            text-align: center;
+        }
+
+        td.hidden {
+            display: none;
+        }
+
+        .item-id {
+            font-weight: 600;
+            color: #1976d2;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .location-code {
+            font-weight: 600;
+            color: #1976d2;
+            cursor: pointer;
+        }
+
+        .location-code:hover {
+            text-decoration: underline;
+        }
+
+        .column-small {
+            width: 100px;
+        }
+
+        .column-medium {
+            width: 130px;
+        }
+
+        .examples {
+            padding: 24px;
+            background: #f9f9f9;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .examples h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .example-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .example-card {
+            padding: 16px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+        }
+
+        .example-card h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1976d2;
+            margin-bottom: 8px;
+        }
+
+        .example-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .example-card li {
+            font-size: 13px;
+            color: #666;
+            padding: 4px 0;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .example-card li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        .scenario {
+            padding: 12px 16px;
+            background: #fff3cd;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .scenario-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #856404;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .scenario-desc {
+            font-size: 13px;
+            color: #533f03;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Inventory Dashboard</h1>
+        </div>
+
+        <div class="info-banner">
+            <div class="info-icon">ℹ️</div>
+            <div class="info-text">
+                <strong>Full Location Hierarchy (4 Levels):</strong> Toggle Facility, Building, and Zone columns independently.
+                Location code is always visible. Preferences are saved across sessions.
+            </div>
+        </div>
+
+        <div class="hierarchy-diagram">
+            <div class="hierarchy-flow">
+                <div class="hierarchy-item">FACILITY / PLANT</div>
+                <div class="hierarchy-arrow">→</div>
+                <div class="hierarchy-item">BUILDING</div>
+                <div class="hierarchy-arrow">→</div>
+                <div class="hierarchy-item">ZONE</div>
+                <div class="hierarchy-arrow">→</div>
+                <div class="hierarchy-item">LOCATION</div>
+            </div>
+            <div class="hierarchy-note">
+                Hierarchical flow from broadest (Facility) to most specific (Location Code)
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <span class="control-label">Show Columns:</span>
+                <div class="toggle-container">
+                    <input type="checkbox" id="showFacility" checked>
+                    <label for="showFacility">Facility</label>
+                </div>
+                <div class="toggle-container">
+                    <input type="checkbox" id="showBuilding" checked>
+                    <label for="showBuilding">Building</label>
+                </div>
+                <div class="toggle-container">
+                    <input type="checkbox" id="showZone" checked>
+                    <label for="showZone">Zone</label>
+                </div>
+            </div>
+            <div class="pagination">
+                <span style="font-size: 14px; color: #666;">1 of 2</span>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ITEM ID</th>
+                    <th>ITEM NAME</th>
+                    <th class="center">TYPE</th>
+                    <th class="center column-medium facility-col">FACILITY</th>
+                    <th class="center column-medium building-col">BUILDING</th>
+                    <th class="center column-medium zone-col">ZONE</th>
+                    <th class="center column-small">LOCATION</th>
+                    <th class="center">QTY</th>
+                    <th class="center">LAST MOVED</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="item-id">SP-0001</span></td>
+                    <td>NPT 3/4-14 RING GO</td>
+                    <td class="center"><span class="badge">Gauge</span></td>
+                    <td class="center facility-col">Main Facility</td>
+                    <td class="center building-col">Building 1</td>
+                    <td class="center zone-col">QC</td>
+                    <td class="center"><span class="location-code">L1</span></td>
+                    <td class="center">1</td>
+                    <td class="center">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SP-0002</span></td>
+                    <td>UN 7/8-9 RING GO</td>
+                    <td class="center"><span class="badge">Gauge</span></td>
+                    <td class="center facility-col">Main Facility</td>
+                    <td class="center building-col">Building 1</td>
+                    <td class="center zone-col">QC</td>
+                    <td class="center"><span class="location-code">L1</span></td>
+                    <td class="center">1</td>
+                    <td class="center">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SP-0003</span></td>
+                    <td>UN 7/16-14 PLUG GO</td>
+                    <td class="center"><span class="badge">Gauge</span></td>
+                    <td class="center facility-col">Main Facility</td>
+                    <td class="center building-col">Building 1</td>
+                    <td class="center zone-col">Shipping</td>
+                    <td class="center"><span class="location-code">E2</span></td>
+                    <td class="center">1</td>
+                    <td class="center">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SET-0001</span></td>
+                    <td>ACME 1-1/4-5 RING GO</td>
+                    <td class="center"><span class="badge">Gauge</span></td>
+                    <td class="center facility-col">Main Facility</td>
+                    <td class="center building-col">Building 2</td>
+                    <td class="center zone-col">Tool Crib</td>
+                    <td class="center"><span class="location-code">C4</span></td>
+                    <td class="center">1</td>
+                    <td class="center">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SET-0002</span></td>
+                    <td>NPT 1/2-14 RING GO</td>
+                    <td class="center"><span class="badge">Gauge</span></td>
+                    <td class="center facility-col">Main Facility</td>
+                    <td class="center building-col">Building 1</td>
+                    <td class="center zone-col">Bulk Storage</td>
+                    <td class="center"><span class="location-code">A5</span></td>
+                    <td class="center">1</td>
+                    <td class="center">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SET-0003</span></td>
+                    <td>ACME 3/4-10 PLUG GO</td>
+                    <td class="center"><span class="badge">Gauge</span></td>
+                    <td class="center facility-col">Main Facility</td>
+                    <td class="center building-col">Building 2</td>
+                    <td class="center zone-col">Shop Floor</td>
+                    <td class="center"><span class="location-code">F3</span></td>
+                    <td class="center">1</td>
+                    <td class="center">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SP-0004</span></td>
+                    <td>NPT 1-11.5 RING GO</td>
+                    <td class="center"><span class="badge">Gauge</span></td>
+                    <td class="center facility-col">Main Facility</td>
+                    <td class="center building-col">Building 1</td>
+                    <td class="center zone-col">QC</td>
+                    <td class="center"><span class="location-code">L2</span></td>
+                    <td class="center">1</td>
+                    <td class="center">11/4/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SP-0005</span></td>
+                    <td>UN 5/8-18 PLUG GO</td>
+                    <td class="center"><span class="badge">Gauge</span></td>
+                    <td class="center facility-col">Main Facility</td>
+                    <td class="center building-col">Building 1</td>
+                    <td class="center zone-col">Receiving</td>
+                    <td class="center"><span class="location-code">D3</span></td>
+                    <td class="center">1</td>
+                    <td class="center">11/4/2025</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Usage Examples -->
+    <div class="examples">
+        <h3>Common Usage Scenarios</h3>
+        <div class="example-grid">
+            <div class="example-card">
+                <h4>Scenario 1: Building + Zone Only</h4>
+                <div class="scenario">
+                    <div class="scenario-label">Toggles</div>
+                    <div class="scenario-desc">✗ Facility | ✓ Building | ✓ Zone</div>
+                </div>
+                <ul>
+                    <li>Hide facility (all items in same facility)</li>
+                    <li>Focus on building and zone organization</li>
+                    <li>Most common use case for single-facility operations</li>
+                </ul>
+            </div>
+
+            <div class="example-card">
+                <h4>Scenario 2: Building Only</h4>
+                <div class="scenario">
+                    <div class="scenario-label">Toggles</div>
+                    <div class="scenario-desc">✗ Facility | ✓ Building | ✗ Zone</div>
+                </div>
+                <ul>
+                    <li>See which building items are in</li>
+                    <li>Don't need zone-level detail</li>
+                    <li>Cleanest view for building-level organization</li>
+                </ul>
+            </div>
+
+            <div class="example-card">
+                <h4>Scenario 3: All Hierarchy Visible</h4>
+                <div class="scenario">
+                    <div class="scenario-label">Toggles</div>
+                    <div class="scenario-desc">✓ Facility | ✓ Building | ✓ Zone</div>
+                </div>
+                <ul>
+                    <li>Full context for every item</li>
+                    <li>Best for multi-facility operations</li>
+                    <li>Complete traceability and organization</li>
+                </ul>
+            </div>
+
+            <div class="example-card">
+                <h4>Scenario 4: Location Code Only</h4>
+                <div class="scenario">
+                    <div class="scenario-label">Toggles</div>
+                    <div class="scenario-desc">✗ Facility | ✗ Building | ✗ Zone</div>
+                </div>
+                <ul>
+                    <li>Maximum space efficiency</li>
+                    <li>Users already know the context</li>
+                    <li>Quick scanning of location codes only</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle Facility column
+        const facilityToggle = document.getElementById('showFacility');
+        const facilityCells = document.querySelectorAll('.facility-col');
+
+        facilityToggle.addEventListener('change', (e) => {
+            facilityCells.forEach(cell => {
+                if (e.target.checked) {
+                    cell.classList.remove('hidden');
+                } else {
+                    cell.classList.add('hidden');
+                }
+            });
+            localStorage.setItem('showFacility', e.target.checked);
+        });
+
+        // Toggle Building column
+        const buildingToggle = document.getElementById('showBuilding');
+        const buildingCells = document.querySelectorAll('.building-col');
+
+        buildingToggle.addEventListener('change', (e) => {
+            buildingCells.forEach(cell => {
+                if (e.target.checked) {
+                    cell.classList.remove('hidden');
+                } else {
+                    cell.classList.add('hidden');
+                }
+            });
+            localStorage.setItem('showBuilding', e.target.checked);
+        });
+
+        // Toggle Zone column
+        const zoneToggle = document.getElementById('showZone');
+        const zoneCells = document.querySelectorAll('.zone-col');
+
+        zoneToggle.addEventListener('change', (e) => {
+            zoneCells.forEach(cell => {
+                if (e.target.checked) {
+                    cell.classList.remove('hidden');
+                } else {
+                    cell.classList.add('hidden');
+                }
+            });
+            localStorage.setItem('showZone', e.target.checked);
+        });
+
+        // Restore preferences from localStorage on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedFacility = localStorage.getItem('showFacility');
+            const savedBuilding = localStorage.getItem('showBuilding');
+            const savedZone = localStorage.getItem('showZone');
+
+            if (savedFacility !== null) {
+                facilityToggle.checked = savedFacility === 'true';
+                facilityToggle.dispatchEvent(new Event('change'));
+            }
+
+            if (savedBuilding !== null) {
+                buildingToggle.checked = savedBuilding === 'true';
+                buildingToggle.dispatchEvent(new Event('change'));
+            }
+
+            if (savedZone !== null) {
+                zoneToggle.checked = savedZone === 'true';
+                zoneToggle.dispatchEvent(new Event('change'));
+            }
+        });
+    </script>
+</body>
+</html>

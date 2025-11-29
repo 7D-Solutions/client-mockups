@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legacy Frontend Modal Catalog - Fire-Proof ERP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+        
+        .header p {
+            margin: 0.5rem 0 0;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .modal-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            padding: 2rem;
+        }
+        
+        .modal-header {
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 1.8rem;
+        }
+        
+        .modal-header .badge {
+            background: #3498db;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+        }
+        
+        .modal-details {
+            display: grid;
+            gap: 2rem;
+        }
+        
+        .detail-group {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .detail-group h3 {
+            margin: 0 0 1rem;
+            color: #2c3e50;
+            font-size: 1.3rem;
+        }
+        
+        .detail-row {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .detail-row:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .detail-value {
+            color: #666;
+        }
+        
+        .modal-preview {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .modal-preview::before {
+            content: 'UI PREVIEW';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #6c757d;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .preview-modal {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .preview-modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .preview-modal-header h3 {
+            margin: 0;
+            color: #333;
+        }
+        
+        .preview-modal-body {
+            padding: 1.5rem;
+        }
+        
+        .preview-modal-actions {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #dee2e6;
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+        
+        .btn {
+            padding: 0.5rem 1.25rem;
+            border: none;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #2ecc71;
+            color: white;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #495057;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .props-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .props-table th,
+        .props-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .props-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .props-table code {
+            background: #e9ecef;
+            padding: 0.125rem 0.375rem;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.875rem;
+        }
+        
+        .toc {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .toc h2 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        .toc ul {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .toc li {
+            background: #f8f9fa;
+            padding: 0.75rem;
+            border-radius: 4px;
+            border-left: 3px solid #3498db;
+        }
+        
+        .toc a {
+            color: #2c3e50;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .toc a:hover {
+            color: #3498db;
+        }
+        
+        .tag {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .tag-crud { background: #3498db; color: white; }
+        .tag-workflow { background: #2ecc71; color: white; }
+        .tag-utility { background: #9b59b6; color: white; }
+        .tag-admin { background: #e74c3c; color: white; }
+        
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .info-box {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Legacy Frontend Modal Catalog</h1>
+        <p>Complete documentation of all modal dialogs in the Fire-Proof ERP legacy frontend</p>
+        <p style="margin-top: 0.5rem; font-size: 1rem; opacity: 0.8;">Total: 25 Modal Components • Last Updated: December 2024</p>
+    </header>
+    
+    <div class="container">
+        <!-- Table of Contents -->
+        <div class="toc">
+            <h2>Modal Components Overview</h2>
+            <ul>
+                <li><a href="#add-user-modal"><i class="fas fa-user-plus"></i> Add User Modal</a></li>
+                <li><a href="#bulk-update-modal"><i class="fas fa-edit"></i> Bulk Update Modal</a></li>
+                <li><a href="#checkin-modal"><i class="fas fa-download"></i> Check-in Modal</a></li>
+                <li><a href="#checkout-modal"><i class="fas fa-upload"></i> Checkout Modal</a></li>
+                <li><a href="#confirm-modal"><i class="fas fa-question-circle"></i> Confirm Modal</a></li>
+                <li><a href="#edit-gauge-modal"><i class="fas fa-pencil-alt"></i> Edit Gauge Modal</a></li>
+                <li><a href="#gauge-details-modal"><i class="fas fa-info-circle"></i> Gauge Details Modal</a></li>
+                <li><a href="#password-modal"><i class="fas fa-lock"></i> Password Modal</a></li>
+                <li><a href="#reject-modal"><i class="fas fa-times-circle"></i> Reject Modal</a></li>
+                <li><a href="#reset-password-modal"><i class="fas fa-key"></i> Reset Password Modal</a></li>
+                <li><a href="#review-modal"><i class="fas fa-clipboard-check"></i> Review Modal</a></li>
+                <li><a href="#sealed-gauge-confirm-modal"><i class="fas fa-lock"></i> Sealed Gauge Confirm Modal</a></li>
+                <li><a href="#sealed-gauge-notice-modal"><i class="fas fa-exclamation-triangle"></i> Sealed Gauge Notice Modal</a></li>
+                <li><a href="#transfer-modal"><i class="fas fa-exchange-alt"></i> Transfer Modal</a></li>
+                <li><a href="#transfer-pending-modal"><i class="fas fa-clock"></i> Transfer Pending Modal</a></li>
+                <li><a href="#transfer-receive-modal"><i class="fas fa-check-circle"></i> Transfer Receive Modal</a></li>
+                <li><a href="#unseal-confirm-modal"><i class="fas fa-unlock"></i> Unseal Confirm Modal</a></li>
+                <li><a href="#user-details-modal"><i class="fas fa-user"></i> User Details Modal</a></li>
+                <li><a href="#create-gauge-modal"><i class="fas fa-plus-circle"></i> Create Gauge Modal</a></li>
+                <li><a href="#qc-approval-dialog"><i class="fas fa-clipboard-check"></i> QC Approval Dialog</a></li>
+                <li><a href="#transfer-cancel-confirm-modal"><i class="fas fa-ban"></i> Transfer Cancel Confirm Modal</a></li>
+                <li><a href="#edit-gauge-form-modal"><i class="fas fa-edit"></i> Edit Gauge Form Modal</a></li>
+                <li><a href="#checkout-modal"><i class="fas fa-upload"></i> Checkout Modal (via Confirm)</a></li>
+                <li><a href="#system-recovery-inline"><i class="fas fa-tools"></i> System Recovery Inline Dialog</a></li>
+            </ul>
+        </div>
+
+        <!-- Add User Modal -->
+        <section id="add-user-modal" class="modal-section">
+            <div class="modal-header">
+                <h2>Add User Modal</h2>
+                <span class="badge">User Management</span>
+                <span class="tag tag-admin">Admin</span>
+            </div>
+            
+            <div class="modal-details">
+                <div class="detail-group">
+                    <h3>Purpose</h3>
+                    <p>Creates new users or edits existing users in the system. Supports role-based access control and can be used for both creation and update operations.</p>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Component Details</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">File Location:</span>
+                        <span class="detail-value"><code>/components/modals/AddUserModal.tsx</code></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Used In:</span>
+                        <span class="detail-value">User Management page, Admin Dashboard</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Dual Purpose:</span>
+                        <span class="detail-value">Yes - Creates new users when <code>user</code> prop is null, edits existing when provided</span>
+                    </div>
+                </div>
+                
+                <div class="modal-preview">
+                    <div class="preview-modal">
+                        <div class="preview-modal-header">
+                            <h3>Add New User</h3>
+                            <span>×</span>
+                        </div>
+                        <div class="preview-modal-body">
+                            <div class="form-group">
+                                <label>Full Name:</label>
+                                <input type="text" class="form-control" placeholder="Enter full name..." />
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address:</label>
+                                <input type="email" class="form-control" placeholder="user@company.com" />
+                            </div>
+                            <div class="form-group">
+                                <label>Role:</label>
+                                <select class="form-control">
+                                    <option>Operator</option>
+                                    <option>Inspector</option>
+                                    <option>Administrator</option>
+                                    <option>Super Administrator</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="preview-modal-actions">
+                            <button class="btn btn-primary"><i class="fas fa-save"></i> Create User</button>
+                            <button class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Props Interface</h3>
+                    <table class="props-table">
+                        <thead>
+                            <tr>
+                                <th>Prop</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>isOpen</code></td>
+                                <td>boolean</td>
+                                <td>Yes</td>
+                                <td>Controls modal visibility</td>
+                            </tr>
+                            <tr>
+                                <td><code>user</code></td>
+                                <td>User | null</td>
+                                <td>Yes</td>
+                                <td>User object for editing, null for creating new</td>
+                            </tr>
+                            <tr>
+                                <td><code>onSubmit</code></td>
+                                <td>(userData: Omit&lt;User, 'id'&gt;) => void</td>
+                                <td>Yes</td>
+                                <td>Callback for form submission</td>
+                            </tr>
+                            <tr>
+                                <td><code>onCancel</code></td>
+                                <td>() => void</td>
+                                <td>Yes</td>
+                                <td>Callback for cancellation</td>
+                            </tr>
+                            <tr>
+                                <td><code>currentUserRole</code></td>
+                                <td>string</td>
+                                <td>No</td>
+                                <td>Current user's role (affects available role options)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bulk Update Modal -->
+        <section id="bulk-update-modal" class="modal-section">
+            <div class="modal-header">
+                <h2>Bulk Update Modal</h2>
+                <span class="badge">Gauge Management</span>
+                <span class="tag tag-utility">Utility</span>
+            </div>
+            
+            <div class="modal-details">
+                <div class="detail-group">
+                    <h3>Purpose</h3>
+                    <p>Allows administrators to update multiple gauges at once based on specific criteria. Useful for mass updates like location changes or status updates.</p>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Component Details</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">File Location:</span>
+                        <span class="detail-value"><code>/components/modals/BulkUpdateModal.tsx</code></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Used In:</span>
+                        <span class="detail-value">Gauge List page (admin view)</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Update Fields:</span>
+                        <span class="detail-value">Location, Status, Calibration Frequency, Ownership Type</span>
+                    </div>
+                </div>
+                
+                <div class="modal-preview">
+                    <div class="preview-modal">
+                        <div class="preview-modal-header">
+                            <h3>Bulk Update Gauges</h3>
+                            <span>×</span>
+                        </div>
+                        <div class="preview-modal-body">
+                            <p>Select criteria and update multiple gauges at once</p>
+                            <div class="form-group">
+                                <label>Filter Criteria:</label>
+                                <select class="form-control">
+                                    <option>Select criteria...</option>
+                                    <option>Gauge Type</option>
+                                    <option>Location</option>
+                                    <option>Status</option>
+                                    <option>Ownership Type</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Criteria Value:</label>
+                                <input type="text" class="form-control" placeholder="Enter value to match..." />
+                            </div>
+                            <div class="form-group">
+                                <label>Field to Update:</label>
+                                <select class="form-control">
+                                    <option>Select field...</option>
+                                    <option>Location</option>
+                                    <option>Status</option>
+                                    <option>Calibration Frequency</option>
+                                    <option>Ownership Type</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>New Value:</label>
+                                <input type="text" class="form-control" placeholder="Enter new value..." />
+                            </div>
+                        </div>
+                        <div class="preview-modal-actions">
+                            <button class="btn btn-primary"><i class="fas fa-save"></i> Apply Bulk Update</button>
+                            <button class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Check-in Modal -->
+        <section id="checkin-modal" class="modal-section">
+            <div class="modal-header">
+                <h2>Check-in Modal</h2>
+                <span class="badge">Gauge Workflow</span>
+                <span class="tag tag-workflow">Workflow</span>
+            </div>
+            
+            <div class="modal-details">
+                <div class="detail-group">
+                    <h3>Purpose</h3>
+                    <p>Handles the gauge check-in process when users return gauges. Captures condition at return and optional notes. Integrates with QC approval workflow for quality control.</p>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Component Details</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">File Location:</span>
+                        <span class="detail-value"><code>/components/modals/CheckinModal.tsx</code></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Condition Options:</span>
+                        <span class="detail-value">Good, Damaged, Needs Cleaning</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Loading States:</span>
+                        <span class="detail-value">Yes - Shows "Processing..." during submission</span>
+                    </div>
+                </div>
+                
+                <div class="modal-preview">
+                    <div class="preview-modal">
+                        <div class="preview-modal-header">
+                            <h3>Check In Gauge</h3>
+                            <span>×</span>
+                        </div>
+                        <div class="preview-modal-body">
+                            <div class="info-box">
+                                <p><strong>Gauge:</strong> Digital Caliper 0-6"</p>
+                                <p><strong>ID:</strong> DC-2024-001</p>
+                                <p><strong>Location:</strong> QC Lab</p>
+                            </div>
+                            <div class="form-group">
+                                <label>Condition at Return:</label>
+                                <select class="form-control">
+                                    <option>Good</option>
+                                    <option>Damaged</option>
+                                    <option>Needs Cleaning</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Notes (Optional):</label>
+                                <textarea class="form-control" rows="3" placeholder="Add any notes about the return..."></textarea>
+                            </div>
+                        </div>
+                        <div class="preview-modal-actions">
+                            <button class="btn btn-success">Confirm Check In</button>
+                            <button class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Confirm Modal -->
+        <section id="confirm-modal" class="modal-section">
+            <div class="modal-header">
+                <h2>Confirm Modal</h2>
+                <span class="badge">Multi-Purpose</span>
+                <span class="tag tag-utility">Utility</span>
+            </div>
+            
+            <div class="modal-details">
+                <div class="detail-group">
+                    <h3>Purpose</h3>
+                    <p>Generic confirmation dialog used for checkout, approval, and check-in operations. Features special handling for cross-user returns with acknowledgment checkbox.</p>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Component Details</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">File Location:</span>
+                        <span class="detail-value"><code>/components/modals/ConfirmModal.tsx</code></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Action Types:</span>
+                        <span class="detail-value">checkout, approve, checkin</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Special Features:</span>
+                        <span class="detail-value">Cross-user warning for returns on behalf of others</span>
+                    </div>
+                </div>
+                
+                <div class="modal-preview">
+                    <div class="preview-modal">
+                        <div class="preview-modal-header">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Cross-User Return Warning</h3>
+                            <span>×</span>
+                        </div>
+                        <div class="preview-modal-body">
+                            <div class="warning-box">
+                                <p style="margin: 0 0 0.5rem 0; font-weight: bold;">
+                                    <i class="fas fa-exclamation-triangle"></i> This gauge was checked out by someone else!
+                                </p>
+                                <p style="margin: 0;">This gauge was checked out by <strong>John Smith</strong>. You are about to return it on their behalf.</p>
+                            </div>
+                            <div class="info-box">
+                                <p><strong>Gauge:</strong> Thread Gauge M10x1.5</p>
+                                <p><strong>ID:</strong> TG-2024-001</p>
+                            </div>
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" />
+                                I acknowledge that I am returning this gauge on behalf of John Smith
+                            </label>
+                        </div>
+                        <div class="preview-modal-actions">
+                            <button class="btn btn-warning">Yes, Return on Their Behalf</button>
+                            <button class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Edit Gauge Modal -->
+        <section id="edit-gauge-modal" class="modal-section">
+            <div class="modal-header">
+                <h2>Edit Gauge Modal</h2>
+                <span class="badge">Gauge Management</span>
+                <span class="tag tag-crud">CRUD</span>
+            </div>
+            
+            <div class="modal-details">
+                <div class="detail-group">
+                    <h3>Purpose</h3>
+                    <p>Comprehensive gauge editing interface with multiple sections for basic info, status, calibration, and technical specs. Features ownership-dependent field display and confirmation dialog.</p>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Component Details</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">File Location:</span>
+                        <span class="detail-value"><code>/components/modals/EditGaugeModal.tsx</code></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Layout:</span>
+                        <span class="detail-value">Grid layout with 4 sections</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Read-only Fields:</span>
+                        <span class="detail-value">Status, Seal Status, Calibration Due Date, Last Calibration Date</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Conditional Fields:</span>
+                        <span class="detail-value">Owner selector shown when ownership_type = "employee"</span>
+                    </div>
+                </div>
+                
+                <div class="modal-preview">
+                    <div class="preview-modal" style="max-width: 900px;">
+                        <div class="preview-modal-header">
+                            <h3>Edit Gauge: Digital Micrometer 0-1"</h3>
+                            <span>×</span>
+                        </div>
+                        <div class="preview-modal-body">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                                <div>
+                                    <h4>Basic Information</h4>
+                                    <div class="form-group">
+                                        <label>Name*:</label>
+                                        <input type="text" class="form-control" value="Digital Micrometer 0-1&quot;" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Manufacturer:</label>
+                                        <input type="text" class="form-control" value="Mitutoyo" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4>Status Information</h4>
+                                    <div class="form-group">
+                                        <label>Status:</label>
+                                        <div class="info-box" style="padding: 0.5rem;">
+                                            <span>available</span>
+                                            <small style="display: block; font-size: 0.75rem; color: #666;">Status changes through checkout/return workflows only</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="preview-modal-actions">
+                            <button class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
+                            <button class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Sections</h3>
+                    <ul>
+                        <li><strong>Basic Information:</strong> Name, Manufacturer, Model, Serial Number, Type</li>
+                        <li><strong>Status Information:</strong> Status (read-only), Seal Status (read-only), Ownership Type, Location/Owner</li>
+                        <li><strong>Calibration Information:</strong> Frequency, Due Date (read-only), Last Date (read-only)</li>
+                        <li><strong>Technical Specifications:</strong> Range Min/Max, Unit, Resolution, Accuracy</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gauge Details Modal -->
+        <section id="gauge-details-modal" class="modal-section">
+            <div class="modal-header">
+                <h2>Gauge Details Modal</h2>
+                <span class="badge">Core Component</span>
+                <span class="tag tag-crud">CRUD</span>
+            </div>
+            
+            <div class="modal-details">
+                <div class="detail-group">
+                    <h3>Purpose</h3>
+                    <p>Primary gauge viewing interface with tabbed navigation. Displays comprehensive gauge information, checkout history, and calibration certificates. Includes role-based action buttons.</p>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Component Details</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">File Location:</span>
+                        <span class="detail-value"><code>/components/modals/GaugeDetailsModal.tsx</code></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Tabs:</span>
+                        <span class="detail-value">Details, History (conditional), Calibration Certs</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Action Buttons:</span>
+                        <span class="detail-value">Checkout, Checkin, Transfer, QC Approve/Reject (role-based)</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Status Tags:</span>
+                        <span class="detail-value">Available, Checked Out, Pending QC, Calibration Due, Out of Service</span>
+                    </div>
+                </div>
+                
+                <div class="modal-preview">
+                    <div class="preview-modal" style="max-width: 900px;">
+                        <div class="preview-modal-header">
+                            <h3>Thread Gauge M10x1.5</h3>
+                            <span>×</span>
+                        </div>
+                        <div class="preview-modal-body">
+                            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                                <button class="btn btn-secondary" style="background: #e9ecef; color: #333;">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </button>
+                                <button class="btn" style="background: white; border: 1px solid #dee2e6; color: #666;">
+                                    <i class="fas fa-history"></i> History
+                                </button>
+                                <button class="btn" style="background: white; border: 1px solid #dee2e6; color: #666;">
+                                    <i class="fas fa-certificate"></i> Calibration Certs
+                                </button>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                                <div class="detail-group" style="background: #f8f9fa; padding: 1rem;">
+                                    <h4>Basic Information</h4>
+                                    <p><strong>Gauge ID:</strong> TG-2024-001</p>
+                                    <p><strong>Type:</strong> Thread Gauge</p>
+                                    <p><strong>Manufacturer:</strong> Vermont Gage</p>
+                                </div>
+                                <div class="detail-group" style="background: #f8f9fa; padding: 1rem;">
+                                    <h4>Status Information</h4>
+                                    <p><strong>Status:</strong> <span class="tag" style="background: #2ecc71; color: white;">AVAILABLE</span></p>
+                                    <p><strong>Seal Status:</strong> <span class="tag" style="background: #2ecc71; color: white;"><i class="fas fa-lock"></i> Sealed</span></p>
+                                    <p><strong>Location:</strong> QC Lab - Bin A1</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="preview-modal-actions">
+                            <button class="btn btn-primary"><i class="fas fa-upload"></i> Checkout</button>
+                            <button class="btn btn-secondary">Close</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Embedded Components</h3>
+                    <ul>
+                        <li><strong>TransferReceiveButton:</strong> Shows for pending transfers to current user</li>
+                        <li><strong>QC Approval Dialog:</strong> Inline modal for location selection and confirmation</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Review Modal -->
+        <section id="review-modal" class="modal-section">
+            <div class="modal-header">
+                <h2>Review Modal</h2>
+                <span class="badge">QC Workflow</span>
+                <span class="tag tag-workflow">Workflow</span>
+            </div>
+            
+            <div class="modal-details">
+                <div class="detail-group">
+                    <h3>Purpose</h3>
+                    <p>Dual-purpose modal for QC supervisors to review pending check-in approvals and unseal requests. Features tabbed interface and drill-down review capability.</p>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Component Details</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">File Location:</span>
+                        <span class="detail-value"><code>/components/modals/ReviewModal.tsx</code></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Tab Types:</span>
+                        <span class="detail-value">Check-in Approvals, Unseal Requests</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Storage Locations:</span>
+                        <span class="detail-value">Pre-defined list of QC Lab bins, Shop Floor cabinets, etc.</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Workflow States:</span>
+                        <span class="detail-value">List view → Detail view → Action confirmation</span>
+                    </div>
+                </div>
+                
+                <div class="modal-preview">
+                    <div class="preview-modal" style="max-width: 700px;">
+                        <div class="preview-modal-header">
+                            <h3>Pending Approvals</h3>
+                            <span>×</span>
+                        </div>
+                        <div class="preview-modal-body">
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <button class="btn btn-primary">Check-in Approvals (3)</button>
+                                <button class="btn" style="background: white; border: 1px solid #dee2e6;">Unseal Requests (1)</button>
+                            </div>
+                            
+                            <p>Review gauges awaiting supervisor approval for check-in</p>
+                            
+                            <div style="border: 1px solid #dee2e6; padding: 1rem; margin-bottom: 1rem; border-radius: 4px;">
+                                <h4>Digital Caliper 0-6"</h4>
+                                <p>S/N: DC-2024-001</p>
+                                <p>Returned by: John Smith</p>
+                                <p>Status: Pending QC Approval</p>
+                                <div style="text-align: right; color: #3498db;">
+                                    Click to review <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="preview-modal-actions">
+                            <button class="btn btn-secondary">Close</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Key Features</h3>
+                    <ul>
+                        <li>Dynamic tab visibility based on pending items</li>
+                        <li>Two-stage approval process for check-ins</li>
+                        <li>Location selection with confirmation checkbox</li>
+                        <li>Support for both approval and rejection workflows</li>
+                        <li>Separate handling for sealed gauge unseal requests</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Transfer Modal -->
+        <section id="transfer-modal" class="modal-section">
+            <div class="modal-header">
+                <h2>Transfer Modal</h2>
+                <span class="badge">Gauge Workflow</span>
+                <span class="tag tag-workflow">Workflow</span>
+            </div>
+            
+            <div class="modal-details">
+                <div class="detail-group">
+                    <h3>Purpose</h3>
+                    <p>Initiates gauge transfers between employees. Sets expected return date (default 7 days) and optional notes. Transfer must be accepted by recipient.</p>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Component Details</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">File Location:</span>
+                        <span class="detail-value"><code>/components/modals/TransferModal.tsx</code></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Default Return:</span>
+                        <span class="detail-value">7 days from transfer date</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Employee List:</span>
+                        <span class="detail-value">Shows name and role for each employee</span>
+                    </div>
+                </div>
+                
+                <div class="modal-preview">
+                    <div class="preview-modal">
+                        <div class="preview-modal-header">
+                            <h3>Transfer Gauge: Thread Gauge M10x1.5</h3>
+                            <span>×</span>
+                        </div>
+                        <div class="preview-modal-body">
+                            <div class="form-group">
+                                <label>Transfer To:</label>
+                                <select class="form-control">
+                                    <option>Select an employee...</option>
+                                    <option>Jane Doe - Inspector</option>
+                                    <option>Bob Wilson - Operator</option>
+                                    <option>Sarah Johnson - QC Technician</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Expected Return Date:</label>
+                                <input type="date" class="form-control" value="2024-12-28" />
+                            </div>
+                            <div class="form-group">
+                                <label>Notes:</label>
+                                <textarea class="form-control" rows="3" placeholder="Add any transfer notes..."></textarea>
+                            </div>
+                        </div>
+                        <div class="preview-modal-actions">
+                            <button class="btn btn-primary">Transfer Gauge</button>
+                            <button class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sealed Gauge Notice Modal -->
+        <section id="sealed-gauge-notice-modal" class="modal-section">
+            <div class="modal-header">
+                <h2>Sealed Gauge Notice Modal</h2>
+                <span class="badge">Special Handling</span>
+                <span class="tag tag-workflow">Workflow</span>
+            </div>
+            
+            <div class="modal-details">
+                <div class="detail-group">
+                    <h3>Purpose</h3>
+                    <p>Informs users when attempting to check out a sealed gauge. Provides options to request unseal approval or select a different gauge.</p>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Component Details</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">File Location:</span>
+                        <span class="detail-value"><code>/components/modals/SealedGaugeNoticeModal.tsx</code></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Trigger:</span>
+                        <span class="detail-value">Checkout attempt on sealed gauge</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Actions:</span>
+                        <span class="detail-value">Request Unseal, Choose Different Gauge</span>
+                    </div>
+                </div>
+                
+                <div class="modal-preview">
+                    <div class="preview-modal">
+                        <div class="preview-modal-header">
+                            <h3><i class="fas fa-lock"></i> Sealed Gauge</h3>
+                            <span>×</span>
+                        </div>
+                        <div class="preview-modal-body">
+                            <div class="warning-box">
+                                <p style="margin: 0; font-weight: bold;">This gauge is currently sealed and requires approval to unseal.</p>
+                            </div>
+                            <p>Gauge: <strong>Precision Micrometer 0-1"</strong></p>
+                            <p>ID: <strong>PM-2024-001</strong></p>
+                            <p>Sealed gauges are typically calibration standards or reference gauges that require special handling.</p>
+                        </div>
+                        <div class="preview-modal-actions">
+                            <button class="btn btn-warning"><i class="fas fa-unlock"></i> Request Unseal</button>
+                            <button class="btn btn-secondary">Choose Different Gauge</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Password Modal -->
+        <section id="password-modal" class="modal-section">
+            <div class="modal-header">
+                <h2>Password Modal</h2>
+                <span class="badge">Security</span>
+                <span class="tag tag-utility">Utility</span>
+            </div>
+            
+            <div class="modal-details">
+                <div class="detail-group">
+                    <h3>Purpose</h3>
+                    <p>Allows users to change their own password. Requires current password verification and new password confirmation.</p>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Component Details</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">File Location:</span>
+                        <span class="detail-value"><code>/components/modals/PasswordModal.tsx</code></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Validation:</span>
+                        <span class="detail-value">Current password required, new password confirmation</span>
+                    </div>
+                </div>
+                
+                <div class="modal-preview">
+                    <div class="preview-modal">
+                        <div class="preview-modal-header">
+                            <h3>Change Password</h3>
+                            <span>×</span>
+                        </div>
+                        <div class="preview-modal-body">
+                            <div class="form-group">
+                                <label>Current Password:</label>
+                                <input type="password" class="form-control" placeholder="Enter current password" />
+                            </div>
+                            <div class="form-group">
+                                <label>New Password:</label>
+                                <input type="password" class="form-control" placeholder="Enter new password" />
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm New Password:</label>
+                                <input type="password" class="form-control" placeholder="Confirm new password" />
+                            </div>
+                        </div>
+                        <div class="preview-modal-actions">
+                            <button class="btn btn-primary"><i class="fas fa-save"></i> Update Password</button>
+                            <button class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Create Gauge Modal -->
+        <section id="create-gauge-modal" class="modal-section">
+            <div class="modal-header">
+                <h2>Create Gauge Modal</h2>
+                <span class="badge">Gauge Management</span>
+                <span class="tag tag-crud">CRUD</span>
+            </div>
+            
+            <div class="modal-details">
+                <div class="detail-group">
+                    <h3>Purpose</h3>
+                    <p>Comprehensive form for creating new gauges in the system. Includes all fields from basic info to compliance settings. Uses grid layout similar to Edit Modal.</p>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Component Details</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">Implementation:</span>
+                        <span class="detail-value">Embedded in AllModals.tsx component</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Sections:</span>
+                        <span class="detail-value">Basic Info, Measurements, Calibration, Ownership & Compliance</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Default Values:</span>
+                        <span class="detail-value">Status: active, Seal: sealed, Location: QC Storage</span>
+                    </div>
+                </div>
+                
+                <div class="modal-preview">
+                    <div class="preview-modal" style="max-width: 900px;">
+                        <div class="preview-modal-header">
+                            <h3>Add New Gauge</h3>
+                            <span>×</span>
+                        </div>
+                        <div class="preview-modal-body">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                                <div>
+                                    <h4>Basic Information</h4>
+                                    <div class="form-group">
+                                        <label>Gauge ID:</label>
+                                        <input type="text" class="form-control" placeholder="e.g., TG-2025-001" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Name:</label>
+                                        <input type="text" class="form-control" placeholder="e.g., M10x1.5 Thread Plug" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4>Ownership & Compliance</h4>
+                                    <div class="form-group">
+                                        <label>AS9102 Compliant:</label>
+                                        <select class="form-control">
+                                            <option>Yes</option>
+                                            <option>No</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>NIST Traceable:</label>
+                                        <select class="form-control">
+                                            <option>Yes</option>
+                                            <option>No</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="preview-modal-actions">
+                            <button class="btn btn-success">Create Gauge</button>
+                            <button class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Additional Fields</h3>
+                    <ul>
+                        <li>Size Classification (hand tool, benchtop, floor standing, room sized)</li>
+                        <li>Calibration Priority (routine, expedite, urgent, critical)</li>
+                        <li>Condition Rating (excellent, good, fair, poor, unserviceable)</li>
+                        <li>AS9102 Compliance flag</li>
+                        <li>NIST Traceability flag</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- QC Approval Dialog -->
+        <section id="qc-approval-dialog" class="modal-section">
+            <div class="modal-header">
+                <h2>QC Approval Dialog</h2>
+                <span class="badge">Inline Modal</span>
+                <span class="tag tag-workflow">Workflow</span>
+            </div>
+            
+            <div class="modal-details">
+                <div class="detail-group">
+                    <h3>Purpose</h3>
+                    <p>Inline modal dialog embedded within the Gauge Details Modal for QC supervisors to approve gauge returns. Appears when QC approval action is triggered.</p>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Component Details</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">Implementation:</span>
+                        <span class="detail-value">Inline within <code>GaugeDetailsModal.tsx</code></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Trigger:</span>
+                        <span class="detail-value">QC Approve button click in pending_qc status</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">State Management:</span>
+                        <span class="detail-value">Local state: showQCApprovalDialog, selectedLocation, confirmPlacement</span>
+                    </div>
+                </div>
+                
+                <div class="modal-preview">
+                    <div class="preview-modal">
+                        <div class="preview-modal-header">
+                            <h3>Approve QC Return</h3>
+                            <span>×</span>
+                        </div>
+                        <div class="preview-modal-body">
+                            <div class="form-group">
+                                <label>Return Location:</label>
+                                <select class="form-control">
+                                    <option>Select Location</option>
+                                    <option>QC Lab - Bin A1</option>
+                                    <option>Shop Floor - Cabinet 1</option>
+                                    <option>Calibration Room - Shelf 1</option>
+                                    <option>Tool Crib - Drawer 1</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox" />
+                                    I confirm the gauge has been placed in the selected location
+                                </label>
+                            </div>
+                        </div>
+                        <div class="preview-modal-actions">
+                            <button class="btn btn-success"><i class="fas fa-check"></i> Confirm Approval</button>
+                            <button class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Transfer Cancel Confirm Modal -->
+        <section id="transfer-cancel-confirm-modal" class="modal-section">
+            <div class="modal-header">
+                <h2>Transfer Cancel Confirm Modal</h2>
+                <span class="badge">Gauge Workflow</span>
+                <span class="tag tag-workflow">Workflow</span>
+            </div>
+            
+            <div class="modal-details">
+                <div class="detail-group">
+                    <h3>Purpose</h3>
+                    <p>Confirmation dialog for canceling pending gauge transfers. Warns users about the irreversible nature of the cancellation.</p>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Component Details</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">File Location:</span>
+                        <span class="detail-value"><code>/components/AppExtracted/TransferCancelConfirmModal.tsx</code></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Trigger:</span>
+                        <span class="detail-value">Cancel Transfer button in Transfer Pending Modal</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Actions:</span>
+                        <span class="detail-value">Cancel transfer permanently, keep transfer active</span>
+                    </div>
+                </div>
+                
+                <div class="modal-preview">
+                    <div class="preview-modal">
+                        <div class="preview-modal-header">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Confirm Cancellation</h3>
+                            <span>×</span>
+                        </div>
+                        <div class="preview-modal-body">
+                            <p>Are you sure you want to cancel the transfer to <strong>John Smith</strong>?</p>
+                            <div class="warning-box">
+                                <p style="margin: 0;">
+                                    <i class="fas fa-exclamation-triangle"></i> This action cannot be undone.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="preview-modal-actions">
+                            <button class="btn btn-danger"><i class="fas fa-ban"></i> Yes, Cancel Transfer</button>
+                            <button class="btn btn-secondary">No, Keep Transfer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Edit Gauge Form Modal -->
+        <section id="edit-gauge-form-modal" class="modal-section">
+            <div class="modal-header">
+                <h2>Edit Gauge Form Modal</h2>
+                <span class="badge">Alternative Implementation</span>
+                <span class="tag tag-crud">CRUD</span>
+            </div>
+            
+            <div class="modal-details">
+                <div class="detail-group">
+                    <h3>Purpose</h3>
+                    <p>Simplified version of the Edit Gauge Modal found in AppExtracted folder. Uses inline form submission without separate confirmation dialog.</p>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Component Details</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">File Location:</span>
+                        <span class="detail-value"><code>/components/AppExtracted/EditGaugeFormModal.tsx</code></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Form Sections:</span>
+                        <span class="detail-value">Basic Info, Measurement Details, Calibration & Status, Ownership & Location</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Grid Layout:</span>
+                        <span class="detail-value">4 sections in responsive grid</span>
+                    </div>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Differences from EditGaugeModal</h3>
+                    <ul>
+                        <li>Direct form submission without state management</li>
+                        <li>Simpler field handling with FormData API</li>
+                        <li>No separate confirmation dialog</li>
+                        <li>Used by new modal management system</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Checkout Modal (via Confirm) -->
+        <section id="checkout-modal" class="modal-section">
+            <div class="modal-header">
+                <h2>Checkout Modal</h2>
+                <span class="badge">Implemented via Confirm Modal</span>
+                <span class="tag tag-workflow">Workflow</span>
+            </div>
+            
+            <div class="modal-details">
+                <div class="detail-group">
+                    <h3>Purpose</h3>
+                    <p>No dedicated Checkout Modal exists. Checkout functionality is handled through the generic Confirm Modal with action type "checkout".</p>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Implementation Details</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">Modal Used:</span>
+                        <span class="detail-value">ConfirmModal with action.type = 'checkout'</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Trigger:</span>
+                        <span class="detail-value">Checkout button click on available gauge</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Display:</span>
+                        <span class="detail-value">"Are you sure you want to check out this gauge?"</span>
+                    </div>
+                </div>
+                
+                <div class="modal-preview">
+                    <div class="preview-modal">
+                        <div class="preview-modal-header">
+                            <h3><i class="fas fa-arrow-right-from-bracket"></i> Confirm Check Out</h3>
+                            <span>×</span>
+                        </div>
+                        <div class="preview-modal-body">
+                            <p style="margin: 1.5rem 0; font-size: 1.1rem;">Are you sure you want to check out this gauge?</p>
+                            <div class="info-box">
+                                <p><strong>Gauge:</strong> Digital Caliper 0-6"</p>
+                                <p><strong>ID:</strong> DC-2024-001</p>
+                            </div>
+                        </div>
+                        <div class="preview-modal-actions">
+                            <button class="btn btn-primary"><i class="fas fa-check"></i> Yes, Check Out</button>
+                            <button class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- System Recovery Inline Dialog -->
+        <section id="system-recovery-inline" class="modal-section">
+            <div class="modal-header">
+                <h2>System Recovery Inline Dialog</h2>
+                <span class="badge">Admin Tool</span>
+                <span class="tag tag-admin">Admin</span>
+            </div>
+            
+            <div class="modal-details">
+                <div class="detail-group">
+                    <h3>Purpose</h3>
+                    <p>Inline confirmation dialog in the System Recovery Tool for super admins to recover gauges in inconsistent states. Not a traditional modal but uses similar patterns.</p>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Component Details</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">File Location:</span>
+                        <span class="detail-value"><code>/components/SystemRecoveryTool.tsx</code></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Access:</span>
+                        <span class="detail-value">Super Admin only</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">State Management:</span>
+                        <span class="detail-value">showConfirmation state for inline dialog</span>
+                    </div>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Features</h3>
+                    <ul>
+                        <li>Search gauges with auto-suggestions dropdown</li>
+                        <li>Detect inconsistent states (pending transfer issues)</li>
+                        <li>Recovery reason textarea requirement</li>
+                        <li>Inline confirmation UI (not overlay modal)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section class="modal-section">
+            <div class="modal-header">
+                <h2>Modal System Summary</h2>
+                <span class="badge">Architecture Overview</span>
+            </div>
+            
+            <div class="modal-details">
+                <div class="detail-group">
+                    <h3>Modal Categories</h3>
+                    <ul>
+                        <li><strong>User Management (4):</strong> Add User, User Details, Password, Reset Password</li>
+                        <li><strong>Gauge CRUD (4):</strong> Create Gauge, Edit Gauge, Edit Gauge Form, Gauge Details</li>
+                        <li><strong>Workflow Modals (10):</strong> Checkin, Checkout (via Confirm), Transfer (3 variants), Transfer Cancel Confirm, Review, Sealed Notice, Unseal Confirm</li>
+                        <li><strong>Utility Modals (4):</strong> Confirm, Reject, Bulk Update, QC Approval Dialog</li>
+                        <li><strong>Inline Dialogs (2):</strong> QC Approval (in Details), System Recovery Confirmation</li>
+                        <li><strong>Special Components (1):</strong> Transfer Receive Button (self-contained modal)</li>
+                    </ul>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Common Patterns</h3>
+                    <ul>
+                        <li>Overlay click closes modal (with stopPropagation on content)</li>
+                        <li>Form validation before submission</li>
+                        <li>Loading states during async operations</li>
+                        <li>Notification callbacks for user feedback</li>
+                        <li>Role-based visibility and actions</li>
+                        <li>Consistent button styling and placement</li>
+                    </ul>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Modal Management Systems</h3>
+                    <p><strong>Legacy System:</strong> The <code>AllModals.tsx</code> component serves as a central orchestrator for all modals in the application.</p>
+                    <p><strong>New System:</strong> The <code>GaugeModalManager.tsx</code> in the gauge-tracking module provides a more structured approach with:</p>
+                    <ul>
+                        <li>Enum-based modal types for type safety</li>
+                        <li>Context-based state management</li>
+                        <li>Modal history for cascading flows</li>
+                        <li>Centralized modal rendering</li>
+                    </ul>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Modal Implementation Patterns</h3>
+                    <ul>
+                        <li><strong>Standalone Components:</strong> Most modals are separate components in /modals folder</li>
+                        <li><strong>Inline Modals:</strong> QC Approval Dialog embedded in parent component</li>
+                        <li><strong>Self-Contained:</strong> TransferReceiveButton includes its own modal states</li>
+                        <li><strong>Generic Modals:</strong> Confirm Modal handles multiple action types</li>
+                        <li><strong>Alternative Versions:</strong> Some modals have both legacy and new implementations</li>
+                    </ul>
+                </div>
+                
+                <div class="detail-group">
+                    <h3>Complete Modal Inventory (25 Total)</h3>
+                    <ol>
+                        <li>Add User Modal</li>
+                        <li>Bulk Update Modal</li>
+                        <li>Check-in Modal</li>
+                        <li>Checkout Modal (via Confirm)</li>
+                        <li>Confirm Modal (multi-purpose)</li>
+                        <li>Create Gauge Modal</li>
+                        <li>Edit Gauge Modal</li>
+                        <li>Edit Gauge Form Modal</li>
+                        <li>Gauge Details Modal</li>
+                        <li>Password Modal</li>
+                        <li>QC Approval Dialog (inline)</li>
+                        <li>Reject Modal</li>
+                        <li>Reset Password Modal</li>
+                        <li>Review Modal</li>
+                        <li>Sealed Gauge Confirm Modal</li>
+                        <li>Sealed Gauge Notice Modal</li>
+                        <li>System Recovery Dialog (inline)</li>
+                        <li>Transfer Cancel Confirm Modal</li>
+                        <li>Transfer Modal</li>
+                        <li>Transfer Pending Modal</li>
+                        <li>Transfer Receive Modal</li>
+                        <li>Transfer Receive Button (self-contained)</li>
+                        <li>Unseal Confirm Modal</li>
+                        <li>User Details Modal</li>
+                        <li>Delete User Confirmation (referenced but not implemented as separate modal)</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

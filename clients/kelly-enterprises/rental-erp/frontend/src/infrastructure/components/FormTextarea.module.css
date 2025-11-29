@@ -1,0 +1,58 @@
+.container {
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.textarea {
+  width: 100%;
+  border: 1px solid var(--color-border-default);
+  border-radius: 0.5rem;
+  resize: vertical;
+  transition: all 0.2s ease;
+  background-color: #ffffff;
+  font-family: inherit;
+}
+
+/* Size variants using shared component size system */
+.textareaSM {
+  padding: calc(var(--component-size-sm-padding-y) - 2px) var(--component-size-sm-padding-x);
+  font-size: var(--component-size-sm-font-size);
+  min-height: calc(var(--component-size-sm-min-height) * 2);
+}
+
+.textareaMD {
+  padding: calc(var(--component-size-md-padding-y) - 2px) var(--component-size-md-padding-x);
+  font-size: var(--component-size-md-font-size);
+  min-height: calc(var(--component-size-md-min-height) * 2);
+}
+
+.textareaLG {
+  padding: calc(var(--component-size-lg-padding-y) - 2px) var(--component-size-lg-padding-x);
+  font-size: var(--component-size-lg-font-size);
+  min-height: calc(var(--component-size-lg-min-height) * 2);
+}
+
+.textarea:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.textareaError {
+  border-color: var(--color-danger);
+}
+
+.error {
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+  margin-top: 0.25rem;
+}

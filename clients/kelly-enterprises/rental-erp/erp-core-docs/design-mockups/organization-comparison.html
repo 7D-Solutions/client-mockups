@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Organization Management - Design Comparison</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f5f5;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .hero {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: white;
+      padding: 40px;
+      border-radius: 12px;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 36px;
+      margin-bottom: 12px;
+    }
+    .hero p {
+      font-size: 18px;
+      opacity: 0.9;
+    }
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+    .option-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+    .option-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    .option-header {
+      padding: 24px;
+      background: linear-gradient(135deg, #f8f8f8 0%, #e8e8e8 100%);
+      border-bottom: 3px solid #2563eb;
+    }
+    .option-number {
+      background: #2563eb;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+    .option-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #1a1a1a;
+    }
+    .option-subtitle {
+      font-size: 14px;
+      color: #666;
+      font-style: italic;
+    }
+    .option-body {
+      padding: 24px;
+    }
+    .screenshot {
+      width: 100%;
+      height: 200px;
+      background: #e8e8e8;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+    .pros-cons {
+      margin-bottom: 20px;
+    }
+    .pros-cons h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pros-cons ul {
+      margin-left: 20px;
+      font-size: 13px;
+      color: #666;
+      line-height: 1.7;
+    }
+    .pros h4 { color: #059669; }
+    .cons h4 { color: #dc2626; }
+    .recommendation {
+      background: #f0f9ff;
+      border-left: 4px solid #2563eb;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #1e40af;
+      margin-bottom: 16px;
+    }
+    .best-for {
+      background: #dcfce7;
+      border-left: 4px solid #059669;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #166534;
+      font-weight: 500;
+    }
+    .view-demo {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background: #2563eb;
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .view-demo:hover {
+      background: #1d4ed8;
+    }
+    .recommended-badge {
+      background: #10b981;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-block;
+      margin-top: 8px;
+    }
+    .comparison-table {
+      background: white;
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .comparison-table h2 {
+      margin-bottom: 24px;
+      color: #1a1a1a;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 16px;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    th {
+      background: #f8f8f8;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+    td {
+      color: #666;
+    }
+    .rating {
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="hero">
+      <h1>🏗️ Organization Management UI</h1>
+      <p>Choose the best interface for managing Facilities → Buildings → Zones</p>
+      <p style="font-size: 14px; margin-top: 8px; opacity: 0.8;">(Storage Locations managed separately in Inventory module)</p>
+    </div>
+
+    <div class="options-grid">
+      <!-- Option 1 -->
+      <div class="option-card">
+        <div class="option-header">
+          <div class="option-number">1</div>
+          <div class="option-title">Tabbed Interface</div>
+          <div class="option-subtitle">Familiar & Simple</div>
+        </div>
+        <div class="option-body">
+          <div class="screenshot">📑</div>
+
+          <div class="pros-cons pros">
+            <h4>✅ Pros</h4>
+            <ul>
+              <li>Clean separation</li>
+              <li>Easy navigation</li>
+              <li>Familiar pattern</li>
+            </ul>
+          </div>
+
+          <div class="pros-cons cons">
+            <h4>❌ Cons</h4>
+            <ul>
+              <li>No hierarchy visibility</li>
+              <li>Requires tab switching</li>
+              <li>No structure overview</li>
+            </ul>
+          </div>
+
+          <div class="best-for">
+            👤 Best for: Casual users, simple structures
+          </div>
+
+          <a href="organization-option1-tabbed.html" class="view-demo">View Demo →</a>
+        </div>
+      </div>
+
+      <!-- Option 2 -->
+      <div class="option-card" style="border: 3px solid #10b981;">
+        <div class="option-header" style="border-color: #10b981;">
+          <div class="option-number" style="background: #10b981;">2</div>
+          <div class="option-title">Hierarchical Tree</div>
+          <div class="option-subtitle">Most Intuitive</div>
+          <div class="recommended-badge">⭐ RECOMMENDED</div>
+        </div>
+        <div class="option-body">
+          <div class="screenshot">🌳</div>
+
+          <div class="recommendation">
+            <strong>💡 Why this is best:</strong> Shows exact structure, quick navigation, always clear where you are in hierarchy.
+          </div>
+
+          <div class="pros-cons pros">
+            <h4>✅ Pros</h4>
+            <ul>
+              <li><strong>Highly intuitive</strong></li>
+              <li>Full hierarchy visible</li>
+              <li>Expand/collapse control</li>
+              <li>Context awareness</li>
+              <li>Inline actions</li>
+            </ul>
+          </div>
+
+          <div class="pros-cons cons">
+            <h4>❌ Cons</h4>
+            <ul>
+              <li>Long list for many items</li>
+              <li>Needs search for large orgs</li>
+            </ul>
+          </div>
+
+          <div class="best-for">
+            👥 Best for: Everyone! Visual learners, complex structures
+          </div>
+
+          <a href="organization-option2-hierarchy-tree.html" class="view-demo" style="background: #10b981;">View Demo →</a>
+        </div>
+      </div>
+
+      <!-- Option 3 -->
+      <div class="option-card">
+        <div class="option-header">
+          <div class="option-number">3</div>
+          <div class="option-title">Card Drill-Down</div>
+          <div class="option-subtitle">Simple & Clean</div>
+        </div>
+        <div class="option-body">
+          <div class="screenshot">🎴</div>
+
+          <div class="pros-cons pros">
+            <h4>✅ Pros</h4>
+            <ul>
+              <li>Very intuitive</li>
+              <li>Clean design</li>
+              <li>Mobile-friendly</li>
+              <li>Clear breadcrumbs</li>
+            </ul>
+          </div>
+
+          <div class="pros-cons cons">
+            <h4>❌ Cons</h4>
+            <ul>
+              <li>More clicks needed</li>
+              <li>No overview</li>
+              <li>Must drill through levels</li>
+            </ul>
+          </div>
+
+          <div class="best-for">
+            📱 Best for: Mobile users, simple workflows
+          </div>
+
+          <a href="organization-option3-card-drilldown.html" class="view-demo">View Demo →</a>
+        </div>
+      </div>
+
+      <!-- Option 4 -->
+      <div class="option-card">
+        <div class="option-header">
+          <div class="option-number">4</div>
+          <div class="option-title">Split View</div>
+          <div class="option-subtitle">Power Users</div>
+        </div>
+        <div class="option-body">
+          <div class="screenshot">⚡</div>
+
+          <div class="pros-cons pros">
+            <h4>✅ Pros</h4>
+            <ul>
+              <li>Maximum efficiency</li>
+              <li>No context switching</li>
+              <li>Everything visible</li>
+              <li>Professional feel</li>
+            </ul>
+          </div>
+
+          <div class="pros-cons cons">
+            <h4>❌ Cons</h4>
+            <ul>
+              <li>Complex interface</li>
+              <li>Needs wide screen</li>
+              <li>Learning curve</li>
+              <li>Not mobile-friendly</li>
+            </ul>
+          </div>
+
+          <div class="best-for">
+            💼 Best for: Power users, desktop only
+          </div>
+
+          <a href="organization-option4-split-view.html" class="view-demo">View Demo →</a>
+        </div>
+      </div>
+
+      <!-- Option 5 -->
+      <div class="option-card">
+        <div class="option-header">
+          <div class="option-number">5</div>
+          <div class="option-title">Expandable Table</div>
+          <div class="option-subtitle">Hybrid Approach</div>
+        </div>
+        <div class="option-body">
+          <div class="screenshot">📊</div>
+
+          <div class="pros-cons pros">
+            <h4>✅ Pros</h4>
+            <ul>
+              <li>Familiar table format</li>
+              <li>Hierarchy on demand</li>
+              <li>Sortable/filterable</li>
+              <li>Efficient space use</li>
+            </ul>
+          </div>
+
+          <div class="pros-cons cons">
+            <h4>❌ Cons</h4>
+            <ul>
+              <li>Complex implementation</li>
+              <li>Can get visually busy</li>
+              <li>State management needed</li>
+            </ul>
+          </div>
+
+          <div class="best-for">
+            📋 Best for: Data-driven users, large datasets
+          </div>
+
+          <a href="organization-option5-expandable-table.html" class="view-demo">View Demo →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="comparison-table">
+      <h2>📊 Quick Comparison</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Option 1: Tabs</th>
+            <th>Option 2: Tree ⭐</th>
+            <th>Option 3: Cards</th>
+            <th>Option 4: Split</th>
+            <th>Option 5: Table</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Intuitiveness</strong></td>
+            <td><span class="rating">⭐⭐⭐</span></td>
+            <td><span class="rating">⭐⭐⭐⭐⭐</span></td>
+            <td><span class="rating">⭐⭐⭐⭐</span></td>
+            <td><span class="rating">⭐⭐⭐</span></td>
+            <td><span class="rating">⭐⭐⭐⭐</span></td>
+          </tr>
+          <tr>
+            <td><strong>Hierarchy Visibility</strong></td>
+            <td><span class="rating">⭐</span></td>
+            <td><span class="rating">⭐⭐⭐⭐⭐</span></td>
+            <td><span class="rating">⭐⭐</span></td>
+            <td><span class="rating">⭐⭐⭐⭐⭐</span></td>
+            <td><span class="rating">⭐⭐⭐⭐</span></td>
+          </tr>
+          <tr>
+            <td><strong>Ease of Use</strong></td>
+            <td><span class="rating">⭐⭐⭐⭐</span></td>
+            <td><span class="rating">⭐⭐⭐⭐⭐</span></td>
+            <td><span class="rating">⭐⭐⭐⭐⭐</span></td>
+            <td><span class="rating">⭐⭐⭐</span></td>
+            <td><span class="rating">⭐⭐⭐⭐</span></td>
+          </tr>
+          <tr>
+            <td><strong>Mobile Friendly</strong></td>
+            <td><span class="rating">⭐⭐⭐⭐</span></td>
+            <td><span class="rating">⭐⭐⭐</span></td>
+            <td><span class="rating">⭐⭐⭐⭐⭐</span></td>
+            <td><span class="rating">⭐</span></td>
+            <td><span class="rating">⭐⭐⭐</span></td>
+          </tr>
+          <tr>
+            <td><strong>Efficiency</strong></td>
+            <td><span class="rating">⭐⭐</span></td>
+            <td><span class="rating">⭐⭐⭐⭐</span></td>
+            <td><span class="rating">⭐⭐⭐</span></td>
+            <td><span class="rating">⭐⭐⭐⭐⭐</span></td>
+            <td><span class="rating">⭐⭐⭐⭐</span></td>
+          </tr>
+          <tr>
+            <td><strong>Data Management</strong></td>
+            <td><span class="rating">⭐⭐⭐</span></td>
+            <td><span class="rating">⭐⭐⭐</span></td>
+            <td><span class="rating">⭐⭐</span></td>
+            <td><span class="rating">⭐⭐⭐⭐</span></td>
+            <td><span class="rating">⭐⭐⭐⭐⭐</span></td>
+          </tr>
+          <tr style="background: #dcfce7;">
+            <td><strong>OVERALL</strong></td>
+            <td><span class="rating">⭐⭐⭐</span></td>
+            <td><span class="rating">⭐⭐⭐⭐⭐</span></td>
+            <td><span class="rating">⭐⭐⭐⭐</span></td>
+            <td><span class="rating">⭐⭐⭐⭐</span></td>
+            <td><span class="rating">⭐⭐⭐⭐</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

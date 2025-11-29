@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option 3: Tabs Pattern (like Gauge Detail)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; padding: 20px; }
+        .page-container { max-width: 1200px; margin: 0 auto; }
+
+        /* Header Section */
+        .page-header {
+            background: white;
+            border-radius: 8px 8px 0 0;
+            padding: 16px 24px;
+            border: 1px solid #e0e0e0;
+            border-bottom: none;
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .title { font-size: 24px; font-weight: 600; color: #212121; }
+        .badge {
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge-success { background: #e8f5e9; color: #2e7d32; }
+        .badge-info { background: #e3f2fd; color: #1976d2; }
+        .btn {
+            padding: 8px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary { background: #1976d2; color: white; border-color: #1976d2; }
+
+        /* Tabs */
+        .tabs-container {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-top: 1px solid #e0e0e0;
+        }
+        .tabs-list {
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+            background: #fafafa;
+        }
+        .tab {
+            padding: 12px 24px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 14px;
+            color: #757575;
+            border-bottom: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .tab:hover { color: #212121; background: #f5f5f5; }
+        .tab.active {
+            color: #1976d2;
+            border-bottom-color: #1976d2;
+            background: white;
+            font-weight: 500;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            padding: 24px;
+            background: white;
+            border-radius: 0 0 8px 8px;
+            min-height: 400px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        /* Details Tab - 2 Column Grid */
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+        .detail-section {
+            margin-bottom: 24px;
+        }
+        .detail-section h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #212121;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .detail-label {
+            font-size: 13px;
+            color: #757575;
+        }
+        .detail-value {
+            font-size: 13px;
+            color: #212121;
+            font-weight: 500;
+            text-align: right;
+        }
+
+        /* Items Tab - Table */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #212121;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .count-badge {
+            background: #f5f5f5;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            text-align: left;
+            padding: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #757575;
+            text-transform: uppercase;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        tr:hover { background: #fafafa; }
+
+        .note {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 4px;
+            padding: 12px 16px;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .note strong { color: #1565c0; }
+
+        /* Hidden tabs */
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
+    </style>
+    <script>
+        function switchTab(tabName) {
+            // Hide all tab panes
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('active');
+            });
+
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab pane
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked tab
+            event.target.closest('.tab').classList.add('active');
+        }
+    </script>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Back Button -->
+        <div style="margin-bottom: 12px;">
+            <button class="btn">← Back to Locations</button>
+        </div>
+
+        <!-- Header -->
+        <div class="page-header">
+            <div class="header-top">
+                <div class="header-title">
+                    <h1 class="title">A1</h1>
+                    <span class="badge badge-success">Active</span>
+                    <span class="badge badge-info">Bin</span>
+                </div>
+                <button class="btn btn-primary">✏️ Edit</button>
+            </div>
+        </div>
+
+        <!-- Tabs Container -->
+        <div class="tabs-container">
+            <div class="tabs-list">
+                <button class="tab active" onclick="switchTab('tab-details')">
+                    📋 Details
+                </button>
+                <button class="tab" onclick="switchTab('tab-gauges')">
+                    🔧 Gauges <span class="count-badge">2</span>
+                </button>
+                <button class="tab" onclick="switchTab('tab-tools')">
+                    🔨 Tools <span class="count-badge">0</span>
+                </button>
+                <button class="tab" onclick="switchTab('tab-parts')">
+                    📦 Parts <span class="count-badge">0</span>
+                </button>
+                <button class="tab" onclick="switchTab('tab-history')">
+                    📊 History
+                </button>
+            </div>
+
+            <!-- Tab Content Container -->
+            <div class="tab-content">
+                <!-- Details Tab -->
+                <div id="tab-details" class="tab-pane active">
+                <div class="details-grid">
+                    <!-- Left Column -->
+                    <div>
+                        <div class="detail-section">
+                            <h4>Location Information</h4>
+                            <div class="detail-row">
+                                <span class="detail-label">Location Code:</span>
+                                <span class="detail-value">A1</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Type:</span>
+                                <span class="detail-value">Bin</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Status:</span>
+                                <span class="detail-value">Active</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Display Order:</span>
+                                <span class="detail-value">100</span>
+                            </div>
+                        </div>
+
+                        <div class="detail-section">
+                            <h4>Capacity</h4>
+                            <div class="detail-row">
+                                <span class="detail-label">Current Items:</span>
+                                <span class="detail-value">2</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Max Capacity:</span>
+                                <span class="detail-value">50</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Utilization:</span>
+                                <span class="detail-value" style="color: #4caf50;">4%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div>
+                        <div class="detail-section">
+                            <h4>Physical Details</h4>
+                            <div class="detail-row">
+                                <span class="detail-label">Warehouse:</span>
+                                <span class="detail-value">Main Warehouse</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Zone:</span>
+                                <span class="detail-value">Zone 1</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Aisle:</span>
+                                <span class="detail-value">A</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Description:</span>
+                                <span class="detail-value">Primary storage bin</span>
+                            </div>
+                        </div>
+
+                        <div class="detail-section">
+                            <h4>Timestamps</h4>
+                            <div class="detail-row">
+                                <span class="detail-label">Created:</span>
+                                <span class="detail-value">Jan 15, 2024</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Last Updated:</span>
+                                <span class="detail-value">2 days ago</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Last Item Move:</span>
+                                <span class="detail-value">Oct 30, 2024</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+                <!-- Gauges Tab -->
+                <div id="tab-gauges" class="tab-pane">
+                    <div class="section-header">
+                        <div class="section-title">
+                            🔧 Gauges
+                            <span class="count-badge">2</span>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Gauge ID</th>
+                                <th>Status</th>
+                                <th>Quantity</th>
+                                <th>Last Moved</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="cursor: pointer;">
+                                <td style="font-weight: 600;">CAS71786A</td>
+                                <td><span class="badge badge-success">Available</span></td>
+                                <td>1</td>
+                                <td style="color: #757575;">10/30/2024</td>
+                            </tr>
+                            <tr style="cursor: pointer;">
+                                <td style="font-weight: 600;">SP0028A</td>
+                                <td><span class="badge badge-success">Available</span></td>
+                                <td>1</td>
+                                <td style="color: #757575;">10/30/2024</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Tools Tab -->
+                <div id="tab-tools" class="tab-pane">
+                    <div class="section-header">
+                        <div class="section-title">
+                            🔨 Tools
+                            <span class="count-badge">0</span>
+                        </div>
+                    </div>
+                    <div style="text-align: center; padding: 80px; color: #9e9e9e;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">🔨</div>
+                        <div style="font-size: 16px; font-weight: 500; margin-bottom: 8px;">No tools in this location</div>
+                        <div style="font-size: 14px;">Tools will appear here when moved to this location</div>
+                    </div>
+                </div>
+
+                <!-- Parts Tab -->
+                <div id="tab-parts" class="tab-pane">
+                    <div class="section-header">
+                        <div class="section-title">
+                            📦 Parts
+                            <span class="count-badge">0</span>
+                        </div>
+                    </div>
+                    <div style="text-align: center; padding: 80px; color: #9e9e9e;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">📦</div>
+                        <div style="font-size: 16px; font-weight: 500; margin-bottom: 8px;">No parts in this location</div>
+                        <div style="font-size: 14px;">Parts will appear here when moved to this location</div>
+                    </div>
+                </div>
+
+                <!-- History Tab -->
+                <div id="tab-history" class="tab-pane">
+                    <div class="section-header">
+                        <div class="section-title">
+                            📊 Movement History
+                        </div>
+                        <button class="btn" style="font-size: 13px;">🔄 Refresh</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Item</th>
+                                <th>Action</th>
+                                <th>User</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="color: #757575;">10/30/2024 2:45 PM</td>
+                                <td style="font-weight: 600;">SP0028A</td>
+                                <td>Moved to A1</td>
+                                <td>John Smith</td>
+                            </tr>
+                            <tr>
+                                <td style="color: #757575;">10/30/2024 9:30 AM</td>
+                                <td style="font-weight: 600;">CAS71786A</td>
+                                <td>Moved to A1</td>
+                                <td>Jane Doe</td>
+                            </tr>
+                            <tr>
+                                <td style="color: #757575;">10/29/2024 3:15 PM</td>
+                                <td style="font-weight: 600;">TG-12345</td>
+                                <td>Moved from A1</td>
+                                <td>John Smith</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>Option 3: Tabs Pattern (Gauge Detail Style)</strong><br>
+            ✅ Matches existing gauge detail modal pattern<br>
+            ✅ Organizes weakly-related content (details vs items)<br>
+            ✅ Fixed height with scroll keeps UI predictable<br>
+            ✅ 2-column grid for details tab<br>
+            ✅ Each tab optimized for its content type<br>
+            ✅ Consistent user experience across modules<br>
+            📊 Best for: Consistent UI patterns, complex data with multiple views
+        </div>
+    </div>
+</body>
+</html>

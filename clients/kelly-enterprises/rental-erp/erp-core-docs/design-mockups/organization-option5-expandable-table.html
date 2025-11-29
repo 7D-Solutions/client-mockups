@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Option 5: Expandable Table with Real Column Manager</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header h1 {
+      font-size: 24px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+      font-size: 14px;
+    }
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #374151;
+    }
+    .btn-secondary:hover { background: #d1d5db; }
+    .btn-success {
+      background: #10b981;
+      color: white;
+    }
+    .btn-success:hover { background: #059669; }
+    .controls {
+      padding: 16px 24px;
+      border-bottom: 1px solid #e0e0e0;
+      background: #f8f8f8;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .search-box {
+      flex: 1;
+      padding: 10px 16px;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .content {
+      padding: 0;
+    }
+
+    /* Column Manager Styles */
+    .table-wrapper {
+      overflow-x: auto;
+      padding-top: 0;
+      margin-top: 0;
+      transition: all 0.3s ease;
+    }
+    .table-wrapper.edit-mode {
+      padding-top: 50px;
+      margin-top: -50px;
+    }
+    .column-managed-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: auto;
+    }
+    .column-managed-table th,
+    .column-managed-table td {
+      padding: 12px;
+      border-bottom: 1px solid #e0e0e0;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .column-managed-table th {
+      background: #f8f8f8;
+      font-weight: 600;
+      color: #1a1a1a;
+      position: relative;
+      user-select: none;
+    }
+    .column-managed-table tbody tr:hover {
+      background: #f0f9ff;
+    }
+
+    /* Checkbox above headers (only visible in edit mode) */
+    .header-checkbox {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      display: none;
+      z-index: 100;
+      margin-bottom: 8px;
+    }
+    .column-managed-table.edit-mode .header-checkbox {
+      display: block !important;
+    }
+    .header-checkbox input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      margin: 0;
+    }
+
+    /* Edit mode visual indicators */
+    .column-managed-table.edit-mode th.draggable {
+      cursor: move !important;
+      background-color: rgba(37, 99, 235, 0.05);
+      padding-left: 32px;
+    }
+    .column-managed-table.edit-mode th.draggable:hover {
+      background-color: rgba(37, 99, 235, 0.1);
+    }
+
+    /* Drag handle indicator (⋮⋮) */
+    .column-managed-table.edit-mode th.draggable::before {
+      content: '⋮⋮';
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      color: #666;
+      opacity: 0.6;
+      letter-spacing: -2px;
+    }
+    .column-managed-table.edit-mode th.draggable:hover::before {
+      opacity: 1;
+      color: #2563eb;
+    }
+
+    /* Locked columns - no drag handle or edit styling */
+    .column-managed-table th.locked {
+      cursor: default !important;
+      background: #f8f8f8 !important;
+    }
+    .column-managed-table.edit-mode th.locked {
+      background: #f8f8f8 !important;
+      padding-left: 12px;
+    }
+
+    /* Drag state feedback */
+    .column-managed-table th.dragging {
+      opacity: 0.5;
+    }
+    .column-managed-table th.drop-target {
+      border-left: 3px solid #2563eb;
+    }
+
+    /* Expand/collapse styles */
+    .expand-cell {
+      width: 40px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .expand-icon {
+      display: inline-block;
+      transition: transform 0.2s;
+      font-size: 12px;
+      color: #666;
+    }
+    .expand-icon.expanded {
+      transform: rotate(90deg);
+    }
+    .nested-row {
+      display: none;
+    }
+    .nested-row.visible {
+      display: table-row;
+    }
+    .nested-table {
+      width: 100%;
+      background: #f8f8f8;
+    }
+    .nested-table td {
+      padding: 12px;
+      padding-left: 48px;
+      border-bottom: 1px solid #e8e8e8;
+    }
+    .entity-icon {
+      font-size: 18px;
+      margin-right: 8px;
+    }
+    .entity-name {
+      display: flex;
+      align-items: center;
+    }
+    .code {
+      color: #666;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+    }
+    .badge {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      display: inline-block;
+    }
+    .badge-success { background: #dcfce7; color: #166534; }
+    .count-badge {
+      color: #666;
+      font-size: 13px;
+    }
+    .action-btn {
+      padding: 6px 12px;
+      border: 1px solid #e0e0e0;
+      background: white;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      margin-right: 8px;
+      transition: all 0.2s;
+    }
+    .action-btn:hover {
+      background: #f8f8f8;
+      border-color: #2563eb;
+      color: #2563eb;
+    }
+    .location-link {
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .location-link:hover {
+      text-decoration: underline;
+    }
+    .description {
+      background: #f0f9ff;
+      padding: 16px;
+      border-radius: 6px;
+      margin: 24px;
+      border-left: 4px solid #2563eb;
+      font-size: 14px;
+      color: #1e40af;
+    }
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <h1>📍 Organization Structure</h1>
+      </div>
+      <button class="btn btn-primary">+ Add Facility</button>
+    </div>
+
+    <div class="controls">
+      <input type="text" class="search-box" placeholder="🔍 Search facilities, buildings, zones...">
+      <button class="btn btn-secondary">Expand All</button>
+      <button class="btn btn-secondary">Collapse All</button>
+      <button class="btn btn-secondary">Export</button>
+
+      <!-- Column Manager Toggle Button -->
+      <button class="btn btn-secondary" id="toggleEditMode" onclick="toggleEditMode()">
+        <span id="editModeIcon">⚙️</span> <span id="editModeText">Columns</span>
+      </button>
+
+      <!-- Reset Columns Button (only visible in edit mode) -->
+      <button class="btn btn-secondary hidden" id="resetColumnsBtn" onclick="resetColumns()">
+        Reset Columns
+      </button>
+    </div>
+
+    <div class="content">
+      <div class="description">
+        <strong>💡 Column Customization:</strong> Click "<strong>⚙️ Columns</strong>" to enter edit mode. Checkboxes appear above column headers - <strong>uncheck to hide</strong> columns. <strong>Drag column headers</strong> to reorder (⋮⋮ handle appears). Locked columns (Name, Type) cannot be hidden or moved. Click "<strong>✓ Done</strong>" to exit edit mode. All changes sync to your account automatically.
+      </div>
+
+      <div class="table-wrapper" id="tableWrapper">
+        <table class="column-managed-table" id="orgTable">
+          <thead>
+            <tr>
+              <th class="locked">
+                <!-- No checkbox for expand column -->
+              </th>
+              <th class="locked">
+                <div class="header-checkbox">
+                  <input type="checkbox" checked disabled title="Name is required">
+                </div>
+                Name
+              </th>
+              <th class="draggable" id="col-code">
+                <div class="header-checkbox">
+                  <input type="checkbox" checked onchange="toggleColumn('code', this.checked)">
+                </div>
+                Code
+              </th>
+              <th class="locked">
+                <div class="header-checkbox">
+                  <input type="checkbox" checked disabled title="Type is required">
+                </div>
+                Type
+              </th>
+              <th class="draggable" id="col-children">
+                <div class="header-checkbox">
+                  <input type="checkbox" checked onchange="toggleColumn('children', this.checked)">
+                </div>
+                Children
+              </th>
+              <th class="draggable" id="col-status">
+                <div class="header-checkbox">
+                  <input type="checkbox" checked onchange="toggleColumn('status', this.checked)">
+                </div>
+                Status
+              </th>
+              <th class="draggable" id="col-created">
+                <div class="header-checkbox">
+                  <input type="checkbox" checked onchange="toggleColumn('created', this.checked)">
+                </div>
+                Created Date
+              </th>
+              <th class="draggable" id="col-modified">
+                <div class="header-checkbox">
+                  <input type="checkbox" onchange="toggleColumn('modified', this.checked)">
+                </div>
+                Last Modified
+              </th>
+              <th class="draggable" id="col-actions">
+                <div class="header-checkbox">
+                  <input type="checkbox" checked onchange="toggleColumn('actions', this.checked)">
+                </div>
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Facility 1 (EXPANDED) -->
+            <tr class="expanded" data-level="facility">
+              <td class="expand-cell" onclick="toggleRow(this)">
+                <span class="expand-icon expanded">▶</span>
+              </td>
+              <td>
+                <div class="entity-name">
+                  <span class="entity-icon">🏢</span>
+                  <span>Main Plant</span>
+                </div>
+              </td>
+              <td data-column="code"><span class="code">FAC-001</span></td>
+              <td>Facility</td>
+              <td data-column="children"><span class="count-badge">5 buildings</span></td>
+              <td data-column="status"><span class="badge badge-success">Active</span></td>
+              <td data-column="created">2024-01-15</td>
+              <td data-column="modified" class="hidden">2025-01-08</td>
+              <td data-column="actions">
+                <button class="action-btn">✏️ Edit</button>
+                <button class="action-btn">➕ Add Building</button>
+              </td>
+            </tr>
+
+            <!-- Nested Buildings for Facility 1 -->
+            <tr class="nested-row visible">
+              <td colspan="9" style="padding: 0; background: #f8f8f8;">
+                <table class="nested-table">
+                  <tbody>
+                    <!-- Building 1 (EXPANDED) -->
+                    <tr class="expanded" data-level="building">
+                      <td class="expand-cell" onclick="toggleRow(this)" style="width: 40px;">
+                        <span class="expand-icon expanded">▶</span>
+                      </td>
+                      <td>
+                        <div class="entity-name">
+                          <span class="entity-icon">🏛️</span>
+                          <span>Building A</span>
+                        </div>
+                      </td>
+                      <td data-column="code"><span class="code">BLD-001</span></td>
+                      <td>Building</td>
+                      <td data-column="children"><span class="count-badge">3 zones</span></td>
+                      <td data-column="status"><span class="badge badge-success">Active</span></td>
+                      <td data-column="created">2024-02-10</td>
+                      <td data-column="modified" class="hidden">2025-01-05</td>
+                      <td data-column="actions">
+                        <button class="action-btn">✏️ Edit</button>
+                        <button class="action-btn">➕ Add Zone</button>
+                      </td>
+                    </tr>
+
+                    <!-- Nested Zones for Building 1 -->
+                    <tr class="nested-row visible">
+                      <td colspan="9" style="padding: 0; background: #eeeeee;">
+                        <table class="nested-table">
+                          <tbody>
+                            <!-- Zone 1 -->
+                            <tr data-level="zone">
+                              <td style="width: 40px;"></td>
+                              <td>
+                                <div class="entity-name" style="padding-left: 24px;">
+                                  <span class="entity-icon">📐</span>
+                                  <span>Production Floor</span>
+                                </div>
+                              </td>
+                              <td data-column="code"><span class="code">ZONE-A1</span></td>
+                              <td>Zone</td>
+                              <td data-column="children">
+                                <a href="/inventory/locations?zone=ZONE-A1" class="location-link">📦 12 locations</a>
+                              </td>
+                              <td data-column="status"><span class="badge badge-success">Active</span></td>
+                              <td data-column="created">2024-03-05</td>
+                              <td data-column="modified" class="hidden">2025-01-03</td>
+                              <td data-column="actions">
+                                <button class="action-btn">✏️ Edit</button>
+                                <button class="action-btn">🔗 View Locations</button>
+                              </td>
+                            </tr>
+
+                            <!-- Zone 2 -->
+                            <tr data-level="zone">
+                              <td style="width: 40px;"></td>
+                              <td>
+                                <div class="entity-name" style="padding-left: 24px;">
+                                  <span class="entity-icon">📐</span>
+                                  <span>Assembly Area</span>
+                                </div>
+                              </td>
+                              <td data-column="code"><span class="code">ZONE-A2</span></td>
+                              <td>Zone</td>
+                              <td data-column="children">
+                                <a href="/inventory/locations?zone=ZONE-A2" class="location-link">📦 8 locations</a>
+                              </td>
+                              <td data-column="status"><span class="badge badge-success">Active</span></td>
+                              <td data-column="created">2024-03-12</td>
+                              <td data-column="modified" class="hidden">2024-12-20</td>
+                              <td data-column="actions">
+                                <button class="action-btn">✏️ Edit</button>
+                                <button class="action-btn">🔗 View Locations</button>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+
+                    <!-- Building 2 (COLLAPSED) -->
+                    <tr data-level="building">
+                      <td class="expand-cell" onclick="toggleRow(this)" style="width: 40px;">
+                        <span class="expand-icon">▶</span>
+                      </td>
+                      <td>
+                        <div class="entity-name">
+                          <span class="entity-icon">🏛️</span>
+                          <span>Building B</span>
+                        </div>
+                      </td>
+                      <td data-column="code"><span class="code">BLD-002</span></td>
+                      <td>Building</td>
+                      <td data-column="children"><span class="count-badge">2 zones</span></td>
+                      <td data-column="status"><span class="badge badge-success">Active</span></td>
+                      <td data-column="created">2024-04-20</td>
+                      <td data-column="modified" class="hidden">2024-11-15</td>
+                      <td data-column="actions">
+                        <button class="action-btn">✏️ Edit</button>
+                        <button class="action-btn">➕ Add Zone</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Facility 2 (COLLAPSED) -->
+            <tr data-level="facility">
+              <td class="expand-cell" onclick="toggleRow(this)">
+                <span class="expand-icon">▶</span>
+              </td>
+              <td>
+                <div class="entity-name">
+                  <span class="entity-icon">🏢</span>
+                  <span>Warehouse A</span>
+                </div>
+              </td>
+              <td data-column="code"><span class="code">FAC-002</span></td>
+              <td>Facility</td>
+              <td data-column="children"><span class="count-badge">2 buildings</span></td>
+              <td data-column="status"><span class="badge badge-success">Active</span></td>
+              <td data-column="created">2024-06-10</td>
+              <td data-column="modified" class="hidden">2024-12-05</td>
+              <td data-column="actions">
+                <button class="action-btn">✏️ Edit</button>
+                <button class="action-btn">➕ Add Building</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Documentation -->
+  <div style="margin-top: 20px; padding: 20px; background: white; border-radius: 8px; max-width: 1600px; margin: 20px auto;">
+    <h3 style="margin-bottom: 12px; color: #059669;">✅ Pros (RECOMMENDED)</h3>
+    <ul style="color: #666; line-height: 1.8;">
+      <li><strong>Familiar table format</strong> - Users comfortable with DataTable interfaces</li>
+      <li><strong>Hierarchy on demand</strong> - Click to expand and see relationships</li>
+      <li><strong>Real column customization</strong> - Matches established DataTable pattern</li>
+      <li><strong>Inline editing</strong> - No dropdown menu, checkboxes above headers</li>
+      <li><strong>Drag-to-reorder</strong> - Intuitive column reordering with ⋮⋮ handles</li>
+      <li><strong>Locked columns</strong> - Name and Type cannot be hidden/moved</li>
+      <li><strong>Backend persistence</strong> - Changes sync to user account automatically</li>
+      <li><strong>3-level hierarchy</strong> - Facility → Building → Zone (clean separation from Inventory)</li>
+      <li><strong>Smart navigation</strong> - Links to filtered Storage Locations page for zone details</li>
+    </ul>
+
+    <h3 style="margin-top: 20px; margin-bottom: 12px; color: #dc2626;">❌ Cons</h3>
+    <ul style="color: #666; line-height: 1.8;">
+      <li>More complex to implement than simple table</li>
+      <li>Can become visually busy when many items expanded</li>
+      <li>Requires careful state management for expand/collapse</li>
+    </ul>
+
+    <h3 style="margin-top: 20px; margin-bottom: 12px; color: #9333ea;">⚙️ Column Customization Features</h3>
+    <ul style="color: #666; line-height: 1.8;">
+      <li><strong>Toggle edit mode</strong> - Click "⚙️ Columns" button (changes to "✓ Done")</li>
+      <li><strong>Checkboxes above headers</strong> - Appear when in edit mode (absolutely positioned)</li>
+      <li><strong>Show/hide columns</strong> - Uncheck to hide, check to show</li>
+      <li><strong>Drag-to-reorder</strong> - Drag column headers to reorder (⋮⋮ handle appears)</li>
+      <li><strong>Locked columns</strong> - Name and Type are required (checkboxes disabled)</li>
+      <li><strong>Visual feedback</strong> - Draggable columns get blue background + drag handles in edit mode</li>
+      <li><strong>Reset to defaults</strong> - "Reset Columns" button appears in edit mode</li>
+      <li><strong>Backend persistence</strong> - Changes saved to backend API automatically</li>
+      <li><strong>Per-user preferences</strong> - Each user's configuration syncs across devices</li>
+    </ul>
+
+    <h3 style="margin-top: 20px; margin-bottom: 12px; color: #10b981;">🔗 Integration with Inventory</h3>
+    <ul style="color: #666; line-height: 1.8;">
+      <li><strong>Zone level stops here</strong> - No duplicate Storage Location management</li>
+      <li><strong>Location count links</strong> - Click "📦 12 locations" to view filtered locations</li>
+      <li><strong>"View Locations" button</strong> - Quick navigation to /inventory/locations?zone=ZONE-A1</li>
+      <li><strong>Single source of truth</strong> - Inventory Locations page remains the CRUD interface for locations</li>
+    </ul>
+  </div>
+
+  <script>
+    let isEditMode = false;
+
+    function toggleEditMode() {
+      isEditMode = !isEditMode;
+
+      const table = document.getElementById('orgTable');
+      const wrapper = document.getElementById('tableWrapper');
+      const button = document.getElementById('toggleEditMode');
+      const resetBtn = document.getElementById('resetColumnsBtn');
+      const icon = document.getElementById('editModeIcon');
+      const text = document.getElementById('editModeText');
+
+      if (isEditMode) {
+        table.classList.add('edit-mode');
+        wrapper.classList.add('edit-mode');
+        button.classList.remove('btn-secondary');
+        button.classList.add('btn-success');
+        icon.textContent = '✓';
+        text.textContent = 'Done';
+        resetBtn.classList.remove('hidden');
+      } else {
+        table.classList.remove('edit-mode');
+        wrapper.classList.remove('edit-mode');
+        button.classList.remove('btn-success');
+        button.classList.add('btn-secondary');
+        icon.textContent = '⚙️';
+        text.textContent = 'Columns';
+        resetBtn.classList.add('hidden');
+      }
+    }
+
+    function toggleColumn(columnName, isVisible) {
+      const cells = document.querySelectorAll(`[data-column="${columnName}"]`);
+      cells.forEach(cell => {
+        if (isVisible) {
+          cell.classList.remove('hidden');
+        } else {
+          cell.classList.add('hidden');
+        }
+      });
+
+      // Also toggle the header column
+      const header = document.getElementById(`col-${columnName}`);
+      if (header) {
+        if (isVisible) {
+          header.classList.remove('hidden');
+        } else {
+          header.classList.add('hidden');
+        }
+      }
+    }
+
+    function resetColumns() {
+      // Reset all columns to default visibility
+      const columns = ['code', 'children', 'status', 'created', 'actions'];
+      const defaultVisible = ['code', 'children', 'status', 'created', 'actions'];
+      const defaultHidden = ['modified'];
+
+      // Show default visible columns
+      defaultVisible.forEach(col => {
+        const checkbox = document.querySelector(`#col-${col} input[type="checkbox"]`);
+        if (checkbox) {
+          checkbox.checked = true;
+          toggleColumn(col, true);
+        }
+      });
+
+      // Hide default hidden columns
+      defaultHidden.forEach(col => {
+        const checkbox = document.querySelector(`#col-${col} input[type="checkbox"]`);
+        if (checkbox) {
+          checkbox.checked = false;
+          toggleColumn(col, false);
+        }
+      });
+    }
+
+    function toggleRow(expandCell) {
+      const parentRow = expandCell.closest('tr');
+      const icon = expandCell.querySelector('.expand-icon');
+      const nestedRow = parentRow.nextElementSibling;
+
+      if (nestedRow && nestedRow.classList.contains('nested-row')) {
+        const isExpanded = icon.classList.contains('expanded');
+
+        if (isExpanded) {
+          // Collapse
+          icon.classList.remove('expanded');
+          nestedRow.classList.remove('visible');
+        } else {
+          // Expand
+          icon.classList.add('expanded');
+          nestedRow.classList.add('visible');
+        }
+      }
+    }
+  </script>
+</body>
+</html>

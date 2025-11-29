@@ -1,0 +1,422 @@
+Perfect. Here’s a copy-paste “mission packet” for Claude Code that (1) executes the next steps safely and (2) feeds results back here in a clean, machine-readable way.
+
+# CLAUDE CODE — EXECUTION PACKET (v1.0)
+
+## A) Operating rules (read first)
+
+* **Target DB:** `fai_db_sandbox` (change only if told otherwise).
+* **Be idempotent:** use `INSERT IGNORE` / `ON DUPLICATE KEY UPDATE` / existence checks.
+* **Stop on first error in each step, report it, then wait for further instructions.**
+* **No destructive changes** beyond what’s specified.
+* **Always echo what you changed** (counts + sample rows).
+
+## B) Return protocol to this chat (mandatory)
+
+After each step, reply with **exactly one** fenced JSON block plus a short human summary.
+
+1. **JSON summary** (single fenced block):
+
+```json
+{
+  "step": "S1-seed-acl",
+  "status": "ok | error",
+  "warnings": [],
+  "sql_files_written": ["db/migrations/S1_seed_acl.sql"],
+  "stats": {
+    "core_roles_inserted": 0,
+    "core_permissions_inserted": 0,
+    "core_role_permissions_inserted": 0
+  },
+  "samples": {
+    "roles": [{"id":1,"slug":"admin","name":"Administrator"}],
+    "permissions": [{"id":1,"slug":"view_gauges"}],
+    "orphans_in_navigation": []
+  },
+  "next_suggested_step": "S2-create-workflow-tables"
+}
+```
+
+2. **Human summary** (very brief, ≤8 lines):
+
+* What changed
+* What you verified
+* Any warnings / anomalies that need a decision
+
+---
+
+## C) Connection (adjust if needed)
+
+Use MySQL 8 client (or Workbench) with credentials you already have.
+
+```bash
+mysql -h 127.0.0.1 -P 3307 -u root -p
+-- then: USE fai_db_sandbox;
+```
+
+---
+
+## D) Steps to run (in order)
+
+### S0 — Preflight + safety
+
+**Goal:** snapshot key facts before changes.
+
+```sql
+USE fai_db_sandbox;
+
+-- Turn off event scheduler during schema changes (if enabled).
+SET @prev_event_scheduler := @@GLOBAL.event_scheduler;
+SET GLOBAL event_scheduler = OFF;
+
+-- Quick inventory
+SELECT DATABASE() AS db;
+SHOW TABLES;
+
+-- Counts we care about
+SELECT COUNT(*) AS roles FROM core_roles;
+SELECT COUNT(*) AS perms FROM core_permissions;
+SELECT COUNT(*) AS rp_maps FROM core_role_permissions;
+
+-- Distinct gauge statuses (for later mapping)
+SELECT DISTINCT status FROM gauges ORDER BY 1;
+
+-- Do we have audit_logs / core_audit_logs?
+SHOW TABLES LIKE 'audit_logs';
+SHOW TABLES LIKE 'core_audit_logs';
+
+-- Any DDL helper procedures lingering?
+SHOW PROCEDURE STATUS WHERE Db = DATABASE();
+```
+
+**Report back** with counts, table presence, and whether `@@GLOBAL.event_scheduler` was ON.
+
+---
+
+### S1 — Seed roles & permissions (ACL)
+
+**Goal:** create 4 roles, 8 permissions, and the mappings; fix nav permission FKs later.
+Save to file `db/migrations/S1_seed_acl.sql` and run.
+
+```sql
+START TRANSACTION;
+
+-- Roles
+INSERT INTO core_roles (slug, name, description)
+VALUES
+  ('admin','Administrator','Full access'),
+  ('quality_manager','Quality Manager','Calibration & audit control'),
+  ('inspector','Inspector','Record inspections & calibrations'),
+  ('operator','Operator','Checkout & use gauges')
+ON DUPLICATE KEY UPDATE name=VALUES(name), description=VALUES(description);
+
+-- Permissions
+INSERT INTO core_permissions (slug, name, description)
+VALUES
+  ('view_gauges','View Gauges','Read-only access to gauges'),
+  ('edit_gauges','Edit Gauges','Create/update gauges & metadata'),
+  ('checkout_gauge','Checkout Gauge','Checkout/return gauges'),
+  ('calibrate_gauge','Calibrate Gauge','Record calibrations'),
+  ('view_audit_logs','View Audit Logs','Read audit trail'),
+  ('manage_users','Manage Users','Create/update users & roles'),
+  ('view_notifications','View Notifications','Read notifications'),
+  ('approve_unseal_request','Approve Unseal Request','Approve unseal workflow')
+ON DUPLICATE KEY UPDATE name=VALUES(name), description=VALUES(description);
+
+-- Role → Permission maps (INSERT IGNORE to stay idempotent)
+-- Helper view (role_id/perm_id by slug)
+WITH r AS (SELECT id, slug FROM core_roles),
+     p AS (SELECT id, slug FROM core_permissions)
+-- admin: all permissions
+INSERT IGNORE INTO core_role_permissions (role_id, permission_id)
+SELECT r.id, p.id FROM r JOIN p ON 1=1 WHERE r.slug='admin';
+
+-- quality_manager
+INSERT IGNORE INTO core_role_permissions (role_id, permission_id)
+SELECT r.id, p.id FROM r JOIN p ON p.slug IN
+  ('view_gauges','edit_gauges','calibrate_gauge','view_audit_logs','view_notifications','approve_unseal_request')
+WHERE r.slug='quality_manager';
+
+-- inspector
+INSERT IGNORE INTO core_role_permissions (role_id, permission_id)
+SELECT r.id, p.id FROM r JOIN p ON p.slug IN
+  ('view_gauges','calibrate_gauge','view_notifications')
+WHERE r.slug='inspector';
+
+-- operator
+INSERT IGNORE INTO core_role_permissions (role_id, permission_id)
+SELECT r.id, p.id FROM r JOIN p ON p.slug IN
+  ('view_gauges','checkout_gauge','view_notifications')
+WHERE r.slug='operator';
+
+COMMIT;
+
+-- Post-checks
+SELECT COUNT(*) AS roles FROM core_roles;
+SELECT COUNT(*) AS perms FROM core_permissions;
+SELECT COUNT(*) AS rp_maps FROM core_role_permissions;
+
+-- Navigation FK orphans (if such column exists)
+SELECT n.id, n.label, n.required_permission_id
+FROM core_navigation n
+LEFT JOIN core_permissions p ON p.id = n.required_permission_id
+WHERE n.required_permission_id IS NOT NULL AND p.id IS NULL
+LIMIT 50;
+```
+
+**Report back** counts + any nav orphans (`required_permission_id` pointing to nowhere).
+
+---
+
+### S2 — Create workflow tables (Calibration + Active Checkouts)
+
+**Goal:** enable calibration logging and single active checkout per gauge.
+Save to file `db/migrations/S2_workflow_tables.sql` and run.
+
+```sql
+START TRANSACTION;
+
+-- 1) Calibrations
+CREATE TABLE IF NOT EXISTS gauge_calibrations (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  gauge_id INT NOT NULL,
+  calibration_date DATE NOT NULL,
+  due_date DATE NULL,
+  passed TINYINT(1) NOT NULL,
+  document_path VARCHAR(512) NULL,
+  calibrated_by INT NULL,
+  notes VARCHAR(255) NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY idx_gc_gauge_id (gauge_id),
+  CONSTRAINT fk_gc_gauge FOREIGN KEY (gauge_id) REFERENCES gauges(id) ON DELETE CASCADE,
+  CONSTRAINT fk_gc_user FOREIGN KEY (calibrated_by) REFERENCES core_users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 2) Active checkouts (single row per gauge if checked out)
+CREATE TABLE IF NOT EXISTS gauge_active_checkouts (
+  gauge_id INT NOT NULL,
+  user_id INT NOT NULL,
+  checked_out_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  location VARCHAR(255) NULL,
+  department VARCHAR(100) NULL,
+  notes VARCHAR(255) NULL,
+  PRIMARY KEY (gauge_id),
+  KEY idx_gac_user (user_id),
+  CONSTRAINT fk_gac_gauge FOREIGN KEY (gauge_id) REFERENCES gauges(id) ON DELETE CASCADE,
+  CONSTRAINT fk_gac_user FOREIGN KEY (user_id) REFERENCES core_users(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+COMMIT;
+
+-- Post-checks
+SHOW CREATE TABLE gauge_calibrations;
+SHOW CREATE TABLE gauge_active_checkouts;
+```
+
+> If a `gauge_checkout_history` table already exists, prepare to add triggers later (S6) to append history on INSERT/DELETE in `gauge_active_checkouts`.
+
+**Report back** with `SHOW CREATE TABLE` outputs (truncated to columns/keys).
+
+---
+
+### S3 — Align `gauges.status` enum
+
+**Goal:** remove non-spec states like `pending_unseal` and tighten to canonical set.
+Save to file `db/migrations/S3_align_gauge_status.sql` and run.
+
+```sql
+START TRANSACTION;
+
+-- Inventory current statuses
+SELECT DISTINCT status FROM gauges ORDER BY 1;
+
+-- Map legacy -> canonical (adjust if columns differ)
+UPDATE gauges
+SET status = CASE
+  WHEN status = 'pending_unseal' AND COALESCE(is_sealed,0) = 0 THEN 'available'
+  WHEN status = 'pending_unseal' AND COALESCE(is_sealed,0) = 1 THEN 'out_of_service'
+  ELSE status
+END
+WHERE status = 'pending_unseal';
+
+-- Enforce canonical enum
+ALTER TABLE gauges
+  MODIFY COLUMN status
+  ENUM('available','checked_out','calibration_due','out_of_service','retired')
+  NOT NULL DEFAULT 'available';
+
+COMMIT;
+
+-- Verify
+SELECT DISTINCT status FROM gauges ORDER BY 1;
+```
+
+**Report back** before/after distinct statuses and affected row count from the `UPDATE`.
+
+---
+
+### S4 — Rename & verify audit trail
+
+**Goal:** standardize name and verify hash chain continuity.
+Save to file `db/migrations/S4_audit_rename_and_verify.sql` and run.
+
+```sql
+START TRANSACTION;
+
+-- Rename if needed
+SET @has_core := (SELECT COUNT(*) FROM information_schema.tables
+  WHERE table_schema=DATABASE() AND table_name='core_audit_logs');
+SET @has_legacy := (SELECT COUNT(*) FROM information_schema.tables
+  WHERE table_schema=DATABASE() AND table_name='audit_logs');
+
+-- Only rename if legacy exists and new does not
+SET @do_rename := (@has_core = 0 AND @has_legacy = 1);
+SET @sql := IF(@do_rename, 'RENAME TABLE audit_logs TO core_audit_logs', 'SELECT 1');
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+-- Helpful index
+SET @has_idx := (SELECT COUNT(*) FROM information_schema.statistics
+  WHERE table_schema=DATABASE() AND table_name='core_audit_logs'
+    AND index_name='idx_core_audit_table_record');
+SET @sql2 := IF(@has_idx=0,
+  'CREATE INDEX idx_core_audit_table_record ON core_audit_logs (table_name, record_id)',
+  'SELECT 1');
+PREPARE stmt2 FROM @sql2; EXECUTE stmt2; DEALLOCATE PREPARE stmt2;
+
+COMMIT;
+
+-- Verify hash chain continuity (assumes columns: id, table_name, record_id, hash, previous_hash)
+WITH ordered AS (
+  SELECT
+    id, table_name, record_id, hash, previous_hash,
+    LAG(hash) OVER (PARTITION BY table_name, record_id ORDER BY id) AS prev_hash_calc
+  FROM core_audit_logs
+)
+SELECT COUNT(*) AS breaks
+FROM ordered
+WHERE previous_hash IS NOT NULL AND previous_hash <> prev_hash_calc;
+
+-- Show a few sample breaks if any
+WITH ordered AS (
+  SELECT
+    id, table_name, record_id, hash, previous_hash,
+    LAG(hash) OVER (PARTITION BY table_name, record_id ORDER BY id) AS prev_hash_calc
+  FROM core_audit_logs
+)
+SELECT id, table_name, record_id
+FROM ordered
+WHERE previous_hash IS NOT NULL AND previous_hash <> prev_hash_calc
+ORDER BY id
+LIMIT 20;
+```
+
+**Report back** `breaks` count and any sample rows.
+
+---
+
+### S5 — Remove DB-level DDL helper procedures
+
+**Goal:** ensure schema changes only come from migrations/code.
+Save to file `db/migrations/S5_drop_ddl_helpers.sql` and run.
+
+```sql
+-- Drop any of these if they exist (list is inclusive; safe to attempt)
+DROP PROCEDURE IF EXISTS
+  AddColumnIfNotExists,
+  AddIndexIfNotExists,
+  add_col_if_missing,
+  add_index_if_missing,
+  CreateIndexIfNotExists,
+  DropFkIfExists,
+  DropIndexIfExists,
+  ensure_index,
+  ModifyEnumIfMissing,
+  generate_next_system_id,
+  pair_thread_gauges;
+
+-- Verify none remain
+SHOW PROCEDURE STATUS WHERE Db = DATABASE();
+```
+
+**Report back** the remaining procedure list (should be empty or only approved routines).
+
+---
+
+### S6 — (Optional, if history table exists) Checkout history triggers
+
+**Goal:** automatically append history when a checkout is created/cleared.
+Save to file `db/migrations/S6_checkout_triggers.sql` and run **only if** `gauge_checkout_history` exists with at least:
+`(id PK, gauge_id, action, actor_user_id, target_user_id, location, department, notes, related_transfer_id, action_at)`.
+
+```sql
+-- Detect history table
+SET @has_history := (SELECT COUNT(*) FROM information_schema.tables
+  WHERE table_schema=DATABASE() AND table_name='gauge_checkout_history');
+
+-- Create triggers only if table exists
+SET @sql_ins := IF(@has_history=1,
+'CREATE TRIGGER trg_gac_insert AFTER INSERT ON gauge_active_checkouts
+FOR EACH ROW
+  INSERT INTO gauge_checkout_history
+  (gauge_id, action, actor_user_id, target_user_id, location, department, notes, action_at)
+  VALUES (NEW.gauge_id, ''checkout'', NEW.user_id, NEW.user_id, NEW.location, NEW.department, NEW.notes, NEW.checked_out_at);',
+'SELECT 1');
+
+SET @sql_del := IF(@has_history=1,
+'CREATE TRIGGER trg_gac_delete AFTER DELETE ON gauge_active_checkouts
+FOR EACH ROW
+  INSERT INTO gauge_checkout_history
+  (gauge_id, action, actor_user_id, target_user_id, location, department, notes, action_at)
+  VALUES (OLD.gauge_id, ''return'', OLD.user_id, OLD.user_id, OLD.location, OLD.department, OLD.notes, CURRENT_TIMESTAMP);',
+'SELECT 1');
+
+PREPARE s1 FROM @sql_ins; EXECUTE s1; DEALLOCATE PREPARE s1;
+PREPARE s2 FROM @sql_del; EXECUTE s2; DEALLOCATE PREPARE s2;
+
+-- Verify triggers
+SHOW TRIGGERS WHERE `Table`='gauge_active_checkouts';
+```
+
+**Report back** trigger list or that history table was not present.
+
+---
+
+### S7 — Postflight + restore scheduler
+
+**Goal:** sanity checks and return scheduler to previous state.
+
+```sql
+-- Charset/index hygiene spot checks
+SELECT TABLE_NAME, TABLE_COLLATION FROM information_schema.tables
+WHERE table_schema = DATABASE()
+  AND TABLE_COLLATION NOT LIKE 'utf8mb4%';
+
+-- Foreign key indexes missing? (quick heuristic)
+SELECT TABLE_NAME, CONSTRAINT_NAME
+FROM information_schema.REFERENTIAL_CONSTRAINTS
+WHERE CONSTRAINT_SCHEMA = DATABASE();
+
+-- Restore event scheduler to its previous state
+SET GLOBAL event_scheduler = @prev_event_scheduler;
+```
+
+**Report back** any non-utf8mb4 tables and any FK warnings you saw.
+
+---
+
+## E) If something doesn’t match
+
+* If a column/table name differs, **discover it** (`SHOW CREATE TABLE ...`) and adapt the SQL.
+* Include the adaptation in your JSON summary under `"warnings"`.
+
+---
+
+## F) What to ask me (the next chat) only if needed
+
+* If `core_navigation` exists and shows orphans, paste the list and I’ll give you the exact mapping (nav → permission slug).
+* If the audit hash check reports `breaks > 0`, paste 3 sample rows; I’ll supply a repair strategy.
+
+---
+
+If you’re good with this, tell me “Running S0…” and have Claude start with **S0**. When Claude posts results in the JSON + brief format above, I’ll review and hand back the follow-ups instantly.

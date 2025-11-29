@@ -1,0 +1,241 @@
+# Final Implementation Plan
+
+## Overview
+Build a modular ERP system where business modules can be independently added/removed without breaking the system. Updated to reflect Grok's final specifications including simplified configuration format and 6 specific documentation deliverables.
+
+## Core Architecture
+
+### 4 Core Modules (Required Infrastructure)
+```
+erp-core/src/core/
+├── auth/           # Authentication, user management, permissions
+├── navigation/     # Routing, app navigation, menu system
+├── data/           # API client, caching, event bus
+└── notifications/  # User messages, toasts, alerts
+```
+
+**Each core module gets a one-page guide (auth.md, navigation.md, etc.) explaining its role in plain English.**
+
+### Business Modules (Customer Configurable)
+```
+src/modules/
+├── gauge-tracking/        # Asset tracking and compliance
+├── inventory-management/  # Stock levels and reordering
+├── customer-relations/    # CRM functionality
+└── [future-modules]/     # Add without touching existing code
+```
+
+## Module Structure Standard
+
+### Every Business Module (# lines is a guide...tell user if there is a deviation of >50 lines)
+```
+modules/[module-name]/
+├── index.ts                # Module registration
+├── [Module]Component.tsx   # Main component (60-100 lines)
+├── routes.tsx             # Module routes
+├── components/            # UI components (30-80 lines each)
+├── services/             # Business logic (60-120 lines each)
+├── stores/               # State management (80-150 lines each)
+└── types/                # TypeScript definitions
+```
+
+### Module Registration
+```typescript
+// modules/gauge-tracking/index.ts
+export const gaugeTrackingModule: ModuleDescriptor = {
+  id: 'gauge-tracking',
+  name: 'Gauge Tracking',
+  routes: [{ path: '/gauges', component: GaugeList }],
+  navigation: [{ label: 'Gauges', path: '/gauges' }],
+  dependencies: [] // Required dependencies only
+  // Room for optional dependencies later
+}
+```
+
+## Event System
+
+### 7 Domain-Specific Events
+```typescript
+// erp-core/src/core/data/events.ts
+export const EVENTS = {
+  // Asset domain
+  ASSET_UPDATED: 'asset.updated',
+  ASSET_CHECKOUT: 'asset.checkout',
+  ASSET_RETURN: 'asset.return',
+  
+  // User domain  
+  USER_LOGIN: 'user.login',
+  USER_UPDATED: 'user.updated',
+  
+  // System domain
+  PERMISSION_CHANGED: 'system.permission_changed',
+  MODULE_ENABLED: 'system.module_enabled'
+} as const
+
+// Include usage examples in the file
+export const eventExamples = {
+  'asset.updated': { assetId: 'gauge-123', status: 'available' },
+  'user.login': { userId: 'user-456', timestamp: Date.now() }
+}
+```
+
+**Rule:** Use core services first, events only when another module must take action.
+
+## File Organization Rules (per Grok)
+
+### File Size Guidelines
+- **Target range:** 30-200 lines per file
+- **Split trigger:** Mixed responsibilities (not size)
+- **Keep together:** Single cohesive workflow
+- **Rule:** Split only if mixing tasks (e.g., checkout + reports). Keep focused files small (30-200 lines), each doing one job.
+
+### Examples
+```typescript
+// Split these (mixed concerns):
+❌ GaugeService.ts: checkout + return + reports + admin functions
+
+// Keep these together (single workflow):
+✅ GaugeCheckout.tsx: validation + API + success handling (150 lines)
+```
+
+## Module Independence Rules
+
+### ✅ Business Modules CAN:
+- Import from core modules (`@fireproof/erp-core/auth`, `@fireproof/erp-core/data`)
+- Use core services and components
+- Communicate via event bus
+- Register routes and navigation
+- Track their own operations internally (no events)
+
+### ❌ Business Modules CANNOT:
+- Import from other business modules
+- Access other module's internal state  
+- Break if other modules are disabled
+- Depend on other modules being enabled
+- Broadcast routine operations (checkout, return, etc.)
+
+**Enforcement:** Linting rules block cross-module imports, allow only `@fireproof/erp-core/*` imports.
+
+## Customer Configuration
+
+### Module Loading (Simplified per Grok)
+```json
+// enabled-modules.json (simplified format - list only modules)
+["gauge-tracking", "inventory-management"]
+```
+
+### Settings UI
+Simple checkbox interface:
+- ✅ Gauge Tracking  
+- ✅ Inventory Management
+- ⬜ Customer Relations
+- ⬜ Financial Reporting
+
+**With validation warnings:** "Gauge-tracking needs user-management enabled first"
+
+## MainApp.tsx Structure
+
+### Pure Orchestration Pattern
+```typescript
+export function MainApp() {
+  const { currentUser } = useAuth()
+  const { enabledModules } = useModuleConfig()
+  
+  if (!currentUser) return <LoginScreen />
+  
+  return (
+    <AppLayout>
+      <Navigation />
+      <main>
+        <ModuleRenderer enabledModules={enabledModules} />
+      </main>
+      <NotificationContainer />
+    </AppLayout>
+  )
+}
+```
+
+**Purpose:** Pure orchestration - routing and providers only. Business logic belongs in modules.
+
+## Testing Strategy
+
+### Module Isolation Tests (Jest)
+```typescript
+describe('GaugeTrackingModule', () => {
+  test('works without other modules', () => {
+    // Mock core services only
+    mockAuth({ currentUser: testUser })
+    mockApiClient()
+    
+    // Should work independently
+    render(<GaugeTrackingModule />)
+    expect(screen.getByText('Gauge List')).toBeInTheDocument()
+  })
+})
+```
+
+### End-to-End Test (Playwright)
+One test for gauge checkout workflow to verify complete integration.
+
+## Error Handling (per Grok specifications)
+
+### Module Loading Errors
+**Primary: Show in app UI with specific guidance:**
+```typescript
+<ModuleErrorScreen>
+  <h3>Module Loading Error</h3>
+  <p>Gauge-tracking needs user-management enabled first</p>
+  <button onClick={() => navigate('/settings')}>Fix in Settings</button>
+</ModuleErrorScreen>
+```
+
+**Secondary: Log to text file for debugging:**
+```
+// error-log.txt:
+// 2024-01-15 10:30:22 - Module Error: gauge-tracking failed to load
+// Reason: Missing dependency 'user-management'
+```
+
+### Validation Errors
+Settings UI shows warnings for invalid configurations before allowing changes.
+
+## Documentation Requirements (6 Specific Files per Grok)
+
+### Required Documentation (All in Plain English)
+1. `auth.md` - How authentication and user management works
+2. `navigation.md` - How app routing and menus work  
+3. `data.md` - How API calls and module communication works
+4. `notifications.md` - How user messages and alerts work
+5. `module-setup.md` - Complete, standalone guide for adding new modules (folder structure, core connections)
+6. `system-overview.md` - High-level explanation of how everything fits together
+
+**All documentation in plain English for non-technical oversight.**
+
+## Deliverables (per Grok's Final Directive)
+
+### Primary Deliverables
+- [ ] **Gauge-tracking module working alone** (with navigation and tests)
+- [ ] **Module toggle via settings UI** (checkboxes with validation)
+
+### Documentation Deliverables (6 specific guides in plain English)
+- [ ] **auth.md** - Authentication and user management guide
+- [ ] **navigation.md** - App routing and menu guide
+- [ ] **data.md** - API calls and communication guide  
+- [ ] **notifications.md** - User messaging system guide
+- [ ] **module-setup.md** - Complete standalone guide for adding modules
+- [ ] **system-overview.md** - High-level system explanation
+
+### Success Criteria
+1. **Gauge-tracking module works alone** - No dependencies on other business modules
+2. **Customer can toggle modules** - Settings UI with validation warnings  
+3. **MainApp.tsx as pure orchestration** - Only routing and providers, no business logic
+4. **Clear documentation** - Non-technical stakeholders can understand system
+5. **Enforced boundaries** - Linting prevents cross-module imports
+
+## Why This Works
+
+- **Simple:** 4 core modules, 7 events, flexible file sizes
+- **Safe:** TypeScript + linting + CI prevents architectural mistakes
+- **Manageable:** Plain English documentation enables non-technical oversight
+- **Scalable:** Add new modules without modifying existing code
+- **Customer-Focused:** Enable/disable modules based on business needs

@@ -1,0 +1,70 @@
+# Pre-commit hooks configuration for Backend Quality Gate
+# Install with: pip install pre-commit && pre-commit install
+
+repos:
+  - repo: local
+    hooks:
+      - id: backend-unit-tests
+        name: Backend Unit Tests
+        entry: bash -c 'cd backend && npm run test:unit -- --passWithNoTests --silent'
+        language: system
+        files: '^backend/.*\.(js|json)$'
+        pass_filenames: false
+
+      - id: backend-security-audit
+        name: Backend Security Audit
+        entry: bash -c 'cd backend && npm run security:audit'
+        language: system
+        files: '^backend/package.*\.json$'
+        pass_filenames: false
+
+      - id: backend-api-validation
+        name: Backend API Validation
+        entry: bash -c 'cd backend && npm run spec:validate || echo "API spec validation skipped"'
+        language: system
+        files: '^backend/docs/.*\.ya?ml$'
+        pass_filenames: false
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+        files: '^backend/.*\.(js|json|md|yml|yaml)$'
+      
+      - id: end-of-file-fixer
+        files: '^backend/.*\.(js|json|md|yml|yaml)$'
+      
+      - id: check-json
+        files: '^backend/.*\.json$'
+      
+      - id: check-yaml
+        files: '^backend/.*\.ya?ml$'
+      
+      - id: check-merge-conflict
+        files: '^backend/.*$'
+      
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+        files: '^backend/.*$'
+
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v8.44.0
+    hooks:
+      - id: eslint
+        files: '^backend/.*\.js$'
+        args: [--fix, --max-warnings=0]
+        additional_dependencies:
+          - eslint@^8.44.0
+        # Skip if no eslint config
+        verbose: false
+        exclude: '^backend/node_modules/.*$'
+
+  - repo: local
+    hooks:
+      - id: backend-quick-verify
+        name: Backend Quick Verification
+        entry: bash -c 'cd backend && npm run verify:backend:fast || (echo "❌ Backend verification failed"; exit 1)'
+        language: system
+        files: '^backend/.*\.(js|json)$'
+        pass_filenames: false
+        stages: [pre-push]

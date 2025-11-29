@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fire-Proof ERP - Tab Components Comparison</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .summary {
+            background: white;
+            padding: 30px;
+            margin-bottom: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .summary h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+        
+        .stat-card h3 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        
+        .comparison-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .column {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .column.legacy {
+            border-top: 4px solid #dc3545;
+        }
+        
+        .column.modular {
+            border-top: 4px solid #28a745;
+        }
+        
+        .column h2 {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .column.legacy h2 {
+            color: #dc3545;
+        }
+        
+        .column.modular h2 {
+            color: #28a745;
+        }
+        
+        .tab-group {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .tab-group h3 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .tab-preview {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .tabs-visual {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        
+        .tab-item {
+            padding: 8px 16px;
+            background: #e9ecef;
+            border-radius: 6px 6px 0 0;
+            font-size: 0.9em;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .tab-item:hover {
+            background: #dee2e6;
+        }
+        
+        .tab-item.active {
+            background: #007bff;
+            color: white;
+        }
+        
+        .tab-item .badge {
+            margin-left: 5px;
+            padding: 2px 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            font-size: 0.8em;
+        }
+        
+        .implementation-info {
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff3cd;
+            border-radius: 6px;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .implementation-info h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .file-path {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background: #f8f9fa;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            color: #495057;
+            word-break: break-all;
+        }
+        
+        .code-snippet {
+            margin-top: 10px;
+            padding: 15px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.85em;
+            overflow-x: auto;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .feature-list li {
+            padding: 5px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .feature-list li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .not-found {
+            color: #6c757d;
+            font-style: italic;
+            padding: 20px;
+            text-align: center;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .technology-note {
+            margin-top: 15px;
+            padding: 10px 15px;
+            background: #e7f3ff;
+            border-left: 4px solid #0066cc;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 768px) {
+            .comparison-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Fire-Proof ERP - Tab Components Analysis</h1>
+        <p>Comprehensive comparison of tab components between Legacy and Modular frontends</p>
+    </div>
+    
+    <div class="summary">
+        <h2>📊 Summary Statistics</h2>
+        <div class="stats">
+            <div class="stat-card">
+                <h3>8</h3>
+                <p>Total Tab Groups</p>
+            </div>
+            <div class="stat-card">
+                <h3>33+</h3>
+                <p>Individual Tabs</p>
+            </div>
+            <div class="stat-card">
+                <h3>2</h3>
+                <p>Frontend Systems</p>
+            </div>
+            <div class="stat-card">
+                <h3>3</h3>
+                <p>Tab Technologies</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="comparison-container">
+        <div class="column legacy">
+            <h2>🔴 Legacy Frontend</h2>
+            
+            <div class="tab-group">
+                <h3>1. Main Navigation Tabs</h3>
+                <div class="tab-preview">
+                    <div class="tabs-visual">
+                        <div class="tab-item active">🔧 Gauge Management</div>
+                        <div class="tab-item">📊 My Dashboard</div>
+                        <div class="tab-item">👤 Admin Panel</div>
+                        <div class="tab-item">✅ Approvals <span class="badge">5</span></div>
+                    </div>
+                    <div class="file-path">Fireproof Gauge System/frontend/src/components/TabNavigation.tsx</div>
+                    <div class="technology-note">
+                        <strong>Note:</strong> Re-exports from @fireproof/erp-core/navigation
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-group">
+                <h3>2. Gauge Details Modal Tabs</h3>
+                <div class="tab-preview">
+                    <div class="tabs-visual">
+                        <div class="tab-item active">ℹ️ Details</div>
+                        <div class="tab-item">📜 History</div>
+                        <div class="tab-item">📋 Calibration Certs</div>
+                    </div>
+                    <div class="file-path">Fireproof Gauge System/frontend/src/components/modals/GaugeDetailsModal.tsx</div>
+                    <ul class="feature-list">
+                        <li>History tab hidden for employee-owned/CMM gauges</li>
+                        <li>Conditional rendering based on gauge type</li>
+                        <li>CSS class: details-tabs, details-tab</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="tab-group">
+                <h3>3. Review Modal Tabs</h3>
+                <div class="tab-preview">
+                    <div class="tabs-visual">
+                        <div class="tab-item active">✅ Check-in Approvals <span class="badge">3</span></div>
+                        <div class="tab-item">🔓 Unseal Requests <span class="badge">2</span></div>
+                    </div>
+                    <div class="file-path">Fireproof Gauge System/frontend/src/components/modals/ReviewModal.tsx</div>
+                    <ul class="feature-list">
+                        <li>Dynamic tab display based on pending items</li>
+                        <li>Count badges show pending items</li>
+                        <li>CSS class: tab-navigation, tab-btn</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="tab-group">
+                <h3>4. Admin Panel Tabs</h3>
+                <div class="tab-preview">
+                    <div class="tabs-visual">
+                        <div class="tab-item active">👥 User Management</div>
+                        <div class="tab-item">⚙️ System Settings</div>
+                        <div class="tab-item">📊 Reports</div>
+                        <div class="tab-item">💾 Data Management</div>
+                        <div class="tab-item">🚫 Rejection Reasons</div>
+                        <div class="tab-item">🔧 System Recovery</div>
+                    </div>
+                    <div class="file-path">Fireproof Gauge System/frontend/src/components/admin/AdminPanel.tsx</div>
+                    <ul class="feature-list">
+                        <li>System Recovery tab only for super_admin role</li>
+                        <li>Full CRUD operations in each tab</li>
+                        <li>CSS class: category-tabs, category-tab</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="implementation-info">
+                <h4>Legacy Implementation Details</h4>
+                <ul class="feature-list">
+                    <li>CSS-based styling with .active class</li>
+                    <li>State management via React hooks</li>
+                    <li>Font Awesome icons for visual elements</li>
+                    <li>Manual tab switching logic</li>
+                </ul>
+                <div class="code-snippet">// Example pattern
+const [activeTab, setActiveTab] = useState('default');
+
+&lt;button 
+  className={`tab-btn ${activeTab === 'name' ? 'active' : ''}`}
+  onClick={() => setActiveTab('name')}
+&gt;</div>
+            </div>
+        </div>
+        
+        <div class="column modular">
+            <h2>🟢 Modular Frontend</h2>
+            
+            <div class="tab-group">
+                <h3>1. Main Navigation Tabs</h3>
+                <div class="tab-preview">
+                    <div class="tabs-visual">
+                        <div class="tab-item active">⚙️ Gauge Management</div>
+                        <div class="tab-item">📈 My Dashboard</div>
+                        <div class="tab-item">⚡ Admin</div>
+                    </div>
+                    <div class="file-path">frontend/src/infrastructure/components/MainLayout.tsx</div>
+                    <ul class="feature-list">
+                        <li>CSS Modules: MainLayout.module.css</li>
+                        <li>navTab, navTabFirst, navTabMiddle, navTabLast classes</li>
+                        <li>Route-based active state detection</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="tab-group">
+                <h3>2. Gauge Details Modal Tabs</h3>
+                <div class="tab-preview">
+                    <div class="tabs-visual">
+                        <div class="tab-item active">ℹ️ Details</div>
+                        <div class="tab-item">📜 History</div>
+                        <div class="tab-item">🏆 Calibration Certs</div>
+                    </div>
+                    <div class="file-path">frontend/src/components/GaugeDetailsModal.tsx</div>
+                    <ul class="feature-list">
+                        <li>CSS Modules: GaugeDetailsModal.module.css</li>
+                        <li>detailsTabs, detailsTab, detailsTabActive classes</li>
+                        <li>Icon component integration</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="tab-group">
+                <h3>3. Gauge Inventory Category Tabs</h3>
+                <div class="tab-preview">
+                    <div class="tabs-visual">
+                        <div class="tab-item active">📦 All Gauges</div>
+                        <div class="tab-item">🏗️ Large Equipment</div>
+                        <div class="tab-item">🔨 Company Hand Tools</div>
+                        <div class="tab-item">🔧 Employee Hand Tools</div>
+                        <div class="tab-item">🧵 Thread Gauges <span class="badge">15</span></div>
+                    </div>
+                    <div class="file-path">frontend/src/modules/gauge/components/GaugeInventory.tsx</div>
+                    <ul class="feature-list">
+                        <li>Category filtering system</li>
+                        <li>Thread gauges trigger sub-navigation</li>
+                        <li>Dynamic count badges</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="tab-group">
+                <h3>4. Thread Sub-Navigation Tabs</h3>
+                <div class="tab-preview">
+                    <div class="tabs-visual">
+                        <div class="tab-item active">🧵 All Thread <span class="badge">15</span></div>
+                        <div class="tab-item">⭕ Ring Gauges <span class="badge">8</span></div>
+                        <div class="tab-item">📍 Plug Gauges <span class="badge">7</span></div>
+                    </div>
+                    <div class="file-path">frontend/src/modules/gauge/components/ThreadSubNavigation.tsx</div>
+                    <ul class="feature-list">
+                        <li>Specialized sub-navigation component</li>
+                        <li>Real-time count calculation</li>
+                        <li>Descriptive footer with item count</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="tab-group">
+                <h3>5. My Dashboard Tabs</h3>
+                <div class="tab-preview">
+                    <div class="tabs-visual">
+                        <div class="tab-item active">🔧 My Personal Tools <span class="badge">3</span></div>
+                        <div class="tab-item">📤 Items I've Checked Out <span class="badge">5</span></div>
+                        <div class="tab-item">↔️ Pending Transfers <span class="badge">2</span></div>
+                    </div>
+                    <div class="file-path">frontend/src/modules/gauge/pages/MyDashboard.tsx</div>
+                    <ul class="feature-list">
+                        <li>User-specific filtering</li>
+                        <li>Real-time count updates</li>
+                        <li>categoryTabs, categoryTab classes</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="tab-group">
+                <h3>6. Radix UI Tabs Component</h3>
+                <div class="tab-preview">
+                    <div class="tabs-visual">
+                        <div class="tab-item active">Tab 1</div>
+                        <div class="tab-item">Tab 2</div>
+                        <div class="tab-item">Tab 3</div>
+                    </div>
+                    <div class="file-path">frontend/src/infrastructure/components/ui/Tabs.tsx</div>
+                    <ul class="feature-list">
+                        <li>Based on @radix-ui/react-tabs</li>
+                        <li>Fully accessible (ARIA compliant)</li>
+                        <li>CSS Modules: Tabs.module.css</li>
+                        <li>Reusable component system</li>
+                    </ul>
+                    <div class="technology-note">
+                        <strong>Modern approach:</strong> Uses Radix UI primitives for accessibility and keyboard navigation
+                    </div>
+                </div>
+            </div>
+            
+            <div class="implementation-info">
+                <h4>Modular Implementation Details</h4>
+                <ul class="feature-list">
+                    <li>CSS Modules for scoped styling</li>
+                    <li>Component composition pattern</li>
+                    <li>TypeScript for type safety</li>
+                    <li>Icon component system</li>
+                    <li>Route-based navigation</li>
+                </ul>
+                <div class="code-snippet">// Radix UI pattern
+import { Tabs, TabsList, TabsTrigger, TabsContent } from './ui/Tabs';
+
+&lt;Tabs defaultValue="tab1"&gt;
+  &lt;TabsList&gt;
+    &lt;TabsTrigger value="tab1"&gt;Tab 1&lt;/TabsTrigger&gt;
+    &lt;TabsTrigger value="tab2"&gt;Tab 2&lt;/TabsTrigger&gt;
+  &lt;/TabsList&gt;
+  &lt;TabsContent value="tab1"&gt;Content 1&lt;/TabsContent&gt;
+  &lt;TabsContent value="tab2"&gt;Content 2&lt;/TabsContent&gt;
+&lt;/Tabs&gt;</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="summary">
+        <h2>🔍 Key Findings</h2>
+        <div class="tab-group">
+            <h3>Architecture Differences</h3>
+            <ul class="feature-list">
+                <li><strong>Legacy:</strong> Traditional CSS classes with manual state management</li>
+                <li><strong>Modular:</strong> CSS Modules + Radix UI for modern, accessible components</li>
+                <li><strong>Shared:</strong> Both use React hooks for state management</li>
+                <li><strong>Migration Path:</strong> Gradual adoption of Radix UI tabs in modular frontend</li>
+            </ul>
+        </div>
+        
+        <div class="tab-group">
+            <h3>Common Tab Patterns</h3>
+            <ul class="feature-list">
+                <li>Main navigation (3-4 top-level tabs)</li>
+                <li>Modal sub-tabs (2-3 tabs for detailed views)</li>
+                <li>Category filters (4-5 tabs for inventory management)</li>
+                <li>Admin sections (5-6 tabs for different management areas)</li>
+                <li>Dashboard views (3 tabs for personalized content)</li>
+            </ul>
+        </div>
+        
+        <div class="tab-group">
+            <h3>Visual Consistency</h3>
+            <ul class="feature-list">
+                <li>Both systems use similar visual metaphors (active states, badges)</li>
+                <li>Icon usage is consistent across both frontends</li>
+                <li>Tab grouping follows similar patterns</li>
+                <li>Conditional rendering based on user roles/permissions</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

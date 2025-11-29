@@ -1,0 +1,3 @@
+@echo off
+echo Opening Intuitive Permission Modal Design Proposal...
+start "" "permission-modal-intuitive-design.html"

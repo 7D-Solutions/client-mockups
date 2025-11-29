@@ -1,0 +1,273 @@
+/**
+ * Notification styles
+ * Supports both single (center overlay) and stacked display modes
+ */
+
+/* Animation keyframes */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Base notification styles */
+.notification {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 300px;
+  max-width: 500px;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  font-size: 1rem;
+  line-height: 1.5;
+  transition: all 0.3s ease;
+}
+
+.notification-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.notification-content i {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.notification-message {
+  flex: 1;
+  word-break: break-word;
+}
+
+.notification-action {
+  margin-left: 1rem;
+  padding: 0.25rem 0.75rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  color: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.notification-action:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.notification-dismiss {
+  margin-left: 1rem;
+  padding: 0.25rem;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  line-height: 1;
+}
+
+.notification-dismiss:hover {
+  opacity: 1;
+}
+
+/* Notification types */
+.notification-success {
+  background-color: #28a745;
+  color: white;
+}
+
+.notification-error {
+  background-color: #dc3545;
+  color: white;
+}
+
+.notification-warning {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.notification-info {
+  background-color: #17a2b8;
+  color: white;
+}
+
+/* Single notification container (center overlay) */
+.notification-single-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+}
+
+.notification-single-container .notification {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Stacked notification container */
+.notification-container {
+  position: fixed;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  pointer-events: none;
+}
+
+.notification-container .notification {
+  pointer-events: auto;
+}
+
+/* Position variations for stacked mode */
+.notification-container-top-right {
+  top: 0;
+  right: 0;
+}
+
+.notification-container-top-right .notification {
+  animation: slideInFromRight 0.3s ease-out;
+}
+
+.notification-container-top-left {
+  top: 0;
+  left: 0;
+}
+
+.notification-container-top-left .notification {
+  animation: slideInFromLeft 0.3s ease-out;
+}
+
+.notification-container-bottom-right {
+  bottom: 0;
+  right: 0;
+}
+
+.notification-container-bottom-right .notification {
+  animation: slideInFromRight 0.3s ease-out;
+}
+
+.notification-container-bottom-left {
+  bottom: 0;
+  left: 0;
+}
+
+.notification-container-bottom-left .notification {
+  animation: slideInFromLeft 0.3s ease-out;
+}
+
+.notification-container-top-center {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.notification-container-top-center .notification {
+  animation: slideInFromTop 0.3s ease-out;
+}
+
+.notification-container-bottom-center {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.notification-container-bottom-center .notification {
+  animation: slideInFromBottom 0.3s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .notification {
+    min-width: calc(100vw - 2rem);
+    max-width: calc(100vw - 2rem);
+  }
+  
+  .notification-container {
+    left: 0;
+    right: 0;
+    padding: 0.5rem;
+  }
+  
+  .notification-container-top-center,
+  .notification-container-bottom-center {
+    transform: none;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .notification {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  }
+  
+  .notification-warning {
+    background-color: #ffb700;
+    color: #1a1a1a;
+  }
+}
+
+/* Print styles */
+@media print {
+  .notification,
+  .notification-container,
+  .notification-single-container {
+    display: none;
+  }
+}

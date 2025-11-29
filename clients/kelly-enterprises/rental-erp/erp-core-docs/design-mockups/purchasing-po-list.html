@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Orders - Fireproof ERP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-primary: #2563eb;
+            --color-primary-dark: #1e40af;
+            --color-primary-light: #dbeafe;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-danger: #ef4444;
+            --color-info: #3b82f6;
+            --color-gray-50: #f9fafb;
+            --color-gray-100: #f3f4f6;
+            --color-gray-200: #e5e7eb;
+            --color-gray-300: #d1d5db;
+            --color-gray-600: #4b5563;
+            --color-gray-700: #374151;
+            --color-gray-800: #1f2937;
+            --color-border: #e5e7eb;
+            --radius-sm: 4px;
+            --radius-md: 6px;
+            --radius-lg: 8px;
+            --space-1: 4px;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 20px;
+            --space-6: 24px;
+            --font-size-xs: 12px;
+            --font-size-sm: 14px;
+            --font-size-base: 16px;
+            --font-size-lg: 18px;
+            --font-size-xl: 20px;
+            --font-size-2xl: 24px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--color-gray-50);
+            color: var(--color-gray-800);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--space-6);
+        }
+
+        .page-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .page-header {
+            padding: var(--space-6);
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .back-btn {
+            padding: var(--space-2);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-border);
+            background: white;
+            cursor: pointer;
+            color: var(--color-gray-700);
+            font-size: var(--font-size-base);
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: var(--color-gray-50);
+        }
+
+        .page-title {
+            font-size: var(--font-size-2xl);
+            font-weight: 600;
+            color: var(--color-gray-800);
+        }
+
+        .btn {
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-border);
+            background: white;
+            color: var(--color-gray-700);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .btn:hover {
+            background: var(--color-gray-50);
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-dark);
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            padding: var(--space-4);
+            border-bottom: 1px solid var(--color-border);
+            background: var(--color-gray-50);
+            display: flex;
+            gap: var(--space-3);
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 250px;
+            padding: var(--space-2) var(--space-3);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+        }
+
+        .filter-select {
+            padding: var(--space-2) var(--space-3);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            background: white;
+            cursor: pointer;
+        }
+
+        /* DataTable */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: var(--font-size-sm);
+        }
+
+        thead {
+            background: var(--color-gray-50);
+            border-bottom: 2px solid var(--color-border);
+        }
+
+        th {
+            padding: var(--space-3) var(--space-4);
+            text-align: left;
+            font-weight: 600;
+            color: var(--color-gray-700);
+            font-size: var(--font-size-xs);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        th.center { text-align: center; }
+        th.right { text-align: right; }
+
+        tbody tr {
+            border-bottom: 1px solid var(--color-border);
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: var(--color-gray-50);
+            cursor: pointer;
+        }
+
+        td {
+            padding: var(--space-3) var(--space-4);
+            color: var(--color-gray-800);
+        }
+
+        td.center { text-align: center; }
+        td.right { text-align: right; }
+
+        .po-number {
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+            font-weight: 500;
+        }
+
+        .badge-pending { background: #fef3c7; color: var(--color-warning); }
+        .badge-approved { background: var(--color-primary-light); color: var(--color-primary); }
+        .badge-ordered { background: #e0e7ff; color: #6366f1; }
+        .badge-received { background: #d1fae5; color: var(--color-success); }
+        .badge-cancelled { background: #fee2e2; color: var(--color-danger); }
+
+        .actions-cell {
+            display: flex;
+            gap: var(--space-2);
+            justify-content: center;
+        }
+
+        .btn-sm {
+            padding: 4px var(--space-2);
+            font-size: var(--font-size-xs);
+        }
+
+        .btn-secondary {
+            border-color: var(--color-gray-300);
+        }
+
+        .btn-info {
+            background: var(--color-info);
+            color: white;
+            border-color: var(--color-info);
+        }
+
+        .btn-info:hover {
+            background: #2563eb;
+        }
+
+        /* Footer */
+        .table-footer {
+            padding: var(--space-4);
+            border-top: 1px solid var(--color-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pagination {
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        .page-btn {
+            padding: var(--space-2) var(--space-3);
+            border: 1px solid var(--color-border);
+            background: white;
+            cursor: pointer;
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+        }
+
+        .page-btn:hover {
+            background: var(--color-gray-50);
+        }
+
+        .page-btn.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .empty-state {
+            padding: var(--space-8);
+            text-align: center;
+            color: var(--color-gray-600);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-card">
+            <!-- Header -->
+            <div class="page-header">
+                <div class="header-left">
+                    <button class="back-btn">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h1 class="page-title">Purchase Orders</h1>
+                </div>
+                <button class="btn btn-primary">
+                    <i class="fas fa-plus"></i> New PO
+                </button>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <input
+                    type="text"
+                    class="search-input"
+                    placeholder="Search POs by number, supplier, or description..."
+                />
+                <select class="filter-select">
+                    <option value="">All Statuses</option>
+                    <option value="pending">Pending Approval</option>
+                    <option value="approved">Approved</option>
+                    <option value="ordered">Ordered</option>
+                    <option value="received">Received</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+                <select class="filter-select">
+                    <option value="">All Suppliers</option>
+                    <option value="1">Acme Supply Co</option>
+                    <option value="2">Industrial Parts LLC</option>
+                    <option value="3">Precision Tools Inc</option>
+                    <option value="4">Metal Masters</option>
+                </select>
+                <button class="btn">
+                    <i class="fas fa-filter"></i> More Filters
+                </button>
+                <button class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Clear
+                </button>
+            </div>
+
+            <!-- Data Table -->
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>PO NUMBER</th>
+                            <th>SUPPLIER</th>
+                            <th>DESCRIPTION</th>
+                            <th class="center">STATUS</th>
+                            <th class="right">TOTAL</th>
+                            <th class="center">ORDER DATE</th>
+                            <th class="center">EXPECTED</th>
+                            <th class="center">ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="po-number">PO-1289</span></td>
+                            <td>Acme Supply Co</td>
+                            <td>Raw Material - Steel Bar Stock</td>
+                            <td class="center">
+                                <span class="badge badge-received">Received</span>
+                            </td>
+                            <td class="right">$12,450.00</td>
+                            <td class="center">2025-10-15</td>
+                            <td class="center">2025-10-22</td>
+                            <td class="center">
+                                <div class="actions-cell">
+                                    <button class="btn btn-sm btn-info">View</button>
+                                    <button class="btn btn-sm btn-secondary">Edit</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="po-number">PO-1290</span></td>
+                            <td>Industrial Parts LLC</td>
+                            <td>Cutting Tools - End Mills (Various)</td>
+                            <td class="center">
+                                <span class="badge badge-ordered">Ordered</span>
+                            </td>
+                            <td class="right">$3,890.00</td>
+                            <td class="center">2025-10-18</td>
+                            <td class="center">2025-11-08</td>
+                            <td class="center">
+                                <div class="actions-cell">
+                                    <button class="btn btn-sm btn-info">View</button>
+                                    <button class="btn btn-sm btn-secondary">Edit</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="po-number">PO-1291</span></td>
+                            <td>Precision Tools Inc</td>
+                            <td>Calibration Services - Q4 Gauges</td>
+                            <td class="center">
+                                <span class="badge badge-approved">Approved</span>
+                            </td>
+                            <td class="right">$2,100.00</td>
+                            <td class="center">2025-10-20</td>
+                            <td class="center">2025-11-15</td>
+                            <td class="center">
+                                <div class="actions-cell">
+                                    <button class="btn btn-sm btn-info">View</button>
+                                    <button class="btn btn-sm btn-secondary">Edit</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="po-number">PO-1292</span></td>
+                            <td>Metal Masters</td>
+                            <td>Aluminum Plate 6061-T6</td>
+                            <td class="center">
+                                <span class="badge badge-pending">Pending Approval</span>
+                            </td>
+                            <td class="right">$8,750.00</td>
+                            <td class="center">2025-10-23</td>
+                            <td class="center">2025-11-10</td>
+                            <td class="center">
+                                <div class="actions-cell">
+                                    <button class="btn btn-sm btn-info">View</button>
+                                    <button class="btn btn-sm btn-secondary">Edit</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="po-number">PO-1293</span></td>
+                            <td>Acme Supply Co</td>
+                            <td>Coolant & Lubricants - Bulk Order</td>
+                            <td class="center">
+                                <span class="badge badge-ordered">Ordered</span>
+                            </td>
+                            <td class="right">$1,450.00</td>
+                            <td class="center">2025-10-24</td>
+                            <td class="center">2025-11-05</td>
+                            <td class="center">
+                                <div class="actions-cell">
+                                    <button class="btn btn-sm btn-info">View</button>
+                                    <button class="btn btn-sm btn-secondary">Edit</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="po-number">PO-1294</span></td>
+                            <td>Industrial Parts LLC</td>
+                            <td>Tooling - Inserts & Holders</td>
+                            <td class="center">
+                                <span class="badge badge-ordered">Ordered</span>
+                            </td>
+                            <td class="right">$5,600.00</td>
+                            <td class="center">2025-10-25</td>
+                            <td class="center">2025-11-12</td>
+                            <td class="center">
+                                <div class="actions-cell">
+                                    <button class="btn btn-sm btn-info">View</button>
+                                    <button class="btn btn-sm btn-secondary">Edit</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="po-number">PO-1295</span></td>
+                            <td>Precision Tools Inc</td>
+                            <td>Digital Measuring Equipment</td>
+                            <td class="center">
+                                <span class="badge badge-approved">Approved</span>
+                            </td>
+                            <td class="right">$14,200.00</td>
+                            <td class="center">2025-10-28</td>
+                            <td class="center">2025-11-20</td>
+                            <td class="center">
+                                <div class="actions-cell">
+                                    <button class="btn btn-sm btn-info">View</button>
+                                    <button class="btn btn-sm btn-secondary">Edit</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><span class="po-number">PO-1296</span></td>
+                            <td>Metal Masters</td>
+                            <td>Stainless Steel Round Bar</td>
+                            <td class="center">
+                                <span class="badge badge-pending">Pending Approval</span>
+                            </td>
+                            <td class="right">$9,300.00</td>
+                            <td class="center">2025-10-30</td>
+                            <td class="center">2025-11-18</td>
+                            <td class="center">
+                                <div class="actions-cell">
+                                    <button class="btn btn-sm btn-info">View</button>
+                                    <button class="btn btn-sm btn-secondary">Edit</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Footer -->
+            <div class="table-footer">
+                <div>Showing 1-8 of 24 purchase orders</div>
+                <div class="pagination">
+                    <button class="page-btn" disabled>
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

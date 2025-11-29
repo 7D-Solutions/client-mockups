@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipment Tracker - Purchase, Sales & Maintenance</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-primary: #007bff;
+            --color-primary-dark: #0056b3;
+            --color-success: #28a745;
+            --color-warning: #ffc107;
+            --color-danger: #dc3545;
+            --color-info: #17a2b8;
+            --color-border: #dee2e6;
+            --color-border-light: #e9ecef;
+            --color-bg-light: #f8f9fa;
+            --color-text: #333;
+            --color-text-light: #666;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 20px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            color: var(--color-text);
+        }
+
+        .page-container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: var(--space-5);
+        }
+
+        .page-header {
+            background: white;
+            padding: var(--space-5);
+            border-radius: 8px;
+            margin-bottom: var(--space-5);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .page-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-4);
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .btn-success {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #1e7e34;
+        }
+
+        .btn-warning {
+            background: var(--color-warning);
+            color: #333;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-5);
+        }
+
+        .stat-card {
+            background: white;
+            padding: var(--space-5);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .stat-card.success {
+            border-left-color: var(--color-success);
+        }
+
+        .stat-card.warning {
+            border-left-color: var(--color-warning);
+        }
+
+        .stat-card.danger {
+            border-left-color: var(--color-danger);
+        }
+
+        .stat-card.info {
+            border-left-color: var(--color-info);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .stat-subtext {
+            font-size: 13px;
+            color: var(--color-text-light);
+            margin-top: 4px;
+        }
+
+        .filters-section {
+            display: flex;
+            gap: var(--space-3);
+            flex-wrap: wrap;
+            padding-top: var(--space-4);
+            border-top: 1px solid var(--color-border-light);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .filter-input,
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .datatable-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .datatable-toolbar {
+            padding: var(--space-4);
+            border-bottom: 1px solid var(--color-border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--color-bg-light);
+        }
+
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .record-count {
+            font-size: 14px;
+            color: var(--color-text-light);
+            font-weight: 500;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 5px;
+            background: white;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            padding: 3px;
+        }
+
+        .view-btn {
+            padding: 6px 12px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--color-text-light);
+            transition: all 0.2s;
+        }
+
+        .view-btn.active {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .datatable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .datatable thead {
+            background: var(--color-bg-light);
+            border-bottom: 2px solid var(--color-border);
+        }
+
+        .datatable th {
+            padding: var(--space-3) var(--space-4);
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--color-text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .datatable th.sortable {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .datatable th.sortable:hover {
+            background: #e9ecef;
+        }
+
+        .datatable th .sort-icon {
+            margin-left: 5px;
+            opacity: 0.3;
+        }
+
+        .datatable th.sorted .sort-icon {
+            opacity: 1;
+        }
+
+        .datatable tbody tr {
+            border-bottom: 1px solid var(--color-border-light);
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .datatable tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .datatable tbody tr.expanded {
+            background: #e7f3ff;
+        }
+
+        .datatable tbody tr.expanded:hover {
+            background: #d4e9ff;
+        }
+
+        .datatable td {
+            padding: var(--space-3) var(--space-4);
+            font-size: 14px;
+            color: var(--color-text);
+        }
+
+        .expand-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+            transition: transform 0.2s;
+            font-size: 16px;
+        }
+
+        .expanded .expand-icon {
+            transform: rotate(90deg);
+        }
+
+        .equipment-id {
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-maintenance {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-sold {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        .status-idle {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-retired {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .currency {
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        .currency.positive {
+            color: var(--color-success);
+        }
+
+        .currency.negative {
+            color: var(--color-danger);
+        }
+
+        .expanded-row {
+            display: none;
+        }
+
+        .expanded-row.show {
+            display: table-row;
+        }
+
+        .expanded-content {
+            padding: 0;
+            background: #f8f9fa;
+            border-top: 2px solid var(--color-primary);
+        }
+
+        .expanded-inner {
+            padding: var(--space-5);
+        }
+
+        .history-tabs {
+            display: flex;
+            gap: var(--space-2);
+            margin-bottom: var(--space-4);
+            border-bottom: 2px solid var(--color-border);
+        }
+
+        .history-tab {
+            padding: var(--space-3) var(--space-5);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-text-light);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            position: relative;
+            bottom: -2px;
+        }
+
+        .history-tab:hover {
+            color: var(--color-primary);
+        }
+
+        .history-tab.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-5);
+            padding: var(--space-4);
+            background: white;
+            border-radius: 6px;
+        }
+
+        .summary-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .summary-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--color-text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .summary-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .history-table thead {
+            background: #f8f9fa;
+        }
+
+        .history-table th {
+            padding: var(--space-3);
+            text-align: left;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--color-text);
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--color-border);
+        }
+
+        .history-table td {
+            padding: var(--space-3);
+            font-size: 13px;
+            border-bottom: 1px solid var(--color-border-light);
+        }
+
+        .history-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .type-badge {
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .type-purchase {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .type-sale {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .type-maintenance {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .type-repair {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .financial-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-4);
+            margin-bottom: var(--space-4);
+        }
+
+        .financial-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: var(--space-5);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .financial-card.profit {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        }
+
+        .financial-card.loss {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .financial-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .financial-value {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--space-5);
+            color: var(--color-text-light);
+            font-style: italic;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-4);
+            border-top: 1px solid var(--color-border-light);
+            background: var(--color-bg-light);
+        }
+
+        .pagination-info {
+            font-size: 14px;
+            color: var(--color-text-light);
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        .page-btn {
+            padding: 6px 12px;
+            border: 1px solid var(--color-border);
+            background: white;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-btn.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .highlight-metric {
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        .action-link {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .action-link:hover {
+            text-decoration: underline;
+        }
+
+        .metric-positive {
+            color: var(--color-success);
+            font-weight: 700;
+        }
+
+        .metric-negative {
+            color: var(--color-danger);
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-header-top">
+                <h1 class="page-title">🏗️ Equipment Tracker</h1>
+                <div class="header-actions">
+                    <button class="btn btn-warning">📊 Financial Report</button>
+                    <button class="btn btn-secondary">💰 Record Sale</button>
+                    <button class="btn btn-success">➕ Purchase Equipment</button>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-section">
+                <div class="filter-group">
+                    <label class="filter-label">Search</label>
+                    <input type="text" class="filter-input" placeholder="Equipment ID, Name, Type..." style="width: 250px;">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Status</label>
+                    <select class="filter-select" style="width: 150px;">
+                        <option>All Status</option>
+                        <option>Active</option>
+                        <option>Idle</option>
+                        <option>Maintenance</option>
+                        <option>Sold</option>
+                        <option>Retired</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Category</label>
+                    <select class="filter-select" style="width: 180px;">
+                        <option>All Categories</option>
+                        <option>Heavy Machinery</option>
+                        <option>Trucks & Vehicles</option>
+                        <option>Tools & Equipment</option>
+                        <option>Trailers</option>
+                        <option>Generators</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Date Range</label>
+                    <input type="date" class="filter-input" style="width: 140px;">
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Bar -->
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-label">Total Equipment Value</div>
+                <div class="stat-value">$487,500</div>
+                <div class="stat-subtext">18 active assets</div>
+            </div>
+            <div class="stat-card success">
+                <div class="stat-label">Total Invested</div>
+                <div class="stat-value">$625,000</div>
+                <div class="stat-subtext">25 purchases all-time</div>
+            </div>
+            <div class="stat-card info">
+                <div class="stat-label">YTD Maintenance</div>
+                <div class="stat-value">$34,250</div>
+                <div class="stat-subtext">142 service records</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="stat-label">Revenue from Sales</div>
+                <div class="stat-value">$198,000</div>
+                <div class="stat-subtext">7 equipment sold</div>
+            </div>
+            <div class="stat-card danger">
+                <div class="stat-label">Net Profit/Loss</div>
+                <div class="stat-value">-$26,750</div>
+                <div class="stat-subtext">Including depreciation</div>
+            </div>
+        </div>
+
+        <!-- DataTable Container -->
+        <div class="datatable-container">
+            <!-- Toolbar -->
+            <div class="datatable-toolbar">
+                <div class="toolbar-left">
+                    <span class="record-count">Showing <strong>25</strong> equipment</span>
+                </div>
+                <div class="view-toggle">
+                    <button class="view-btn active">📋 Table</button>
+                    <button class="view-btn">📇 Cards</button>
+                    <button class="view-btn">📊 Analytics</button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-wrapper">
+                <table class="datatable">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;"></th>
+                            <th class="sortable">Equipment ID <span class="sort-icon">▼</span></th>
+                            <th class="sortable">Name/Description <span class="sort-icon">▼</span></th>
+                            <th class="sortable">Category <span class="sort-icon">▼</span></th>
+                            <th class="sortable">Purchase Date <span class="sort-icon">▼</span></th>
+                            <th class="sortable">Purchase Price <span class="sort-icon">▼</span></th>
+                            <th class="sortable">Current Value <span class="sort-icon">▼</span></th>
+                            <th class="sortable">Maint. Cost (YTD) <span class="sort-icon">▼</span></th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Row 1: Excavator CAT-320 -->
+                        <tr class="equipment-row" data-equipment-id="EQ-001">
+                            <td><span class="expand-icon">▶</span></td>
+                            <td><span class="equipment-id">EQ-001</span></td>
+                            <td><strong>CAT 320 Excavator</strong></td>
+                            <td>Heavy Machinery</td>
+                            <td>Jan 15, 2020</td>
+                            <td><span class="currency">$95,000</span></td>
+                            <td><span class="currency">$68,000</span></td>
+                            <td><span class="currency">$12,450</span></td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td><a href="#" class="action-link">View</a> | <a href="#" class="action-link">Edit</a></td>
+                        </tr>
+                        <tr class="expanded-row" data-equipment-id="EQ-001">
+                            <td colspan="10" class="expanded-content">
+                                <div class="expanded-inner">
+                                    <!-- Summary -->
+                                    <div class="summary-grid">
+                                        <div class="summary-item">
+                                            <span class="summary-label">Make/Model</span>
+                                            <span class="summary-value">Caterpillar 320</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Serial Number</span>
+                                            <span class="summary-value">CAT320-2020-5678</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Year</span>
+                                            <span class="summary-value">2019</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Hours</span>
+                                            <span class="summary-value highlight-metric">4,250 hrs</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Vendor</span>
+                                            <span class="summary-value">Wagner Equipment Co.</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Warranty Expires</span>
+                                            <span class="summary-value">Jan 15, 2025</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Financial Summary -->
+                                    <div class="financial-summary">
+                                        <div class="financial-card">
+                                            <div class="financial-label">Total Investment</div>
+                                            <div class="financial-value">$107,450</div>
+                                            <small>Purchase + Maintenance</small>
+                                        </div>
+                                        <div class="financial-card">
+                                            <div class="financial-label">Current Value</div>
+                                            <div class="financial-value">$68,000</div>
+                                            <small>Estimated Market Value</small>
+                                        </div>
+                                        <div class="financial-card loss">
+                                            <div class="financial-label">Net Position</div>
+                                            <div class="financial-value">-$39,450</div>
+                                            <small>Loss if sold today</small>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tabs -->
+                                    <div class="history-tabs">
+                                        <button class="history-tab active" data-tab="purchase">📦 Purchase History</button>
+                                        <button class="history-tab" data-tab="maintenance">🔧 Maintenance (18)</button>
+                                        <button class="history-tab" data-tab="financial">💰 Financial Details</button>
+                                    </div>
+
+                                    <!-- Purchase History Tab -->
+                                    <div class="tab-content active" data-tab="purchase">
+                                        <table class="history-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Transaction Type</th>
+                                                    <th>Vendor/Buyer</th>
+                                                    <th>Amount</th>
+                                                    <th>Payment Method</th>
+                                                    <th>Notes</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Jan 15, 2020</td>
+                                                    <td><span class="type-badge type-purchase">Purchase</span></td>
+                                                    <td>Wagner Equipment Co.</td>
+                                                    <td><strong class="currency">$95,000.00</strong></td>
+                                                    <td>Bank Loan (5 years)</td>
+                                                    <td>New excavator for expansion project</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- Maintenance History Tab -->
+                                    <div class="tab-content" data-tab="maintenance">
+                                        <table class="history-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Type</th>
+                                                    <th>Description</th>
+                                                    <th>Service Provider</th>
+                                                    <th>Cost</th>
+                                                    <th>Hours at Service</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Oct 28, 2024</td>
+                                                    <td><span class="type-badge type-maintenance">Maintenance</span></td>
+                                                    <td>500-hour service - Oil change, filters</td>
+                                                    <td>CAT Certified Service</td>
+                                                    <td><span class="currency">$1,250.00</span></td>
+                                                    <td>4,250 hrs</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Sep 15, 2024</td>
+                                                    <td><span class="type-badge type-repair">Repair</span></td>
+                                                    <td>Hydraulic hose replacement</td>
+                                                    <td>CAT Certified Service</td>
+                                                    <td><span class="currency">$845.00</span></td>
+                                                    <td>4,120 hrs</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Aug 5, 2024</td>
+                                                    <td><span class="type-badge type-maintenance">Maintenance</span></td>
+                                                    <td>Track tension adjustment</td>
+                                                    <td>In-house mechanic</td>
+                                                    <td><span class="currency">$150.00</span></td>
+                                                    <td>4,050 hrs</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Jun 12, 2024</td>
+                                                    <td><span class="type-badge type-maintenance">Maintenance</span></td>
+                                                    <td>500-hour service - Oil, filters, greasing</td>
+                                                    <td>CAT Certified Service</td>
+                                                    <td><span class="currency">$1,180.00</span></td>
+                                                    <td>3,750 hrs</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Apr 22, 2024</td>
+                                                    <td><span class="type-badge type-repair">Repair</span></td>
+                                                    <td>Bucket teeth replacement</td>
+                                                    <td>Parts Direct</td>
+                                                    <td><span class="currency">$425.00</span></td>
+                                                    <td>3,580 hrs</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- Financial Details Tab -->
+                                    <div class="tab-content" data-tab="financial">
+                                        <table class="history-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Year</th>
+                                                    <th>Maintenance Cost</th>
+                                                    <th>Depreciation</th>
+                                                    <th>Operating Hours</th>
+                                                    <th>Cost per Hour</th>
+                                                    <th>Book Value</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td><strong>2024 (YTD)</strong></td>
+                                                    <td><span class="currency">$3,850.00</span></td>
+                                                    <td><span class="currency">$8,500.00</span></td>
+                                                    <td>875 hrs</td>
+                                                    <td><span class="currency">$14.11</span></td>
+                                                    <td><span class="currency">$68,000.00</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>2023</strong></td>
+                                                    <td><span class="currency">$4,200.00</span></td>
+                                                    <td><span class="currency">$9,000.00</span></td>
+                                                    <td>1,120 hrs</td>
+                                                    <td><span class="currency">$11.88</span></td>
+                                                    <td><span class="currency">$76,500.00</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>2022</strong></td>
+                                                    <td><span class="currency">$2,950.00</span></td>
+                                                    <td><span class="currency">$9,000.00</span></td>
+                                                    <td>1,045 hrs</td>
+                                                    <td><span class="currency">$11.44</span></td>
+                                                    <td><span class="currency">$85,500.00</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>2021</strong></td>
+                                                    <td><span class="currency">$1,450.00</span></td>
+                                                    <td><span class="currency">$9,500.00</span></td>
+                                                    <td>1,210 hrs</td>
+                                                    <td><span class="currency">$9.04</span></td>
+                                                    <td><span class="currency">$94,500.00</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 2: Ford F-350 Truck (Sold) -->
+                        <tr class="equipment-row" data-equipment-id="EQ-008">
+                            <td><span class="expand-icon">▶</span></td>
+                            <td><span class="equipment-id">EQ-008</span></td>
+                            <td><strong>Ford F-350 Pickup Truck</strong></td>
+                            <td>Trucks & Vehicles</td>
+                            <td>Mar 10, 2018</td>
+                            <td><span class="currency">$42,000</span></td>
+                            <td><span class="currency">$0</span></td>
+                            <td><span class="currency">$8,250</span></td>
+                            <td><span class="status-badge status-sold">Sold</span></td>
+                            <td><a href="#" class="action-link">View</a> | <a href="#" class="action-link">Archive</a></td>
+                        </tr>
+                        <tr class="expanded-row" data-equipment-id="EQ-008">
+                            <td colspan="10" class="expanded-content">
+                                <div class="expanded-inner">
+                                    <div class="summary-grid">
+                                        <div class="summary-item">
+                                            <span class="summary-label">Make/Model</span>
+                                            <span class="summary-value">Ford F-350 XLT</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">VIN</span>
+                                            <span class="summary-value">1FT8W3BT9JEB12345</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Year</span>
+                                            <span class="summary-value">2018</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Mileage (at sale)</span>
+                                            <span class="summary-value">87,450 miles</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Ownership Period</span>
+                                            <span class="summary-value">6 years 2 months</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Sale Date</span>
+                                            <span class="summary-value">May 15, 2024</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="financial-summary">
+                                        <div class="financial-card">
+                                            <div class="financial-label">Total Investment</div>
+                                            <div class="financial-value">$50,250</div>
+                                            <small>Purchase + Maintenance</small>
+                                        </div>
+                                        <div class="financial-card success">
+                                            <div class="financial-label">Sale Price</div>
+                                            <div class="financial-value">$28,000</div>
+                                            <small>Sold to private buyer</small>
+                                        </div>
+                                        <div class="financial-card loss">
+                                            <div class="financial-label">Net Position</div>
+                                            <div class="financial-value">-$22,250</div>
+                                            <small>Total loss on sale</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="history-tabs">
+                                        <button class="history-tab active" data-tab="purchase">📦 Purchase/Sale History</button>
+                                        <button class="history-tab" data-tab="maintenance">🔧 Maintenance (24)</button>
+                                        <button class="history-tab" data-tab="financial">💰 Financial Details</button>
+                                    </div>
+
+                                    <div class="tab-content active" data-tab="purchase">
+                                        <table class="history-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Transaction Type</th>
+                                                    <th>Vendor/Buyer</th>
+                                                    <th>Amount</th>
+                                                    <th>Payment Method</th>
+                                                    <th>Notes</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>May 15, 2024</td>
+                                                    <td><span class="type-badge type-sale">Sale</span></td>
+                                                    <td>John Miller (Private Buyer)</td>
+                                                    <td><strong class="currency metric-positive">$28,000.00</strong></td>
+                                                    <td>Cashier's Check</td>
+                                                    <td>Sold due to fleet upgrade, buyer satisfied with condition</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Mar 10, 2018</td>
+                                                    <td><span class="type-badge type-purchase">Purchase</span></td>
+                                                    <td>Hometown Ford Dealership</td>
+                                                    <td><strong class="currency metric-negative">$42,000.00</strong></td>
+                                                    <td>Cash Purchase</td>
+                                                    <td>New truck for hauling equipment and materials</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="tab-content" data-tab="maintenance">
+                                        <table class="history-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Type</th>
+                                                    <th>Description</th>
+                                                    <th>Service Provider</th>
+                                                    <th>Cost</th>
+                                                    <th>Mileage</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Apr 22, 2024</td>
+                                                    <td><span class="type-badge type-maintenance">Maintenance</span></td>
+                                                    <td>Pre-sale inspection & detailing</td>
+                                                    <td>AutoCare Services</td>
+                                                    <td><span class="currency">$350.00</span></td>
+                                                    <td>87,200 mi</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Feb 5, 2024</td>
+                                                    <td><span class="type-badge type-maintenance">Maintenance</span></td>
+                                                    <td>Oil change, tire rotation</td>
+                                                    <td>Quick Lube Express</td>
+                                                    <td><span class="currency">$125.00</span></td>
+                                                    <td>85,000 mi</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Nov 18, 2023</td>
+                                                    <td><span class="type-badge type-repair">Repair</span></td>
+                                                    <td>Brake pads & rotors replacement</td>
+                                                    <td>Hometown Ford Service</td>
+                                                    <td><span class="currency">$850.00</span></td>
+                                                    <td>82,500 mi</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Sep 10, 2023</td>
+                                                    <td><span class="type-badge type-maintenance">Maintenance</span></td>
+                                                    <td>Oil change, filter replacement</td>
+                                                    <td>Quick Lube Express</td>
+                                                    <td><span class="currency">$115.00</span></td>
+                                                    <td>80,000 mi</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="tab-content" data-tab="financial">
+                                        <table class="history-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Year</th>
+                                                    <th>Maintenance Cost</th>
+                                                    <th>Fuel Cost (Est.)</th>
+                                                    <th>Miles Driven</th>
+                                                    <th>Total Operating Cost</th>
+                                                    <th>Book Value</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td><strong>2024 (Partial)</strong></td>
+                                                    <td><span class="currency">$475.00</span></td>
+                                                    <td><span class="currency">$1,200.00</span></td>
+                                                    <td>5,250 mi</td>
+                                                    <td><span class="currency">$1,675.00</span></td>
+                                                    <td><span class="currency">$28,000.00</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>2023</strong></td>
+                                                    <td><span class="currency">$1,850.00</span></td>
+                                                    <td><span class="currency">$3,800.00</span></td>
+                                                    <td>15,200 mi</td>
+                                                    <td><span class="currency">$5,650.00</span></td>
+                                                    <td><span class="currency">$30,500.00</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 3: Bobcat Skid Steer -->
+                        <tr class="equipment-row" data-equipment-id="EQ-003">
+                            <td><span class="expand-icon">▶</span></td>
+                            <td><span class="equipment-id">EQ-003</span></td>
+                            <td><strong>Bobcat S650 Skid Steer</strong></td>
+                            <td>Heavy Machinery</td>
+                            <td>Jun 22, 2021</td>
+                            <td><span class="currency">$52,500</span></td>
+                            <td><span class="currency">$38,000</span></td>
+                            <td><span class="currency">$3,850</span></td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td><a href="#" class="action-link">View</a> | <a href="#" class="action-link">Edit</a></td>
+                        </tr>
+                        <tr class="expanded-row" data-equipment-id="EQ-003">
+                            <td colspan="10" class="expanded-content">
+                                <div class="expanded-inner">
+                                    <p class="empty-state">Click tabs above to view detailed history...</p>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 4: Generator -->
+                        <tr class="equipment-row" data-equipment-id="EQ-012">
+                            <td><span class="expand-icon">▶</span></td>
+                            <td><span class="equipment-id">EQ-012</span></td>
+                            <td><strong>Generac 50kW Generator</strong></td>
+                            <td>Generators</td>
+                            <td>Sep 5, 2022</td>
+                            <td><span class="currency">$18,500</span></td>
+                            <td><span class="currency">$15,500</span></td>
+                            <td><span class="currency">$1,200</span></td>
+                            <td><span class="status-badge status-idle">Idle</span></td>
+                            <td><a href="#" class="action-link">View</a> | <a href="#" class="action-link">Edit</a></td>
+                        </tr>
+                        <tr class="expanded-row" data-equipment-id="EQ-012">
+                            <td colspan="10" class="expanded-content">
+                                <div class="expanded-inner">
+                                    <p class="empty-state">Click tabs above to view detailed history...</p>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 5: Flatbed Trailer -->
+                        <tr class="equipment-row" data-equipment-id="EQ-015">
+                            <td><span class="expand-icon">▶</span></td>
+                            <td><span class="equipment-id">EQ-015</span></td>
+                            <td><strong>Big Tex 40ft Flatbed Trailer</strong></td>
+                            <td>Trailers</td>
+                            <td>Nov 12, 2023</td>
+                            <td><span class="currency">$12,800</span></td>
+                            <td><span class="currency">$11,500</span></td>
+                            <td><span class="currency">$425</span></td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td><a href="#" class="action-link">View</a> | <a href="#" class="action-link">Edit</a></td>
+                        </tr>
+                        <tr class="expanded-row" data-equipment-id="EQ-015">
+                            <td colspan="10" class="expanded-content">
+                                <div class="expanded-inner">
+                                    <p class="empty-state">Click tabs above to view detailed history...</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <div class="pagination-info">
+                    Showing 1-5 of 25 equipment
+                </div>
+                <div class="pagination-controls">
+                    <button class="page-btn" disabled>Previous</button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn">4</button>
+                    <button class="page-btn">5</button>
+                    <button class="page-btn">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Row expansion functionality
+        document.querySelectorAll('.equipment-row').forEach(row => {
+            row.addEventListener('click', function(e) {
+                // Don't expand if clicking on action links
+                if (e.target.classList.contains('action-link')) {
+                    e.preventDefault();
+                    console.log('Action clicked:', e.target.textContent);
+                    return;
+                }
+
+                const equipmentId = this.dataset.equipmentId;
+                const expandedRow = document.querySelector(`.expanded-row[data-equipment-id="${equipmentId}"]`);
+                const isExpanded = this.classList.contains('expanded');
+
+                // Close all other expanded rows
+                document.querySelectorAll('.equipment-row').forEach(r => r.classList.remove('expanded'));
+                document.querySelectorAll('.expanded-row').forEach(r => r.classList.remove('show'));
+
+                // Toggle current row
+                if (!isExpanded) {
+                    this.classList.add('expanded');
+                    expandedRow.classList.add('show');
+                }
+            });
+        });
+
+        // Tab switching functionality
+        document.querySelectorAll('.history-tab').forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent row collapse
+
+                const tabName = this.dataset.tab;
+                const expandedRow = this.closest('.expanded-inner');
+
+                // Update active tab
+                expandedRow.querySelectorAll('.history-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                // Update active content
+                expandedRow.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                    if (content.dataset.tab === tabName) {
+                        content.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Sortable columns
+        document.querySelectorAll('.sortable').forEach(th => {
+            th.addEventListener('click', function() {
+                // Remove sorted class from all
+                document.querySelectorAll('.sortable').forEach(t => t.classList.remove('sorted'));
+                this.classList.add('sorted');
+                console.log('Sorting by:', this.textContent);
+            });
+        });
+
+        // View toggle
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                console.log('View changed to:', this.textContent);
+            });
+        });
+
+        // Pagination
+        document.querySelectorAll('.page-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (!this.disabled) {
+                    document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+                    if (!isNaN(this.textContent)) {
+                        this.classList.add('active');
+                    }
+                    console.log('Page changed to:', this.textContent);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

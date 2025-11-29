@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Trade Entry - Fire-Proof ERP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .header p {
+            opacity: 0.9;
+            margin-top: 0.25rem;
+        }
+
+        .breadcrumb {
+            margin-top: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .breadcrumb a {
+            color: white;
+            opacity: 0.8;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            opacity: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .card-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e3c72;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .form-group label .required {
+            color: #ef4444;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .trade-type-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .trade-type-btn {
+            padding: 1rem;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .trade-type-btn:hover {
+            border-color: #2a5298;
+        }
+
+        .trade-type-btn.active.buy {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+
+        .trade-type-btn.active.sell {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+
+        .summary-card {
+            background: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+            padding-top: 1rem;
+            margin-top: 0.5rem;
+            border-top: 2px solid #d1d5db;
+            font-weight: 700;
+            font-size: 1.125rem;
+        }
+
+        .summary-label {
+            color: #6b7280;
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: #1e3c72;
+        }
+
+        .info-box {
+            background: #dbeafe;
+            border: 1px solid #93c5fd;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            color: #1e40af;
+        }
+
+        .warning-box {
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            color: #92400e;
+        }
+
+        .stock-info {
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+        }
+
+        .stock-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .stock-symbol {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e3c72;
+        }
+
+        .current-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #10b981;
+        }
+
+        .price-change {
+            font-size: 0.875rem;
+            color: #10b981;
+        }
+
+        .stock-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.75rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: #2a5298;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1e3c72;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .form-actions button {
+            flex: 1;
+        }
+
+        @media (max-width: 968px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📝 New Trade Entry</h1>
+        <p>Record a stock purchase or sale transaction</p>
+        <div class="breadcrumb">
+            <a href="stock-trade-dashboard.html">Dashboard</a> / <span>New Trade</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="form-grid">
+            <!-- Main Form -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Trade Details</h2>
+                </div>
+                <div class="card-content">
+                    <form>
+                        <!-- Trade Type Selection -->
+                        <div class="trade-type-selector">
+                            <button type="button" class="trade-type-btn active buy">
+                                🟢 BUY
+                            </button>
+                            <button type="button" class="trade-type-btn sell">
+                                🔴 SELL
+                            </button>
+                        </div>
+
+                        <!-- Stock Symbol -->
+                        <div class="form-group">
+                            <label>
+                                Stock Symbol <span class="required">*</span>
+                            </label>
+                            <input type="text" placeholder="e.g., AAPL, MSFT, GOOGL" value="AAPL" />
+                        </div>
+
+                        <!-- Stock Info Display -->
+                        <div class="stock-info">
+                            <div class="stock-price">
+                                <span class="stock-symbol">AAPL - Apple Inc.</span>
+                                <span class="current-price">$175.43</span>
+                            </div>
+                            <div class="price-change">▲ $2.15 (+1.24%) Today</div>
+                            <div class="stock-details">
+                                <div>Exchange: NASDAQ</div>
+                                <div>Market Cap: $2.75T</div>
+                                <div>Volume: 52.4M</div>
+                                <div>52W Range: $142.50 - $198.23</div>
+                            </div>
+                        </div>
+
+                        <!-- Trade Details -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>
+                                    Number of Shares <span class="required">*</span>
+                                </label>
+                                <input type="number" placeholder="0" value="50" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    Price per Share <span class="required">*</span>
+                                </label>
+                                <input type="number" step="0.01" placeholder="0.00" value="175.00" />
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>
+                                    Trade Date <span class="required">*</span>
+                                </label>
+                                <input type="date" value="2025-11-06" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    Trade Time <span class="required">*</span>
+                                </label>
+                                <input type="time" value="10:30" />
+                            </div>
+                        </div>
+
+                        <!-- Fees and Commissions -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Commission/Fees</label>
+                                <input type="number" step="0.01" placeholder="0.00" value="0.00" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Order Type</label>
+                                <select>
+                                    <option>Market Order</option>
+                                    <option>Limit Order</option>
+                                    <option>Stop Order</option>
+                                    <option>Stop-Limit Order</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Broker -->
+                        <div class="form-group">
+                            <label>Broker/Platform</label>
+                            <select>
+                                <option>E*TRADE</option>
+                                <option>TD Ameritrade</option>
+                                <option>Fidelity</option>
+                                <option>Charles Schwab</option>
+                                <option>Robinhood</option>
+                                <option>Interactive Brokers</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="form-group">
+                            <label>Notes (Optional)</label>
+                            <textarea placeholder="Add any additional notes about this trade..."></textarea>
+                        </div>
+
+                        <!-- Info Box -->
+                        <div class="info-box">
+                            💡 <strong>Tip:</strong> Make sure all trade details are accurate. You can edit this information later if needed.
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Summary Sidebar -->
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Trade Summary</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="summary-card">
+                            <div class="summary-row">
+                                <span class="summary-label">Shares:</span>
+                                <span class="summary-value">50</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="summary-label">Price per Share:</span>
+                                <span class="summary-value">$175.00</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="summary-label">Subtotal:</span>
+                                <span class="summary-value">$8,750.00</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="summary-label">Commission:</span>
+                                <span class="summary-value">$0.00</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="summary-label">Total Cost:</span>
+                                <span class="summary-value">$8,750.00</span>
+                            </div>
+                        </div>
+
+                        <div class="warning-box" style="margin-top: 1rem;">
+                            ⚠️ <strong>Available Cash:</strong> $12,549.68<br>
+                            Remaining after trade: $3,799.68
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary">Cancel</button>
+                            <button type="submit" class="btn btn-success">Complete Trade</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Current Position -->
+                <div class="card" style="margin-top: 1.5rem;">
+                    <div class="card-header">
+                        <h2>Current Position</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="summary-row">
+                            <span class="summary-label">Current Shares:</span>
+                            <span class="summary-value">100</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Average Cost:</span>
+                            <span class="summary-value">$168.50</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Current Value:</span>
+                            <span class="summary-value">$17,543.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Unrealized Gain:</span>
+                            <span class="summary-value" style="color: #10b981;">+$693.00 (+4.1%)</span>
+                        </div>
+
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb; font-size: 0.875rem; color: #6b7280;">
+                            After this trade:<br>
+                            <strong style="color: #1e3c72;">150 shares @ $175.29 avg</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand Tool Form - True Two-Column Layout</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #1a202c;
+        }
+
+        .two-column-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3182ce;
+            box-shadow: 0 0 0 3px rgba(49,130,206,0.1);
+        }
+
+        .name-row {
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-end;
+        }
+
+        .name-row .form-group {
+            flex: 1;
+        }
+
+        button {
+            padding: 8px 16px;
+            background: #3182ce;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        button:hover {
+            background: #2c5282;
+        }
+
+        .section-divider {
+            grid-column: 1 / -1;
+            height: 1px;
+            background: #e2e8f0;
+            margin: 0.5rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Create Hand Tool - Two-Column Layout</h1>
+
+        <div class="two-column-grid">
+            <!-- Column 1: Tool Type -->
+            <div class="form-group">
+                <label>Tool Type</label>
+                <select>
+                    <option>Select tool type...</option>
+                    <option>Caliper</option>
+                    <option>Micrometer</option>
+                    <option>Height Gauge</option>
+                </select>
+            </div>
+
+            <!-- Column 2: Format -->
+            <div class="form-group">
+                <label>Format</label>
+                <select>
+                    <option>Select format...</option>
+                    <option>Digital</option>
+                    <option>Dial</option>
+                </select>
+            </div>
+
+            <!-- Column 1: Gauge ID -->
+            <div class="form-group">
+                <label>Gauge ID</label>
+                <input type="text" value="CA0001" placeholder="Auto-generated">
+            </div>
+
+            <!-- Column 2: Ownership Type -->
+            <div class="form-group">
+                <label>Ownership Type</label>
+                <select>
+                    <option>Company Owned</option>
+                    <option>Customer Owned</option>
+                    <option>Vendor Owned</option>
+                </select>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- Column 1: Range Min -->
+            <div class="form-group">
+                <label>Range Min</label>
+                <input type="number" step="0.001" placeholder="">
+            </div>
+
+            <!-- Column 2: Range Max -->
+            <div class="form-group">
+                <label>Range Max</label>
+                <input type="number" step="0.001" placeholder="">
+            </div>
+
+            <!-- Column 1: Measurement Unit -->
+            <div class="form-group">
+                <label>Measurement Unit</label>
+                <select>
+                    <option selected>Inches (")</option>
+                    <option>Millimeters (mm)</option>
+                    <option>Centimeters (cm)</option>
+                </select>
+            </div>
+
+            <!-- Column 2: Resolution -->
+            <div class="form-group">
+                <label>Resolution</label>
+                <input type="number" step="0.0001" placeholder="e.g., 0.001">
+            </div>
+
+            <!-- Column 1: Accuracy -->
+            <div class="form-group">
+                <label>Accuracy</label>
+                <input type="text" placeholder="e.g., ±0.002 inch">
+            </div>
+
+            <!-- Column 2: Calibration Frequency -->
+            <div class="form-group">
+                <label>Calibration Frequency (days)</label>
+                <input type="number" placeholder="365" min="1">
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- Column 1: Serial Number -->
+            <div class="form-group">
+                <label>Serial Number (S/N)</label>
+                <input type="text" placeholder="Enter serial number">
+            </div>
+
+            <!-- Column 2: Bin Location -->
+            <div class="form-group">
+                <label>Bin Location</label>
+                <input type="text" placeholder="e.g., A1, B3">
+            </div>
+
+            <!-- Column 1: Manufacturer -->
+            <div class="form-group">
+                <label>Manufacturer</label>
+                <input type="text" placeholder="e.g., Mitutoyo, Starrett">
+            </div>
+
+            <!-- Column 2: Model Number -->
+            <div class="form-group">
+                <label>Model Number</label>
+                <input type="text" placeholder="e.g., CD-12">
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- Full Width: Gauge Name -->
+            <div class="name-row full-width">
+                <div class="form-group">
+                    <label>Gauge Name</label>
+                    <input type="text" placeholder="Click 'Generate Name' or enter custom name">
+                </div>
+                <button>Generate Name</button>
+            </div>
+        </div>
+
+        <div style="margin-top: 1rem; padding: 1rem; background: #f7fafc; border-radius: 4px; font-size: 13px; color: #4a5568;">
+            <strong>Total Rows:</strong> ~8 rows (2 columns side-by-side)<br>
+            <strong>Vertical Space:</strong> Good balance between readability and compactness<br>
+            <strong>Pros:</strong> Clean organization, easy to scan, less cramped feeling<br>
+            <strong>Cons:</strong> Uses more vertical space than compact grid
+        </div>
+    </div>
+</body>
+</html>

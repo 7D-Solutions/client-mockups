@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fireproof ERP - Main Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-primary: #2563eb;
+            --color-primary-dark: #1e40af;
+            --color-primary-light: #dbeafe;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-danger: #ef4444;
+            --color-info: #3b82f6;
+            --color-gray-50: #f9fafb;
+            --color-gray-100: #f3f4f6;
+            --color-gray-200: #e5e7eb;
+            --color-gray-300: #d1d5db;
+            --color-gray-600: #4b5563;
+            --color-gray-700: #374151;
+            --color-gray-800: #1f2937;
+            --color-border: #e5e7eb;
+            --radius-sm: 4px;
+            --radius-md: 6px;
+            --radius-lg: 8px;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 20px;
+            --space-6: 24px;
+            --space-8: 32px;
+            --font-size-xs: 12px;
+            --font-size-sm: 14px;
+            --font-size-base: 16px;
+            --font-size-lg: 18px;
+            --font-size-xl: 20px;
+            --font-size-2xl: 24px;
+            --font-size-3xl: 30px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--color-gray-50);
+            color: var(--color-gray-800);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--space-6);
+        }
+
+        /* Header */
+        .page-header {
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+            padding: var(--space-6);
+            margin-bottom: var(--space-6);
+        }
+
+        .page-title {
+            font-size: var(--font-size-3xl);
+            font-weight: 600;
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-2);
+        }
+
+        .page-subtitle {
+            font-size: var(--font-size-base);
+            color: var(--color-gray-600);
+        }
+
+        /* Stats Row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+            padding: var(--space-5);
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-2xl);
+            flex-shrink: 0;
+        }
+
+        .stat-icon.primary { background: var(--color-primary-light); color: var(--color-primary); }
+        .stat-icon.success { background: #d1fae5; color: var(--color-success); }
+        .stat-icon.warning { background: #fef3c7; color: var(--color-warning); }
+        .stat-icon.danger { background: #fee2e2; color: var(--color-danger); }
+
+        .stat-content {
+            flex: 1;
+        }
+
+        .stat-label {
+            font-size: var(--font-size-sm);
+            color: var(--color-gray-600);
+            margin-bottom: var(--space-1);
+        }
+
+        .stat-value {
+            font-size: var(--font-size-2xl);
+            font-weight: 600;
+            color: var(--color-gray-800);
+        }
+
+        .stat-change {
+            font-size: var(--font-size-xs);
+            margin-top: var(--space-1);
+        }
+
+        .stat-change.positive { color: var(--color-success); }
+        .stat-change.negative { color: var(--color-danger); }
+
+        /* Module Grid */
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--space-6);
+            margin-bottom: var(--space-6);
+        }
+
+        .module-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .module-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .module-header {
+            padding: var(--space-5);
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            cursor: pointer;
+        }
+
+        .module-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-xl);
+            flex-shrink: 0;
+        }
+
+        .module-icon.blue { background: var(--color-primary-light); color: var(--color-primary); }
+        .module-icon.green { background: #d1fae5; color: var(--color-success); }
+        .module-icon.orange { background: #fef3c7; color: var(--color-warning); }
+        .module-icon.red { background: #fee2e2; color: var(--color-danger); }
+        .module-icon.purple { background: #e9d5ff; color: #9333ea; }
+        .module-icon.cyan { background: #cffafe; color: #0891b2; }
+
+        .module-info {
+            flex: 1;
+        }
+
+        .module-title {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-1);
+        }
+
+        .module-description {
+            font-size: var(--font-size-sm);
+            color: var(--color-gray-600);
+        }
+
+        .module-body {
+            padding: var(--space-5);
+        }
+
+        .module-metrics {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-2) 0;
+        }
+
+        .metric-label {
+            font-size: var(--font-size-sm);
+            color: var(--color-gray-600);
+        }
+
+        .metric-value {
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            color: var(--color-gray-800);
+        }
+
+        .module-actions {
+            padding: var(--space-4);
+            border-top: 1px solid var(--color-border);
+            background: var(--color-gray-50);
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        .btn {
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-border);
+            background: white;
+            color: var(--color-gray-700);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .btn:hover {
+            background: var(--color-gray-50);
+            border-color: var(--color-gray-300);
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-dark);
+            border-color: var(--color-primary-dark);
+        }
+
+        /* Activity Feed */
+        .activity-section {
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+            overflow: hidden;
+        }
+
+        .activity-header {
+            padding: var(--space-5);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .activity-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--color-gray-800);
+        }
+
+        .activity-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            padding: var(--space-4) var(--space-5);
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            gap: var(--space-3);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-sm);
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            font-size: var(--font-size-sm);
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-1);
+        }
+
+        .activity-time {
+            font-size: var(--font-size-xs);
+            color: var(--color-gray-600);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+            font-weight: 500;
+        }
+
+        .badge-success { background: #d1fae5; color: var(--color-success); }
+        .badge-warning { background: #fef3c7; color: var(--color-warning); }
+        .badge-danger { background: #fee2e2; color: var(--color-danger); }
+        .badge-info { background: var(--color-primary-light); color: var(--color-primary); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </h1>
+            <p class="page-subtitle">Welcome back! Here's what's happening in your machine shop today.</p>
+        </div>
+
+        <!-- Top Stats -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon primary">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">Active Work Orders</div>
+                    <div class="stat-value">24</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> 12% from last week
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon success">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">On-Time Delivery</div>
+                    <div class="stat-value">94.2%</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> 2.1% improvement
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">Items Below Min</div>
+                    <div class="stat-value">8</div>
+                    <div class="stat-change negative">
+                        <i class="fas fa-arrow-down"></i> Needs attention
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon danger">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">Calibration Due</div>
+                    <div class="stat-value">3</div>
+                    <div class="stat-change">
+                        Due within 7 days
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module Cards -->
+        <div class="module-grid">
+            <!-- Purchasing Module -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-icon blue">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="module-info">
+                        <div class="module-title">Purchasing</div>
+                        <div class="module-description">Supplier & procurement management</div>
+                    </div>
+                </div>
+                <div class="module-body">
+                    <div class="module-metrics">
+                        <div class="metric-row">
+                            <span class="metric-label">Open POs</span>
+                            <span class="metric-value">12</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Pending Approvals</span>
+                            <span class="metric-value">5</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Expected This Week</span>
+                            <span class="metric-value">8 shipments</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Active Suppliers</span>
+                            <span class="metric-value">45</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-actions">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-plus"></i> New PO
+                    </button>
+                    <button class="btn">View All</button>
+                </div>
+            </div>
+
+            <!-- Production Module -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-icon green">
+                        <i class="fas fa-industry"></i>
+                    </div>
+                    <div class="module-info">
+                        <div class="module-title">Production</div>
+                        <div class="module-description">Job tracking & manufacturing</div>
+                    </div>
+                </div>
+                <div class="module-body">
+                    <div class="module-metrics">
+                        <div class="metric-row">
+                            <span class="metric-label">Active Jobs</span>
+                            <span class="metric-value">24</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Behind Schedule</span>
+                            <span class="metric-value">3 <span class="badge badge-warning">Review</span></span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Machine Utilization</span>
+                            <span class="metric-value">78.4%</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Due This Week</span>
+                            <span class="metric-value">7 jobs</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-actions">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-plus"></i> New Job
+                    </button>
+                    <button class="btn">View Schedule</button>
+                </div>
+            </div>
+
+            <!-- Inventory Module -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-icon purple">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <div class="module-info">
+                        <div class="module-title">Inventory</div>
+                        <div class="module-description">Stock management & locations</div>
+                    </div>
+                </div>
+                <div class="module-body">
+                    <div class="module-metrics">
+                        <div class="metric-row">
+                            <span class="metric-label">Total Items</span>
+                            <span class="metric-value">1,247</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Below Minimum</span>
+                            <span class="metric-value">8 <span class="badge badge-danger">Action</span></span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Locations</span>
+                            <span class="metric-value">156</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Movements Today</span>
+                            <span class="metric-value">34</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-actions">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-exchange-alt"></i> Record Movement
+                    </button>
+                    <button class="btn">View Stock</button>
+                </div>
+            </div>
+
+            <!-- Gauge Management Module -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-icon orange">
+                        <i class="fas fa-ruler-combined"></i>
+                    </div>
+                    <div class="module-info">
+                        <div class="module-title">Gauge Management</div>
+                        <div class="module-description">Precision tools & calibration</div>
+                    </div>
+                </div>
+                <div class="module-body">
+                    <div class="module-metrics">
+                        <div class="metric-row">
+                            <span class="metric-label">Total Gauges</span>
+                            <span class="metric-value">342</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Currently Checked Out</span>
+                            <span class="metric-value">47</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Calibration Due</span>
+                            <span class="metric-value">3 <span class="badge badge-danger">Urgent</span></span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Sealed</span>
+                            <span class="metric-value">12</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-actions">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-sign-out-alt"></i> Checkout
+                    </button>
+                    <button class="btn">View All</button>
+                </div>
+            </div>
+
+            <!-- Quality Control Module -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-icon cyan">
+                        <i class="fas fa-check-double"></i>
+                    </div>
+                    <div class="module-info">
+                        <div class="module-title">Quality Control</div>
+                        <div class="module-description">Inspections & compliance</div>
+                    </div>
+                </div>
+                <div class="module-body">
+                    <div class="module-metrics">
+                        <div class="metric-row">
+                            <span class="metric-label">Pending Inspections</span>
+                            <span class="metric-value">11</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Open NCRs</span>
+                            <span class="metric-value">2 <span class="badge badge-warning">Review</span></span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">First Pass Yield</span>
+                            <span class="metric-value">96.8%</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Completed Today</span>
+                            <span class="metric-value">7 inspections</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-actions">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-plus"></i> New Inspection
+                    </button>
+                    <button class="btn">View NCRs</button>
+                </div>
+            </div>
+
+            <!-- Maintenance Module -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-icon red">
+                        <i class="fas fa-wrench"></i>
+                    </div>
+                    <div class="module-info">
+                        <div class="module-title">Maintenance</div>
+                        <div class="module-description">Equipment & PM tracking</div>
+                    </div>
+                </div>
+                <div class="module-body">
+                    <div class="module-metrics">
+                        <div class="metric-row">
+                            <span class="metric-label">Equipment Count</span>
+                            <span class="metric-value">28</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">PM Due This Week</span>
+                            <span class="metric-value">4 <span class="badge badge-warning">Schedule</span></span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Open Requests</span>
+                            <span class="metric-value">3</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Uptime This Month</span>
+                            <span class="metric-value">98.2%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-actions">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-plus"></i> New Request
+                    </button>
+                    <button class="btn">View Schedule</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="activity-section">
+            <div class="activity-header">
+                <h2 class="activity-title">
+                    <i class="fas fa-history"></i> Recent Activity
+                </h2>
+            </div>
+            <div class="activity-list">
+                <div class="activity-item">
+                    <div class="activity-icon success">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-text">
+                            Work Order <strong>WO-2847</strong> completed by <strong>John Smith</strong>
+                        </div>
+                        <div class="activity-time">5 minutes ago</div>
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon primary">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-text">
+                            Purchase Order <strong>PO-1289</strong> received from <strong>Acme Supply Co</strong>
+                        </div>
+                        <div class="activity-time">23 minutes ago</div>
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon warning">
+                        <i class="fas fa-exclamation"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-text">
+                            NCR <strong>NCR-0034</strong> opened for <strong>Part #45678</strong> - dimensional out of spec
+                        </div>
+                        <div class="activity-time">1 hour ago</div>
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon success">
+                        <i class="fas fa-check-double"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-text">
+                            First article inspection approved for <strong>Job #6743</strong>
+                        </div>
+                        <div class="activity-time">2 hours ago</div>
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon primary">
+                        <i class="fas fa-ruler"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-text">
+                            Gauge <strong>G-245</strong> calibrated and returned to <strong>Crib-A-12</strong>
+                        </div>
+                        <div class="activity-time">3 hours ago</div>
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon danger">
+                        <i class="fas fa-wrench"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-text">
+                            Equipment <strong>Mill #3</strong> marked for PM - scheduled for tomorrow
+                        </div>
+                        <div class="activity-time">4 hours ago</div>
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon success">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-text">
+                            Order <strong>SO-8821</strong> shipped to <strong>Mountain Manufacturing</strong>
+                        </div>
+                        <div class="activity-time">5 hours ago</div>
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon primary">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-text">
+                            Work Order <strong>WO-2848</strong> created for <strong>Customer ABC Corp</strong>
+                        </div>
+                        <div class="activity-time">6 hours ago</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

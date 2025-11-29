@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend UI Comparison - Phase 1: Buttons - Instance 1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c72d5;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+        
+        h2 {
+            color: #1a5490;
+            margin: 30px 0 20px;
+            font-size: 2em;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+        
+        h3 {
+            color: #333;
+            margin: 20px 0 15px;
+            font-size: 1.5em;
+        }
+        
+        .comparison-section {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .implementation-box {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 20px;
+        }
+        
+        .implementation-box h4 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .button-showcase {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+            padding: 20px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+        }
+        
+        .code-block {
+            background: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .code-block pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-list li::before {
+            content: "✓ ";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .difference {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px 15px;
+            margin: 10px 0;
+        }
+        
+        .missing {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 10px 15px;
+            margin: 10px 0;
+        }
+        
+        .new-feature {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 10px 15px;
+            margin: 10px 0;
+        }
+        
+        /* Legacy Button Styles */
+        .btn {
+            padding: 8px 24px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            white-space: nowrap;
+            min-width: 120px;
+            justify-content: center;
+        }
+        
+        .btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #0056b3;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover:not(:disabled) {
+            background: #218838;
+        }
+        
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        .btn-warning:hover:not(:disabled) {
+            background: #e0a800;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover:not(:disabled) {
+            background: #c82333;
+        }
+        
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .btn-info:hover:not(:disabled) {
+            background: #138496;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover:not(:disabled) {
+            background: #5a6268;
+        }
+        
+        .btn-unseal {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: white;
+            box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3);
+        }
+        
+        .btn-unseal:hover:not(:disabled) {
+            background: linear-gradient(135deg, #f57c00, #ef6c00);
+        }
+        
+        .btn-sm {
+            padding: 6px 16px;
+            font-size: 13px;
+            min-width: 80px;
+        }
+        
+        .btn-lg {
+            padding: 12px 32px;
+            font-size: 16px;
+            min-width: 160px;
+        }
+        
+        /* Modular Button Styles */
+        .modular-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 500;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            position: relative;
+            text-decoration: none;
+        }
+        
+        .modular-button:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #fff, 0 0 0 4px currentColor;
+        }
+        
+        .modular-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .modular-button.small {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+        
+        .modular-button.medium {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+        
+        .modular-button.large {
+            padding: 12px 24px;
+            font-size: 16px;
+        }
+        
+        .modular-button.primary {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .modular-button.primary:hover:not(:disabled) {
+            background-color: #0056b3;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .modular-button.secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .modular-button.secondary:hover:not(:disabled) {
+            background-color: #5a6268;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .modular-button.success {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .modular-button.success:hover:not(:disabled) {
+            background-color: #218838;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .modular-button.warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .modular-button.warning:hover:not(:disabled) {
+            background-color: #e0a800;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .modular-button.danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .modular-button.danger:hover:not(:disabled) {
+            background-color: #c82333;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .modular-button.info {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .modular-button.info:hover:not(:disabled) {
+            background-color: #138496;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .modular-button.outline {
+            background-color: white;
+            color: #374151;
+            border: 2px solid #d1d5db;
+        }
+        
+        .modular-button.outline:hover:not(:disabled) {
+            border-color: #9ca3af;
+            background-color: #f9fafb;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        /* Custom action buttons used in components */
+        .action-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .checkin-btn {
+            background: #28a745;
+            color: white;
+        }
+        
+        .checkout-btn {
+            background: #007bff;
+            color: white;
+        }
+        
+        .transfer-btn {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .pending-btn {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        .danger-btn {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .save-btn {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .cancel-btn {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .stats-table th,
+        .stats-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .stats-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .stats-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .tag-legacy {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .tag-modular {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Frontend UI Comparison - Phase 1: Buttons</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 40px;">
+            Analysis by Instance 1 - Comprehensive comparison of button implementations between Legacy and Modular systems
+        </p>
+
+        <!-- Executive Summary -->
+        <div class="comparison-section">
+            <h2>Executive Summary</h2>
+            <p>This analysis compares button implementations across the Legacy and Modular frontend architectures. The investigation reveals significant differences in approach, styling methods, and component structure.</p>
+            
+            <h3>Key Findings</h3>
+            <ul class="feature-list">
+                <li>Legacy uses global CSS classes (.btn, .btn-primary) with direct className application</li>
+                <li>Modular uses a TypeScript React component with CSS Modules for scoped styling</li>
+                <li>Both systems support similar variant types but with different naming conventions</li>
+                <li>Modular system adds loading states and icon support not present in legacy</li>
+                <li>Legacy includes specialized buttons (btn-unseal) not yet in modular Button component</li>
+            </ul>
+        </div>
+
+        <!-- Visual Comparison -->
+        <div class="comparison-section">
+            <h2>Visual Button Comparison</h2>
+            
+            <div class="comparison-grid">
+                <div class="implementation-box">
+                    <h4><span class="tag tag-legacy">LEGACY</span> Button Styles</h4>
+                    <div class="button-showcase">
+                        <button class="btn btn-primary">Primary</button>
+                        <button class="btn btn-secondary">Secondary</button>
+                        <button class="btn btn-success">Success</button>
+                        <button class="btn btn-warning">Warning</button>
+                        <button class="btn btn-danger">Danger</button>
+                        <button class="btn btn-info">Info</button>
+                        <button class="btn btn-unseal">Unseal</button>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 14px;">Size Variants:</p>
+                    <div class="button-showcase">
+                        <button class="btn btn-primary btn-sm">Small</button>
+                        <button class="btn btn-primary">Medium</button>
+                        <button class="btn btn-primary btn-lg">Large</button>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 14px;">States:</p>
+                    <div class="button-showcase">
+                        <button class="btn btn-primary">Normal</button>
+                        <button class="btn btn-primary" disabled>Disabled</button>
+                    </div>
+                </div>
+
+                <div class="implementation-box">
+                    <h4><span class="tag tag-modular">MODULAR</span> Button Component</h4>
+                    <div class="button-showcase">
+                        <button class="modular-button primary medium">Primary</button>
+                        <button class="modular-button secondary medium">Secondary</button>
+                        <button class="modular-button success medium">Success</button>
+                        <button class="modular-button warning medium">Warning</button>
+                        <button class="modular-button danger medium">Danger</button>
+                        <button class="modular-button info medium">Info</button>
+                        <button class="modular-button outline medium">Outline</button>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 14px;">Size Variants:</p>
+                    <div class="button-showcase">
+                        <button class="modular-button primary small">Small</button>
+                        <button class="modular-button primary medium">Medium</button>
+                        <button class="modular-button primary large">Large</button>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 14px;">States:</p>
+                    <div class="button-showcase">
+                        <button class="modular-button primary medium">Normal</button>
+                        <button class="modular-button primary medium" disabled>Disabled</button>
+                        <button class="modular-button primary medium" disabled>
+                            <svg style="animation: spin 1s linear infinite; height: 1rem; width: 1rem;" fill="none" viewBox="0 0 24 24">
+                                <circle style="opacity: 0.25;" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path style="opacity: 0.75; fill: currentColor;" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Loading
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implementation Details -->
+        <div class="comparison-section">
+            <h2>Implementation Details</h2>
+            
+            <div class="comparison-grid">
+                <div class="implementation-box">
+                    <h4><span class="tag tag-legacy">LEGACY</span> Implementation</h4>
+                    
+                    <h5>CSS Classes (components.css)</h5>
+                    <div class="code-block">
+                        <pre>/* Base Button Styles */
+.btn {
+  padding: var(--space-3) var(--space-6);
+  border: none;
+  border-radius: var(--radius-lg);
+  font-weight: var(--font-semibold);
+  cursor: pointer;
+  transition: var(--transition-base);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-md);
+  white-space: nowrap;
+  min-width: 120px;
+  justify-content: center;
+}
+
+/* Variant Classes */
+.btn-primary { background: var(--primary-blue); color: var(--white); }
+.btn-secondary { background: var(--gray-500); color: var(--white); }
+.btn-success { background: var(--success-green); color: var(--white); }
+.btn-warning { background: var(--warning-yellow); color: var(--gray-800); }
+.btn-danger { background: var(--danger-red); color: var(--white); }
+.btn-info { background: var(--info-blue); color: var(--white); }
+.btn-unseal { background: var(--orange-gradient); color: var(--white); }</pre>
+                    </div>
+                    
+                    <h5>Usage Example (AddUserModal.tsx)</h5>
+                    <div class="code-block">
+                        <pre>&lt;button type="submit" className="save-btn"&gt;
+  {user ? 'Update User' : 'Create User'}
+&lt;/button&gt;
+&lt;button type="button" className="cancel-btn" onClick={onCancel}&gt;
+  Cancel
+&lt;/button&gt;</pre>
+                    </div>
+                </div>
+
+                <div class="implementation-box">
+                    <h4><span class="tag tag-modular">MODULAR</span> Implementation</h4>
+                    
+                    <h5>Component (Button.tsx)</h5>
+                    <div class="code-block">
+                        <pre>interface ButtonProps extends ButtonHTMLAttributes&lt;HTMLButtonElement&gt; {
+  variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'default' | 'outline';
+  size?: 'sm' | 'md' | 'lg';
+  loading?: boolean;
+  icon?: ReactNode;
+  children: ReactNode;
+}
+
+export const Button = ({
+  variant = 'primary',
+  size = 'md',
+  loading = false,
+  icon,
+  children,
+  disabled,
+  className = '',
+  ...props
+}: ButtonProps) =&gt; {
+  const sizeClass = size === 'sm' ? styles.small : size === 'lg' ? styles.large : styles.medium;
+  const variantClass = styles[variant] || styles.primary;
+  const classes = `${styles.button} ${variantClass} ${sizeClass} ${className}`;
+
+  return (
+    &lt;button className={classes} disabled={disabled || loading} {...props}&gt;
+      {loading ? &lt;LoadingSpinner /&gt; : icon && &lt;span&gt;{icon}&lt;/span&gt;}
+      {children && &lt;span&gt;{children}&lt;/span&gt;}
+    &lt;/button&gt;
+  );
+};</pre>
+                    </div>
+                    
+                    <h5>Usage Example (CreateGaugeModal.tsx)</h5>
+                    <div class="code-block">
+                        <pre>&lt;Button type="button" variant="outline" onClick={onClose}&gt;
+  Cancel
+&lt;/Button&gt;
+&lt;Button type="submit" disabled={createMutation.isPending}&gt;
+  Create Gauge
+&lt;/Button&gt;</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature Comparison -->
+        <div class="comparison-section">
+            <h2>Feature Comparison</h2>
+            
+            <table class="stats-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Legacy</th>
+                        <th>Modular</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>TypeScript Support</td>
+                        <td>❌ No</td>
+                        <td>✅ Yes</td>
+                        <td>Modular provides full type safety</td>
+                    </tr>
+                    <tr>
+                        <td>Component-based</td>
+                        <td>❌ CSS Classes only</td>
+                        <td>✅ React Component</td>
+                        <td>Better encapsulation in modular</td>
+                    </tr>
+                    <tr>
+                        <td>CSS Scoping</td>
+                        <td>❌ Global</td>
+                        <td>✅ CSS Modules</td>
+                        <td>Prevents style conflicts</td>
+                    </tr>
+                    <tr>
+                        <td>Loading States</td>
+                        <td>❌ No</td>
+                        <td>✅ Yes</td>
+                        <td>Built-in spinner animation</td>
+                    </tr>
+                    <tr>
+                        <td>Icon Support</td>
+                        <td>❌ Manual</td>
+                        <td>✅ Built-in</td>
+                        <td>Automatic spacing and alignment</td>
+                    </tr>
+                    <tr>
+                        <td>Size Variants</td>
+                        <td>✅ 3 (sm, default, lg)</td>
+                        <td>✅ 3 (sm, md, lg)</td>
+                        <td>Similar sizing system</td>
+                    </tr>
+                    <tr>
+                        <td>Color Variants</td>
+                        <td>✅ 7 variants</td>
+                        <td>✅ 8 variants</td>
+                        <td>Modular adds 'outline' variant</td>
+                    </tr>
+                    <tr>
+                        <td>Hover Effects</td>
+                        <td>✅ Yes</td>
+                        <td>✅ Yes</td>
+                        <td>Both have transform and shadow</td>
+                    </tr>
+                    <tr>
+                        <td>Focus States</td>
+                        <td>❌ Browser default</td>
+                        <td>✅ Custom</td>
+                        <td>Modular has custom focus ring</td>
+                    </tr>
+                    <tr>
+                        <td>Props Forwarding</td>
+                        <td>N/A</td>
+                        <td>✅ Yes</td>
+                        <td>Extends HTMLButtonElement</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Usage Patterns -->
+        <div class="comparison-section">
+            <h2>Usage Patterns Discovered</h2>
+            
+            <h3>Legacy System Patterns</h3>
+            <ul>
+                <li><strong>Direct className usage:</strong> Components directly apply CSS classes</li>
+                <li><strong>Custom action buttons:</strong> Many components define their own button styles (save-btn, cancel-btn, etc.)</li>
+                <li><strong>Specialized variants:</strong> btn-unseal for specific gauge operations</li>
+                <li><strong>Inline styles:</strong> Some components use inline button elements without consistent classes</li>
+            </ul>
+            
+            <h3>Modular System Patterns</h3>
+            <ul>
+                <li><strong>Component import:</strong> Import Button from infrastructure</li>
+                <li><strong>Props-based configuration:</strong> Control appearance via props</li>
+                <li><strong>Consistent API:</strong> All buttons use the same component interface</li>
+                <li><strong>Composition:</strong> Icon and loading states handled internally</li>
+            </ul>
+            
+            <h3>Hybrid Usage in Modular</h3>
+            <div class="difference">
+                <strong>Finding:</strong> Some modular components (like GaugeRow.tsx) still use direct button elements with custom classes instead of the Button component. This suggests incomplete migration.
+            </div>
+            
+            <div class="code-block">
+                <pre>// GaugeRow.tsx - Uses custom button classes instead of Button component
+&lt;button
+  className={`${styles.actionBtn} ${styles.checkinBtn}`}
+  onClick={(e) =&gt; onOperationClick('return', e)}
+&gt;
+  Check In
+&lt;/button&gt;</pre>
+            </div>
+        </div>
+
+        <!-- Gaps and Recommendations -->
+        <div class="comparison-section">
+            <h2>Gaps and Recommendations</h2>
+            
+            <h3>Missing in Modular Implementation</h3>
+            <div class="missing">
+                <strong>btn-unseal variant:</strong> The orange gradient "Unseal" button style from legacy is not available in the modular Button component.
+            </div>
+            
+            <div class="missing">
+                <strong>Inconsistent adoption:</strong> Many components in the modular system still use custom button implementations instead of the shared Button component.
+            </div>
+            
+            <h3>Implementation Differences</h3>
+            <div class="difference">
+                <strong>Size naming:</strong> Legacy uses 'btn-sm' and 'btn-lg' while modular uses 'sm', 'md', 'lg' props.
+            </div>
+            
+            <div class="difference">
+                <strong>Default variant:</strong> Legacy has no default (must specify btn-primary, etc.) while modular defaults to 'primary'.
+            </div>
+            
+            <h3>New Features in Modular</h3>
+            <div class="new-feature">
+                <strong>Loading states:</strong> Built-in loading spinner animation with automatic disabled state.
+            </div>
+            
+            <div class="new-feature">
+                <strong>Icon support:</strong> Dedicated icon prop with automatic spacing and alignment.
+            </div>
+            
+            <div class="new-feature">
+                <strong>Outline variant:</strong> New outline style not present in legacy system.
+            </div>
+            
+            <div class="new-feature">
+                <strong>TypeScript support:</strong> Full type safety and IntelliSense support.
+            </div>
+        </div>
+
+        <!-- Migration Checklist -->
+        <div class="comparison-section">
+            <h2>Migration Checklist</h2>
+            
+            <h3>For Full Button Migration</h3>
+            <ul class="feature-list">
+                <li>Add 'unseal' variant to modular Button component</li>
+                <li>Replace all custom button implementations in GaugeRow and similar components</li>
+                <li>Standardize save-btn and cancel-btn patterns to use Button component</li>
+                <li>Ensure all modal action buttons use the shared component</li>
+                <li>Add any missing specialized button styles as variants</li>
+                <li>Document button usage patterns and guidelines</li>
+                <li>Create migration script to identify remaining legacy button usage</li>
+            </ul>
+        </div>
+
+        <!-- Statistics -->
+        <div class="comparison-section">
+            <h2>Discovery Statistics</h2>
+            
+            <table class="stats-table">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Legacy</th>
+                        <th>Modular</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Files with button usage</td>
+                        <td>46 files</td>
+                        <td>102 files</td>
+                    </tr>
+                    <tr>
+                        <td>Button variants defined</td>
+                        <td>7 variants</td>
+                        <td>8 variants</td>
+                    </tr>
+                    <tr>
+                        <td>Custom button classes</td>
+                        <td>Multiple (save-btn, cancel-btn, etc.)</td>
+                        <td>Still present in some components</td>
+                    </tr>
+                    <tr>
+                        <td>Component-based approach</td>
+                        <td>0%</td>
+                        <td>~60% (partial adoption)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+            <p style="color: #666;">Analysis completed by Instance 1</p>
+            <p style="color: #999; font-size: 14px;">Phase 1: Core Interactive Components - Buttons ✓</p>
+        </div>
+    </div>
+
+    <style>
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</body>
+</html>

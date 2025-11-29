@@ -1,0 +1,319 @@
+````md
+# CLAUDE CODE — Safety Net 20 (Real-DB Integration Tests)
+# Fireproof ERP — Backend Minimal Coverage Plan
+# Mode: Implement-first, Verify-first, Evidence-required
+
+## Load These References Before Coding
+- [AI Index] AI_Index_System_Overview_v2.1.md  → Which docs to load and how to think.
+- [SS] System_Specs_Implementation_Guide_v2.0.md → Workflow rules, canonical errors, acceptance expectations.
+- [DB] Database_Permissions_Reference_v2.0.md → Schema, FK/constraints, roles/permissions, audit rules.
+- [TA] Technical_Architecture_Playbook_v2.0.md → Test isolation, events, folder standards.
+
+## Test Runner & Conventions
+- Use **jest.config.real-database.js** and the existing `tests/integration/**` pattern.
+- Each test file uses **transactional isolation**: begin a transaction in `beforeEach` and **ROLLBACK** in `afterEach`.
+- Seed **minimal fixtures** inside each test (or in `beforeEach`) — no shared global seed datasets.
+- Assert **side effects**: DB row deltas, **audit row presence**, **domain event emission**, and **canonical error messages** (not just HTTP codes).
+- **One** pool/health test for the entire backend. Do **not** duplicate per repo.
+
+## Helper Utilities (create these first)
+
+Create file:
+`tests/integration/_utils/dbTestUtils.js`
+```js
+const mysql = require('mysql2/promise');
+
+let pool;
+
+async function getPool() {
+  if (!pool) {
+    pool = await mysql.createPool({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      waitForConnections: true,
+      connectionLimit: 10,
+      enableKeepAlive: true,
+    });
+  }
+  return pool;
+}
+
+async function withTx(fn) {
+  const pool = await getPool();
+  const conn = await pool.getConnection();
+  try {
+    await conn.beginTransaction();
+    const result = await fn(conn);
+    await conn.rollback(); // always rollback to isolate tests
+    return result;
+  } finally {
+    conn.release();
+  }
+}
+
+async function countRows(conn, table, where = '1=1') {
+  const [rows] = await conn.query(`SELECT COUNT(*) as c FROM ${table} WHERE ${where}`);
+  return rows[0].c;
+}
+
+module.exports = { getPool, withTx, countRows };
+````
+
+Create file:
+`tests/integration/_utils/assertions.js`
+
+```js
+const { strict: assert } = require('assert');
+
+function expectCanonicalError(err, codeOrMessageSubstring) {
+  assert.ok(
+    (err && err.message && err.message.includes(codeOrMessageSubstring)) ||
+    (err && err.code === codeOrMessageSubstring),
+    `Expected canonical error to contain/code: ${codeOrMessageSubstring}, got: ${err && (err.code || err.message)}`
+  );
+}
+
+function expectOneAuditRow(auditRowsBefore, auditRowsAfter) {
+  if (auditRowsAfter !== auditRowsBefore + 1) {
+    throw new Error(`Expected exactly one new audit row. Before=${auditRowsBefore}, After=${auditRowsAfter}`);
+  }
+}
+
+function expectNoAuditDelta(auditRowsBefore, auditRowsAfter) {
+  if (auditRowsAfter !== auditRowsBefore) {
+    throw new Error(`Expected no new audit rows. Before=${auditRowsBefore}, After=${auditRowsAfter}`);
+  }
+}
+
+module.exports = { expectCanonicalError, expectOneAuditRow, expectNoAuditDelta };
+```
+
+Create file:
+`tests/integration/_utils/eventsProbe.js`
+
+```js
+// If events publish to a table or outbox, probe it here.
+// Otherwise, expose a spy or telemetry channel your code uses in test mode.
+const { countRows } = require('./dbTestUtils');
+
+async function eventsDelta(conn, where = '1=1') {
+  const after = await countRows(conn, 'core_events', where);
+  return after;
+}
+
+module.exports = { eventsDelta };
+```
+
+> If your backend uses an outbox or in-memory bus, add a small test-mode adapter to capture emitted events. Store in `core_events` or a test table.
+
+---
+
+## FILES TO ADD (20 tests total)
+
+### 1) Calibrations (6 tests)
+
+File: `tests/integration/modules/gauge/repositories/CalibrationsRepo.safety.test.js`
+
+Test cases:
+
+* `createCalibration_passedWithDoc_writesAuditAndEvent`
+
+  * Seed: insert a minimal `gauges` row.
+  * Action: repo.create({ gauge\_id, passed: 1, document\_path: '/docs/cert.pdf', calibration\_date: today })
+  * Assert: +1 calibration row, **+1 audit**, **+1 event**, fields persisted exactly, canonical success pathway (per \[SS]).
+* `createCalibration_passedWithoutDoc_canonicalError_noWrite`
+
+  * Action: repo.create({ gauge\_id, passed: 1, document\_path: null })
+  * Assert: throws canonical error (from \[SS §8]), **no new calibration**, **no audit**.
+* `createCalibration_fkGaugeMissing_constraintError`
+
+  * Action: repo.create({ gauge\_id: 999999, passed: 0 })
+  * Assert: FK/constraint failure, **no audit**.
+* `updateCalibration_happy_auditAndEvent`
+
+  * Seed + create; then update remark/status.
+  * Assert: fields updated, **+1 audit**, **+1 event**.
+* `updateCalibration_unauthorizedRole_denied_noWrite`
+
+  * Run through service with role=viewer; expect denial per RBAC (\[DB §1]; \[SS §1]).
+  * Assert: no row change, **no audit**.
+* `getNextDue_boundary_today_pastDue_correct`
+
+  * Seed: multiple calibration dates (past, today, future).
+  * Assert: function returns correct next-due (boundary math correct).
+
+### 2) Checkout/Return (5 tests)
+
+File: `tests/integration/modules/gauge/workflows/CheckoutReturn.safety.test.js`
+
+* `checkout_happy_blocksIfCalibrationDue_auditAndEvent`
+
+  * Seed: gauge due vs. not-due.
+  * Action: checkout.
+  * Assert: not-due → success (+audit +event); due → canonical error (\[SS §6.1, §2.3]).
+* `checkout_denied_wrongRole_noWrite`
+
+  * Role without checkout permission.
+  * Assert: denial, **no audit**.
+* `return_happy_idempotent_noDuplicateAudit`
+
+  * Return once → success (+audit). Return again (idempotent) → OK with **no extra audit**.
+* `checkout_denied_alreadyCheckedOut_canonicalError`
+
+  * Assert canonical message and **no extra audit**.
+* `whoHasIt_query_correctUserLocation`
+
+  * After checkout, list holder/location → correct identity/department.
+
+### 3) Gauges Core (3 tests)
+
+File: `tests/integration/modules/gauge/repositories/GaugesRepo.safety.test.js`
+
+* `createGauge_happy_uniqueConstraints_respected_auditEvent`
+
+  * Insert new gauge; second insert with duplicate identifier → unique error (per \[DB §2.1]).
+* `updateGauge_validation_requiredFields_enforced`
+
+  * Missing required field → canonical error (per \[SS §5]).
+* `listGauges_paginationFenceposts_sortStable`
+
+  * Insert N=25; fetch pages 1..3; ensure stable secondary sort by `id`.
+
+### 4) RBAC Spot (2 tests)
+
+File: `tests/integration/modules/core/security/RbacSpot.safety.test.js`
+
+* `roleViewer_cannotWrite_anyModule_noAudit`
+
+  * Try write in calibrations and gauges → denied, **no audit**.
+* `roleMaintainer_canWrite_calibrations_andCheckout_allowed`
+
+  * Maintainer role can perform createCalibration and checkout.
+
+### 5) Audit & Events (3 tests, cross-cutting)
+
+File: `tests/integration/modules/core/audit/AuditAndEvents.safety.test.js`
+
+* `stateChange_writesExactlyOneAuditRow_withActorOldNew`
+
+  * Perform a single state change; assert exactly **+1 audit** with actor and old/new payload.
+* `eventEmitted_onCalibrationCreate_update_consumersNotRequired`
+
+  * Create then update → expect events emitted; if consumer fails, writer still succeeds.
+* `auditRows_tamperResistant_deleteForbidden`
+
+  * Attempt delete from `core_audit_logs` (or equivalent) → forbidden/error.
+
+### 6) Pool/Health (1 test total)
+
+File: `tests/integration/health/DbPoolHealth.test.js`
+
+* `dbPool_connectQueryRetry_ok`
+
+  * Open pool, run `SELECT 1`, simulate transient failure if possible → verify retry/backoff path doesn’t explode.
+
+---
+
+## SKELETON EXAMPLE (one test)
+
+```js
+// tests/integration/modules/gauge/repositories/CalibrationsRepo.safety.test.js
+const { withTx, countRows } = require('../../../_utils/dbTestUtils');
+const { expectCanonicalError, expectOneAuditRow, expectNoAuditDelta } = require('../../../_utils/assertions');
+// import your repo/service under test:
+const { CalibrationsRepo } = require('../../../../../../src/modules/gauge-tracking/repositories/CalibrationsRepo');
+
+describe('CalibrationsRepo — Safety Net', () => {
+  test('createCalibration_passedWithDoc_writesAuditAndEvent', async () => {
+    await withTx(async (conn) => {
+      // seed a gauge
+      const [gRes] = await conn.query("INSERT INTO gauges (name, status) VALUES ('G1','active')");
+      const gaugeId = gRes.insertId;
+
+      const auditBefore = await countRows(conn, 'core_audit_logs');
+      const calBefore   = await countRows(conn, 'gauge_calibrations');
+      const eventsBefore= await countRows(conn, 'core_events');
+
+      // action (call repo using same connection or dependency-injected pool)
+      const repo = new CalibrationsRepo({ connection: conn });
+      await repo.create({
+        gauge_id: gaugeId,
+        passed: 1,
+        document_path: '/docs/cert.pdf',
+        calibration_date: new Date()
+      });
+
+      const auditAfter = await countRows(conn, 'core_audit_logs');
+      const calAfter   = await countRows(conn, 'gauge_calibrations');
+      const eventsAfter= await countRows(conn, 'core_events');
+
+      // assertions
+      if (calAfter !== calBefore + 1) throw new Error('Expected one calibration row added');
+      expectOneAuditRow(auditBefore, auditAfter);
+      if (eventsAfter !== eventsBefore + 1) throw new Error('Expected one event emitted');
+    });
+  });
+
+  test('createCalibration_passedWithoutDoc_canonicalError_noWrite', async () => {
+    await withTx(async (conn) => {
+      const [gRes] = await conn.query("INSERT INTO gauges (name, status) VALUES ('G2','active')");
+      const gaugeId = gRes.insertId;
+
+      const auditBefore = await countRows(conn, 'core_audit_logs');
+      const calBefore   = await countRows(conn, 'gauge_calibrations');
+
+      const repo = new CalibrationsRepo({ connection: conn });
+      let caught;
+      try {
+        await repo.create({ gauge_id: gaugeId, passed: 1, document_path: null, calibration_date: new Date() });
+      } catch (e) { caught = e; }
+
+      expectCanonicalError(caught, 'DOCUMENT_REQUIRED_FOR_PASSED'); // use exact code/message from SS §8
+      const auditAfter = await countRows(conn, 'core_audit_logs');
+      const calAfter   = await countRows(conn, 'gauge_calibrations');
+
+      expectNoAuditDelta(auditBefore, auditAfter);
+      if (calAfter !== calBefore) throw new Error('No calibration row should be written on failure');
+    });
+  });
+});
+```
+
+> For each test file, replicate the pattern: seed minimally, measure **before/after** counts, perform action, assert **delta + canonical errors + audit + events**.
+
+---
+
+## ROLE SETUP (use minimal roles)
+
+* Create roles: `viewer`, `operator`, `maintainer`, `admin`.
+* Seed permission mapping per \[DB §1]. For denial tests, use `viewer`. For write tests, use `maintainer` or `admin`.
+
+Minimal role seed (adapt to your schema names; run inside each test or via a helper):
+
+```sql
+INSERT INTO core_roles (name) VALUES ('viewer'), ('operator'), ('maintainer'), ('admin');
+-- Insert core_permissions and core_role_permissions per DB §1 mapping.
+```
+
+---
+
+## WHAT TO REPORT BACK (for each file)
+
+* ✅ Test names added
+* ✅ Tables touched and row deltas observed
+* ✅ Canonical error IDs/messages used (cite \[SS §8] keys)
+* ✅ Event names emitted (cite \[TA §4 Canonical Events])
+* ✅ Evidence: SQL snippets and screenshots of failing assertions (if any)
+
+## DONE WHEN
+
+* All 20 tests green under `jest --config=jest.config.real-database.js`
+* Each test leaves DB unchanged (rollback verified)
+* CI job added (or updated) to run these tests on PRs
+
+```
+
+If you want me to tailor the *exact* canonical error codes/IDs and event names in those assertions to match your current backend’s constants, say the word and I’ll add them to the block using the labels from your docs (e.g., [SS §8] errors, [TA §4] event names, [DB §7] audit fields).
+```

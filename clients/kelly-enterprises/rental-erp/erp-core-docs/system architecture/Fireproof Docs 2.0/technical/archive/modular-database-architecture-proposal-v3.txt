@@ -1,0 +1,671 @@
+MODULAR DATABASE ARCHITECTURE PROPOSAL V3.3
+===========================================
+Date: 2025-08-18
+Author: Database Specialist
+Purpose: Production-ready database structure with NULL optimization and design refinements
+
+VERSION HISTORY
+---------------
+v1: Initial modular proposal
+v2: Added complete business tables and technical details
+v3: NULL optimization, event refinement, naming improvements
+v3.1: Removed job references (belongs in future manufacturing module)
+v3.2: Added module access control, gauge_suffix to JSON, created_by to gauges, calibration intervals
+v3.3: Fixed category FK, added gauge_id_config, replaced JSON specs with 4 tables, added migration order
+
+EXECUTIVE SUMMARY
+-----------------
+This final proposal provides a production-ready database architecture with:
+- True module independence via targeted events
+- NULL column optimization (removed 15+ wasteful fields)
+- Consistent design patterns (single timestamp, soft deletes)
+- Complete gauge module implementation (14 tables)
+- Scalable to 50+ modules without core changes
+
+ARCHITECTURE OVERVIEW
+---------------------
+- Core Infrastructure: 20 tables (includes module access control)
+- Gauge Module: 18 tables (includes 4 specification tables + id config)
+- Total Tables: ~38-40 (optimized from original 45)
+- Communication: Targeted need-to-know events only
+- Data Integrity: Constraints, foreign keys, minimal NULLs
+
+KEY IMPROVEMENTS IN V3
+----------------------
+1. Eliminated wasteful NULL columns throughout
+2. Renamed gauge_current_state → gauge_active_checkouts
+3. Single timestamp pattern for status changes
+4. Need-to-know event system (not broadcasts)
+5. Consistent soft delete strategy (is_deleted only)
+6. Removed fields that belong in other modules
+
+CORE INFRASTRUCTURE (20 tables)
+-------------------------------
+
+=== AUTH MODULE (4 tables) ===
+
+core_users:
+  id                    INT PRIMARY KEY AUTO_INCREMENT
+  email                 VARCHAR(255) NOT NULL UNIQUE
+  password_hash         VARCHAR(255) NOT NULL
+  name                  VARCHAR(255) NOT NULL
+  is_active             BOOLEAN DEFAULT TRUE
+  is_deleted            BOOLEAN DEFAULT FALSE
+  failed_login_count    INT DEFAULT 0
+  locked_until          TIMESTAMP NULL  -- Kept for login performance
+  created_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  updated_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  INDEX idx_email (email)
+  INDEX idx_active_deleted (is_active, is_deleted)
+
+core_sessions:
+  id                    INT PRIMARY KEY AUTO_INCREMENT
+  user_id               INT NOT NULL
+  token                 VARCHAR(255) NOT NULL UNIQUE
+  ip_address            VARCHAR(45)
+  user_agent            VARCHAR(255)
+  expires_at            TIMESTAMP NOT NULL
+  created_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  FOREIGN KEY (user_id) REFERENCES core_users(id) ON DELETE CASCADE
+  INDEX idx_token (token)
+  INDEX idx_user_expires (user_id, expires_at)
+
+core_user_roles:
+  user_id               INT NOT NULL
+  role_id               INT NOT NULL
+  assigned_by           INT NOT NULL
+  assigned_at           TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  -- REMOVED: expires_at (no temporary roles)
+  PRIMARY KEY (user_id, role_id)
+  FOREIGN KEY (user_id) REFERENCES core_users(id) ON DELETE CASCADE
+  FOREIGN KEY (role_id) REFERENCES core_roles(id) ON DELETE CASCADE
+  FOREIGN KEY (assigned_by) REFERENCES core_users(id)
+
+core_login_attempts:
+  id                    INT PRIMARY KEY AUTO_INCREMENT
+  email                 VARCHAR(255) NOT NULL
+  ip_address            VARCHAR(45)
+  success               BOOLEAN NOT NULL
+  failure_reason        VARCHAR(50)
+  attempted_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  INDEX idx_email_time (email, attempted_at)
+  INDEX idx_ip_time (ip_address, attempted_at)
+
+=== AUTHORIZATION SYSTEM (5 tables) ===
+
+core_roles:
+  id                    INT PRIMARY KEY AUTO_INCREMENT
+  name                  VARCHAR(50) NOT NULL UNIQUE
+  description           TEXT
+  is_system             BOOLEAN DEFAULT TRUE
+  is_active             BOOLEAN DEFAULT TRUE
+  created_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+core_permissions:
+  id                    INT PRIMARY KEY AUTO_INCREMENT
+  module_id             VARCHAR(50) NOT NULL
+  resource              VARCHAR(50) NOT NULL
+  action                VARCHAR(50) NOT NULL
+  description           TEXT
+  created_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  UNIQUE KEY unique_permission (module_id, resource, action)
+  INDEX idx_module (module_id)
+
+core_role_permissions:
+  role_id               INT NOT NULL
+  permission_id         INT NOT NULL
+  granted_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  PRIMARY KEY (role_id, permission_id)
+  FOREIGN KEY (role_id) REFERENCES core_roles(id) ON DELETE CASCADE
+  FOREIGN KEY (permission_id) REFERENCES core_permissions(id) ON DELETE CASCADE
+
+core_user_permission_overrides:
+  id                    INT PRIMARY KEY AUTO_INCREMENT
+  user_id               INT NOT NULL
+  permission_id         INT NOT NULL
+  granted               BOOLEAN DEFAULT TRUE
+  reason                TEXT
+  granted_by            INT NOT NULL
+  granted_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  -- REMOVED: expires_at (no temporary overrides)
+  FOREIGN KEY (user_id) REFERENCES core_users(id) ON DELETE CASCADE
+  FOREIGN KEY (permission_id) REFERENCES core_permissions(id) ON DELETE CASCADE
+  FOREIGN KEY (granted_by) REFERENCES core_users(id)
+  UNIQUE KEY unique_override (user_id, permission_id)
+
+core_user_module_access:
+  id                    INT PRIMARY KEY AUTO_INCREMENT
+  user_id               INT NOT NULL
+  module_id             VARCHAR(50) NOT NULL
+  has_access            BOOLEAN DEFAULT TRUE
+  module_role_id        INT                     -- Their role within this module
+  granted_by            INT NOT NULL
+  granted_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  FOREIGN KEY (user_id) REFERENCES core_users(id) ON DELETE CASCADE
+  FOREIGN KEY (module_id) REFERENCES core_modules(id)
+  FOREIGN KEY (module_role_id) REFERENCES core_roles(id)
+  FOREIGN KEY (granted_by) REFERENCES core_users(id)
+  UNIQUE KEY unique_access (user_id, module_id)
+  INDEX idx_user (user_id)
+  INDEX idx_module (module_id)
+
+=== DATA MODULE (5 tables) ===
+
+core_modules:
+  id                    VARCHAR(50) PRIMARY KEY
+  name                  VARCHAR(100) NOT NULL
+  version               VARCHAR(20) NOT NULL
+  is_core               BOOLEAN DEFAULT FALSE
+  dependencies          JSON
+  created_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  updated_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+
+core_enabled_modules:
+  module_id             VARCHAR(50) PRIMARY KEY
+  enabled_by            INT NOT NULL
+  enabled_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  FOREIGN KEY (module_id) REFERENCES core_modules(id)
+  FOREIGN KEY (enabled_by) REFERENCES core_users(id)
+
+core_module_config:
+  id                    INT PRIMARY KEY AUTO_INCREMENT
+  module_id             VARCHAR(50) NOT NULL
+  config_key            VARCHAR(100) NOT NULL
+  config_value          JSON NOT NULL
+  updated_by            INT NOT NULL
+  updated_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  UNIQUE KEY unique_config (module_id, config_key)
+  FOREIGN KEY (module_id) REFERENCES core_modules(id)
+  FOREIGN KEY (updated_by) REFERENCES core_users(id)
+
+core_events:
+  id                    BIGINT PRIMARY KEY AUTO_INCREMENT
+  event_type            VARCHAR(100) NOT NULL
+  source_module_id      VARCHAR(50) NOT NULL
+  target_module_id      VARCHAR(50) NOT NULL  -- Always targeted, no broadcasts
+  entity_type           VARCHAR(50)  -- NULL for system events
+  entity_id             INT          -- NULL for system events
+  payload               JSON NOT NULL
+  status                ENUM('pending','processing','completed','failed') DEFAULT 'pending'
+  retry_count           INT DEFAULT 0
+  error_message         TEXT
+  created_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  processed_at          TIMESTAMP NULL
+  FOREIGN KEY (source_module_id) REFERENCES core_modules(id)
+  FOREIGN KEY (target_module_id) REFERENCES core_modules(id)
+  INDEX idx_status_created (status, created_at)
+  INDEX idx_type_entity (event_type, entity_type, entity_id)
+
+core_event_subscriptions:
+  id                    INT PRIMARY KEY AUTO_INCREMENT
+  module_id             VARCHAR(50) NOT NULL
+  event_type            VARCHAR(100) NOT NULL
+  handler_endpoint      VARCHAR(255)
+  priority              INT DEFAULT 100
+  is_active             BOOLEAN DEFAULT TRUE
+  UNIQUE KEY unique_subscription (module_id, event_type)
+  FOREIGN KEY (module_id) REFERENCES core_modules(id)
+  INDEX idx_event_priority (event_type, priority)
+
+=== NAVIGATION MODULE (1 table) ===
+
+core_navigation:
+  id                    INT PRIMARY KEY AUTO_INCREMENT
+  module_id             VARCHAR(50) NOT NULL
+  parent_id             INT
+  label                 VARCHAR(100) NOT NULL
+  path                  VARCHAR(255) NOT NULL
+  icon                  VARCHAR(50)
+  sort_order            INT DEFAULT 0
+  required_permission_id INT
+  is_active             BOOLEAN DEFAULT TRUE
+  FOREIGN KEY (module_id) REFERENCES core_modules(id)
+  FOREIGN KEY (parent_id) REFERENCES core_navigation(id)
+  FOREIGN KEY (required_permission_id) REFERENCES core_permissions(id)
+  INDEX idx_module_order (module_id, sort_order)
+  INDEX idx_parent_order (parent_id, sort_order)
+
+=== NOTIFICATIONS MODULE (3 tables) ===
+
+core_notifications:
+  id                    INT PRIMARY KEY AUTO_INCREMENT
+  user_id               INT NOT NULL
+  module_id             VARCHAR(50) NOT NULL
+  type                  VARCHAR(50) NOT NULL
+  title                 VARCHAR(255) NOT NULL
+  message               TEXT NOT NULL
+  data                  JSON
+  priority              ENUM('low','normal','high','urgent') DEFAULT 'normal'
+  is_read               BOOLEAN DEFAULT FALSE
+  created_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  read_at               TIMESTAMP NULL      -- NULL until read
+  expires_at            TIMESTAMP NULL      -- NULL if no expiration
+  FOREIGN KEY (user_id) REFERENCES core_users(id) ON DELETE CASCADE
+  FOREIGN KEY (module_id) REFERENCES core_modules(id)
+  INDEX idx_user_unread (user_id, is_read, created_at)
+  INDEX idx_expires (expires_at)
+
+core_notification_templates:
+  id                    INT PRIMARY KEY AUTO_INCREMENT
+  module_id             VARCHAR(50) NOT NULL
+  type                  VARCHAR(50) NOT NULL
+  name                  VARCHAR(100) NOT NULL
+  subject_template      VARCHAR(255) NOT NULL
+  body_template         TEXT NOT NULL
+  variables             JSON
+  is_active             BOOLEAN DEFAULT TRUE
+  created_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  updated_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  UNIQUE KEY unique_template (module_id, type, name)
+  FOREIGN KEY (module_id) REFERENCES core_modules(id)
+
+core_notification_preferences:
+  user_id               INT NOT NULL
+  notification_type     VARCHAR(50) NOT NULL
+  delivery_methods      JSON DEFAULT '["in_app"]'
+  is_enabled            BOOLEAN DEFAULT TRUE
+  updated_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  PRIMARY KEY (user_id, notification_type)
+  FOREIGN KEY (user_id) REFERENCES core_users(id) ON DELETE CASCADE
+
+=== AUDIT INFRASTRUCTURE (1 table) ===
+
+core_audit_log:
+  id                    BIGINT PRIMARY KEY AUTO_INCREMENT
+  user_id               INT                 -- NULL for system actions
+  module_id             VARCHAR(50) NOT NULL
+  action                VARCHAR(100) NOT NULL
+  entity_type           VARCHAR(50)
+  entity_id             INT
+  old_values            JSON
+  new_values            JSON
+  ip_address            VARCHAR(45)         -- NULL for system actions
+  user_agent            VARCHAR(255)        -- NULL for system actions
+  created_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  FOREIGN KEY (user_id) REFERENCES core_users(id) ON DELETE SET NULL
+  FOREIGN KEY (module_id) REFERENCES core_modules(id)
+  INDEX idx_user_action (user_id, action, created_at)
+  INDEX idx_entity (entity_type, entity_id, created_at)
+  INDEX idx_created (created_at)
+
+GAUGE MODULE TABLES (18 tables - complete workflows)
+----------------------------------------------------
+
+=== CORE GAUGE DATA (7 tables) ===
+
+gauges:
+  id                    INT PRIMARY KEY AUTO_INCREMENT
+  gauge_id              VARCHAR(20) NOT NULL UNIQUE
+  custom_id             VARCHAR(50) UNIQUE      -- NULL if using system ID
+  name                  VARCHAR(255) NOT NULL
+  equipment_type        ENUM('thread_gauge','hand_tool','large_equipment','calibration_standard') NOT NULL
+  serial_number         VARCHAR(100) NOT NULL
+  category_id           INT NOT NULL              -- References gauge_categories
+  -- REMOVED: manufacturer, model, purchase info (belongs in purchasing module)
+  status                ENUM('available','checked_out','calibration_due','pending_qc','out_of_service','pending_unseal','retired') DEFAULT 'available'
+  companion_gauge_id    INT                     -- NULL except for thread gauges
+  is_spare              BOOLEAN DEFAULT FALSE
+  is_sealed             BOOLEAN DEFAULT FALSE
+  is_active             BOOLEAN DEFAULT TRUE
+  is_deleted            BOOLEAN DEFAULT FALSE   -- Soft delete flag only
+  created_by            INT NOT NULL              -- Who added this gauge
+  created_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  updated_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  FOREIGN KEY (category_id) REFERENCES gauge_categories(id)
+  FOREIGN KEY (companion_gauge_id) REFERENCES gauges(id)
+  FOREIGN KEY (created_by) REFERENCES core_users(id)
+  CONSTRAINT chk_companion_self CHECK (companion_gauge_id != id)
+  INDEX idx_status (status)
+  INDEX idx_type (equipment_type)
+  INDEX idx_category (category_id)
+  INDEX idx_active_deleted (is_active, is_deleted)
+  FULLTEXT idx_search (gauge_id, custom_id, name, serial_number)
+
+=== GAUGE SPECIFICATIONS (4 tables) ===
+
+gauge_thread_specifications:
+  gauge_id              INT PRIMARY KEY
+  thread_size           VARCHAR(20) NOT NULL COMMENT '.500-20, M10x1.5, .750-6'
+  thread_type           VARCHAR(20) NOT NULL COMMENT 'standard, metric, acme, npt, sti, spiralock'
+  thread_form           VARCHAR(10) COMMENT 'UN, UNF, UNEF, UNS, UNR, UNJ, UNJR, NPT, NPTF'
+  thread_class          VARCHAR(10) NOT NULL COMMENT '2A, 3B, 6g, 6G, 2G, 4C, L1, L2, L3'
+  gauge_type            VARCHAR(10) NOT NULL COMMENT 'plug, ring'
+  gauge_suffix          CHAR(1) NOT NULL COMMENT 'A=GO, B=NO GO'
+  thread_hand           VARCHAR(5) DEFAULT 'RH' COMMENT 'RH=Right Hand, LH=Left Hand'
+  acme_starts           INT DEFAULT 1 COMMENT '1, 2, 3, 4 for ACME multi-start'
+  created_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  updated_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  FOREIGN KEY (gauge_id) REFERENCES gauges(id) ON DELETE CASCADE
+  INDEX idx_thread_search (thread_type, thread_size, gauge_type)
+  CONSTRAINT chk_thread_suffix CHECK (gauge_suffix IN ('A', 'B'))
+
+gauge_hand_tool_specifications:
+  gauge_id              INT PRIMARY KEY
+  tool_type             VARCHAR(20) NOT NULL COMMENT 'caliper, micrometer, depth_gauge, bore_gauge'
+  format                VARCHAR(20) NOT NULL COMMENT 'digital, dial'
+  range_min             DECIMAL(10,4) NOT NULL COMMENT 'Minimum measurement value'
+  range_max             DECIMAL(10,4) NOT NULL COMMENT 'Maximum measurement value'
+  range_unit            VARCHAR(10) DEFAULT 'inches' COMMENT 'inches, mm'
+  resolution            DECIMAL(10,6) NOT NULL COMMENT 'Measurement resolution'
+  ownership_type        VARCHAR(20) DEFAULT 'company' COMMENT 'company, employee'
+  owner_employee_id     INT COMMENT 'If employee-owned'
+  created_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  updated_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  FOREIGN KEY (gauge_id) REFERENCES gauges(id) ON DELETE CASCADE
+  FOREIGN KEY (owner_employee_id) REFERENCES core_users(id)
+  INDEX idx_tool_type (tool_type, format)
+  INDEX idx_ownership (ownership_type, owner_employee_id)
+
+gauge_large_equipment_specifications:
+  gauge_id              INT PRIMARY KEY
+  equipment_type        VARCHAR(50) NOT NULL COMMENT 'cmm, optical_comparator, height_gauge, surface_plate, hardness_tester, force_torque_tester'
+  capacity              VARCHAR(100) COMMENT 'Measurement capacity/range description'
+  accuracy_class        VARCHAR(20) COMMENT 'Accuracy classification'
+  fixed_location        BOOLEAN DEFAULT TRUE COMMENT 'Cannot be moved/checked out'
+  created_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  updated_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  FOREIGN KEY (gauge_id) REFERENCES gauges(id) ON DELETE CASCADE
+  INDEX idx_equipment_type (equipment_type)
+  INDEX idx_fixed_location (fixed_location)
+
+gauge_calibration_standard_specifications:
+  gauge_id              INT PRIMARY KEY
+  standard_type         VARCHAR(50) NOT NULL COMMENT 'gauge_block, master_ring, master_plug, reference_standard'
+  nominal_value         DECIMAL(15,6) NOT NULL COMMENT 'Nominal measurement value'
+  uncertainty           DECIMAL(15,6) NOT NULL COMMENT 'Measurement uncertainty (±)'
+  uncertainty_units     VARCHAR(20) DEFAULT 'inches' COMMENT 'inches, mm, microinches'
+  traceability_organization VARCHAR(50) COMMENT 'NIST, NPL, PTB, etc.'
+  traceability_certificate VARCHAR(100) COMMENT 'Certificate number'
+  access_restricted     BOOLEAN DEFAULT TRUE COMMENT 'Restricted to qualified personnel'
+  created_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  updated_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  FOREIGN KEY (gauge_id) REFERENCES gauges(id) ON DELETE CASCADE
+  INDEX idx_standard_type (standard_type)
+  INDEX idx_nominal_value (nominal_value)
+
+gauge_categories:
+  id                    INT PRIMARY KEY AUTO_INCREMENT
+  name                  VARCHAR(100) NOT NULL UNIQUE
+  prefix                VARCHAR(10) NOT NULL
+  description           TEXT
+  default_calibration_days INT NOT NULL        -- Standard calibration interval for this type
+  next_number           INT DEFAULT 1
+  is_active             BOOLEAN DEFAULT TRUE
+  created_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+gauge_id_config:
+  id                    INT PRIMARY KEY AUTO_INCREMENT
+  category_id           INT NOT NULL
+  gauge_type            VARCHAR(20) COMMENT 'plug, ring, or NULL for single types'
+  prefix                VARCHAR(4) NOT NULL COMMENT '2-4 character prefix'
+  current_sequence      INT DEFAULT 0 COMMENT 'Current sequence number'
+  is_locked             BOOLEAN DEFAULT FALSE COMMENT 'Locked after first use'
+  locked_at             TIMESTAMP NULL COMMENT 'When prefix was locked'
+  created_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  updated_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  FOREIGN KEY (category_id) REFERENCES gauge_categories(id)
+  UNIQUE KEY unique_prefix (prefix)
+  UNIQUE KEY unique_config (category_id, gauge_type)
+  CONSTRAINT chk_prefix_format CHECK (
+    LENGTH(prefix) BETWEEN 2 AND 4 AND
+    prefix REGEXP '^[A-Z]+$'
+  )
+
+=== GAUGE STATE TRACKING (3 tables) ===
+
+gauge_active_checkouts:  -- RENAMED from gauge_current_state
+  gauge_id              INT PRIMARY KEY
+  checked_out_to        INT NOT NULL
+  location              VARCHAR(255)
+  department            VARCHAR(100)
+  checkout_date         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  expected_return       DATE
+  FOREIGN KEY (gauge_id) REFERENCES gauges(id) ON DELETE CASCADE
+  FOREIGN KEY (checked_out_to) REFERENCES core_users(id)
+  INDEX idx_user (checked_out_to)
+  INDEX idx_return_date (expected_return)
+  -- Row only exists when gauge is checked out, deleted on return
+
+gauge_transfers:
+  id                    INT PRIMARY KEY AUTO_INCREMENT
+  gauge_id              INT NOT NULL
+  from_user_id          INT NOT NULL
+  to_user_id            INT NOT NULL
+  initiated_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  status                ENUM('pending','accepted','rejected','cancelled') DEFAULT 'pending'
+  status_changed_at     TIMESTAMP NULL      -- Single timestamp pattern
+  status_changed_by     INT NULL           -- NULL until acted upon
+  reason                TEXT
+  -- REMOVED: accepted_at, rejected_at, approval_notes
+  FOREIGN KEY (gauge_id) REFERENCES gauges(id)
+  FOREIGN KEY (from_user_id) REFERENCES core_users(id)
+  FOREIGN KEY (to_user_id) REFERENCES core_users(id)
+  FOREIGN KEY (status_changed_by) REFERENCES core_users(id)
+  INDEX idx_status (status)
+  INDEX idx_to_user (to_user_id, status)
+
+gauge_unseal_requests:
+  id                    INT PRIMARY KEY AUTO_INCREMENT
+  gauge_id              INT NOT NULL
+  requested_by          INT NOT NULL
+  requested_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  status                ENUM('pending','approved','rejected') DEFAULT 'pending'
+  status_changed_at     TIMESTAMP NULL      -- Single timestamp pattern
+  status_changed_by     INT NULL           -- NULL until acted upon
+  reason                TEXT NOT NULL
+  -- REMOVED: approved_at, rejected_at, approval_notes
+  FOREIGN KEY (gauge_id) REFERENCES gauges(id)
+  FOREIGN KEY (requested_by) REFERENCES core_users(id)
+  FOREIGN KEY (status_changed_by) REFERENCES core_users(id)
+  INDEX idx_status (status)
+  INDEX idx_gauge_status (gauge_id, status)
+
+=== CALIBRATION MANAGEMENT (3 tables) ===
+
+gauge_calibrations:
+  id                    INT PRIMARY KEY AUTO_INCREMENT
+  gauge_id              INT NOT NULL
+  calibration_date      DATE NOT NULL
+  due_date              DATE NOT NULL
+  certificate_number    VARCHAR(100) NOT NULL  -- Required per spec
+  calibrated_by         VARCHAR(255) NOT NULL
+  calibration_company   VARCHAR(255)
+  passed                BOOLEAN NOT NULL DEFAULT TRUE
+  is_sealed             BOOLEAN DEFAULT FALSE
+  measurements          JSON
+  notes                 TEXT
+  document_path         VARCHAR(500)           -- NULL if no digital copy
+  -- REMOVED: environmental_conditions
+  created_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_by            INT NOT NULL
+  FOREIGN KEY (gauge_id) REFERENCES gauges(id) ON DELETE CASCADE
+  FOREIGN KEY (created_by) REFERENCES core_users(id)
+  INDEX idx_gauge_date (gauge_id, calibration_date DESC)
+  INDEX idx_due_date (due_date)
+  INDEX idx_certificate (certificate_number)
+
+gauge_calibration_schedule:
+  gauge_id              INT PRIMARY KEY
+  frequency_days        INT NOT NULL
+  last_calibration_id   INT
+  next_due_date         DATE NOT NULL
+  auto_notify_days      INT DEFAULT 30
+  is_active             BOOLEAN DEFAULT TRUE
+  FOREIGN KEY (gauge_id) REFERENCES gauges(id) ON DELETE CASCADE
+  FOREIGN KEY (last_calibration_id) REFERENCES gauge_calibrations(id)
+  INDEX idx_due_date (next_due_date)
+
+gauge_calibration_failures:
+  id                    INT PRIMARY KEY AUTO_INCREMENT
+  calibration_id        INT NOT NULL
+  failure_reason        TEXT NOT NULL
+  corrective_action     TEXT
+  resolution_date       DATE
+  resolved_by           INT
+  FOREIGN KEY (calibration_id) REFERENCES gauge_calibrations(id)
+  FOREIGN KEY (resolved_by) REFERENCES core_users(id)
+
+=== TRANSACTION HISTORY (2 tables) ===
+
+gauge_transactions:
+  id                    INT PRIMARY KEY AUTO_INCREMENT
+  gauge_id              INT NOT NULL
+  user_id               INT NOT NULL
+  action                ENUM('checkout','return','transfer_out','transfer_in','calibrate','unseal','retire','qc_pass','qc_fail') NOT NULL
+  related_user_id       INT                 -- NULL except for transfers
+  location              VARCHAR(255)        -- NULL if not tracked
+  notes                 TEXT                -- NULL if no notes
+  created_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  FOREIGN KEY (gauge_id) REFERENCES gauges(id) ON DELETE CASCADE
+  FOREIGN KEY (user_id) REFERENCES core_users(id)
+  FOREIGN KEY (related_user_id) REFERENCES core_users(id)
+  INDEX idx_gauge_action (gauge_id, action, created_at)
+  INDEX idx_user_created (user_id, created_at)
+  INDEX idx_created (created_at)
+
+gauge_notes:
+  id                    INT PRIMARY KEY AUTO_INCREMENT
+  gauge_id              INT NOT NULL
+  user_id               INT NOT NULL
+  note_type             ENUM('general','maintenance','damage','calibration','qc') DEFAULT 'general'
+  note                  TEXT NOT NULL
+  attachments           JSON
+  created_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  FOREIGN KEY (gauge_id) REFERENCES gauges(id) ON DELETE CASCADE
+  FOREIGN KEY (user_id) REFERENCES core_users(id)
+  INDEX idx_gauge_type (gauge_id, note_type)
+
+=== QUALITY CONTROL (1 table) ===
+
+gauge_qc_checks:
+  id                    INT PRIMARY KEY AUTO_INCREMENT
+  gauge_id              INT NOT NULL
+  checked_by            INT NOT NULL
+  check_date            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  check_type            ENUM('return','periodic','damage') NOT NULL
+  passed                BOOLEAN NOT NULL
+  findings              JSON
+  corrective_action     TEXT                -- NULL if passed
+  next_action           ENUM('available','calibration','repair','retire')  -- NULL if passed
+  FOREIGN KEY (gauge_id) REFERENCES gauges(id)
+  FOREIGN KEY (checked_by) REFERENCES core_users(id)
+  INDEX idx_gauge_date (gauge_id, check_date)
+
+=== COMPANION TRACKING (1 table) ===
+
+gauge_companion_history:
+  id                    INT PRIMARY KEY AUTO_INCREMENT
+  gauge_id              INT NOT NULL
+  companion_gauge_id    INT NOT NULL
+  action                ENUM('paired','unpaired','replaced') NOT NULL
+  reason                VARCHAR(255)
+  changed_by            INT NOT NULL
+  created_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  FOREIGN KEY (gauge_id) REFERENCES gauges(id) ON DELETE CASCADE
+  FOREIGN KEY (companion_gauge_id) REFERENCES gauges(id) ON DELETE CASCADE
+  FOREIGN KEY (changed_by) REFERENCES core_users(id)
+  INDEX idx_gauge_history (gauge_id, created_at)
+
+TECHNICAL IMPLEMENTATION DETAILS
+--------------------------------
+
+=== SOFT DELETE STRATEGY ===
+- All business entities have is_deleted BOOLEAN DEFAULT FALSE
+- No deleted_at timestamp (get from audit_log if needed)
+- All queries filter WHERE is_deleted = FALSE by default
+- Admin-only queries can see deleted records
+
+=== EVENT HANDLING (NEED-TO-KNOW) ===
+Event Publishing Rules:
+- Most operations stay internal (no events)
+- Only publish when another module must act
+- Always specify target_module_id
+- Examples:
+  * gauge → inventory: 'asset.retired'
+  * gauge → quality: 'calibration.failed'
+  * auth → [module]: 'permission.revoked'
+
+Internal Operations (No Events):
+- Gauge checkout/return
+- User transfers
+- Adding notes
+- Routine calibrations
+
+=== PERFORMANCE OPTIMIZATION ===
+Indexing Strategy:
+- Primary keys: Clustered indexes
+- Foreign keys: Non-clustered indexes
+- Status fields: Covering indexes
+- Date ranges: Composite indexes
+- Full-text search: On name/ID fields
+
+=== JSON USAGE GUIDELINES ===
+Use JSON for:
+- Event payloads (structured but flexible)
+- Notification preferences (delivery methods)
+- Module dependencies and config
+- Audit log old/new values
+- Attachments/file references
+
+Don't use JSON for:
+- Core relationships (use foreign keys)
+- Status fields (use ENUM)
+- Dates and timestamps
+- User/role/permission data
+- Primary business identifiers
+- Equipment specifications (use proper tables)
+
+MIGRATION PATH FROM CURRENT STRUCTURE
+-------------------------------------
+Major Changes:
+1. gauge_current_state → gauge_active_checkouts (only when checked out)
+2. Multiple timestamp fields → single status_changed_at pattern
+3. Remove purchase info from gauges (future module)
+4. Remove environmental_conditions throughout
+5. Add is_deleted to all business tables
+6. Event system with target_module_id required
+
+Benefits:
+- Eliminated ~15 wasteful NULL columns
+- Clearer table purposes
+- Better performance
+- True module isolation
+
+MIGRATION ORDER (CRITICAL FOR SUCCESS)
+-------------------------------------
+Phase 1: Core Infrastructure
+1. Create core_modules table
+2. Create core_roles table
+3. Create core_users table
+4. Create core_permissions table
+5. Create remaining auth tables (sessions, login_attempts, user_roles)
+6. Create authorization tables (role_permissions, user_permission_overrides, user_module_access)
+7. Create data module tables (enabled_modules, module_config, events, event_subscriptions)
+8. Create navigation table
+9. Create notification tables
+10. Create audit_log table
+
+Phase 2: Gauge Module Foundation
+11. Create gauge_categories table (must exist before gauges)
+12. Create gauge_id_config table (for ID generation)
+13. Create gauges table (with all foreign keys)
+14. Create gauge specification tables (all 4 types)
+15. Create remaining gauge tables in dependency order
+
+Phase 3: Data Migration
+16. Migrate user data
+17. Migrate gauge category data
+18. Generate gauge IDs using gauge_id_config
+19. Migrate gauge data with new IDs
+20. Migrate specifications to appropriate tables
+21. Migrate active checkouts (only current checkouts)
+22. Migrate calibration data
+23. Migrate transaction history
+
+Phase 4: Validation & Cleanup
+24. Validate all foreign key relationships
+25. Verify data integrity
+26. Create backup of old tables
+27. Drop old tables after confirmation
+
+TOTAL: ~38-40 tables providing complete functionality with optimized structure

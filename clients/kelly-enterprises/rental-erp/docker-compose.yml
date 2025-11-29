@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ${COMPOSE_PROJECT_NAME:-fireproof-erp}-modular-backend-v1
+    ports:
+      - "${API_PORT:-8000}:8000"
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - DB_HOST=${DB_HOST:-host.docker.internal}
+      - DB_PORT=${DB_PORT:-3307}
+      - DB_USER=${DB_USER:-root}
+      - DB_PASS=${DB_PASSWORD:-fireproof_root_sandbox}
+      - DB_NAME=${DB_NAME:-fai_db_sandbox}
+      - JWT_SECRET=${JWT_SECRET:-your-secret-key-here}
+      - SESSION_SECRET=${SESSION_SECRET:-your-session-secret}
+      - FRONTEND_URL=http://frontend:3000
+    networks:
+      - erp-network
+    restart: unless-stopped
+# Temporarily disabled healthcheck for debugging
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 40s
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    labels:
+      - "com.fireproof.component=backend"
+      - "com.fireproof.stack=modular"
+      - "com.fireproof.type=modular-backend"
+      - "com.fireproof.architecture=new-modular"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ${COMPOSE_PROJECT_NAME:-fireproof-erp}-modular-frontend-v1
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - BACKEND_HOST=backend
+      - BACKEND_PORT=8000
+      - API_URL=http://backend:8000
+    depends_on:
+      - backend
+    networks:
+      - erp-network
+    restart: unless-stopped
+    labels:
+      - "com.fireproof.component=frontend"
+      - "com.fireproof.stack=modular"
+      - "com.fireproof.depends-on=backend"
+      - "com.fireproof.type=modular-frontend"
+      - "com.fireproof.architecture=new-modular"
+    links:
+      - backend
+
+networks:
+  erp-network:
+    name: ${COMPOSE_PROJECT_NAME:-fireproof-erp}-network
+    driver: bridge
+    labels:
+      - "com.fireproof.network=internal"

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand Tool Form - Card Sections Layout (600px, 3 Columns Inside)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #1a202c;
+        }
+
+        .card-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .card {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+        }
+
+        .card-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #3182ce;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-row.single {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3182ce;
+            box-shadow: 0 0 0 3px rgba(49,130,206,0.1);
+        }
+
+        .full-width-card {
+            grid-column: 1 / -1;
+        }
+
+        .name-section {
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-end;
+        }
+
+        .name-section .form-group {
+            flex: 1;
+        }
+
+        button {
+            padding: 6px 14px;
+            background: #3182ce;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        button:hover {
+            background: #2c5282;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Create Hand Tool - Card Sections Layout (600px, 3 Columns Inside)</h1>
+
+        <div class="card-stack">
+            <!-- Card 1: Basic Info -->
+            <div class="card">
+                <div class="card-title">Basic Information</div>
+                <div class="card-grid">
+                    <div class="form-group">
+                        <label>Format</label>
+                        <select>
+                            <option>Digital</option>
+                            <option>Dial</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ownership</label>
+                        <select>
+                            <option>Company</option>
+                            <option>Customer</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Gauge ID</label>
+                        <input type="text" value="CA0001">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Specifications -->
+            <div class="card">
+                <div class="card-title">Specifications</div>
+                <div class="card-grid">
+                    <div class="form-group">
+                        <label>Range Min</label>
+                        <input type="number" step="0.001">
+                    </div>
+                    <div class="form-group">
+                        <label>Range Max</label>
+                        <input type="number" step="0.001">
+                    </div>
+                    <div class="form-group">
+                        <label>Measurement Unit</label>
+                        <select>
+                            <option>Inches (")</option>
+                            <option>Millimeters (mm)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Resolution</label>
+                        <input type="number" step="0.0001" placeholder="0.001">
+                    </div>
+                    <div class="form-group">
+                        <label>Accuracy</label>
+                        <input type="text" placeholder="±0.002 inch">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Tracking Info -->
+            <div class="card">
+                <div class="card-title">Tracking Information</div>
+                <div class="card-grid">
+                    <div class="form-group">
+                        <label>Serial Number (S/N)</label>
+                        <input type="text" placeholder="Enter serial number">
+                    </div>
+                    <div class="form-group">
+                        <label>Bin Location</label>
+                        <input type="text" placeholder="A1, B3">
+                    </div>
+                    <div class="form-group">
+                        <label>Cal Freq (days)</label>
+                        <input type="number" placeholder="365">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Manufacturer Info -->
+            <div class="card">
+                <div class="card-title">Manufacturer Details</div>
+                <div class="card-grid">
+                    <div class="form-group">
+                        <label>Manufacturer</label>
+                        <input type="text" placeholder="e.g., Mitutoyo">
+                    </div>
+                    <div class="form-group">
+                        <label>Model Number</label>
+                        <input type="text" placeholder="e.g., CD-12">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full Width Card: Gauge Name -->
+            <div class="card">
+                <div class="card-title">Gauge Name</div>
+                <div class="name-section">
+                    <div class="form-group">
+                        <input type="text" placeholder="Click 'Generate Name' or enter custom name">
+                    </div>
+                    <button>Generate Name</button>
+                </div>
+            </div>
+        </div>
+
+        <div style="padding: 1rem; background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); font-size: 13px; color: #4a5568;">
+            <strong>Layout:</strong> Cards stacked vertically with 3-column grid inside each card<br>
+            <strong>Window Size:</strong> 600px (matches actual platform form width)<br>
+            <strong>Vertical Space:</strong> Very compact - 5 stacked cards<br>
+            <strong>Pros:</strong> Maximum space efficiency, fields side-by-side, scannable sections, true 1:1 width match<br>
+            <strong>Cons:</strong> Less visual breathing room between sections
+        </div>
+    </div>
+</body>
+</html>

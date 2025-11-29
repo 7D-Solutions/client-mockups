@@ -1,0 +1,19 @@
+Files archived on Sun Aug 31 20:20:56 CDT 2025
+total 664
+drwxrwxrwx 1 jd100879 jd100879   4096 Aug 31  2025 .
+drwxrwxrwx 1 jd100879 jd100879   4096 Aug 31 20:20 ..
+-rwxrwxrwx 1 jd100879 jd100879     47 Aug 31  2025 archive_2025-08-31.txt
+-rwxrwxrwx 1 jd100879 jd100879   4495 Aug 31 20:14 check-foreign-keys.js
+-rwxrwxrwx 1 jd100879 jd100879  10367 Aug 25 09:29 database-audit-comparison.js
+-rwxrwxrwx 1 jd100879 jd100879    730 Aug 25 09:29 database-audit-report.json
+-rwxrwxrwx 1 jd100879 jd100879  50665 Aug 25 09:26 database_structure_2025-08-25.yaml
+-rwxrwxrwx 1 jd100879 jd100879   3685 Aug 31 20:17 debug-fk-matching.js
+-rwxrwxrwx 1 jd100879 jd100879   2401 Aug 31 20:12 debug-yaml-check.js
+-rwxrwxrwx 1 jd100879 jd100879 178541 Aug 31 20:07 dump_broken_2025-08-31_20-07-56.sql
+-rwxrwxrwx 1 jd100879 jd100879  95118 Aug 23 12:14 dump_complete_2025-08-23.sql
+-rwxrwxrwx 1 jd100879 jd100879 114599 Aug 25 09:27 dump_complete_2025-08-25.sql
+-rwxrwxrwx 1 jd100879 jd100879    499 Aug 23 12:14 dump_log_2025-08-23.txt
+-rwxrwxrwx 1 jd100879 jd100879 178541 Aug 31 20:07 dump_restorable_v1.1_2025-08-31_20-07-56.sql
+-rwxrwxrwx 1 jd100879 jd100879   6809 Aug 25 11:07 generate-accurate-verified-dump.bat
+-rwxrwxrwx 1 jd100879 jd100879      0 Aug 31 20:07 temp_broken_fks.txt
+-rwxrwxrwx 1 jd100879 jd100879  11267 Aug 31 20:16 verify-yaml-accuracy.js

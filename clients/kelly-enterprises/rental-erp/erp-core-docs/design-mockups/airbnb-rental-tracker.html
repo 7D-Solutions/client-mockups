@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airbnb Rental Property Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-primary: #FF5A5F;
+            --color-primary-dark: #E84A4F;
+            --color-success: #00A699;
+            --color-warning: #FFB400;
+            --color-danger: #dc3545;
+            --color-info: #008489;
+            --color-border: #dee2e6;
+            --color-border-light: #e9ecef;
+            --color-bg-light: #f8f9fa;
+            --color-text: #333;
+            --color-text-light: #666;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 20px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            color: var(--color-text);
+        }
+
+        .page-container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: var(--space-5);
+        }
+
+        .page-header {
+            background: white;
+            padding: var(--space-5);
+            border-radius: 8px;
+            margin-bottom: var(--space-5);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .page-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-4);
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--color-text);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .airbnb-logo {
+            color: var(--color-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .btn-success {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #008f82;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-5);
+        }
+
+        .stat-card {
+            background: white;
+            padding: var(--space-5);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .stat-card.success {
+            border-left-color: var(--color-success);
+        }
+
+        .stat-card.warning {
+            border-left-color: var(--color-warning);
+        }
+
+        .stat-card.info {
+            border-left-color: var(--color-info);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .stat-subtext {
+            font-size: 13px;
+            color: var(--color-text-light);
+            margin-top: 4px;
+        }
+
+        .filters-section {
+            display: flex;
+            gap: var(--space-3);
+            flex-wrap: wrap;
+            padding-top: var(--space-4);
+            border-top: 1px solid var(--color-border-light);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .filter-input,
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .datatable-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .datatable-toolbar {
+            padding: var(--space-4);
+            border-bottom: 1px solid var(--color-border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--color-bg-light);
+        }
+
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .record-count {
+            font-size: 14px;
+            color: var(--color-text-light);
+            font-weight: 500;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 5px;
+            background: white;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            padding: 3px;
+        }
+
+        .view-btn {
+            padding: 6px 12px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--color-text-light);
+            transition: all 0.2s;
+        }
+
+        .view-btn.active {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .datatable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .datatable thead {
+            background: var(--color-bg-light);
+            border-bottom: 2px solid var(--color-border);
+        }
+
+        .datatable th {
+            padding: var(--space-3) var(--space-4);
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--color-text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .datatable th.sortable {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .datatable th.sortable:hover {
+            background: #e9ecef;
+        }
+
+        .datatable th .sort-icon {
+            margin-left: 5px;
+            opacity: 0.3;
+        }
+
+        .datatable th.sorted .sort-icon {
+            opacity: 1;
+        }
+
+        .datatable tbody tr {
+            border-bottom: 1px solid var(--color-border-light);
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .datatable tbody tr:hover {
+            background: #fff5f5;
+        }
+
+        .datatable tbody tr.expanded {
+            background: #ffe7e7;
+        }
+
+        .datatable tbody tr.expanded:hover {
+            background: #ffd4d4;
+        }
+
+        .datatable td {
+            padding: var(--space-3) var(--space-4);
+            font-size: 14px;
+            color: var(--color-text);
+        }
+
+        .expand-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+            transition: transform 0.2s;
+            font-size: 16px;
+        }
+
+        .expanded .expand-icon {
+            transform: rotate(90deg);
+        }
+
+        .booking-id {
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-checkedin {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .status-completed {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .rating {
+            color: var(--color-warning);
+            font-weight: 700;
+        }
+
+        .currency {
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        .currency.positive {
+            color: var(--color-success);
+        }
+
+        .currency.negative {
+            color: var(--color-danger);
+        }
+
+        .expanded-row {
+            display: none;
+        }
+
+        .expanded-row.show {
+            display: table-row;
+        }
+
+        .expanded-content {
+            padding: 0;
+            background: #fff8f8;
+            border-top: 2px solid var(--color-primary);
+        }
+
+        .expanded-inner {
+            padding: var(--space-5);
+        }
+
+        .history-tabs {
+            display: flex;
+            gap: var(--space-2);
+            margin-bottom: var(--space-4);
+            border-bottom: 2px solid var(--color-border);
+        }
+
+        .history-tab {
+            padding: var(--space-3) var(--space-5);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-text-light);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            position: relative;
+            bottom: -2px;
+        }
+
+        .history-tab:hover {
+            color: var(--color-primary);
+        }
+
+        .history-tab.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-5);
+            padding: var(--space-4);
+            background: white;
+            border-radius: 6px;
+        }
+
+        .summary-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .summary-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--color-text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .summary-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .history-table thead {
+            background: #f8f9fa;
+        }
+
+        .history-table th {
+            padding: var(--space-3);
+            text-align: left;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--color-text);
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--color-border);
+        }
+
+        .history-table td {
+            padding: var(--space-3);
+            font-size: 13px;
+            border-bottom: 1px solid var(--color-border-light);
+        }
+
+        .history-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .financial-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-4);
+            margin-bottom: var(--space-4);
+        }
+
+        .financial-card {
+            background: linear-gradient(135deg, #FF5A5F 0%, #E84A4F 100%);
+            color: white;
+            padding: var(--space-5);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .financial-card.revenue {
+            background: linear-gradient(135deg, #00A699 0%, #008489 100%);
+        }
+
+        .financial-card.profit {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        }
+
+        .financial-card.loss {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .financial-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .financial-value {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .guest-info {
+            background: white;
+            padding: var(--space-4);
+            border-radius: 6px;
+            margin-bottom: var(--space-4);
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .guest-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 8px;
+        }
+
+        .guest-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-3);
+            font-size: 13px;
+            color: var(--color-text-light);
+        }
+
+        .review-card {
+            background: white;
+            padding: var(--space-4);
+            border-radius: 6px;
+            margin-bottom: var(--space-3);
+            border-left: 4px solid var(--color-warning);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-2);
+        }
+
+        .review-rating {
+            font-size: 20px;
+            color: var(--color-warning);
+            font-weight: 700;
+        }
+
+        .review-date {
+            font-size: 12px;
+            color: var(--color-text-light);
+        }
+
+        .review-text {
+            font-size: 14px;
+            color: var(--color-text);
+            line-height: 1.5;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--space-5);
+            color: var(--color-text-light);
+            font-style: italic;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-4);
+            border-top: 1px solid var(--color-border-light);
+            background: var(--color-bg-light);
+        }
+
+        .pagination-info {
+            font-size: 14px;
+            color: var(--color-text-light);
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        .page-btn {
+            padding: 6px 12px;
+            border: 1px solid var(--color-border);
+            background: white;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-btn.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .highlight-metric {
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        .action-link {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .action-link:hover {
+            text-decoration: underline;
+        }
+
+        .expense-type {
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .expense-cleaning {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .expense-maintenance {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .expense-utilities {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .expense-supplies {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .expense-fees {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-header-top">
+                <h1 class="page-title">
+                    <span class="airbnb-logo">🏠</span>
+                    Airbnb Rental Tracker
+                </h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary">📊 Financial Report</button>
+                    <button class="btn btn-success">➕ New Booking</button>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-section">
+                <div class="filter-group">
+                    <label class="filter-label">Search</label>
+                    <input type="text" class="filter-input" placeholder="Booking ID, Guest Name..." style="width: 250px;">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Status</label>
+                    <select class="filter-select" style="width: 150px;">
+                        <option>All Bookings</option>
+                        <option>Confirmed</option>
+                        <option>Checked In</option>
+                        <option>Completed</option>
+                        <option>Cancelled</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Date Range</label>
+                    <input type="date" class="filter-input" value="2024-01-01" style="width: 140px;">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">To</label>
+                    <input type="date" class="filter-input" value="2024-12-31" style="width: 140px;">
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Bar -->
+        <div class="stats-bar">
+            <div class="stat-card success">
+                <div class="stat-label">Total Revenue (2024)</div>
+                <div class="stat-value">$48,750</div>
+                <div class="stat-subtext">28 bookings completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Expenses (2024)</div>
+                <div class="stat-value">$18,425</div>
+                <div class="stat-subtext">Cleaning, maintenance, utilities</div>
+            </div>
+            <div class="stat-card info">
+                <div class="stat-label">Net Income (2024)</div>
+                <div class="stat-value">$30,325</div>
+                <div class="stat-subtext">62.2% profit margin</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="stat-label">Occupancy Rate</div>
+                <div class="stat-value">78%</div>
+                <div class="stat-subtext">285 nights booked / 365 total</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Avg. Nightly Rate</div>
+                <div class="stat-value">$171</div>
+                <div class="stat-subtext">Based on 285 nights</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="stat-label">Avg. Guest Rating</div>
+                <div class="stat-value">4.8 ⭐</div>
+                <div class="stat-subtext">Based on 24 reviews</div>
+            </div>
+        </div>
+
+        <!-- DataTable Container -->
+        <div class="datatable-container">
+            <!-- Toolbar -->
+            <div class="datatable-toolbar">
+                <div class="toolbar-left">
+                    <span class="record-count">Showing <strong>32</strong> bookings</span>
+                </div>
+                <div class="view-toggle">
+                    <button class="view-btn active">📋 Bookings</button>
+                    <button class="view-btn">📅 Calendar</button>
+                    <button class="view-btn">📊 Analytics</button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-wrapper">
+                <table class="datatable">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;"></th>
+                            <th class="sortable">Booking ID <span class="sort-icon">▼</span></th>
+                            <th class="sortable">Guest Name <span class="sort-icon">▼</span></th>
+                            <th class="sortable">Check-In <span class="sort-icon">▼</span></th>
+                            <th class="sortable">Check-Out <span class="sort-icon">▼</span></th>
+                            <th class="sortable">Nights <span class="sort-icon">▼</span></th>
+                            <th class="sortable">Guests <span class="sort-icon">▼</span></th>
+                            <th class="sortable">Revenue <span class="sort-icon">▼</span></th>
+                            <th class="sortable">Rating <span class="sort-icon">▼</span></th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Row 1: Booking BK-2024-032 -->
+                        <tr class="booking-row" data-booking-id="BK-2024-032">
+                            <td><span class="expand-icon">▶</span></td>
+                            <td><span class="booking-id">BK-2024-032</span></td>
+                            <td><strong>Sarah Johnson</strong></td>
+                            <td>Nov 15, 2024</td>
+                            <td>Nov 18, 2024</td>
+                            <td><strong>3</strong></td>
+                            <td>2</td>
+                            <td><span class="currency positive">$525.00</span></td>
+                            <td><span class="rating">5.0 ⭐</span></td>
+                            <td><span class="status-badge status-completed">Completed</span></td>
+                            <td><a href="#" class="action-link">View</a> | <a href="#" class="action-link">Edit</a></td>
+                        </tr>
+                        <tr class="expanded-row" data-booking-id="BK-2024-032">
+                            <td colspan="11" class="expanded-content">
+                                <div class="expanded-inner">
+                                    <!-- Guest Info -->
+                                    <div class="guest-info">
+                                        <div class="guest-name">👤 Sarah Johnson</div>
+                                        <div class="guest-details">
+                                            <div><strong>Email:</strong> sarah.johnson@email.com</div>
+                                            <div><strong>Phone:</strong> (555) 123-4567</div>
+                                            <div><strong>Location:</strong> Austin, TX</div>
+                                            <div><strong>Guests:</strong> 2 adults</div>
+                                            <div><strong>Total Stays:</strong> 1st time guest</div>
+                                            <div><strong>Verified ID:</strong> Yes ✓</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Summary -->
+                                    <div class="summary-grid">
+                                        <div class="summary-item">
+                                            <span class="summary-label">Check-In</span>
+                                            <span class="summary-value">Nov 15, 3:00 PM</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Check-Out</span>
+                                            <span class="summary-value">Nov 18, 11:00 AM</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Nights</span>
+                                            <span class="summary-value highlight-metric">3</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Nightly Rate</span>
+                                            <span class="summary-value">$150.00</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Cleaning Fee</span>
+                                            <span class="summary-value">$75.00</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Service Fee</span>
+                                            <span class="summary-value">$52.50</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Financial Summary -->
+                                    <div class="financial-summary">
+                                        <div class="financial-card revenue">
+                                            <div class="financial-label">Guest Paid</div>
+                                            <div class="financial-value">$577.50</div>
+                                            <small>Total booking amount</small>
+                                        </div>
+                                        <div class="financial-card">
+                                            <div class="financial-label">Your Payout</div>
+                                            <div class="financial-value">$525.00</div>
+                                            <small>After Airbnb fees</small>
+                                        </div>
+                                        <div class="financial-card profit">
+                                            <div class="financial-label">Net Income</div>
+                                            <div class="financial-value">$425.00</div>
+                                            <small>After $100 expenses</small>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tabs -->
+                                    <div class="history-tabs">
+                                        <button class="history-tab active" data-tab="financial">💰 Financial Details</button>
+                                        <button class="history-tab" data-tab="expenses">📋 Expenses</button>
+                                        <button class="history-tab" data-tab="review">⭐ Review</button>
+                                        <button class="history-tab" data-tab="notes">📝 Notes</button>
+                                    </div>
+
+                                    <!-- Financial Details Tab -->
+                                    <div class="tab-content active" data-tab="financial">
+                                        <table class="history-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Item</th>
+                                                    <th>Amount</th>
+                                                    <th>Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td><strong>Nightly Rate</strong></td>
+                                                    <td><span class="currency">$150.00 × 3 nights</span></td>
+                                                    <td>Base accommodation rate</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Cleaning Fee</strong></td>
+                                                    <td><span class="currency">$75.00</span></td>
+                                                    <td>One-time cleaning fee</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Service Fee (Guest)</strong></td>
+                                                    <td><span class="currency">$52.50</span></td>
+                                                    <td>Airbnb guest service fee (9.1%)</td>
+                                                </tr>
+                                                <tr style="border-top: 2px solid #dee2e6; font-weight: 700;">
+                                                    <td><strong>Guest Total</strong></td>
+                                                    <td><strong class="currency positive">$577.50</strong></td>
+                                                    <td>Total paid by guest</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Host Service Fee</strong></td>
+                                                    <td><span class="currency negative">-$52.50</span></td>
+                                                    <td>Airbnb host fee (10%)</td>
+                                                </tr>
+                                                <tr style="border-top: 2px solid #dee2e6; font-weight: 700;">
+                                                    <td><strong>Your Payout</strong></td>
+                                                    <td><strong class="currency positive">$525.00</strong></td>
+                                                    <td>Deposited to bank account</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- Expenses Tab -->
+                                    <div class="tab-content" data-tab="expenses">
+                                        <table class="history-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Type</th>
+                                                    <th>Description</th>
+                                                    <th>Vendor</th>
+                                                    <th>Amount</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Nov 18, 2024</td>
+                                                    <td><span class="expense-type expense-cleaning">Cleaning</span></td>
+                                                    <td>Post-checkout deep clean</td>
+                                                    <td>Clean Team Services</td>
+                                                    <td><span class="currency">$85.00</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Nov 14, 2024</td>
+                                                    <td><span class="expense-type expense-supplies">Supplies</span></td>
+                                                    <td>Restocked toiletries, coffee, snacks</td>
+                                                    <td>Costco</td>
+                                                    <td><span class="currency">$15.00</span></td>
+                                                </tr>
+                                                <tr style="border-top: 2px solid #dee2e6; font-weight: 700;">
+                                                    <td colspan="4" style="text-align: right;"><strong>Total Expenses</strong></td>
+                                                    <td><strong class="currency negative">$100.00</strong></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- Review Tab -->
+                                    <div class="tab-content" data-tab="review">
+                                        <div class="review-card">
+                                            <div class="review-header">
+                                                <div class="review-rating">⭐⭐⭐⭐⭐ 5.0</div>
+                                                <div class="review-date">Nov 19, 2024</div>
+                                            </div>
+                                            <div class="review-text">
+                                                <p><strong>Cleanliness:</strong> 5/5 ⭐⭐⭐⭐⭐</p>
+                                                <p><strong>Accuracy:</strong> 5/5 ⭐⭐⭐⭐⭐</p>
+                                                <p><strong>Communication:</strong> 5/5 ⭐⭐⭐⭐⭐</p>
+                                                <p><strong>Location:</strong> 5/5 ⭐⭐⭐⭐⭐</p>
+                                                <p><strong>Check-in:</strong> 5/5 ⭐⭐⭐⭐⭐</p>
+                                                <p><strong>Value:</strong> 5/5 ⭐⭐⭐⭐⭐</p>
+                                                <br>
+                                                <p><em>"Amazing stay! The place was spotless, exactly as described, and in a perfect location. The host was super responsive and made check-in a breeze. Would definitely recommend and stay again!"</em></p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Notes Tab -->
+                                    <div class="tab-content" data-tab="notes">
+                                        <div style="background: white; padding: 20px; border-radius: 6px;">
+                                            <h4 style="margin-bottom: 10px;">Booking Notes:</h4>
+                                            <ul style="line-height: 1.8; color: #666;">
+                                                <li>Guest requested early check-in (accommodated at 2 PM)</li>
+                                                <li>Left property in excellent condition</li>
+                                                <li>No issues reported during stay</li>
+                                                <li>Respectful of house rules and neighbors</li>
+                                                <li>Would welcome back as a guest</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 2: Booking BK-2024-031 -->
+                        <tr class="booking-row" data-booking-id="BK-2024-031">
+                            <td><span class="expand-icon">▶</span></td>
+                            <td><span class="booking-id">BK-2024-031</span></td>
+                            <td><strong>Michael Chen</strong></td>
+                            <td>Nov 8, 2024</td>
+                            <td>Nov 15, 2024</td>
+                            <td><strong>7</strong></td>
+                            <td>4</td>
+                            <td><span class="currency positive">$1,225.00</span></td>
+                            <td><span class="rating">4.8 ⭐</span></td>
+                            <td><span class="status-badge status-completed">Completed</span></td>
+                            <td><a href="#" class="action-link">View</a> | <a href="#" class="action-link">Edit</a></td>
+                        </tr>
+                        <tr class="expanded-row" data-booking-id="BK-2024-031">
+                            <td colspan="11" class="expanded-content">
+                                <div class="expanded-inner">
+                                    <div class="guest-info">
+                                        <div class="guest-name">👤 Michael Chen</div>
+                                        <div class="guest-details">
+                                            <div><strong>Email:</strong> m.chen@email.com</div>
+                                            <div><strong>Phone:</strong> (555) 987-6543</div>
+                                            <div><strong>Location:</strong> San Francisco, CA</div>
+                                            <div><strong>Guests:</strong> 2 adults, 2 children</div>
+                                            <div><strong>Total Stays:</strong> 3rd visit</div>
+                                            <div><strong>Verified ID:</strong> Yes ✓</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="financial-summary">
+                                        <div class="financial-card revenue">
+                                            <div class="financial-label">Guest Paid</div>
+                                            <div class="financial-value">$1,347.50</div>
+                                            <small>Total booking amount</small>
+                                        </div>
+                                        <div class="financial-card">
+                                            <div class="financial-label">Your Payout</div>
+                                            <div class="financial-value">$1,225.00</div>
+                                            <small>After Airbnb fees</small>
+                                        </div>
+                                        <div class="financial-card profit">
+                                            <div class="financial-label">Net Income</div>
+                                            <div class="financial-value">$1,040.00</div>
+                                            <small>After $185 expenses</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="history-tabs">
+                                        <button class="history-tab active" data-tab="financial">💰 Financial Details</button>
+                                        <button class="history-tab" data-tab="expenses">📋 Expenses</button>
+                                        <button class="history-tab" data-tab="review">⭐ Review</button>
+                                    </div>
+
+                                    <div class="tab-content active" data-tab="financial">
+                                        <p class="empty-state">Detailed financial breakdown for 7-night stay...</p>
+                                    </div>
+
+                                    <div class="tab-content" data-tab="expenses">
+                                        <table class="history-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Type</th>
+                                                    <th>Description</th>
+                                                    <th>Amount</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Nov 15, 2024</td>
+                                                    <td><span class="expense-type expense-cleaning">Cleaning</span></td>
+                                                    <td>Post-checkout deep clean</td>
+                                                    <td><span class="currency">$110.00</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Nov 12, 2024</td>
+                                                    <td><span class="expense-type expense-maintenance">Maintenance</span></td>
+                                                    <td>Fixed leaky faucet</td>
+                                                    <td><span class="currency">$45.00</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Nov 7, 2024</td>
+                                                    <td><span class="expense-type expense-supplies">Supplies</span></td>
+                                                    <td>Restocked supplies</td>
+                                                    <td><span class="currency">$30.00</span></td>
+                                                </tr>
+                                                <tr style="border-top: 2px solid #dee2e6; font-weight: 700;">
+                                                    <td colspan="3" style="text-align: right;"><strong>Total Expenses</strong></td>
+                                                    <td><strong class="currency negative">$185.00</strong></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="tab-content" data-tab="review">
+                                        <div class="review-card">
+                                            <div class="review-header">
+                                                <div class="review-rating">⭐⭐⭐⭐⭐ 4.8</div>
+                                                <div class="review-date">Nov 16, 2024</div>
+                                            </div>
+                                            <div class="review-text">
+                                                <p><em>"Great place for families! Very clean and comfortable. The kids loved the backyard. Minor issue with the kitchen faucet but host fixed it immediately. Overall excellent stay."</em></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 3: Booking BK-2024-030 (Cancelled) -->
+                        <tr class="booking-row" data-booking-id="BK-2024-030">
+                            <td><span class="expand-icon">▶</span></td>
+                            <td><span class="booking-id">BK-2024-030</span></td>
+                            <td><strong>Jennifer Martinez</strong></td>
+                            <td>Nov 1, 2024</td>
+                            <td>Nov 4, 2024</td>
+                            <td><strong>3</strong></td>
+                            <td>2</td>
+                            <td><span class="currency">$0.00</span></td>
+                            <td>—</td>
+                            <td><span class="status-badge status-cancelled">Cancelled</span></td>
+                            <td><a href="#" class="action-link">View</a></td>
+                        </tr>
+                        <tr class="expanded-row" data-booking-id="BK-2024-030">
+                            <td colspan="11" class="expanded-content">
+                                <div class="expanded-inner">
+                                    <p class="empty-state">Guest cancelled 5 days before check-in. Refund processed according to moderate cancellation policy.</p>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 4: Booking BK-2024-029 -->
+                        <tr class="booking-row" data-booking-id="BK-2024-029">
+                            <td><span class="expand-icon">▶</span></td>
+                            <td><span class="booking-id">BK-2024-029</span></td>
+                            <td><strong>David Thompson</strong></td>
+                            <td>Oct 22, 2024</td>
+                            <td>Oct 25, 2024</td>
+                            <td><strong>3</strong></td>
+                            <td>1</td>
+                            <td><span class="currency positive">$525.00</span></td>
+                            <td><span class="rating">4.7 ⭐</span></td>
+                            <td><span class="status-badge status-completed">Completed</span></td>
+                            <td><a href="#" class="action-link">View</a> | <a href="#" class="action-link">Edit</a></td>
+                        </tr>
+                        <tr class="expanded-row" data-booking-id="BK-2024-029">
+                            <td colspan="11" class="expanded-content">
+                                <div class="expanded-inner">
+                                    <p class="empty-state">Click tabs above to view detailed history...</p>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 5: Upcoming Booking -->
+                        <tr class="booking-row" data-booking-id="BK-2024-033">
+                            <td><span class="expand-icon">▶</span></td>
+                            <td><span class="booking-id">BK-2024-033</span></td>
+                            <td><strong>Amanda Wilson</strong></td>
+                            <td>Nov 25, 2024</td>
+                            <td>Nov 28, 2024</td>
+                            <td><strong>3</strong></td>
+                            <td>3</td>
+                            <td><span class="currency positive">$525.00</span></td>
+                            <td>—</td>
+                            <td><span class="status-badge status-confirmed">Confirmed</span></td>
+                            <td><a href="#" class="action-link">View</a> | <a href="#" class="action-link">Edit</a></td>
+                        </tr>
+                        <tr class="expanded-row" data-booking-id="BK-2024-033">
+                            <td colspan="11" class="expanded-content">
+                                <div class="expanded-inner">
+                                    <p class="empty-state">Upcoming booking - check-in in 10 days. Pre-arrival message sent.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <div class="pagination-info">
+                    Showing 1-5 of 32 bookings
+                </div>
+                <div class="pagination-controls">
+                    <button class="page-btn" disabled>Previous</button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn">4</button>
+                    <button class="page-btn">5</button>
+                    <button class="page-btn">6</button>
+                    <button class="page-btn">7</button>
+                    <button class="page-btn">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Row expansion functionality
+        document.querySelectorAll('.booking-row').forEach(row => {
+            row.addEventListener('click', function(e) {
+                // Don't expand if clicking on action links
+                if (e.target.classList.contains('action-link')) {
+                    e.preventDefault();
+                    console.log('Action clicked:', e.target.textContent);
+                    return;
+                }
+
+                const bookingId = this.dataset.bookingId;
+                const expandedRow = document.querySelector(`.expanded-row[data-booking-id="${bookingId}"]`);
+                const isExpanded = this.classList.contains('expanded');
+
+                // Close all other expanded rows
+                document.querySelectorAll('.booking-row').forEach(r => r.classList.remove('expanded'));
+                document.querySelectorAll('.expanded-row').forEach(r => r.classList.remove('show'));
+
+                // Toggle current row
+                if (!isExpanded) {
+                    this.classList.add('expanded');
+                    expandedRow.classList.add('show');
+                }
+            });
+        });
+
+        // Tab switching functionality
+        document.querySelectorAll('.history-tab').forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent row collapse
+
+                const tabName = this.dataset.tab;
+                const expandedRow = this.closest('.expanded-inner');
+
+                // Update active tab
+                expandedRow.querySelectorAll('.history-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                // Update active content
+                expandedRow.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                    if (content.dataset.tab === tabName) {
+                        content.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Sortable columns
+        document.querySelectorAll('.sortable').forEach(th => {
+            th.addEventListener('click', function() {
+                document.querySelectorAll('.sortable').forEach(t => t.classList.remove('sorted'));
+                this.classList.add('sorted');
+                console.log('Sorting by:', this.textContent);
+            });
+        });
+
+        // View toggle
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                console.log('View changed to:', this.textContent);
+            });
+        });
+
+        // Pagination
+        document.querySelectorAll('.page-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (!this.disabled) {
+                    document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+                    if (!isNaN(this.textContent)) {
+                        this.classList.add('active');
+                    }
+                    console.log('Page changed to:', this.textContent);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

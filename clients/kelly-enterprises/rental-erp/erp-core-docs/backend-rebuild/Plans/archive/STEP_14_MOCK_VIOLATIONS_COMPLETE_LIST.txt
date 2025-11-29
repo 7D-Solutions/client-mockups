@@ -1,0 +1,513 @@
+🚨 COMPLETE MOCK DATA VIOLATIONS CATALOG
+========================================
+
+📊 COMPREHENSIVE MOCK VIOLATIONS CATALOG
+========================================
+Total files scanned: 153
+Files with mock violations: 39
+Total mock violations: 3019
+
+🚨 CRITICAL VIOLATIONS: 33 files
+⚠️  HIGH VIOLATIONS: 4 files
+ℹ️  MEDIUM VIOLATIONS: 2 files
+
+📋 COMPLETE VIOLATIONS LIST
+===========================
+
+1. tests/modules/gauge/services/gaugeService.improved.test.js
+   Severity: CRITICAL
+   Violations: 199
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 7: const mockTrackingService = {
+   Line 8: getGaugeById: jest.fn(),
+   Line 9: checkoutGauge: jest.fn(),
+   Line 10: returnGauge: jest.fn()
+   Line 13: const mockSearchService = {
+   ... and 194 more violations
+
+2. tests/modules/gauge/services/gaugeService.test.js
+   Severity: CRITICAL
+   Violations: 199
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 7: const mockTrackingService = {
+   Line 8: getGaugeById: jest.fn(),
+   Line 9: checkoutGauge: jest.fn(),
+   Line 10: returnGauge: jest.fn()
+   Line 13: const mockSearchService = {
+   ... and 194 more violations
+
+3. tests/modules/gauge/services/GaugeTrackingService.test.js
+   Severity: CRITICAL
+   Violations: 185
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 7: const mockConnection = {
+   Line 7: const mockConnection = {
+   Line 8: execute: jest.fn(),
+   Line 9: beginTransaction: jest.fn(),
+   Line 10: commit: jest.fn(),
+   ... and 180 more violations
+
+4. tests/modules/gauge/services/GaugeCalibrationService.test.js
+   Severity: CRITICAL
+   Violations: 178
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 7: const mockConnection = {
+   Line 7: const mockConnection = {
+   Line 8: execute: jest.fn(),
+   Line 9: beginTransaction: jest.fn(),
+   Line 10: commit: jest.fn(),
+   ... and 173 more violations
+
+5. tests/modules/gauge/services/GaugeSearchService.fixed.test.js
+   Severity: CRITICAL
+   Violations: 175
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 7: const mockPool = {
+   Line 7: const mockPool = {
+   Line 8: execute: jest.fn()
+   Line 11: const mockLogger = {
+   Line 12: info: jest.fn(),
+   ... and 170 more violations
+
+6. tests/modules/gauge/services/GaugeRejectionService.test.js
+   Severity: CRITICAL
+   Violations: 147
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 7: const mockConnection = {
+   Line 7: const mockConnection = {
+   Line 8: execute: jest.fn(),
+   Line 9: beginTransaction: jest.fn(),
+   Line 10: commit: jest.fn(),
+   ... and 142 more violations
+
+7. tests/modules/gauge/mega-coverage-boost.test.js
+   Severity: CRITICAL
+   Violations: 138
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 2: jest.mock('../../../src/infrastructure/database/connection', () => {
+   Line 3: const mockPool = {
+   Line 3: const mockPool = {
+   Line 4: execute: jest.fn(),
+   Line 5: getConnection: jest.fn(),
+   ... and 133 more violations
+
+8. tests/modules/gauge/services/OperationsService.fixed.test.js
+   Severity: CRITICAL
+   Violations: 119
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 7: const mockOperationsRepo = {
+   Line 8: getGaugeDetails: jest.fn(),
+   Line 9: createQCRecord: jest.fn()
+   Line 12: const mockGaugeService = {
+   Line 13: getGaugeById: jest.fn(),
+   ... and 114 more violations
+
+9. tests/modules/gauge/services/sealService.test.js
+   Severity: CRITICAL
+   Violations: 113
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 7: const mockConnection = {
+   Line 7: const mockConnection = {
+   Line 8: execute: jest.fn(),
+   Line 9: beginTransaction: jest.fn(),
+   Line 10: commit: jest.fn(),
+   ... and 108 more violations
+
+10. tests/modules/gauge/services/TransfersService.fixed.test.js
+   Severity: CRITICAL
+   Violations: 94
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 7: const mockTransfersRepo = {
+   Line 8: findByUser: jest.fn(),
+   Line 9: findById: jest.fn(),
+   Line 10: create: jest.fn(),
+   Line 11: updateStatus: jest.fn(),
+   ... and 89 more violations
+
+11. tests/modules/gauge/repositories/CheckoutsRepo.test.js
+   Severity: CRITICAL
+   Violations: 91
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 7: const mockConnection = {
+   Line 7: const mockConnection = {
+   Line 8: execute: jest.fn(),
+   Line 9: beginTransaction: jest.fn(),
+   Line 10: commit: jest.fn(),
+   ... and 86 more violations
+
+12. tests/modules/gauge/services/OperationsService.coverage.test.js
+   Severity: CRITICAL
+   Violations: 88
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 6: jest.mock('../../../../src/infrastructure/database/connection', () => ({
+   Line 8: execute: jest.fn(),
+   Line 9: query: jest.fn(),
+   Line 10: getConnection: jest.fn(() => ({
+   Line 11: beginTransaction: jest.fn(),
+   ... and 83 more violations
+
+13. tests/modules/gauge/services/ReportsService.coverage.test.js
+   Severity: CRITICAL
+   Violations: 88
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 6: jest.mock('../../../../src/infrastructure/database/connection', () => ({
+   Line 8: execute: jest.fn(),
+   Line 9: query: jest.fn(),
+   Line 10: getConnection: jest.fn(() => ({
+   Line 11: beginTransaction: jest.fn(),
+   ... and 83 more violations
+
+14. tests/modules/gauge/services/TransfersService.coverage.test.js
+   Severity: CRITICAL
+   Violations: 88
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 6: jest.mock('../../../../src/infrastructure/database/connection', () => ({
+   Line 8: execute: jest.fn(),
+   Line 9: query: jest.fn(),
+   Line 10: getConnection: jest.fn(() => ({
+   Line 11: beginTransaction: jest.fn(),
+   ... and 83 more violations
+
+15. tests/modules/gauge/services/UnsealsService.coverage.test.js
+   Severity: CRITICAL
+   Violations: 88
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 6: jest.mock('../../../../src/infrastructure/database/connection', () => ({
+   Line 8: execute: jest.fn(),
+   Line 9: query: jest.fn(),
+   Line 10: getConnection: jest.fn(() => ({
+   Line 11: beginTransaction: jest.fn(),
+   ... and 83 more violations
+
+16. tests/modules/gauge/services/UnsealsService.fixed.test.js
+   Severity: CRITICAL
+   Violations: 77
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 7: const mockUnsealRequestsRepo = {
+   Line 8: findPending: jest.fn(),
+   Line 9: findById: jest.fn(),
+   Line 10: findByGaugeId: jest.fn(),
+   Line 11: create: jest.fn(),
+   ... and 72 more violations
+
+17. tests/modules/gauge/services/GaugeStatusService.test.js
+   Severity: CRITICAL
+   Violations: 76
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 7: const mockConnection = {
+   Line 7: const mockConnection = {
+   Line 8: execute: jest.fn(),
+   Line 9: beginTransaction: jest.fn(),
+   Line 10: commit: jest.fn(),
+   ... and 71 more violations
+
+18. tests/modules/gauge/repositories/TransfersRepo.test.js
+   Severity: CRITICAL
+   Violations: 67
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 7: const mockPool = {
+   Line 7: const mockPool = {
+   Line 8: execute: jest.fn()
+   Line 11: jest.mock('../../../../src/infrastructure/database/connection', () => ({
+   Line 12: pool: mockPool
+   ... and 62 more violations
+
+19. tests/setup.js
+   Severity: CRITICAL
+   Violations: 67
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 33: log: jest.fn(),
+   Line 34: debug: jest.fn(),
+   Line 35: info: jest.fn(),
+   Line 62: jest.mock('../src/infrastructure/database/connection', () => {
+   Line 64: const { mockPool } = createMockPool();
+   ... and 62 more violations
+
+20. tests/setup-mocks.js
+   Severity: CRITICAL
+   Violations: 62
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 6: const { mockPool } = require('./mocks/database.mock');
+   Line 9: jest.mock('../src/infrastructure/database/connection', () => ({
+   Line 10: pool: mockPool,
+   Line 11: testConnection: jest.fn().mockResolvedValue(true)
+   Line 11: testConnection: jest.fn().mockResolvedValue(true)
+   ... and 57 more violations
+
+21. tests/modules/gauge/services/OperationsService.improved.test.js
+   Severity: CRITICAL
+   Violations: 61
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 7: const { mockPool, mockConnection, resetDatabaseMocks, testData } = require('../../../mocks/database.mock');
+   Line 7: const { mockPool, mockConnection, resetDatabaseMocks, testData } = require('../../../mocks/database.mock');
+   Line 13: jest.mock('../../../../src/modules/gauge/repositories/OperationsRepo');
+   Line 14: jest.mock('../../../../src/modules/gauge/services/gaugeService');
+   Line 15: jest.mock('../../../../src/modules/gauge/repositories/CheckoutsRepo');
+   ... and 56 more violations
+
+22. tests/modules/gauge/services/accountLockoutService.test.js
+   Severity: CRITICAL
+   Violations: 61
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 7: const mockPool = {
+   Line 7: const mockPool = {
+   Line 8: execute: jest.fn()
+   Line 11: const mockLogger = {
+   Line 12: info: jest.fn(),
+   ... and 56 more violations
+
+23. tests/modules/gauge/routes/gauge-tracking-transfers.routes.test.js
+   Severity: CRITICAL
+   Violations: 55
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 8: jest.mock('../../../../src/modules/gauge/services/TransfersService');
+   Line 25: let mockTransfersService;
+   Line 34: const mockTransfersData = {
+   Line 58: mockTransfersService.getTransfers.mockResolvedValue(mockTransfersData);
+   Line 58: mockTransfersService.getTransfers.mockResolvedValue(mockTransfersData);
+   ... and 50 more violations
+
+24. tests/mocks/database.mock.js
+   Severity: CRITICAL
+   Violations: 52
+   Mock Imports: NO
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 7: const mockPool = {
+   Line 7: const mockPool = {
+   Line 8: execute: jest.fn(),
+   Line 9: query: jest.fn(),
+   Line 10: getConnection: jest.fn(),
+   ... and 47 more violations
+
+25. tests/modules/gauge/routes/gauge-tracking-unseals.routes.test.js
+   Severity: CRITICAL
+   Violations: 49
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 8: jest.mock('../../../../src/modules/gauge/services/UnsealsService');
+   Line 25: let mockUnsealsService;
+   Line 34: const mockUnsealRequests = {
+   Line 56: mockUnsealsService.getUnsealRequests.mockResolvedValue(mockUnsealRequests);
+   Line 56: mockUnsealsService.getUnsealRequests.mockResolvedValue(mockUnsealRequests);
+   ... and 44 more violations
+
+26. tests/modules/gauge/routes/gauge-tracking-reports.routes.test.js
+   Severity: CRITICAL
+   Violations: 44
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 8: jest.mock('../../../../src/modules/gauge/services/ReportsService');
+   Line 25: let mockReportsService;
+   Line 34: const mockSummaryData = {
+   Line 46: mockReportsService.getDashboardSummary.mockResolvedValue(mockSummaryData);
+   Line 46: mockReportsService.getDashboardSummary.mockResolvedValue(mockSummaryData);
+   ... and 39 more violations
+
+27. tests/modules/gauge/services/ReportsService.fixed.test.js
+   Severity: CRITICAL
+   Violations: 44
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 7: const mockReportsRepo = {
+   Line 8: getDashboardSummary: jest.fn(),
+   Line 9: getOverdueCalibrations: jest.fn(),
+   Line 10: getGaugeHistory: jest.fn(),
+   Line 11: getGaugesByStatus: jest.fn(),
+   ... and 39 more violations
+
+28. tests/modules/gauge/repositories/CheckoutsRepo.comprehensive.test.js
+   Severity: CRITICAL
+   Violations: 43
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 7: jest.mock('../../../../src/infrastructure/database/connection', () => ({
+   Line 9: execute: jest.fn(),
+   Line 10: query: jest.fn()
+   Line 33: pool.execute.mockResolvedValue([{ insertId: 100 }, null]);
+   Line 33: pool.execute.mockResolvedValue([{ insertId: 100 }, null]);
+   ... and 38 more violations
+
+29. tests/mocks/comprehensive-mock.js
+   Severity: CRITICAL
+   Violations: 37
+   Mock Imports: NO
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 8: const mockPool = {
+   Line 8: const mockPool = {
+   Line 9: execute: jest.fn().mockResolvedValue([[], null]),
+   Line 9: execute: jest.fn().mockResolvedValue([[], null]),
+   Line 9: execute: jest.fn().mockResolvedValue([[], null]),
+   ... and 32 more violations
+
+30. tests/modules/gauge/repositories/AuditRepo.fixed.test.js
+   Severity: CRITICAL
+   Violations: 37
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 7: const mockPool = {
+   Line 7: const mockPool = {
+   Line 8: execute: jest.fn()
+   Line 11: jest.mock('../../../../src/infrastructure/database/connection', () => ({
+   Line 12: pool: mockPool
+   ... and 32 more violations
+
+31. tests/modules/gauge/repositories/OperationsRepo.test.js
+   Severity: CRITICAL
+   Violations: 31
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 7: const mockPool = {
+   Line 7: const mockPool = {
+   Line 8: execute: jest.fn()
+   Line 11: jest.mock('../../../../src/infrastructure/database/connection', () => ({
+   Line 12: pool: mockPool
+   ... and 26 more violations
+
+32. tests/modules/gauge/routes/gauge-tracking-operations.routes.mock.test.js
+   Severity: CRITICAL
+   Violations: 25
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 10: const mockOperationsService = {
+   Line 11: getGaugeDetails: jest.fn(),
+   Line 12: checkoutGauge: jest.fn(),
+   Line 13: returnGauge: jest.fn(),
+   Line 14: qcVerifyGauge: jest.fn()
+   ... and 20 more violations
+
+33. tests/modules/gauge/routes/gauge-tracking-operations.routes.test.js
+   Severity: CRITICAL
+   Violations: 17
+   Mock Imports: YES
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 8: const mockConnection = {
+   Line 8: const mockConnection = {
+   Line 9: execute: jest.fn(),
+   Line 10: beginTransaction: jest.fn(),
+   Line 11: commit: jest.fn(),
+   ... and 12 more violations
+
+34. tests/infrastructure/middleware/errorHandler.test.js
+   Severity: HIGH
+   Violations: 101
+   Mock Imports: NO
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 5: let mockReq, mockRes, mockNext;
+   Line 5: let mockReq, mockRes, mockNext;
+   Line 5: let mockReq, mockRes, mockNext;
+   Line 5: let mockReq, mockRes, mockNext;
+   Line 8: mockReq = {
+   ... and 96 more violations
+
+35. tests/comprehensive-coverage.test.js
+   Severity: HIGH
+   Violations: 17
+   Mock Imports: NO
+   Jest Mocks: YES
+   Mock Objects: YES
+   Line 9: jest.unmock('../src/infrastructure/database/connection');
+   Line 10: jest.unmock('../src/infrastructure/utils/logger');
+   Line 252: const mockReq = {};
+   Line 252: const mockReq = {};
+   Line 253: const mockRes = {
+   ... and 12 more violations
+
+36. tests/infrastructure/events/EventBus.real.test.js
+   Severity: HIGH
+   Violations: 1
+   Mock Imports: NO
+   Jest Mocks: YES
+   Mock Objects: NO
+   Line 67: const testListener = jest.fn();
+
+37. tests/utils/route-test-utils.js
+   Severity: HIGH
+   Violations: 1
+   Mock Imports: NO
+   Jest Mocks: NO
+   Mock Objects: YES
+   Line 20: const mockAuthMiddleware = (req, res, next) => {
+
+38. tests/real-database-simple.test.js
+   Severity: MEDIUM
+   Violations: 2
+   Mock Imports: NO
+   Jest Mocks: NO
+   Mock Objects: NO
+   Line 9: jest.unmock('../src/infrastructure/database/connection');
+   Line 10: jest.unmock('../src/infrastructure/utils/logger');
+
+39. tests/real-high-coverage.test.js
+   Severity: MEDIUM
+   Violations: 2
+   Mock Imports: NO
+   Jest Mocks: NO
+   Mock Objects: NO
+   Line 8: jest.unmock('../src/infrastructure/database/connection');
+   Line 9: jest.unmock('../src/infrastructure/utils/logger');
+
+🔧 REMEDIATION SUMMARY
+======================
+CRITICAL files requiring immediate attention: 33
+HIGH priority files needing real data conversion: 4
+MEDIUM priority cleanup items: 2
+
+Total files requiring real data conversion: 39
+Estimated effort: 39 files × 2-4 hours = 78-156 hours

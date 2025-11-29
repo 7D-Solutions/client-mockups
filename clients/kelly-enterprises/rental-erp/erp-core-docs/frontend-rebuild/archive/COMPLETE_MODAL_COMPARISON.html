@@ -1,0 +1,2358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fire-Proof ERP - Complete Legacy vs Modular Modal Comparison</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #f5f7fa;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 2.5rem 0;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            margin: 0.5rem 0 0;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.15);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Table of Contents Styles */
+        .toc {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 140px;
+            max-height: calc(100vh - 160px);
+            overflow-y: auto;
+        }
+
+        .toc h2 {
+            margin: 0 0 1.5rem;
+            color: #2c3e50;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .toc > ul > li {
+            margin-bottom: 1.5rem;
+        }
+
+        .toc ul ul {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .toc ul ul li {
+            margin-bottom: 0.3rem;
+        }
+
+        .category-header {
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toc a {
+            color: #5a6c7d;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+        }
+
+        .toc a:hover {
+            background: #e8f4f8;
+            color: #2980b9;
+            transform: translateX(4px);
+        }
+
+        .toc .status-icon {
+            margin-left: auto;
+            font-size: 0.75rem;
+        }
+
+        .status-icon.migrated {
+            color: #27ae60;
+        }
+
+        .status-icon.partial {
+            color: #f39c12;
+        }
+
+        .status-icon.pending {
+            color: #e74c3c;
+        }
+
+        /* Main Layout */
+        .main-content {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .comparisons {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Comparison Section */
+        .comparison-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+            scroll-margin-top: 160px;
+        }
+
+        .comparison-header {
+            background: #34495e;
+            color: white;
+            padding: 1.25rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .comparison-header h3 {
+            margin: 0;
+            font-size: 1.4rem;
+            font-weight: 400;
+            flex: 1;
+        }
+
+        .comparison-header .location {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            background: rgba(255,255,255,0.15);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+        }
+
+        /* Side-by-Side Grid */
+        .modal-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 300px;
+        }
+
+        .modal-side {
+            padding: 2rem;
+            position: relative;
+        }
+
+        .modal-side.legacy {
+            background: #fef9f3;
+            border-right: 2px dashed #e0e0e0;
+        }
+
+        .modal-side.modular {
+            background: #f3fef9;
+        }
+
+        .side-label {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .side-label.legacy {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .side-label.modular {
+            background: #27ae60;
+            color: white;
+        }
+
+        /* Mock Modal Preview */
+        .mock-modal {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .mock-modal-header {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8f9fa;
+        }
+
+        .mock-modal-header h4 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: #2c3e50;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: #95a5a6;
+            cursor: pointer;
+            padding: 0.25rem;
+        }
+
+        .mock-modal-body {
+            padding: 1.25rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .mock-modal-footer {
+            padding: 0.875rem 1.25rem;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            background: #f8f9fa;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            color: #34495e;
+            font-size: 0.85rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.95rem;
+            color: #495057;
+            background-color: #fff;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+        }
+
+        select.form-control {
+            cursor: pointer;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            font-weight: 500;
+            padding: 0.4rem 1rem;
+            font-size: 0.875rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+
+        /* Alert Boxes */
+        .alert {
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            font-size: 0.875rem;
+        }
+
+        .alert-info {
+            color: #004085;
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+        }
+
+        .alert-warning {
+            color: #856404;
+            background-color: #fff3cd;
+            border-color: #ffeeba;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        /* Not Implemented State */
+        .not-implemented {
+            padding: 3rem 2rem;
+            text-align: center;
+            color: #95a5a6;
+        }
+
+        .not-implemented i {
+            font-size: 2.5rem;
+            opacity: 0.3;
+            margin-bottom: 1rem;
+        }
+
+        /* Implementation Notes */
+        .implementation-notes {
+            background: #f8f9fa;
+            padding: 1rem 2rem;
+            border-top: 1px solid #e0e0e0;
+            font-size: 0.875rem;
+            color: #5a6c7d;
+        }
+
+        .implementation-notes code {
+            background: #e9ecef;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            color: #e74c3c;
+        }
+
+        /* Badge Styles */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 12px;
+            text-transform: uppercase;
+        }
+
+        .badge-success {
+            background: #d4f1e4;
+            color: #27ae60;
+        }
+
+        .badge-warning {
+            background: #fef5e7;
+            color: #f39c12;
+        }
+
+        .badge-danger {
+            background: #fdeaea;
+            color: #e74c3c;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 1rem;
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: #6c757d;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .tab.active {
+            color: #2980b9;
+            border-bottom-color: #2980b9;
+        }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .toc {
+                position: static;
+                max-height: none;
+            }
+
+            .modal-comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-side.legacy {
+                border-right: none;
+                border-bottom: 2px dashed #e0e0e0;
+            }
+        }
+
+        /* Quick Jump */
+        .quick-jump {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #3498db;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+            cursor: pointer;
+            z-index: 50;
+            transition: all 0.3s;
+        }
+
+        .quick-jump:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            width: var(--progress);
+            transition: width 0.5s ease;
+        }
+
+        /* Status Summary */
+        .status-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .status-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+
+        .status-card h4 {
+            font-size: 2rem;
+            margin: 0;
+            color: #2c3e50;
+        }
+
+        .status-card p {
+            margin: 0.25rem 0 0;
+            font-size: 0.875rem;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Complete Modal Comparison Guide</h1>
+        <p>All 29 Legacy Modals vs Their Modular Implementations</p>
+        <div class="stats">
+            <div class="stat-item">
+                <i class="fas fa-layer-group"></i>
+                <span>29 Total Modals</span>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-check-circle"></i>
+                <span>17 Migrated</span>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-clock"></i>
+                <span>12 Pending</span>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="main-content">
+            <!-- Table of Contents -->
+            <nav class="toc">
+                <h2><i class="fas fa-list"></i> All Modal Components</h2>
+                
+                <div class="status-summary">
+                    <div class="status-card">
+                        <h4>17</h4>
+                        <p>Migrated</p>
+                    </div>
+                    <div class="status-card">
+                        <h4>5</h4>
+                        <p>Partial</p>
+                    </div>
+                    <div class="status-card">
+                        <h4>7</h4>
+                        <p>Pending</p>
+                    </div>
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" style="--progress: 59%;"></div>
+                </div>
+                
+                <ul style="margin-top: 1.5rem;">
+                    <li>
+                        <div class="category-header">
+                            <i class="fas fa-cube"></i>
+                            Core Infrastructure (4)
+                        </div>
+                        <ul>
+                            <li><a href="#base-modal">Base Modal <i class="fas fa-check-circle status-icon migrated"></i></a></li>
+                            <li><a href="#password-modal">Password Modal <i class="fas fa-check-circle status-icon migrated"></i></a></li>
+                            <li><a href="#reject-modal">Reject Modal <i class="fas fa-check-circle status-icon migrated"></i></a></li>
+                            <li><a href="#toast">Toast Notifications <i class="fas fa-check-circle status-icon migrated"></i></a></li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <div class="category-header">
+                            <i class="fas fa-gauge"></i>
+                            Gauge Management (12)
+                        </div>
+                        <ul>
+                            <li><a href="#create-gauge">Create Gauge Modal <i class="fas fa-check-circle status-icon migrated"></i></a></li>
+                            <li><a href="#edit-gauge">Edit Gauge Modal <i class="fas fa-exclamation-circle status-icon partial"></i></a></li>
+                            <li><a href="#gauge-details">Gauge Details Modal <i class="fas fa-exclamation-circle status-icon partial"></i></a></li>
+                            <li><a href="#checkout-modal">Checkout Modal <i class="fas fa-check-circle status-icon migrated"></i></a></li>
+                            <li><a href="#checkin-modal">Check-in Modal <i class="fas fa-check-circle status-icon migrated"></i></a></li>
+                            <li><a href="#transfer-modal">Transfer Modal <i class="fas fa-check-circle status-icon migrated"></i></a></li>
+                            <li><a href="#transfer-pending">Transfer Pending Modal <i class="fas fa-exclamation-circle status-icon partial"></i></a></li>
+                            <li><a href="#transfer-receive">Transfer Receive Modal <i class="fas fa-exclamation-circle status-icon partial"></i></a></li>
+                            <li><a href="#qc-approvals">QC Approvals Modal <i class="fas fa-check-circle status-icon migrated"></i></a></li>
+                            <li><a href="#review-modal">Review Modal <i class="fas fa-check-circle status-icon migrated"></i></a></li>
+                            <li><a href="#sealed-gauge-notice">Sealed Gauge Notice <i class="fas fa-exclamation-circle status-icon partial"></i></a></li>
+                            <li><a href="#unseal-modals">Unseal Modals (3) <i class="fas fa-check-circle status-icon migrated"></i></a></li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <div class="category-header">
+                            <i class="fas fa-users"></i>
+                            User Management (5)
+                        </div>
+                        <ul>
+                            <li><a href="#add-user">Add User Modal <i class="fas fa-check-circle status-icon migrated"></i></a></li>
+                            <li><a href="#user-details">User Details Modal <i class="fas fa-check-circle status-icon migrated"></i></a></li>
+                            <li><a href="#reset-password">Reset Password Modal <i class="fas fa-check-circle status-icon migrated"></i></a></li>
+                            <li><a href="#create-role">Create Role Modal <i class="fas fa-times-circle status-icon pending"></i></a></li>
+                            <li><a href="#edit-role">Edit Role Modal <i class="fas fa-times-circle status-icon pending"></i></a></li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <div class="category-header">
+                            <i class="fas fa-cogs"></i>
+                            Utility Modals (5)
+                        </div>
+                        <ul>
+                            <li><a href="#confirm-modal">Confirm Modal <i class="fas fa-exclamation-circle status-icon partial"></i></a></li>
+                            <li><a href="#bulk-update">Bulk Update Modal <i class="fas fa-times-circle status-icon pending"></i></a></li>
+                            <li><a href="#qc-approval-dialog">QC Approval Dialog <i class="fas fa-times-circle status-icon pending"></i></a></li>
+                            <li><a href="#transfer-cancel">Transfer Cancel Confirm <i class="fas fa-times-circle status-icon pending"></i></a></li>
+                            <li><a href="#edit-gauge-form">Edit Gauge Form Modal <i class="fas fa-times-circle status-icon pending"></i></a></li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <div class="category-header">
+                            <i class="fas fa-window-restore"></i>
+                            Special/Inline (3)
+                        </div>
+                        <ul>
+                            <li><a href="#system-recovery">System Recovery Dialog <i class="fas fa-times-circle status-icon pending"></i></a></li>
+                            <li><a href="#browser-confirm">Browser Confirmations (2) <i class="fas fa-times-circle status-icon pending"></i></a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Main Comparisons -->
+            <div class="comparisons">
+                
+                <!-- Core Infrastructure Modals -->
+                <section id="base-modal" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>Base Modal Component</h3>
+                        <span class="location">Infrastructure</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>No Base Modal Component</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;">Legacy modals were implemented individually without a shared base component</p>
+                            <div class="alert alert-warning">
+                                <strong>Issues:</strong>
+                                <ul style="margin: 0.5rem 0 0 1.5rem;">
+                                    <li>Repeated boilerplate code</li>
+                                    <li>Inconsistent styling</li>
+                                    <li>No portal rendering</li>
+                                    <li>Manual overlay handling</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Modal Base Component</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/infrastructure/components/Modal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>{title}</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <p>Reusable base component with:</p>
+                                    <ul>
+                                        <li>Portal rendering</li>
+                                        <li>Size variants (sm, md, lg, xl)</li>
+                                        <li>CSS Modules</li>
+                                        <li>Escape key handling</li>
+                                    </ul>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    {children}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-success">Fully Implemented</span> | 
+                        <strong>CSS:</strong> <code>Modal.module.css</code> | 
+                        <strong>Used by:</strong> All modular modals extend this base
+                    </div>
+                </section>
+
+                <!-- Password Modal -->
+                <section id="password-modal" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>Password Modal</h3>
+                        <span class="location">Infrastructure</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>Password Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/modals/PasswordModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Change Password</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <div class="form-group">
+                                        <label class="form-label">Current Password:</label>
+                                        <input type="password" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">New Password:</label>
+                                        <input type="password" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Confirm New Password:</label>
+                                        <input type="password" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-primary">Update Password</button>
+                                    <button class="btn btn-secondary">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Password Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/infrastructure/components/PasswordModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Change Password</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <div class="form-group">
+                                        <label class="form-label">Current Password</label>
+                                        <input type="password" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">New Password</label>
+                                        <input type="password" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Confirm New Password</label>
+                                        <input type="password" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-secondary">Cancel</button>
+                                    <button class="btn btn-primary">Update Password</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-success">Fully Migrated</span> | 
+                        <strong>CSS:</strong> <code>PasswordModal.module.css</code> | 
+                        <strong>Extends:</strong> Base Modal
+                    </div>
+                </section>
+
+                <!-- Add User Modal -->
+                <section id="add-user" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>Add User Modal</h3>
+                        <span class="location">User Management</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>Add User Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/modals/AddUserModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Add New User</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <div class="form-group">
+                                        <label class="form-label">Full Name:</label>
+                                        <input type="text" class="form-control" placeholder="Enter full name..." />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Email Address:</label>
+                                        <input type="email" class="form-control" placeholder="user@company.com" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Role:</label>
+                                        <select class="form-control">
+                                            <option>Operator</option>
+                                            <option>Inspector</option>
+                                            <option>Administrator</option>
+                                            <option>Super Administrator</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-primary">Create User</button>
+                                    <button class="btn btn-secondary">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Add User Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/modules/admin/components/AddUserModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Add New User</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <div class="form-group">
+                                        <label class="form-label">Full Name</label>
+                                        <input type="text" class="form-control" placeholder="Enter full name..." />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Email Address</label>
+                                        <input type="email" class="form-control" placeholder="user@company.com" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Role</label>
+                                        <select class="form-control">
+                                            <option>Select role...</option>
+                                            <option>User</option>
+                                            <option>QC Technician</option>
+                                            <option>Manager</option>
+                                            <option>Admin</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-secondary">Cancel</button>
+                                    <button class="btn btn-primary">Create User</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-success">Fully Migrated</span> | 
+                        <strong>CSS:</strong> <code>AddUserModal.module.css</code> | 
+                        <strong>Dual Purpose:</strong> Also handles Edit User when user prop provided
+                    </div>
+                </section>
+
+                <!-- Bulk Update Modal -->
+                <section id="bulk-update" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>Bulk Update Modal</h3>
+                        <span class="location">Utility</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>Bulk Update Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/modals/BulkUpdateModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Bulk Update Gauges</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <p>Select criteria and update multiple gauges at once</p>
+                                    <div class="form-group">
+                                        <label class="form-label">Filter Criteria:</label>
+                                        <select class="form-control">
+                                            <option>Select criteria...</option>
+                                            <option>Gauge Type</option>
+                                            <option>Location</option>
+                                            <option>Status</option>
+                                            <option>Ownership Type</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Field to Update:</label>
+                                        <select class="form-control">
+                                            <option>Select field...</option>
+                                            <option>Location</option>
+                                            <option>Status</option>
+                                            <option>Calibration Frequency</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-primary">Apply Bulk Update</button>
+                                    <button class="btn btn-secondary">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Not Implemented</h4>
+                            <div class="not-implemented">
+                                <i class="fas fa-clock"></i>
+                                <p>Not yet migrated to modular system</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-danger">Not Migrated</span> | 
+                        <strong>Priority:</strong> Low (admin feature)
+                    </div>
+                </section>
+
+                <!-- Check-in Modal -->
+                <section id="checkin-modal" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>Check-in Modal</h3>
+                        <span class="location">Gauge Workflow</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>Check-in Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/modals/CheckinModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Check In Gauge</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <div class="alert alert-info">
+                                        <p><strong>Gauge:</strong> Digital Caliper 0-6"</p>
+                                        <p><strong>ID:</strong> DC-2024-001</p>
+                                        <p><strong>Location:</strong> QC Lab</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Condition at Return:</label>
+                                        <select class="form-control">
+                                            <option>Good</option>
+                                            <option>Damaged</option>
+                                            <option>Needs Cleaning</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Notes (Optional):</label>
+                                        <textarea class="form-control" rows="3"></textarea>
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-success">Confirm Check In</button>
+                                    <button class="btn btn-secondary">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Check-in Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/modules/gauge/components/CheckinModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Check In Gauge</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <div class="alert alert-info">
+                                        <p><strong>Gauge:</strong> {gauge.name}</p>
+                                        <p><strong>ID:</strong> {gauge.id}</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Condition</label>
+                                        <select class="form-control">
+                                            <option>Good</option>
+                                            <option>Needs Review</option>
+                                            <option>Damaged</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Notes</label>
+                                        <textarea class="form-control" rows="3"></textarea>
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-secondary">Cancel</button>
+                                    <button class="btn btn-success">Check In</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-success">Fully Migrated</span> | 
+                        <strong>CSS:</strong> <code>CheckinModal.module.css</code> |
+                        <strong>Loading States:</strong> Yes
+                    </div>
+                </section>
+
+                <!-- Checkout Modal -->
+                <section id="checkout-modal" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>Checkout Modal</h3>
+                        <span class="location">Gauge Workflow</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>Checkout Modal (via Confirm)</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;">Implemented using <code>ConfirmModal</code> with action type "checkout"</p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Confirm Check Out</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <p style="margin: 1.5rem 0; font-size: 1.1rem;">Are you sure you want to check out this gauge?</p>
+                                    <div class="alert alert-info">
+                                        <p><strong>Gauge:</strong> Digital Caliper 0-6"</p>
+                                        <p><strong>ID:</strong> DC-2024-001</p>
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-primary">Yes, Check Out</button>
+                                    <button class="btn btn-secondary">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Checkout Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/modules/gauge/components/CheckoutModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Checkout Gauge</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <div class="alert alert-info">
+                                        <p><strong>Gauge:</strong> {gauge.name}</p>
+                                        <p><strong>ID:</strong> {gauge.id}</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Checkout Notes (Optional)</label>
+                                        <textarea class="form-control" rows="3" placeholder="Add any notes..."></textarea>
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-secondary">Cancel</button>
+                                    <button class="btn btn-primary">Checkout</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-success">Fully Migrated</span> | 
+                        <strong>CSS:</strong> <code>CheckoutModal.module.css</code> |
+                        <strong>Note:</strong> Legacy used generic Confirm, Modular has dedicated component
+                    </div>
+                </section>
+
+                <!-- Confirm Modal -->
+                <section id="confirm-modal" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>Confirm Modal</h3>
+                        <span class="location">Utility</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>Confirm Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/modals/ConfirmModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Cross-User Return Warning</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <div class="alert alert-warning">
+                                        <p style="margin: 0 0 0.5rem 0; font-weight: bold;">
+                                            <i class="fas fa-exclamation-triangle"></i> This gauge was checked out by someone else!
+                                        </p>
+                                        <p style="margin: 0;">This gauge was checked out by <strong>John Smith</strong>. You are about to return it on their behalf.</p>
+                                    </div>
+                                    <div class="alert alert-info">
+                                        <p><strong>Gauge:</strong> Thread Gauge M10x1.5</p>
+                                        <p><strong>ID:</strong> TG-2024-001</p>
+                                    </div>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="checkbox" />
+                                        I acknowledge that I am returning this gauge on behalf of John Smith
+                                    </label>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-warning">Yes, Return on Their Behalf</button>
+                                    <button class="btn btn-secondary">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Confirm Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/ConfirmModal.tsx</code> (CSS Modules added)</p>
+                            <div class="alert alert-warning">
+                                <p><strong>Partial Migration:</strong> CSS Modules added but component structure needs refactoring to match modular patterns</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-warning">Partially Migrated</span> | 
+                        <strong>CSS:</strong> <code>ConfirmModal.module.css</code> |
+                        <strong>Action Types:</strong> checkout, approve, checkin
+                    </div>
+                </section>
+
+                <!-- Edit Gauge Modal -->
+                <section id="edit-gauge" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>Edit Gauge Modal</h3>
+                        <span class="location">Gauge Management</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>Edit Gauge Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/modals/EditGaugeModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Edit Gauge: Digital Micrometer 0-1"</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <h5>Basic Information</h5>
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label class="form-label">Name*:</label>
+                                            <input type="text" class="form-control" value="Digital Micrometer 0-1&quot;" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Manufacturer:</label>
+                                            <input type="text" class="form-control" value="Mitutoyo" />
+                                        </div>
+                                    </div>
+                                    <h5 style="margin-top: 1rem;">Status Information</h5>
+                                    <div class="form-group">
+                                        <label class="form-label">Status:</label>
+                                        <div class="alert alert-info">
+                                            <span>available</span>
+                                            <small style="display: block; font-size: 0.75rem;">Status changes through checkout/return workflows only</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-primary">Save Changes</button>
+                                    <button class="btn btn-secondary">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Edit Gauge Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/EditGaugeModal.tsx</code> (CSS Modules added)</p>
+                            <div class="alert alert-warning">
+                                <p><strong>Partial Migration:</strong> CSS Modules implemented but still in legacy location</p>
+                                <p>Should be moved to <code>/modules/gauge/components/</code></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-warning">Partially Migrated</span> | 
+                        <strong>CSS:</strong> <code>EditGaugeModal.module.css</code> |
+                        <strong>Sections:</strong> Basic Info, Status, Calibration, Technical Specs
+                    </div>
+                </section>
+
+                <!-- Gauge Details Modal -->
+                <section id="gauge-details" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>Gauge Details Modal</h3>
+                        <span class="location">Gauge Management</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>Gauge Details Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/modals/GaugeDetailsModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Thread Gauge M10x1.5</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <div class="tabs">
+                                        <button class="tab active">Details</button>
+                                        <button class="tab">History</button>
+                                        <button class="tab">Calibration Certs</button>
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                                        <div>
+                                            <p><strong>Gauge ID:</strong> TG-2024-001</p>
+                                            <p><strong>Type:</strong> Thread Gauge</p>
+                                            <p><strong>Manufacturer:</strong> Vermont Gage</p>
+                                        </div>
+                                        <div>
+                                            <p><strong>Status:</strong> <span class="badge badge-success">AVAILABLE</span></p>
+                                            <p><strong>Seal Status:</strong> <span class="badge badge-success">Sealed</span></p>
+                                            <p><strong>Location:</strong> QC Lab - Bin A1</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-primary">Checkout</button>
+                                    <button class="btn btn-secondary">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Gauge Details Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/GaugeDetailsModal.tsx</code> (CSS Modules added)</p>
+                            <div class="alert alert-warning">
+                                <p><strong>Partial Migration:</strong> Has CSS Modules but remains in legacy location</p>
+                                <p>Embeds QC Approval Dialog inline</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-warning">Partially Migrated</span> | 
+                        <strong>CSS:</strong> <code>GaugeDetailsModal.module.css</code> |
+                        <strong>Tabs:</strong> Details, History, Calibration Certs
+                    </div>
+                </section>
+
+                <!-- Reject Modal -->
+                <section id="reject-modal" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>Reject Modal</h3>
+                        <span class="location">Infrastructure</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>Reject Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/modals/RejectModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Reject Check-in</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <div class="form-group">
+                                        <label class="form-label">Rejection Reason:</label>
+                                        <textarea class="form-control" rows="4" placeholder="Please provide a reason for rejection..."></textarea>
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-danger">Reject</button>
+                                    <button class="btn btn-secondary">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Reject Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/infrastructure/components/RejectModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Reject Item</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <div class="form-group">
+                                        <label class="form-label">Reason for Rejection</label>
+                                        <textarea class="form-control" rows="4" placeholder="Please provide a reason for rejection..."></textarea>
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-secondary">Cancel</button>
+                                    <button class="btn btn-danger">Reject</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-success">Fully Migrated</span> | 
+                        <strong>CSS:</strong> <code>RejectModal.module.css</code> |
+                        <strong>Generic:</strong> Used across multiple workflows
+                    </div>
+                </section>
+
+                <!-- Reset Password Modal -->
+                <section id="reset-password" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>Reset Password Modal</h3>
+                        <span class="location">User Management</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>Reset Password Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/modals/ResetPasswordModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Reset User Password</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <p>Reset password for: <strong>John Doe</strong></p>
+                                    <div class="alert alert-info">
+                                        A temporary password will be generated and must be changed on first login.
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-warning">Reset Password</button>
+                                    <button class="btn btn-secondary">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Reset Password Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/modules/admin/components/ResetPasswordModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Reset Password</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <div class="alert alert-info">
+                                        Resetting password for: <strong>{user.name}</strong>
+                                    </div>
+                                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 6px;">
+                                        <p><strong>Temporary Password:</strong></p>
+                                        <code style="font-size: 1.1rem;">TempPass123!</code>
+                                        <button class="btn btn-secondary" style="margin-left: 1rem; padding: 0.25rem 0.5rem; font-size: 0.8rem;">Copy</button>
+                                    </div>
+                                    <div class="alert alert-warning" style="margin-top: 1rem;">
+                                        User will be required to change this password on next login
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-secondary">Close</button>
+                                    <button class="btn btn-warning">Reset Password</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-success">Fully Migrated</span> | 
+                        <strong>CSS:</strong> <code>ResetPasswordModal.module.css</code> |
+                        <strong>Features:</strong> Temp password display, copy functionality
+                    </div>
+                </section>
+
+                <!-- Review Modal -->
+                <section id="review-modal" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>Review Modal</h3>
+                        <span class="location">QC Workflow</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>Review Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/modals/ReviewModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Pending Approvals</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <div class="tabs">
+                                        <button class="tab active">Check-in Approvals (3)</button>
+                                        <button class="tab">Unseal Requests (1)</button>
+                                    </div>
+                                    <p>Review gauges awaiting supervisor approval for check-in</p>
+                                    <div style="border: 1px solid #dee2e6; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+                                        <h5>Digital Caliper 0-6"</h5>
+                                        <p>S/N: DC-2024-001</p>
+                                        <p>Returned by: John Smith</p>
+                                        <p>Status: Pending QC Approval</p>
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-secondary">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Review Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/modules/gauge/components/ReviewModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Pending Approvals</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <div class="tabs">
+                                        <button class="tab active">Check-in Approvals ({pendingCount})</button>
+                                        <button class="tab">Unseal Requests ({unsealCount})</button>
+                                    </div>
+                                    <div style="margin-top: 1rem;">
+                                        {/* Dynamic list of pending items */}
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-secondary">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-success">Fully Migrated</span> | 
+                        <strong>CSS:</strong> <code>ReviewModal.module.css</code> |
+                        <strong>Features:</strong> Tabbed interface, drill-down capability
+                    </div>
+                </section>
+
+                <!-- Sealed Gauge Notice Modal -->
+                <section id="sealed-gauge-notice" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>Sealed Gauge Notice Modal</h3>
+                        <span class="location">Special Handling</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>Sealed Gauge Notice Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/modals/SealedGaugeNoticeModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Sealed Gauge</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <div class="alert alert-warning">
+                                        <p style="margin: 0; font-weight: bold;">This gauge is currently sealed and requires approval to unseal.</p>
+                                    </div>
+                                    <p>Gauge: <strong>Precision Micrometer 0-1"</strong></p>
+                                    <p>ID: <strong>PM-2024-001</strong></p>
+                                    <p>Sealed gauges are typically calibration standards or reference gauges that require special handling.</p>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-warning">Request Unseal</button>
+                                    <button class="btn btn-secondary">Choose Different Gauge</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Sealed Gauge Notice Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/SealedGaugeNoticeModal.tsx</code> (CSS Modules added)</p>
+                            <div class="alert alert-warning">
+                                <p><strong>Partial Migration:</strong> CSS Modules added but needs component refactoring</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-warning">Partially Migrated</span> | 
+                        <strong>CSS:</strong> <code>SealedGaugeNoticeModal.module.css</code> |
+                        <strong>Trigger:</strong> Checkout attempt on sealed gauge
+                    </div>
+                </section>
+
+                <!-- Transfer Modal -->
+                <section id="transfer-modal" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>Transfer Modal</h3>
+                        <span class="location">Gauge Workflow</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>Transfer Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/modals/TransferModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Transfer Gauge: Thread Gauge M10x1.5</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <div class="form-group">
+                                        <label class="form-label">Transfer To:</label>
+                                        <select class="form-control">
+                                            <option>Select an employee...</option>
+                                            <option>Jane Doe - Inspector</option>
+                                            <option>Bob Wilson - Operator</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Expected Return Date:</label>
+                                        <input type="date" class="form-control" value="2024-12-28" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Notes:</label>
+                                        <textarea class="form-control" rows="3"></textarea>
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-primary">Transfer Gauge</button>
+                                    <button class="btn btn-secondary">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Transfer Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/modules/gauge/components/TransferModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Transfer Gauge</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <div class="alert alert-info">
+                                        <p><strong>Gauge:</strong> {gauge.name}</p>
+                                        <p><strong>ID:</strong> {gauge.id}</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Transfer To</label>
+                                        <select class="form-control">
+                                            <option value="">Select recipient...</option>
+                                            {users.map(user => (
+                                                <option key={user.id}>{user.name} - {user.role}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Expected Return Date</label>
+                                        <input type="date" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Transfer Notes</label>
+                                        <textarea class="form-control" rows="3"></textarea>
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-secondary">Cancel</button>
+                                    <button class="btn btn-primary">Transfer</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-success">Fully Migrated</span> | 
+                        <strong>CSS:</strong> <code>TransferModal.module.css</code> |
+                        <strong>Default:</strong> 7 days from transfer date
+                    </div>
+                </section>
+
+                <!-- Transfer Pending Modal -->
+                <section id="transfer-pending" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>Transfer Pending Modal</h3>
+                        <span class="location">Gauge Workflow</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>Transfer Pending Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/modals/TransferPendingModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Transfer Pending</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <div class="alert alert-warning">
+                                        This gauge has a pending transfer
+                                    </div>
+                                    <p><strong>Gauge:</strong> Digital Caliper 0-6"</p>
+                                    <p><strong>Transfer To:</strong> John Smith</p>
+                                    <p><strong>Initiated:</strong> 2 hours ago</p>
+                                    <p><strong>Status:</strong> Awaiting acceptance</p>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-danger">Cancel Transfer</button>
+                                    <button class="btn btn-secondary">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Transfer Pending Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/TransferPendingModal.tsx</code> (CSS Modules added)</p>
+                            <div class="alert alert-warning">
+                                <p><strong>Partial Migration:</strong> CSS Modules added but needs move to /modules/gauge/</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-warning">Partially Migrated</span> | 
+                        <strong>CSS:</strong> <code>TransferPendingModal.module.css</code>
+                    </div>
+                </section>
+
+                <!-- Transfer Receive Modal -->
+                <section id="transfer-receive" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>Transfer Receive Modal</h3>
+                        <span class="location">Gauge Workflow</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>Transfer Receive Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/modals/TransferReceiveModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Accept Transfer</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <p>You have a pending gauge transfer from <strong>Jane Doe</strong></p>
+                                    <div class="alert alert-info">
+                                        <p><strong>Gauge:</strong> Thread Gauge M10x1.5</p>
+                                        <p><strong>Expected Return:</strong> Dec 28, 2024</p>
+                                    </div>
+                                    <p><strong>Transfer Notes:</strong> Needed for QC inspection of batch #123</p>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-success">Accept Transfer</button>
+                                    <button class="btn btn-danger">Reject</button>
+                                    <button class="btn btn-secondary">Later</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Transfer Receive Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/TransferReceiveModal.tsx</code> (CSS Modules added)</p>
+                            <div class="alert alert-warning">
+                                <p><strong>Partial Migration:</strong> CSS Modules added but location needs update</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-warning">Partially Migrated</span> | 
+                        <strong>CSS:</strong> <code>TransferReceiveModal.module.css</code> |
+                        <strong>Actions:</strong> Accept, Reject, Later
+                    </div>
+                </section>
+
+                <!-- User Details Modal -->
+                <section id="user-details" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>User Details Modal</h3>
+                        <span class="location">User Management</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>User Details Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/modals/UserDetailsModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>User Details</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <p><strong>Name:</strong> John Doe</p>
+                                    <p><strong>Email:</strong> john.doe@company.com</p>
+                                    <p><strong>Role:</strong> Inspector</p>
+                                    <p><strong>Department:</strong> QC Lab</p>
+                                    <p><strong>Last Login:</strong> 2 hours ago</p>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-primary">Edit User</button>
+                                    <button class="btn btn-secondary">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>User Details Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/modules/admin/components/UserDetailsModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>User Details</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <div style="text-align: center; margin-bottom: 1rem;">
+                                        <div style="width: 60px; height: 60px; background: #e9ecef; border-radius: 50%; margin: 0 auto 0.5rem; display: flex; align-items: center; justify-content: center;">
+                                            JD
+                                        </div>
+                                        <h5>{user.firstName} {user.lastName}</h5>
+                                        <p style="color: #6c757d;">{user.email}</p>
+                                    </div>
+                                    <div>
+                                        <p><strong>Role:</strong> <span class="badge badge-info">{user.role}</span></p>
+                                        <p><strong>Department:</strong> {user.department}</p>
+                                        <p><strong>Status:</strong> <span class="badge badge-success">Active</span></p>
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-secondary">Close</button>
+                                    <button class="btn btn-primary">Edit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-success">Fully Migrated</span> | 
+                        <strong>CSS:</strong> <code>UserDetailsModal.module.css</code> |
+                        <strong>Features:</strong> View/Edit modes, avatar display
+                    </div>
+                </section>
+
+                <!-- Create Gauge Modal -->
+                <section id="create-gauge" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>Create Gauge Modal</h3>
+                        <span class="location">Gauge Management</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>Create Gauge Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;">Embedded in <code>AllModals.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Add New Gauge</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <h5>Basic Information</h5>
+                                    <div class="form-group">
+                                        <label class="form-label">Gauge ID:</label>
+                                        <input type="text" class="form-control" placeholder="e.g., TG-2025-001" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Name:</label>
+                                        <input type="text" class="form-control" placeholder="e.g., M10x1.5 Thread Plug" />
+                                    </div>
+                                    <h5 style="margin-top: 1rem;">Ownership & Compliance</h5>
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label class="form-label">AS9102 Compliant:</label>
+                                            <select class="form-control">
+                                                <option>Yes</option>
+                                                <option>No</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">NIST Traceable:</label>
+                                            <select class="form-control">
+                                                <option>Yes</option>
+                                                <option>No</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-success">Create Gauge</button>
+                                    <button class="btn btn-secondary">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Create Gauge Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/modules/gauge/components/CreateGaugeModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Create New Gauge</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <form>
+                                        <div class="form-grid">
+                                            <div class="form-group">
+                                                <label class="form-label">Gauge ID <span style="color: red;">*</span></label>
+                                                <input type="text" class="form-control" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Name <span style="color: red;">*</span></label>
+                                                <input type="text" class="form-control" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Type <span style="color: red;">*</span></label>
+                                            <select class="form-control">
+                                                <option value="">Select type...</option>
+                                                {gaugeTypes.map(type => (
+                                                    <option key={type}>{type}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-secondary">Cancel</button>
+                                    <button class="btn btn-primary">Create Gauge</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-success">Fully Migrated</span> | 
+                        <strong>CSS:</strong> <code>CreateGaugeModal.module.css</code> |
+                        <strong>Sections:</strong> Basic, Measurements, Calibration, Ownership
+                    </div>
+                </section>
+
+                <!-- QC Approvals Modal -->
+                <section id="qc-approvals" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>QC Approvals Modal</h3>
+                        <span class="location">QC Workflow</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>QC Approvals Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/modals/QCApprovalsModal.tsx</code></p>
+                            <div class="alert alert-danger">
+                                <p><strong>Note:</strong> Legacy implementation mentioned but file not found</p>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>QC Approvals Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/modules/gauge/components/QCApprovalsModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>QC Approvals</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                                        <button class="btn btn-secondary">Select All</button>
+                                        <button class="btn btn-success">Approve Selected (3)</button>
+                                    </div>
+                                    <div style="border: 1px solid #dee2e6; border-radius: 6px;">
+                                        {/* List of pending QC items */}
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-secondary">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-success">Fully Migrated</span> | 
+                        <strong>CSS:</strong> <code>QCApprovalsModal.module.css</code> |
+                        <strong>Features:</strong> Bulk operations, individual actions
+                    </div>
+                </section>
+
+                <!-- QC Approval Dialog (Inline) -->
+                <section id="qc-approval-dialog" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>QC Approval Dialog</h3>
+                        <span class="location">Inline Modal</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>QC Approval Dialog</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;">Inline in <code>GaugeDetailsModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Approve QC Return</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <div class="form-group">
+                                        <label class="form-label">Return Location:</label>
+                                        <select class="form-control">
+                                            <option>Select Location</option>
+                                            <option>QC Lab - Bin A1</option>
+                                            <option>Shop Floor - Cabinet 1</option>
+                                            <option>Calibration Room - Shelf 1</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <input type="checkbox" />
+                                            I confirm the gauge has been placed in the selected location
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-success">Confirm Approval</button>
+                                    <button class="btn btn-secondary">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Not Implemented</h4>
+                            <div class="not-implemented">
+                                <i class="fas fa-code"></i>
+                                <p>Inline dialog - not separated yet</p>
+                                <p style="font-size: 0.85rem;">Still embedded in parent modal</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-danger">Not Migrated</span> | 
+                        <strong>Location:</strong> Still inline within Gauge Details Modal
+                    </div>
+                </section>
+
+                <!-- Transfer Cancel Confirm Modal -->
+                <section id="transfer-cancel" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>Transfer Cancel Confirm Modal</h3>
+                        <span class="location">Gauge Workflow</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>Transfer Cancel Confirm Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/AppExtracted/TransferCancelConfirmModal.tsx</code></p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Confirm Cancellation</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <p>Are you sure you want to cancel the transfer to <strong>John Smith</strong>?</p>
+                                    <div class="alert alert-warning">
+                                        <p style="margin: 0;">
+                                            <i class="fas fa-exclamation-triangle"></i> This action cannot be undone.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-danger">Yes, Cancel Transfer</button>
+                                    <button class="btn btn-secondary">No, Keep Transfer</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Not Implemented</h4>
+                            <div class="not-implemented">
+                                <i class="fas fa-clock"></i>
+                                <p>Not yet migrated</p>
+                                <p style="font-size: 0.85rem;">Found in AppExtracted folder</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-danger">Not Migrated</span> | 
+                        <strong>Location:</strong> AppExtracted folder (needs review)
+                    </div>
+                </section>
+
+                <!-- Edit Gauge Form Modal -->
+                <section id="edit-gauge-form" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>Edit Gauge Form Modal</h3>
+                        <span class="location">Alternative Implementation</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>Edit Gauge Form Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/AppExtracted/EditGaugeFormModal.tsx</code></p>
+                            <div class="alert alert-info">
+                                <p><strong>Alternative Version:</strong> Simplified edit modal found in AppExtracted</p>
+                                <p>Uses inline form submission without separate confirmation</p>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Not Applicable</h4>
+                            <div class="not-implemented">
+                                <i class="fas fa-question-circle"></i>
+                                <p>Alternative implementation</p>
+                                <p style="font-size: 0.85rem;">Main Edit Gauge Modal is being used</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-danger">Not Migrated</span> | 
+                        <strong>Note:</strong> Alternative version - may need consolidation
+                    </div>
+                </section>
+
+                <!-- System Recovery Dialog -->
+                <section id="system-recovery" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>System Recovery Dialog</h3>
+                        <span class="location">Admin Tool</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>System Recovery Dialog</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;">Inline in <code>SystemRecoveryTool.tsx</code></p>
+                            <div class="alert alert-info">
+                                <p><strong>Inline Dialog:</strong> Not a traditional modal but uses similar patterns</p>
+                                <p>Super Admin only - for recovering gauges in inconsistent states</p>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Not Implemented</h4>
+                            <div class="not-implemented">
+                                <i class="fas fa-tools"></i>
+                                <p>Admin tool - not migrated</p>
+                                <p style="font-size: 0.85rem;">Low priority admin feature</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-danger">Not Migrated</span> | 
+                        <strong>Access:</strong> Super Admin only
+                    </div>
+                </section>
+
+                <!-- Browser Confirmations -->
+                <section id="browser-confirm" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>Browser Confirmation Dialogs</h3>
+                        <span class="location">Native Browser</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>Browser Confirmations</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>window.confirm()</code> usage</p>
+                            <div class="alert alert-warning">
+                                <p><strong>Delete User:</strong> UserManagement.tsx line 152</p>
+                                <p><strong>Delete Role:</strong> RoleManagement.tsx line 130</p>
+                                <p>Uses native browser confirm dialog</p>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Not Implemented</h4>
+                            <div class="not-implemented">
+                                <i class="fas fa-window-maximize"></i>
+                                <p>Replace with custom modals</p>
+                                <p style="font-size: 0.85rem;">Better UX with styled confirmation modals</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-danger">Not Migrated</span> | 
+                        <strong>Recommendation:</strong> Replace with custom ConfirmModal
+                    </div>
+                </section>
+
+                <!-- Create/Edit Role Modals (Inline) -->
+                <section id="create-role" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>Create Role Modal</h3>
+                        <span class="location">User Management</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>Create Role Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;">Inline in <code>RoleManagement.tsx</code> lines 209-302</p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Create Role</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <div class="form-group">
+                                        <label class="form-label">Role Name <span style="color: red;">*</span></label>
+                                        <input type="text" class="form-control" placeholder="Enter role name" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Description <span style="color: red;">*</span></label>
+                                        <textarea class="form-control" rows="3"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Permissions</label>
+                                        <div style="border: 1px solid #dee2e6; border-radius: 4px; padding: 1rem; max-height: 200px; overflow-y: auto;">
+                                            <h5>Gauge Management</h5>
+                                            <label style="display: block;"><input type="checkbox" /> Create</label>
+                                            <label style="display: block;"><input type="checkbox" /> Read</label>
+                                            <label style="display: block;"><input type="checkbox" /> Update</label>
+                                            <label style="display: block;"><input type="checkbox" /> Delete</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-primary">Create Role</button>
+                                    <button class="btn btn-secondary">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Not Implemented</h4>
+                            <div class="not-implemented">
+                                <i class="fas fa-user-tag"></i>
+                                <p>Extract to separate component</p>
+                                <p style="font-size: 0.85rem;">Currently inline in RoleManagement</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-danger">Not Migrated</span> | 
+                        <strong>Location:</strong> Inline component needs extraction
+                    </div>
+                </section>
+
+                <!-- Edit Role Modal -->
+                <section id="edit-role" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>Edit Role Modal</h3>
+                        <span class="location">User Management</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>Edit Role Modal</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;">Inline in <code>RoleManagement.tsx</code> lines 305-416</p>
+                            <div class="mock-modal">
+                                <div class="mock-modal-header">
+                                    <h4>Edit Role</h4>
+                                    <button class="modal-close">×</button>
+                                </div>
+                                <div class="mock-modal-body">
+                                    <div class="form-group">
+                                        <label class="form-label">Role Name <span style="color: red;">*</span></label>
+                                        <input type="text" class="form-control" value="QC Technician" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <input type="checkbox" checked style="margin-right: 0.5rem;" />
+                                            Active
+                                        </label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Permissions</label>
+                                        <div style="border: 1px solid #dee2e6; border-radius: 4px; padding: 1rem;">
+                                            {/* Permission matrix */}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mock-modal-footer">
+                                    <button class="btn btn-primary">Save Changes</button>
+                                    <button class="btn btn-secondary">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Not Implemented</h4>
+                            <div class="not-implemented">
+                                <i class="fas fa-user-edit"></i>
+                                <p>Extract to separate component</p>
+                                <p style="font-size: 0.85rem;">Currently inline in RoleManagement</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-danger">Not Migrated</span> | 
+                        <strong>Note:</strong> Similar to Create Role with pre-filled data
+                    </div>
+                </section>
+
+                <!-- Unseal Modals -->
+                <section id="unseal-modals" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>Unseal Modals (3)</h3>
+                        <span class="location">Gauge Workflow</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>Unseal Modals</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;">Multiple unseal-related modals</p>
+                            <div class="alert alert-info">
+                                <p><strong>Unseal Request Modal:</strong> Request to unseal</p>
+                                <p><strong>Unseal Confirm Modal:</strong> Confirm unseal action</p>
+                                <p><strong>Unseal Requests Modal:</strong> List of pending requests</p>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>All Unseal Modals</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/modules/gauge/components/</code></p>
+                            <div class="alert alert-success">
+                                <p><strong>✓ UnsealRequestModal.tsx</strong></p>
+                                <p><strong>✓ UnsealConfirmModal.tsx</strong></p>
+                                <p><strong>✓ UnsealRequestsModal.tsx</strong></p>
+                                <p>All three modals fully migrated with CSS Modules</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-success">Fully Migrated</span> | 
+                        <strong>CSS:</strong> Each has its own .module.css file
+                    </div>
+                </section>
+
+                <!-- Toast Notifications -->
+                <section id="toast" class="comparison-section">
+                    <header class="comparison-header">
+                        <h3>Toast Notifications</h3>
+                        <span class="location">Infrastructure</span>
+                    </header>
+                    
+                    <div class="modal-comparison">
+                        <div class="modal-side legacy">
+                            <span class="side-label legacy">LEGACY</span>
+                            <h4>Toast Component</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/components/Toast.tsx</code></p>
+                            <div class="alert alert-info">
+                                <p><strong>Portal-based notifications</strong></p>
+                                <p>Not a true modal but uses similar patterns</p>
+                                <p>Auto-dismiss functionality</p>
+                            </div>
+                        </div>
+                        <div class="modal-side modular">
+                            <span class="side-label modular">MODULAR</span>
+                            <h4>Toast Component</h4>
+                            <p style="color: #7f8c8d; margin: 1rem 0;"><code>/infrastructure/components/Toast.tsx</code></p>
+                            <div class="alert alert-success">
+                                <p><strong>✓ Fully migrated to infrastructure</strong></p>
+                                <p><strong>✓ CSS Modules implemented</strong></p>
+                                <p><strong>✓ TypeScript interfaces</strong></p>
+                                <p>Stacked notifications support</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="implementation-notes">
+                        <strong>Status:</strong> <span class="badge badge-success">Fully Migrated</span> | 
+                        <strong>CSS:</strong> <code>Toast.module.css</code> |
+                        <strong>Features:</strong> Portal rendering, auto-dismiss, stacking
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Jump Button -->
+    <div class="quick-jump" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fas fa-arrow-up"></i> Back to Top
+    </div>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Highlight active section in TOC
+        const sections = document.querySelectorAll('.comparison-section');
+        const navLinks = document.querySelectorAll('.toc a');
+        
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.pageYOffset >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.style.background = '#e8f4f8';
+                    link.style.color = '#2980b9';
+                } else {
+                    link.style.background = '';
+                    link.style.color = '';
+                }
+            });
+        });
+
+        // Show/hide back to top button
+        window.addEventListener('scroll', () => {
+            const button = document.querySelector('.quick-jump');
+            if (window.pageYOffset > 500) {
+                button.style.display = 'flex';
+            } else {
+                button.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

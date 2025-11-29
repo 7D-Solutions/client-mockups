@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gauge History - Actual Modal Size</title>
+  <style>
+    :root {
+      --color-primary: #0066cc;
+      --color-primary-hover: #0052a3;
+      --color-success: #28a745;
+      --color-text-primary: #212529;
+      --color-text-secondary: #6c757d;
+      --color-text-muted: #adb5bd;
+      --color-border: #dee2e6;
+      --color-border-light: #e9ecef;
+      --color-bg-light: #f8f9fa;
+      --color-bg-white: #ffffff;
+      --color-bg-hover: #f1f3f5;
+
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+
+      --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-size-xs: 11px;
+      --font-size-sm: 12px;
+      --font-size-base: 14px;
+
+      --radius-md: 4px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    /* Modal exactly as in screenshot */
+    .modal-container {
+      width: 640px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: var(--space-4);
+      border-bottom: 1px solid var(--color-border-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-primary);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      padding: 0;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-md);
+    }
+
+    .modal-close:hover {
+      background: var(--color-bg-hover);
+    }
+
+    .modal-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--color-border-light);
+      background: var(--color-bg-light);
+    }
+
+    .tab {
+      flex: 1;
+      padding: 10px var(--space-3);
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .tab:hover {
+      background: var(--color-bg-hover);
+    }
+
+    .tab.active {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-primary);
+      background: white;
+      font-weight: 500;
+    }
+
+    /* Tab content - exactly 400px like screenshot */
+    .tab-content {
+      padding: var(--space-3);
+      height: 400px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Compact search bar */
+    .search-bar {
+      position: relative;
+      margin-bottom: var(--space-3);
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 6px 6px 6px 26px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-size: var(--font-size-sm);
+    }
+
+    .search-bar input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+    }
+
+    .search-bar::before {
+      content: '🔍';
+      position: absolute;
+      left: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 11px;
+    }
+
+    /* Action buttons row */
+    .actions-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: var(--space-3);
+    }
+
+    .btn-sm {
+      padding: 4px 10px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: white;
+      font-size: var(--font-size-xs);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-sm:hover {
+      background: var(--color-bg-hover);
+    }
+
+    /* Table scrollable area */
+    .table-scroll {
+      flex: 1;
+      overflow: auto;
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-md);
+    }
+
+    .table-mini {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--font-size-xs);
+    }
+
+    .table-mini thead {
+      background: var(--color-bg-light);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .table-mini th {
+      padding: 6px 8px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      color: var(--color-text-secondary);
+      border-bottom: 2px solid var(--color-border);
+      white-space: nowrap;
+    }
+
+    .table-mini tbody tr {
+      border-bottom: 1px solid var(--color-border-light);
+      transition: background 0.1s;
+    }
+
+    .table-mini tbody tr:hover {
+      background: var(--color-bg-hover);
+    }
+
+    .table-mini td {
+      padding: 6px 8px;
+      font-size: var(--font-size-xs);
+      line-height: 1.4;
+    }
+
+    /* Compact badges */
+    .badge-mini {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge-checkout { background: #fff3cd; color: #856404; }
+    .badge-return { background: #d4edda; color: #155724; }
+    .badge-calibrate { background: #d1ecf1; color: #0c5460; }
+    .badge-qc-pass { background: #d4edda; color: #155724; }
+    .badge-qc-fail { background: #f8d7da; color: #721c24; }
+    .badge-unseal { background: #fff3cd; color: #856404; }
+
+    .empty-cell {
+      color: var(--color-text-muted);
+      font-style: italic;
+    }
+
+    /* Truncate notes */
+    .notes-cell {
+      max-width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Pagination footer */
+    .pagination-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: var(--space-2);
+      padding-top: var(--space-2);
+      border-top: 1px solid var(--color-border-light);
+      font-size: 10px;
+      color: var(--color-text-secondary);
+    }
+
+    .page-controls {
+      display: flex;
+      gap: 4px;
+    }
+
+    .page-btn {
+      padding: 2px 6px;
+      border: 1px solid var(--color-border);
+      background: white;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 10px;
+      min-width: 22px;
+      text-align: center;
+    }
+
+    .page-btn:hover:not(:disabled) {
+      background: var(--color-bg-hover);
+    }
+
+    .page-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .page-btn.active {
+      background: var(--color-primary);
+      color: white;
+      border-color: var(--color-primary);
+    }
+
+    /* Modal Footer */
+    .modal-footer {
+      padding: var(--space-3);
+      border-top: 1px solid var(--color-border-light);
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--space-2);
+    }
+
+    .btn-footer {
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .btn-footer.btn-primary {
+      background: var(--color-primary);
+      color: white;
+    }
+
+    .btn-footer.btn-success {
+      background: var(--color-success);
+      color: white;
+    }
+
+    .btn-footer.btn-secondary {
+      background: var(--color-text-secondary);
+      color: white;
+    }
+
+    .btn-footer:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <div class="modal-container">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <div class="modal-title">Test NO GO Gauge SP1762481050</div>
+      <button class="modal-close">×</button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="modal-tabs">
+      <button class="tab">📋 Details</button>
+      <button class="tab active">🕐 History</button>
+      <button class="tab">📄 Calibration Certs</button>
+    </div>
+
+    <!-- Tab Content - EXACTLY 400px -->
+    <div class="tab-content">
+      <!-- Search -->
+      <div class="search-bar">
+        <input type="text" placeholder="Search history...">
+      </div>
+
+      <!-- Quick actions -->
+      <div class="actions-row">
+        <button class="btn-sm">All</button>
+        <button class="btn-sm" style="background: var(--color-primary); color: white; border-color: var(--color-primary);">Last 30d</button>
+        <button class="btn-sm">Checkouts</button>
+        <button class="btn-sm">QC</button>
+        <button class="btn-sm">📤 Export</button>
+      </div>
+
+      <!-- Scrollable Table -->
+      <div class="table-scroll">
+        <table class="table-mini">
+          <thead>
+            <tr>
+              <th style="width: 90px;">Date</th>
+              <th style="width: 90px;">Action</th>
+              <th style="width: 100px;">User</th>
+              <th style="width: 50px;">Loc</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>10/29 14:55</td>
+              <td><span class="badge-mini badge-qc-pass">QC Pass</span></td>
+              <td>John Doe</td>
+              <td>A2</td>
+              <td class="notes-cell">QC inspection passed</td>
+            </tr>
+            <tr>
+              <td>10/29 14:55</td>
+              <td><span class="badge-mini badge-checkout">Checkout</span></td>
+              <td>John Doe</td>
+              <td class="empty-cell">-</td>
+              <td class="notes-cell">Auto-checkout: Companion of SP0028A</td>
+            </tr>
+            <tr>
+              <td>10/29 14:54</td>
+              <td><span class="badge-mini badge-qc-pass">QC Pass</span></td>
+              <td>John Doe</td>
+              <td>A2</td>
+              <td class="notes-cell">QC inspection passed</td>
+            </tr>
+            <tr>
+              <td>10/29 14:18</td>
+              <td><span class="badge-mini badge-return">Return</span></td>
+              <td>John Doe</td>
+              <td class="empty-cell">-</td>
+              <td class="notes-cell">Condition: good</td>
+            </tr>
+            <tr>
+              <td>10/29 14:17</td>
+              <td><span class="badge-mini badge-qc-pass">QC Pass</span></td>
+              <td>John Doe</td>
+              <td>B4</td>
+              <td class="notes-cell">QC inspection passed</td>
+            </tr>
+            <tr>
+              <td>10/29 14:16</td>
+              <td><span class="badge-mini badge-checkout">Checkout</span></td>
+              <td>John Doe</td>
+              <td class="empty-cell">-</td>
+              <td class="empty-cell">-</td>
+            </tr>
+            <tr>
+              <td>10/29 13:48</td>
+              <td><span class="badge-mini badge-return">Return</span></td>
+              <td>John Doe</td>
+              <td class="empty-cell">-</td>
+              <td class="notes-cell">Condition: good</td>
+            </tr>
+            <tr>
+              <td>10/29 13:44</td>
+              <td><span class="badge-mini badge-checkout">Checkout</span></td>
+              <td>John Doe</td>
+              <td class="empty-cell">-</td>
+              <td class="empty-cell">-</td>
+            </tr>
+            <tr>
+              <td>10/15 09:30</td>
+              <td><span class="badge-mini badge-qc-fail">QC Fail</span></td>
+              <td>Sarah Davis</td>
+              <td>A1</td>
+              <td class="notes-cell">Failed inspection - out of tolerance</td>
+            </tr>
+            <tr>
+              <td>09/28 16:00</td>
+              <td><span class="badge-mini badge-calibrate">Calibration</span></td>
+              <td>Mike Wilson</td>
+              <td>C-Lab</td>
+              <td class="notes-cell">Annual calibration - Passed</td>
+            </tr>
+            <tr>
+              <td>09/15 14:20</td>
+              <td><span class="badge-mini badge-unseal">Unseal</span></td>
+              <td>Mike Wilson</td>
+              <td class="empty-cell">-</td>
+              <td class="notes-cell">Unsealed set for individual calibration</td>
+            </tr>
+            <tr>
+              <td>08/20 10:15</td>
+              <td><span class="badge-mini badge-return">Return</span></td>
+              <td>Emily Johnson</td>
+              <td class="empty-cell">-</td>
+              <td class="notes-cell">Returned from production floor</td>
+            </tr>
+            <tr>
+              <td>08/10 14:30</td>
+              <td><span class="badge-mini badge-checkout">Checkout</span></td>
+              <td>Emily Johnson</td>
+              <td class="empty-cell">-</td>
+              <td class="notes-cell">Production floor assignment</td>
+            </tr>
+            <tr>
+              <td>07/22 11:00</td>
+              <td><span class="badge-mini badge-qc-pass">QC Pass</span></td>
+              <td>Sarah Davis</td>
+              <td>A2</td>
+              <td class="notes-cell">Pre-checkout inspection passed</td>
+            </tr>
+            <tr>
+              <td>06/15 09:00</td>
+              <td><span class="badge-mini badge-calibrate">Calibration</span></td>
+              <td>Mike Wilson</td>
+              <td>C-Lab</td>
+              <td class="notes-cell">Quarterly calibration check</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination-footer">
+        <div>Showing 1-15 of 100</div>
+        <div class="page-controls">
+          <button class="page-btn" disabled>‹</button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <button class="page-btn">›</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <button class="btn-footer btn-primary">🔗 Pair</button>
+      <button class="btn-footer btn-success">✏️ Edit</button>
+      <button class="btn-footer btn-secondary">Close</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('✅ Actual modal size: 640px × 400px content area');
+      console.log('📊 Table shows 15 rows with scrolling');
+      console.log('🎯 Matches screenshot dimensions exactly');
+    });
+  </script>
+</body>
+</html>

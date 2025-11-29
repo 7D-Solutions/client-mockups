@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Display Mockup - Two-Line Format</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            padding: 16px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .controls {
+            padding: 12px 24px;
+            background: #fafafa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toggle-container input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .toggle-container label {
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #fafafa;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        th.center {
+            text-align: center;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        td {
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        td.center {
+            text-align: center;
+        }
+
+        .item-id {
+            font-weight: 600;
+            color: #1976d2;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-gauge {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        /* Location Display Styles */
+        .location-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .location-code {
+            font-weight: 600;
+            color: #1976d2;
+            cursor: pointer;
+            transition: text-decoration 0.15s;
+        }
+
+        .location-code:hover {
+            text-decoration: underline;
+        }
+
+        .location-hierarchy {
+            font-size: 11px;
+            color: #999;
+            font-weight: 400;
+        }
+
+        .location-hierarchy.hidden {
+            display: none;
+        }
+
+        .arrow {
+            margin: 0 4px;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding: 24px;
+            background: #fafafa;
+        }
+
+        .comparison-section {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .comparison-section h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #333;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #1976d2;
+        }
+
+        .state-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 8px;
+        }
+
+        .state-on {
+            background: #4caf50;
+            color: white;
+        }
+
+        .state-off {
+            background: #9e9e9e;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Live Toggle Demo -->
+    <div class="container">
+        <div class="header">
+            <h1>Inventory Dashboard</h1>
+        </div>
+
+        <div class="controls">
+            <div class="toggle-container">
+                <input type="checkbox" id="hierarchyToggle" checked>
+                <label for="hierarchyToggle">Show Location Hierarchy</label>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ITEM ID</th>
+                    <th>ITEM NAME</th>
+                    <th class="center">TYPE</th>
+                    <th class="center">LOCATION</th>
+                    <th class="center">QUANTITY</th>
+                    <th class="center">LAST MOVED</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="item-id">SP-0001</span></td>
+                    <td>NPT 3/4-14 RING GO</td>
+                    <td class="center"><span class="badge badge-gauge">Gauge</span></td>
+                    <td class="center">
+                        <div class="location-cell">
+                            <span class="location-code">L1</span>
+                            <span class="location-hierarchy">Building 1 <span class="arrow">→</span> QC</span>
+                        </div>
+                    </td>
+                    <td class="center">1</td>
+                    <td class="center">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SP-0001</span></td>
+                    <td>UN 7/8-9 RING GO</td>
+                    <td class="center"><span class="badge badge-gauge">Gauge</span></td>
+                    <td class="center">
+                        <div class="location-cell">
+                            <span class="location-code">L1</span>
+                            <span class="location-hierarchy">Building 1 <span class="arrow">→</span> QC</span>
+                        </div>
+                    </td>
+                    <td class="center">1</td>
+                    <td class="center">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SP-0001</span></td>
+                    <td>ACME 1-1/4-5 RING GO</td>
+                    <td class="center"><span class="badge badge-gauge">Gauge</span></td>
+                    <td class="center">
+                        <div class="location-cell">
+                            <span class="location-code">L1</span>
+                            <span class="location-hierarchy">Building 1 <span class="arrow">→</span> QC</span>
+                        </div>
+                    </td>
+                    <td class="center">1</td>
+                    <td class="center">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SP-0002</span></td>
+                    <td>NPT 3/4-14 RING NO-GO</td>
+                    <td class="center"><span class="badge badge-gauge">Gauge</span></td>
+                    <td class="center">
+                        <div class="location-cell">
+                            <span class="location-code">L1</span>
+                            <span class="location-hierarchy">Building 1 <span class="arrow">→</span> QC</span>
+                        </div>
+                    </td>
+                    <td class="center">1</td>
+                    <td class="center">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SP-0003</span></td>
+                    <td>UN 7/16-14 PLUG GO</td>
+                    <td class="center"><span class="badge badge-gauge">Gauge</span></td>
+                    <td class="center">
+                        <div class="location-cell">
+                            <span class="location-code">E2</span>
+                            <span class="location-hierarchy">Building 1 <span class="arrow">→</span> Shipping</span>
+                        </div>
+                    </td>
+                    <td class="center">1</td>
+                    <td class="center">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SET-0001</span></td>
+                    <td>ACME 1-1/4-5 RING GO</td>
+                    <td class="center"><span class="badge badge-gauge">Gauge</span></td>
+                    <td class="center">
+                        <div class="location-cell">
+                            <span class="location-code">C4</span>
+                            <span class="location-hierarchy">Building 2 <span class="arrow">→</span> Tool Crib</span>
+                        </div>
+                    </td>
+                    <td class="center">1</td>
+                    <td class="center">11/5/2025</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Side-by-Side Comparison -->
+    <div class="comparison">
+        <div class="comparison-section">
+            <h3>Hierarchy ON <span class="state-badge state-on">Default</span></h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="center">LOCATION</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="center">
+                            <div class="location-cell">
+                                <span class="location-code">L1</span>
+                                <span class="location-hierarchy">Building 1 <span class="arrow">→</span> QC</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="center">
+                            <div class="location-cell">
+                                <span class="location-code">E2</span>
+                                <span class="location-hierarchy">Building 1 <span class="arrow">→</span> Shipping</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="center">
+                            <div class="location-cell">
+                                <span class="location-code">C4</span>
+                                <span class="location-hierarchy">Building 2 <span class="arrow">→</span> Tool Crib</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="center">
+                            <div class="location-cell">
+                                <span class="location-code">A5</span>
+                                <span class="location-hierarchy">Building 1 <span class="arrow">→</span> Bulk Storage</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="comparison-section">
+            <h3>Hierarchy OFF <span class="state-badge state-off">Minimal</span></h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="center">LOCATION</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="center">
+                            <div class="location-cell">
+                                <span class="location-code">L1</span>
+                                <span class="location-hierarchy hidden">Building 1 <span class="arrow">→</span> QC</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="center">
+                            <div class="location-cell">
+                                <span class="location-code">E2</span>
+                                <span class="location-hierarchy hidden">Building 1 <span class="arrow">→</span> Shipping</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="center">
+                            <div class="location-cell">
+                                <span class="location-code">C4</span>
+                                <span class="location-hierarchy hidden">Building 2 <span class="arrow">→</span> Tool Crib</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="center">
+                            <div class="location-cell">
+                                <span class="location-code">A5</span>
+                                <span class="location-hierarchy hidden">Building 1 <span class="arrow">→</span> Bulk Storage</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Toggle hierarchy display
+        const toggle = document.getElementById('hierarchyToggle');
+        const hierarchyElements = document.querySelectorAll('.location-hierarchy');
+
+        toggle.addEventListener('change', (e) => {
+            hierarchyElements.forEach(el => {
+                if (e.target.checked) {
+                    el.classList.remove('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

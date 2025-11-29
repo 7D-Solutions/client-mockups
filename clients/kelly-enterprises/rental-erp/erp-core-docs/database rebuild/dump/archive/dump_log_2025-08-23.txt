@@ -1,0 +1,8 @@
+Dump started at Sat 08/23/2025 12:14:55.25 
+Host: 127.0.0.1:3307 
+Database: fai_db_sandbox 
+User: root 
+Mysqldump: C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysqldump.exe 
+ 
+mysqldump: [Warning] Using a password on the command line interface can be insecure.
+mysqldump: Couldn't execute 'SHOW FIELDS FROM `v_gauge_calibrations`': View 'fai_db_sandbox.v_gauge_calibrations' references invalid table(s) or column(s) or function(s) or definer/invoker of view lack rights to use them (1356)

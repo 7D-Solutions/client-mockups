@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full Column Manager - All Columns Customizable</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            padding: 16px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .controls {
+            padding: 12px 24px;
+            background: #fafafa;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .left-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .column-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: white;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            transition: all 0.2s;
+        }
+
+        .column-btn:hover {
+            background: #f5f5f5;
+            border-color: #1976d2;
+        }
+
+        .column-btn-icon {
+            font-size: 16px;
+        }
+
+        /* Full screen overlay */
+        .column-manager-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .column-manager-overlay.active {
+            display: flex;
+        }
+
+        /* Column manager panel */
+        .column-manager-panel {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            padding: 20px 24px;
+            border-bottom: 2px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .panel-instructions {
+            padding: 16px 24px;
+            background: #e3f2fd;
+            border-bottom: 1px solid #bbdefb;
+            font-size: 14px;
+            color: #1565c0;
+        }
+
+        .panel-body {
+            padding: 16px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        /* Column items */
+        .column-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: move;
+            transition: all 0.2s;
+            gap: 12px;
+            user-select: none;
+        }
+
+        .column-item:hover {
+            border-color: #1976d2;
+            background: #f8f9fa;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .column-item.dragging {
+            opacity: 0.4;
+            cursor: grabbing;
+        }
+
+        .column-item.drag-over {
+            border-color: #1976d2;
+            border-style: dashed;
+            background: #e3f2fd;
+        }
+
+        .column-item.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: #f5f5f5;
+        }
+
+        .column-item.locked:hover {
+            border-color: #e0e0e0;
+            background: #f5f5f5;
+            box-shadow: none;
+        }
+
+        .drag-handle {
+            font-size: 20px;
+            color: #999;
+            cursor: move;
+            padding: 0 4px;
+        }
+
+        .column-item.locked .drag-handle {
+            color: #ccc;
+        }
+
+        .column-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            margin: 0;
+            flex-shrink: 0;
+        }
+
+        .column-item.locked .column-checkbox {
+            cursor: not-allowed;
+        }
+
+        .column-label {
+            font-size: 15px;
+            font-weight: 500;
+            color: #333;
+            flex: 1;
+        }
+
+        .column-item.locked .column-label {
+            color: #999;
+        }
+
+        .lock-icon {
+            font-size: 16px;
+            color: #999;
+        }
+
+        .panel-footer {
+            padding: 16px 24px;
+            border-top: 2px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fafafa;
+        }
+
+        .reset-btn {
+            padding: 8px 16px;
+            background: white;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #666;
+        }
+
+        .reset-btn:hover {
+            background: #f5f5f5;
+            border-color: #999;
+            color: #333;
+        }
+
+        .apply-btn {
+            padding: 8px 20px;
+            background: #1976d2;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .apply-btn:hover {
+            background: #1565c0;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #fafafa;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        th.center {
+            text-align: center;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        td {
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        td.center {
+            text-align: center;
+        }
+
+        .item-id {
+            font-weight: 600;
+            color: #1976d2;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .location-code {
+            font-weight: 600;
+            color: #1976d2;
+            cursor: pointer;
+        }
+
+        .location-code:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Column Manager Overlay -->
+    <div class="column-manager-overlay" id="columnManagerOverlay">
+        <div class="column-manager-panel">
+            <div class="panel-header">
+                <h2>Customize Columns</h2>
+                <button class="close-btn" onclick="closeColumnManager()">✕</button>
+            </div>
+
+            <div class="panel-instructions">
+                <strong>💡 Tip:</strong> Drag to reorder • Uncheck to hide • Item ID is always visible and locked
+            </div>
+
+            <div class="panel-body" id="columnListPanel">
+                <!-- Column items will be dynamically generated here -->
+            </div>
+
+            <div class="panel-footer">
+                <button class="reset-btn" onclick="resetToDefault()">↺ Reset to Default</button>
+                <button class="apply-btn" onclick="closeColumnManager()">Apply Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Inventory Dashboard</h1>
+        </div>
+
+        <div class="controls">
+            <div class="left-controls">
+                <button class="column-btn" onclick="openColumnManager()">
+                    <span class="column-btn-icon">⚙️</span>
+                    <span>Customize Columns</span>
+                </button>
+            </div>
+
+            <div class="pagination">
+                <span style="font-size: 14px; color: #666;">1 of 2</span>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr id="tableHeader"></tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+
+    <script>
+        const sampleData = [
+            { id: 'SP-0001', name: 'NPT 3/4-14 RING GO', type: 'Gauge', facility: 'Main Facility', building: 'Building 1', zone: 'QC', location: 'L1', qty: 1, lastMoved: '11/5/2025' },
+            { id: 'SP-0002', name: 'UN 7/8-9 RING GO', type: 'Gauge', facility: 'Main Facility', building: 'Building 1', zone: 'QC', location: 'L1', qty: 1, lastMoved: '11/5/2025' },
+            { id: 'SP-0003', name: 'UN 7/16-14 PLUG GO', type: 'Gauge', facility: 'Main Facility', building: 'Building 1', zone: 'Shipping', location: 'E2', qty: 1, lastMoved: '11/5/2025' },
+            { id: 'SET-0001', name: 'ACME 1-1/4-5 RING GO', type: 'Gauge', facility: 'Main Facility', building: 'Building 2', zone: 'Tool Crib', location: 'C4', qty: 1, lastMoved: '11/5/2025' },
+            { id: 'SET-0002', name: 'NPT 1/2-14 RING GO', type: 'Gauge', facility: 'Main Facility', building: 'Building 1', zone: 'Bulk Storage', location: 'A5', qty: 1, lastMoved: '11/5/2025' }
+        ];
+
+        const defaultColumns = [
+            { id: 'id', label: 'Item ID', visible: true, locked: true, align: 'left' },
+            { id: 'name', label: 'Item Name', visible: true, locked: false, align: 'left' },
+            { id: 'type', label: 'Type', visible: true, locked: false, align: 'center' },
+            { id: 'facility', label: 'Facility', visible: true, locked: false, align: 'center' },
+            { id: 'building', label: 'Building', visible: true, locked: false, align: 'center' },
+            { id: 'zone', label: 'Zone', visible: true, locked: false, align: 'center' },
+            { id: 'location', label: 'Location', visible: true, locked: false, align: 'center' },
+            { id: 'qty', label: 'Quantity', visible: true, locked: false, align: 'center' },
+            { id: 'lastMoved', label: 'Last Moved', visible: true, locked: false, align: 'center' }
+        ];
+
+        let columns = JSON.parse(localStorage.getItem('columnConfig')) || JSON.parse(JSON.stringify(defaultColumns));
+        let draggedItem = null;
+
+        function openColumnManager() {
+            document.getElementById('columnManagerOverlay').classList.add('active');
+            renderColumnManager();
+        }
+
+        function closeColumnManager() {
+            document.getElementById('columnManagerOverlay').classList.remove('active');
+            renderTable();
+        }
+
+        function renderColumnManager() {
+            const panel = document.getElementById('columnListPanel');
+            panel.innerHTML = '';
+
+            columns.forEach((col, index) => {
+                const item = document.createElement('div');
+                item.className = `column-item ${col.locked ? 'locked' : ''}`;
+                item.draggable = !col.locked;
+                item.dataset.index = index;
+
+                const handleIcon = col.locked ? '🔒' : '⋮⋮';
+
+                item.innerHTML = `
+                    <span class="drag-handle">${handleIcon}</span>
+                    <input type="checkbox" class="column-checkbox"
+                           ${col.visible ? 'checked' : ''}
+                           ${col.locked ? 'disabled' : ''}
+                           onchange="toggleColumn(${index})">
+                    <span class="column-label">${col.label}</span>
+                `;
+
+                if (!col.locked) {
+                    item.addEventListener('dragstart', handleDragStart);
+                    item.addEventListener('dragend', handleDragEnd);
+                    item.addEventListener('dragover', handleDragOver);
+                    item.addEventListener('dragleave', handleDragLeave);
+                    item.addEventListener('drop', handleDrop);
+                }
+
+                panel.appendChild(item);
+            });
+        }
+
+        function handleDragStart(e) {
+            draggedItem = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            document.querySelectorAll('.column-item').forEach(item => {
+                item.classList.remove('drag-over');
+            });
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+
+            if (this === draggedItem || this.classList.contains('locked')) {
+                return false;
+            }
+
+            e.dataTransfer.dropEffect = 'move';
+            this.classList.add('drag-over');
+            return false;
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+
+            if (this === draggedItem || this.classList.contains('locked')) {
+                return false;
+            }
+
+            const fromIndex = parseInt(draggedItem.dataset.index);
+            const toIndex = parseInt(this.dataset.index);
+
+            const [movedItem] = columns.splice(fromIndex, 1);
+            columns.splice(toIndex, 0, movedItem);
+
+            saveColumns();
+            renderColumnManager();
+            return false;
+        }
+
+        function toggleColumn(index) {
+            columns[index].visible = !columns[index].visible;
+            saveColumns();
+        }
+
+        function resetToDefault() {
+            columns = JSON.parse(JSON.stringify(defaultColumns));
+            saveColumns();
+            renderColumnManager();
+            renderTable();
+        }
+
+        function saveColumns() {
+            localStorage.setItem('columnConfig', JSON.stringify(columns));
+        }
+
+        function renderTable() {
+            const header = document.getElementById('tableHeader');
+            const tbody = document.getElementById('tableBody');
+
+            header.innerHTML = '';
+            columns.filter(col => col.visible).forEach(col => {
+                const th = document.createElement('th');
+                th.className = col.align === 'center' ? 'center' : '';
+                th.textContent = col.label.toUpperCase();
+                header.appendChild(th);
+            });
+
+            tbody.innerHTML = '';
+            sampleData.forEach(row => {
+                const tr = document.createElement('tr');
+                columns.filter(col => col.visible).forEach(col => {
+                    const td = document.createElement('td');
+                    td.className = col.align === 'center' ? 'center' : '';
+
+                    if (col.id === 'id') {
+                        td.innerHTML = `<span class="item-id">${row[col.id]}</span>`;
+                    } else if (col.id === 'type') {
+                        td.innerHTML = `<span class="badge">${row[col.id]}</span>`;
+                    } else if (col.id === 'location') {
+                        td.innerHTML = `<span class="location-code">${row[col.id]}</span>`;
+                    } else {
+                        td.textContent = row[col.id];
+                    }
+
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', renderTable);
+    </script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+/* Sidebar.module.css - Uses design tokens from tokens.css */
+
+/* Main Sidebar Container */
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: var(--color-gray-900);
+  color: var(--color-text-inverse);
+  border-right: 1px solid var(--color-border-dark);
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: var(--z-fixed);
+}
+
+/* Section Container */
+.section {
+  border-bottom: 1px solid var(--color-border-dark);
+  padding: var(--space-2) 0;
+}
+
+.sectionTitle {
+  padding: var(--space-1) var(--space-5) var(--space-1) var(--space-2);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  letter-spacing: var(--letter-spacing-wide);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Navigation Items */
+.navItems,
+.contextualItems,
+.favoritesItems {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.navItem,
+.contextualItem,
+.favoriteItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-5) var(--space-2) var(--space-2);
+  cursor: pointer;
+  transition: var(--transition-default);
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  position: relative;
+}
+
+.navItem:hover,
+.contextualItem:hover,
+.favoriteItem:hover {
+  background: var(--color-gray-800);
+}
+
+.navItemActive {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.navItemActive:hover {
+  background: var(--color-primary-dark);
+}
+
+/* Navigation Icons and Labels */
+.navIcon {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.navLabel,
+.contextualLabel,
+.favoriteLabel {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Contextual Section Specific */
+.contextualIcon {
+  flex-shrink: 0;
+  font-size: var(--font-size-lg);
+}
+
+.navItemContent,
+.contextualItemContent {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex: 1;
+  cursor: pointer;
+}
+
+/* Right side container for badges and drag handle */
+.navItemRight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Star Button - Left justified before label */
+.starButton {
+  background: none;
+  border: none;
+  padding: var(--space-1);
+  cursor: pointer;
+  transition: var(--transition-default);
+  flex-shrink: 0;
+  color: var(--color-warning);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.starButton:hover {
+  transform: scale(1.1);
+}
+
+.starIcon {
+  color: var(--color-warning);
+  font-size: var(--font-size-lg);
+  display: inline-block;
+  transition: var(--transition-default);
+}
+
+.starIcon:hover {
+  color: var(--color-warning-dark);
+  transform: scale(1.1);
+}
+
+/* Favorites Section Specific */
+.emptyState {
+  padding: var(--space-2) var(--space-5);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-align: center;
+  font-style: italic;
+}
+
+/* Drag Handle - Right justified, show on hover */
+.dragHandle {
+  color: var(--color-gray-600);
+  cursor: grab;
+  opacity: 0;
+  transition: var(--transition-default);
+  flex-shrink: 0;
+  font-size: var(--font-size-sm);
+  user-select: none;
+  width: 20px;
+  text-align: center;
+}
+
+.navItem:hover .dragHandle,
+.contextualItem:hover .dragHandle,
+.favoriteItem:hover .dragHandle {
+  opacity: 1;
+}
+
+.dragHandle:hover {
+  color: var(--color-gray-500);
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+/* Dragging State */
+.dragging {
+  opacity: 0.5;
+}
+
+/* Drop Indicator (Blue Line) */
+.dropIndicator {
+  height: 2px;
+  background: var(--color-primary);
+  margin: 0 var(--space-5);
+  animation: pulseBlue 1s ease-in-out infinite;
+}
+
+@keyframes pulseBlue {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Scrollbar Styling */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: var(--color-gray-800);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: var(--color-gray-600);
+  border-radius: var(--radius-full);
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gray-500);
+}
+
+/* Responsive (hidden on mobile - desktop only per spec) */
+@media (max-width: 1023px) {
+  .sidebar {
+    display: none;
+  }
+}

@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Hierarchy - Column Visibility Menu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            padding: 16px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .controls {
+            padding: 12px 24px;
+            background: #fafafa;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .left-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Column visibility button */
+        .column-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: white;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .column-btn:hover {
+            background: #f5f5f5;
+            border-color: #1976d2;
+        }
+
+        .column-btn-icon {
+            font-size: 16px;
+        }
+
+        /* Dropdown menu */
+        .column-menu {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            background: white;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 8px 0;
+            min-width: 220px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .column-menu.active {
+            display: block;
+        }
+
+        .column-menu-header {
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 4px;
+        }
+
+        .column-menu-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: background 0.15s;
+            gap: 12px;
+        }
+
+        .column-menu-item:hover {
+            background: #f5f5f5;
+        }
+
+        .column-menu-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .column-menu-item label {
+            font-size: 14px;
+            color: #333;
+            cursor: pointer;
+            flex: 1;
+            user-select: none;
+        }
+
+        .column-menu-divider {
+            height: 1px;
+            background: #f0f0f0;
+            margin: 4px 0;
+        }
+
+        .column-menu-footer {
+            padding: 8px 16px;
+            font-size: 12px;
+            color: #999;
+            font-style: italic;
+            border-top: 1px solid #f0f0f0;
+            margin-top: 4px;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #fafafa;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        th.center {
+            text-align: center;
+        }
+
+        th.hidden {
+            display: none;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        td {
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        td.center {
+            text-align: center;
+        }
+
+        td.hidden {
+            display: none;
+        }
+
+        .item-id {
+            font-weight: 600;
+            color: #1976d2;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .location-code {
+            font-weight: 600;
+            color: #1976d2;
+            cursor: pointer;
+        }
+
+        .location-code:hover {
+            text-decoration: underline;
+        }
+
+        .column-small {
+            width: 100px;
+        }
+
+        .column-medium {
+            width: 130px;
+        }
+
+        .examples {
+            padding: 24px;
+            background: #f9f9f9;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .examples h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .feature-card {
+            padding: 16px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+        }
+
+        .feature-card h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1976d2;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feature-icon {
+            font-size: 18px;
+        }
+
+        .feature-card p {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Click outside to close */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 999;
+            display: none;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay" id="overlay"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Inventory Dashboard</h1>
+        </div>
+
+        <div class="controls">
+            <div class="left-controls">
+                <div class="column-btn" id="columnBtn">
+                    <span class="column-btn-icon">⚙️</span>
+                    <span>Columns</span>
+                    <span style="font-size: 12px; color: #999;">▼</span>
+
+                    <!-- Dropdown Menu -->
+                    <div class="column-menu" id="columnMenu">
+                        <div class="column-menu-header">Location Hierarchy</div>
+
+                        <div class="column-menu-item">
+                            <input type="checkbox" id="facilityCheck" checked onchange="toggleColumn('facility')">
+                            <label for="facilityCheck">Facility / Plant</label>
+                        </div>
+
+                        <div class="column-menu-item">
+                            <input type="checkbox" id="buildingCheck" checked onchange="toggleColumn('building')">
+                            <label for="buildingCheck">Building</label>
+                        </div>
+
+                        <div class="column-menu-item">
+                            <input type="checkbox" id="zoneCheck" checked onchange="toggleColumn('zone')">
+                            <label for="zoneCheck">Zone</label>
+                        </div>
+
+                        <div class="column-menu-divider"></div>
+
+                        <div class="column-menu-footer">
+                            Location code is always visible
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pagination">
+                <span style="font-size: 14px; color: #666;">1 of 2</span>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ITEM ID</th>
+                    <th>ITEM NAME</th>
+                    <th class="center">TYPE</th>
+                    <th class="center column-medium facility-col">FACILITY</th>
+                    <th class="center column-medium building-col">BUILDING</th>
+                    <th class="center column-medium zone-col">ZONE</th>
+                    <th class="center column-small">LOCATION</th>
+                    <th class="center">QTY</th>
+                    <th class="center">LAST MOVED</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="item-id">SP-0001</span></td>
+                    <td>NPT 3/4-14 RING GO</td>
+                    <td class="center"><span class="badge">Gauge</span></td>
+                    <td class="center facility-col">Main Facility</td>
+                    <td class="center building-col">Building 1</td>
+                    <td class="center zone-col">QC</td>
+                    <td class="center"><span class="location-code">L1</span></td>
+                    <td class="center">1</td>
+                    <td class="center">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SP-0002</span></td>
+                    <td>UN 7/8-9 RING GO</td>
+                    <td class="center"><span class="badge">Gauge</span></td>
+                    <td class="center facility-col">Main Facility</td>
+                    <td class="center building-col">Building 1</td>
+                    <td class="center zone-col">QC</td>
+                    <td class="center"><span class="location-code">L1</span></td>
+                    <td class="center">1</td>
+                    <td class="center">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SP-0003</span></td>
+                    <td>UN 7/16-14 PLUG GO</td>
+                    <td class="center"><span class="badge">Gauge</span></td>
+                    <td class="center facility-col">Main Facility</td>
+                    <td class="center building-col">Building 1</td>
+                    <td class="center zone-col">Shipping</td>
+                    <td class="center"><span class="location-code">E2</span></td>
+                    <td class="center">1</td>
+                    <td class="center">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SET-0001</span></td>
+                    <td>ACME 1-1/4-5 RING GO</td>
+                    <td class="center"><span class="badge">Gauge</span></td>
+                    <td class="center facility-col">Main Facility</td>
+                    <td class="center building-col">Building 2</td>
+                    <td class="center zone-col">Tool Crib</td>
+                    <td class="center"><span class="location-code">C4</span></td>
+                    <td class="center">1</td>
+                    <td class="center">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SET-0002</span></td>
+                    <td>NPT 1/2-14 RING GO</td>
+                    <td class="center"><span class="badge">Gauge</span></td>
+                    <td class="center facility-col">Main Facility</td>
+                    <td class="center building-col">Building 1</td>
+                    <td class="center zone-col">Bulk Storage</td>
+                    <td class="center"><span class="location-code">A5</span></td>
+                    <td class="center">1</td>
+                    <td class="center">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SET-0003</span></td>
+                    <td>ACME 3/4-10 PLUG GO</td>
+                    <td class="center"><span class="badge">Gauge</span></td>
+                    <td class="center facility-col">Main Facility</td>
+                    <td class="center building-col">Building 2</td>
+                    <td class="center zone-col">Shop Floor</td>
+                    <td class="center"><span class="location-code">F3</span></td>
+                    <td class="center">1</td>
+                    <td class="center">11/5/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SP-0004</span></td>
+                    <td>NPT 1-11.5 RING GO</td>
+                    <td class="center"><span class="badge">Gauge</span></td>
+                    <td class="center facility-col">Main Facility</td>
+                    <td class="center building-col">Building 1</td>
+                    <td class="center zone-col">QC</td>
+                    <td class="center"><span class="location-code">L2</span></td>
+                    <td class="center">1</td>
+                    <td class="center">11/4/2025</td>
+                </tr>
+                <tr>
+                    <td><span class="item-id">SP-0005</span></td>
+                    <td>UN 5/8-18 PLUG GO</td>
+                    <td class="center"><span class="badge">Gauge</span></td>
+                    <td class="center facility-col">Main Facility</td>
+                    <td class="center building-col">Building 1</td>
+                    <td class="center zone-col">Receiving</td>
+                    <td class="center"><span class="location-code">D3</span></td>
+                    <td class="center">1</td>
+                    <td class="center">11/4/2025</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Features -->
+    <div class="examples">
+        <h3>User Experience Features</h3>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4><span class="feature-icon">🎯</span> Discoverable</h4>
+                <p>Always-visible "Columns" button makes it obvious where to control column visibility. No hidden features.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4><span class="feature-icon">☑️</span> Clear State</h4>
+                <p>Checkboxes show current column visibility at a glance. Toggle any combination of columns easily.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4><span class="feature-icon">💾</span> Auto-Save</h4>
+                <p>Column preferences are automatically saved to localStorage and restored on page reload.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const columnBtn = document.getElementById('columnBtn');
+        const columnMenu = document.getElementById('columnMenu');
+        const overlay = document.getElementById('overlay');
+
+        // Toggle menu
+        columnBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            columnMenu.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+
+        // Close menu when clicking overlay
+        overlay.addEventListener('click', () => {
+            columnMenu.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+
+        // Toggle column visibility
+        function toggleColumn(columnName) {
+            const cells = document.querySelectorAll(`.${columnName}-col`);
+            const checkbox = document.getElementById(`${columnName}Check`);
+
+            cells.forEach(cell => {
+                if (checkbox.checked) {
+                    cell.classList.remove('hidden');
+                } else {
+                    cell.classList.add('hidden');
+                }
+            });
+
+            savePreferences();
+        }
+
+        // Save preferences
+        function savePreferences() {
+            const prefs = {
+                facility: document.getElementById('facilityCheck').checked,
+                building: document.getElementById('buildingCheck').checked,
+                zone: document.getElementById('zoneCheck').checked
+            };
+            localStorage.setItem('columnPreferences', JSON.stringify(prefs));
+        }
+
+        // Load preferences
+        function loadPreferences() {
+            const saved = localStorage.getItem('columnPreferences');
+            if (saved) {
+                const prefs = JSON.parse(saved);
+
+                document.getElementById('facilityCheck').checked = prefs.facility;
+                document.getElementById('buildingCheck').checked = prefs.building;
+                document.getElementById('zoneCheck').checked = prefs.zone;
+
+                // Apply saved states
+                if (!prefs.facility) toggleColumn('facility');
+                if (!prefs.building) toggleColumn('building');
+                if (!prefs.zone) toggleColumn('zone');
+            }
+        }
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', loadPreferences);
+    </script>
+</body>
+</html>

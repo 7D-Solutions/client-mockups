@@ -1,0 +1,62 @@
+Frontend UI Comparison - Phased Approach
+
+  /analyze --think-hard --comprehensive --validate --focus
+  frontend
+  /document --visual-comparison --legacy-vs-modular
+
+  As a frontend architect, document ALL UI components comparing
+  legacy vs modular implementations. Create HTML comparison files
+   at: C:\Users\7d.vision\Projects\Fire-Proof-ERP-Sandbox\erp-cor
+  e-docs\frontend-rebuild\discovery\
+
+  Save file as your identity "Instance [1/2/3]"
+
+  Phase 1: Core Interactive Components
+  Priority: Critical path components users interact with most
+  1. Buttons
+  2. Forms & Inputs (all form controls)
+  3. Modals
+  4. Tables & Data Grids
+
+  Phase 2: Navigation & Layout
+  Priority: Site structure and user wayfinding
+  1. Tabs & Tab Navigation
+  2. Main Navigation/Sidebars
+  3. Headers & Page Layouts
+  4. Breadcrumbs
+
+  Phase 3: Feedback & Status
+  Priority: User feedback and system state
+  1. Alerts/Toasts/Notifications
+  2. Loading States & Spinners
+  3. Badges & Status Indicators
+  4. Progress Bars
+
+  Phase 4: Data Display
+  Priority: Information presentation
+  1. Cards & Panels
+  2. Lists & List Items
+  3. Empty States
+  4. Data Visualization Components
+
+  Phase 5: Secondary Components
+  Priority: Enhanced functionality
+  1. Dropdowns & Menus
+  2. Tooltips & Popovers
+  3. Accordions/Collapsibles
+  4. Search & Filters
+
+  Phase 6: Validation & Polish
+  Priority: Consistency check
+  1. Cross-reference all findings
+  2. Document missing components
+  3. Create migration checklist
+  4. Style guide compliance
+
+  Execution Requirements:
+  - Search exhaustively (previous analyses have missed
+  components)
+  - Include visual previews for each component
+  - Document all variants and states
+  - Note implementation differences
+  - Identify coverage gaps
