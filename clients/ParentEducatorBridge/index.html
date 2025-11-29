@@ -1,0 +1,2548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bridging the Gap | Parenting Course for Children with Autism</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2E7D6B;
+            --primary-light: #4A9B89;
+            --primary-dark: #1D5C4E;
+            --secondary: #E8A54B;
+            --secondary-light: #F5C77D;
+            --accent: #6B4E9B;
+            --accent-light: #8B6EBB;
+            --warm: #D4726A;
+            --warm-light: #E89890;
+            --background: #FAFBF9;
+            --surface: #FFFFFF;
+            --text: #2D3436;
+            --text-light: #636E72;
+            --border: #E0E6E3;
+            --shadow: rgba(46, 125, 107, 0.1);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background: var(--surface);
+            box-shadow: 2px 0 20px var(--shadow);
+            z-index: 1000;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            width: calc(100% - 280px);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--primary);
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .nav-logo-icon {
+            width: 45px;
+            height: 45px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .nav-logo-text {
+            font-weight: 800;
+            font-size: 1.1rem;
+            line-height: 1.2;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            list-style: none;
+            flex: 1;
+        }
+
+        .nav-links li a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 600;
+            padding: 0.85rem 1rem;
+            border-radius: 10px;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .nav-links li a:hover {
+            background: var(--background);
+            color: var(--primary);
+        }
+
+        .nav-links li a.active {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .nav-links li a span {
+            font-size: 1.1rem;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 1rem 0;
+        }
+
+        .nav-cta {
+            background: var(--gradient);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px var(--shadow);
+        }
+
+        .mobile-menu {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            width: 50px;
+            height: 50px;
+            background: var(--surface);
+            border-radius: 50%;
+            box-shadow: 0 2px 10px var(--shadow);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 4rem 2rem;
+            background: linear-gradient(180deg, #E8F5F1 0%, var(--background) 100%);
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 3rem;
+            line-height: 1.2;
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-content h1 span {
+            color: var(--secondary);
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--surface);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .hero-ctas {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 4px 15px var(--shadow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px var(--shadow);
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .hero-visual {
+            position: relative;
+        }
+
+        .hero-card {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px var(--shadow);
+            position: relative;
+        }
+
+        .hero-card::before {
+            content: '"';
+            position: absolute;
+            top: 1rem;
+            left: 1.5rem;
+            font-size: 5rem;
+            color: var(--primary-light);
+            opacity: 0.3;
+            font-family: 'Merriweather', serif;
+            line-height: 1;
+        }
+
+        .hero-quote {
+            font-family: 'Merriweather', serif;
+            font-size: 1.5rem;
+            color: var(--text);
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            padding-top: 2rem;
+        }
+
+        .hero-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .hero-author-avatar {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .hero-author-info h4 {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .hero-author-info p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .floating-badge {
+            position: absolute;
+            background: var(--surface);
+            padding: 0.75rem 1.25rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px var(--shadow);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .floating-badge.years {
+            top: -1rem;
+            right: -1rem;
+            color: var(--primary);
+        }
+
+        .floating-badge.states {
+            bottom: 2rem;
+            left: -2rem;
+            color: var(--accent);
+        }
+
+        /* Problem Section */
+        .problem {
+            padding: 6rem 2rem;
+            background: var(--surface);
+        }
+
+        .section-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-label {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--warm-light) 0%, var(--warm) 100%);
+            color: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 2.5rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            font-size: 1.15rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .problem-card {
+            background: linear-gradient(135deg, #FFF5F5 0%, #FFEBEB 100%);
+            border-radius: 16px;
+            padding: 1.75rem;
+            border-left: 4px solid var(--warm);
+        }
+
+        .problem-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 0.75rem;
+        }
+
+        .problem-card h3 span {
+            font-size: 1.25rem;
+        }
+
+        .problem-card p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        /* Five Things Section */
+        .five-things {
+            padding: 6rem 2rem;
+            background: linear-gradient(180deg, var(--background) 0%, #E8F5F1 100%);
+        }
+
+        .five-things .section-label {
+            background: var(--gradient);
+        }
+
+        .things-grid {
+            display: grid;
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .thing-card {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 1.5rem;
+            align-items: start;
+            box-shadow: 0 10px 40px var(--shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .thing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px var(--shadow);
+        }
+
+        .thing-number {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .thing-content h3 {
+            font-size: 1.35rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .thing-content p {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .thing-expand {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .thing-expand.active {
+            display: block;
+        }
+
+        .thing-expand ul {
+            list-style: none;
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .thing-expand li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+            color: var(--text-light);
+        }
+
+        .thing-expand li::before {
+            content: '✓';
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* Foundation Skills Section */
+        .foundation {
+            padding: 6rem 2rem;
+            background: var(--surface);
+        }
+
+        .foundation .section-label {
+            background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
+        }
+
+        .foundation-intro {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+        }
+
+        .foundation-intro .callout {
+            background: linear-gradient(135deg, #F5F0FF 0%, #EDE5FF 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .foundation-intro .callout p {
+            font-family: 'Merriweather', serif;
+            font-size: 1.15rem;
+            font-style: italic;
+            color: var(--text);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .skill-card {
+            background: var(--background);
+            border-radius: 20px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .skill-card:hover, .skill-card.active {
+            background: var(--surface);
+            border-color: var(--primary);
+            box-shadow: 0 15px 40px var(--shadow);
+            transform: translateY(-5px);
+        }
+
+        .skill-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1rem;
+        }
+
+        .skill-card h3 {
+            font-size: 1rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .skill-card p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .skill-detail {
+            display: none;
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-top: 2rem;
+            box-shadow: 0 10px 40px var(--shadow);
+            animation: slideDown 0.3s ease;
+        }
+
+        .skill-detail.active {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .skill-detail-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .skill-detail-header h3 {
+            font-size: 1.5rem;
+            color: var(--text);
+        }
+
+        .skill-detail-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .skill-column h4 {
+            font-size: 1rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .skill-column ul {
+            list-style: none;
+        }
+
+        .skill-column li {
+            padding: 0.5rem 0;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .skill-column li::before {
+            content: '→';
+            color: var(--secondary);
+            font-weight: 700;
+        }
+
+        /* Curriculum Section */
+        .curriculum {
+            padding: 6rem 2rem;
+            background: linear-gradient(180deg, #E8F5F1 0%, var(--background) 100%);
+        }
+
+        .curriculum .section-label {
+            background: var(--gradient);
+        }
+
+        .weeks-container {
+            display: grid;
+            gap: 1rem;
+            margin-top: 3rem;
+        }
+
+        .week-card {
+            background: var(--surface);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px var(--shadow);
+            transition: all 0.3s;
+        }
+
+        .week-header {
+            display: flex;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            cursor: pointer;
+            gap: 1.5rem;
+        }
+
+        .week-header:hover {
+            background: var(--background);
+        }
+
+        .week-number {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .week-info {
+            flex: 1;
+        }
+
+        .week-info h3 {
+            font-size: 1.15rem;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .week-info p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .week-toggle {
+            width: 40px;
+            height: 40px;
+            background: var(--background);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: var(--primary);
+            transition: transform 0.3s;
+        }
+
+        .week-card.active .week-toggle {
+            transform: rotate(180deg);
+        }
+
+        .week-content {
+            display: none;
+            padding: 0 2rem 2rem;
+            padding-left: calc(50px + 3.5rem);
+        }
+
+        .week-card.active .week-content {
+            display: block;
+        }
+
+        .week-topics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .week-topic {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--background);
+            border-radius: 10px;
+        }
+
+        .week-topic span {
+            color: var(--primary);
+        }
+
+        .week-topic p {
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        /* Audience Tabs */
+        .audience {
+            padding: 6rem 2rem;
+            background: var(--surface);
+        }
+
+        .audience-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .audience-tab {
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            border: 2px solid var(--border);
+            background: var(--surface);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .audience-tab:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .audience-tab.active {
+            background: var(--gradient);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .audience-content {
+            display: none;
+        }
+
+        .audience-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .benefit-card {
+            background: var(--background);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .benefit-card:hover {
+            background: var(--surface);
+            box-shadow: 0 15px 40px var(--shadow);
+            transform: translateY(-5px);
+        }
+
+        .benefit-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto 1rem;
+        }
+
+        .benefit-card h3 {
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .benefit-card p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* Pricing Section */
+        .pricing {
+            padding: 6rem 2rem;
+            background: linear-gradient(180deg, var(--background) 0%, #E8F5F1 100%);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 3rem auto 0;
+        }
+
+        .pricing-card {
+            background: var(--surface);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            box-shadow: 0 10px 40px var(--shadow);
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px var(--shadow);
+        }
+
+        .pricing-card.featured {
+            border: 3px solid var(--primary);
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured:hover {
+            transform: scale(1.05) translateY(-10px);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--secondary);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .pricing-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1.5rem;
+        }
+
+        .pricing-card h3 {
+            font-size: 1.35rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-card .price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 1rem 0;
+        }
+
+        .pricing-card .price span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-light);
+        }
+
+        .pricing-features {
+            list-style: none;
+            text-align: left;
+            margin: 1.5rem 0;
+        }
+
+        .pricing-features li {
+            padding: 0.5rem 0;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 6rem 2rem;
+            background: var(--surface);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .testimonial-card {
+            background: var(--background);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 4rem;
+            color: var(--primary);
+            opacity: 0.2;
+            font-family: 'Merriweather', serif;
+            line-height: 1;
+        }
+
+        .testimonial-card p {
+            font-style: italic;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .testimonial-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+        }
+
+        .testimonial-info h4 {
+            font-weight: 700;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .testimonial-info p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-style: normal;
+            margin: 0;
+        }
+
+        /* About Section */
+        .about {
+            padding: 6rem 2rem;
+            background: linear-gradient(180deg, #E8F5F1 0%, var(--background) 100%);
+        }
+
+        .about-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-image {
+            position: relative;
+        }
+
+        .about-photo {
+            width: 100%;
+            aspect-ratio: 4/5;
+            background: var(--gradient);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            color: white;
+        }
+
+        .about-credentials {
+            position: absolute;
+            bottom: -1rem;
+            right: -1rem;
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 1.25rem;
+            box-shadow: 0 10px 40px var(--shadow);
+        }
+
+        .credential {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+        }
+
+        .credential span {
+            font-size: 1.25rem;
+        }
+
+        .credential p {
+            font-size: 0.9rem;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .about-content h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 2rem;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+        }
+
+        .about-content p {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--surface);
+            border-radius: 16px;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 6rem 2rem;
+            background: var(--gradient);
+            text-align: center;
+            color: white;
+        }
+
+        .cta h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta p {
+            font-size: 1.15rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .cta .btn {
+            background: white;
+            color: var(--primary);
+        }
+
+        .cta .btn:hover {
+            background: var(--secondary);
+            color: white;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text);
+            color: white;
+            padding: 4rem 2rem 2rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .footer-brand h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand p {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .footer-links h4 {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.95rem;
+            display: block;
+            padding: 0.5rem 0;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 3rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--surface);
+            border-radius: 24px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            background: var(--background);
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+        }
+
+        .modal-header {
+            padding: 2.5rem 2rem 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.75rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-header p {
+            color: var(--text-light);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-submit {
+            width: 100%;
+            padding: 1.25rem;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .form-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px var(--shadow);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-visual {
+                max-width: 500px;
+                margin: 0 auto;
+            }
+
+            .hero-ctas {
+                justify-content: center;
+            }
+
+            .skills-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .about-container {
+                grid-template-columns: 1fr;
+            }
+
+            .about-image {
+                max-width: 300px;
+                margin: 0 auto;
+            }
+
+            .footer-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .mobile-menu {
+                display: flex;
+            }
+
+            .hero-content h1 {
+                font-size: 2.25rem;
+            }
+
+            .section-header h2 {
+                font-size: 1.85rem;
+            }
+
+            .problem-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .skills-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .skill-detail-content {
+                grid-template-columns: 1fr;
+            }
+
+            .week-topics {
+                grid-template-columns: 1fr;
+            }
+
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-card.featured {
+                transform: none;
+            }
+
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .about-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                padding: 6rem 1rem 3rem;
+            }
+
+            .hero-content h1 {
+                font-size: 1.85rem;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .audience-tabs {
+                flex-direction: column;
+            }
+
+            .audience-tab {
+                justify-content: center;
+            }
+
+            .floating-badge {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <a href="#" class="nav-logo">
+            <div class="nav-logo-icon">🌉</div>
+            <span class="nav-logo-text">Bridging the Gap</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="#" class="active"><span>🏠</span> Home</a></li>
+            <li><a href="#curriculum"><span>📚</span> Course</a></li>
+            <li><a href="#five-things"><span>💡</span> 5 Things to Know</a></li>
+            <li><a href="#foundation"><span>🎯</span> Foundation Skills</a></li>
+            <div class="nav-divider"></div>
+            <li><a href="resources.html"><span>📁</span> Resources</a></li>
+            <li><a href="podcast.html"><span>🎙️</span> Podcast</a></li>
+            <li><a href="blog.html"><span>✍️</span> Blog</a></li>
+            <div class="nav-divider"></div>
+            <li><a href="faq.html"><span>❓</span> FAQ</a></li>
+            <li><a href="contact.html"><span>📧</span> Contact</a></li>
+        </ul>
+        <a href="#" class="nav-cta" onclick="openModal()">🚀 Enroll Now</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span>🎓</span> 35 Years of Experience
+                </div>
+                <h1>What I Wish Someone Had <span>Told Me</span> as a Parent</h1>
+                <p class="hero-subtitle">
+                    A 6-week course that bridges the gap between parents and educators.
+                    Learn what your child needs BEFORE school can work—and how to advocate
+                    effectively without burning bridges.
+                </p>
+                <div class="hero-ctas">
+                    <a href="#" class="btn btn-primary" onclick="openModal()">
+                        <span>📚</span> Enroll in Course
+                    </a>
+                    <a href="#five-things" class="btn btn-secondary">
+                        <span>💡</span> Learn More
+                    </a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-card">
+                    <p class="hero-quote">
+                        Parents walk into IEP meetings wanting 1:1 support for Johnny,
+                        without understanding what's actually available—or what Johnny
+                        needs to know first.
+                    </p>
+                    <div class="hero-author">
+                        <div class="hero-author-avatar">👩‍🏫</div>
+                        <div class="hero-author-info">
+                            <h4>School Psychologist & LPC</h4>
+                            <p>35 Years in Special Education</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="floating-badge years">
+                    <span>✨</span> 35+ Years Experience
+                </div>
+                <div class="floating-badge states">
+                    <span>📍</span> 3 States Licensed
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="problem" id="problem">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-label">The Challenge</span>
+                <h2>Why IEP Meetings Feel Like Battles</h2>
+                <p>After hundreds of IEP meetings, I've seen the same struggles repeat. Parents and educators both want what's best—but miscommunication creates conflict.</p>
+            </div>
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <h3><span>😤</span> Unrealistic Expectations</h3>
+                    <p>"My child needs a 1:1 aide"—without understanding that more support isn't always better and can create dependency.</p>
+                </div>
+                <div class="problem-card">
+                    <h3><span>❓</span> Not Understanding the System</h3>
+                    <p>Parents don't know what services exist, what "appropriate" means legally, or how placement decisions are made.</p>
+                </div>
+                <div class="problem-card">
+                    <h3><span>🏠</span> Missing Foundation Skills</h3>
+                    <p>Children arrive at school without basic skills—communicating needs, saying no, following directions—that make learning possible.</p>
+                </div>
+                <div class="problem-card">
+                    <h3><span>⚔️</span> Adversarial Approach</h3>
+                    <p>Parents fight the school instead of partnering with them, burning bridges and exhausting everyone—including themselves.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Five Things Section -->
+    <section class="five-things" id="five-things">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-label">Core Wisdom</span>
+                <h2>The 5 Things I Wish Someone Had Told Me</h2>
+                <p>After 35 years as a school psychologist, special education director, and counselor, these are the truths every parent needs to hear.</p>
+            </div>
+            <div class="things-grid">
+                <div class="thing-card" onclick="toggleThing(this)">
+                    <div class="thing-number">1</div>
+                    <div class="thing-content">
+                        <h3>School Cannot Replace What You Teach at Home</h3>
+                        <p>You have 3x more teaching time than school. Foundational skills must be taught at home—relentlessly, daily.</p>
+                        <div class="thing-expand">
+                            <ul>
+                                <li>School = 1,080 hours/year</li>
+                                <li>Home = 3,650+ hours/year</li>
+                                <li>Communication, boundaries, and self-regulation start with YOU</li>
+                                <li>No IEP can replace consistent home teaching</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="thing-card" onclick="toggleThing(this)">
+                    <div class="thing-number">2</div>
+                    <div class="thing-content">
+                        <h3>1:1 Support Isn't Always the Answer</h3>
+                        <p>More support can create dependency. Children need to learn from peers. Independence is the goal—not constant help.</p>
+                        <div class="thing-expand">
+                            <ul>
+                                <li>1:1 aides can prevent skill development</li>
+                                <li>Children look to the aide instead of peers</li>
+                                <li>Social isolation often increases</li>
+                                <li>Ask: "How will we FADE this support over time?"</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="thing-card" onclick="toggleThing(this)">
+                    <div class="thing-number">3</div>
+                    <div class="thing-content">
+                        <h3>"Appropriate" Doesn't Mean "Optimal"</h3>
+                        <p>Schools must provide appropriate education—not the best possible. Focus on whether your child is making progress.</p>
+                        <div class="thing-expand">
+                            <ul>
+                                <li>FAPE = Free Appropriate Public Education</li>
+                                <li>You can't legally demand "the best"</li>
+                                <li>Document when progress ISN'T happening</li>
+                                <li>That's when you have a case</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="thing-card" onclick="toggleThing(this)">
+                    <div class="thing-number">4</div>
+                    <div class="thing-content">
+                        <h3>Behavior Is Communication</h3>
+                        <p>When your child "acts out," they're telling you something. Figure out WHAT—then teach them a better way to say it.</p>
+                        <div class="thing-expand">
+                            <ul>
+                                <li>"This is too hard" / "I don't understand"</li>
+                                <li>"I'm overwhelmed" / "I need attention"</li>
+                                <li>"I want to escape this"</li>
+                                <li>ABC Model: Antecedent → Behavior → Consequence</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="thing-card" onclick="toggleThing(this)">
+                    <div class="thing-number">5</div>
+                    <div class="thing-content">
+                        <h3>You and the School Are on the Same Team</h3>
+                        <p>Most educators WANT to help. They're limited by resources and time—not caring. Partnership beats battle every time.</p>
+                        <div class="thing-expand">
+                            <ul>
+                                <li>Assume good intent (until proven otherwise)</li>
+                                <li>Ask questions before accusing</li>
+                                <li>Bring solutions, not just problems</li>
+                                <li>Save the fight for when it really matters</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Foundation Skills Section -->
+    <section class="foundation" id="foundation">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-label">Critical Foundation</span>
+                <h2>Before School Can Work</h2>
+                <p>These 5 skills are non-negotiable. Without them, even the best teacher with the most resources will struggle to help your child learn.</p>
+            </div>
+            <div class="foundation-intro">
+                <div class="callout">
+                    <p>"Can your child tell someone they need to use the bathroom? Say 'no' when something is wrong? Ask for help? These aren't things school teaches. These are things YOU teach."</p>
+                </div>
+            </div>
+            <div class="skills-grid">
+                <div class="skill-card" onclick="showSkillDetail(0, this)">
+                    <div class="skill-icon">💬</div>
+                    <h3>Communicate Needs</h3>
+                    <p>"I need potty" "Help me"</p>
+                </div>
+                <div class="skill-card" onclick="showSkillDetail(1, this)">
+                    <div class="skill-icon">🛑</div>
+                    <h3>Say "No"</h3>
+                    <p>Boundaries & safety</p>
+                </div>
+                <div class="skill-card" onclick="showSkillDetail(2, this)">
+                    <div class="skill-icon">👂</div>
+                    <h3>Follow Instructions</h3>
+                    <p>One-step directions</p>
+                </div>
+                <div class="skill-card" onclick="showSkillDetail(3, this)">
+                    <div class="skill-icon">😌</div>
+                    <h3>Self-Regulate</h3>
+                    <p>Calm down strategies</p>
+                </div>
+                <div class="skill-card" onclick="showSkillDetail(4, this)">
+                    <div class="skill-icon">🚶</div>
+                    <h3>Basic Independence</h3>
+                    <p>Toileting, eating, separating</p>
+                </div>
+            </div>
+
+            <!-- Skill Details -->
+            <div class="skill-detail" id="skill-detail-0">
+                <div class="skill-detail-header">
+                    <div class="skill-icon">💬</div>
+                    <h3>Communicate Basic Needs</h3>
+                </div>
+                <div class="skill-detail-content">
+                    <div class="skill-column">
+                        <h4>✅ What to Teach</h4>
+                        <ul>
+                            <li>"I need to go to the bathroom" / "Potty"</li>
+                            <li>"I need help" / "Help me"</li>
+                            <li>"I don't understand"</li>
+                            <li>"I want ___" (basic requests)</li>
+                            <li>"I'm done" / "All done"</li>
+                            <li>"I need a break"</li>
+                        </ul>
+                    </div>
+                    <div class="skill-column">
+                        <h4>🛠️ How to Teach It</h4>
+                        <ul>
+                            <li>Choose ANY method: verbal, sign, PECS, AAC device</li>
+                            <li>Create opportunities—don't anticipate every need</li>
+                            <li>Prompt → Response → Immediate reward</li>
+                            <li>Practice 10+ times daily</li>
+                            <li>Generalize: different people, places, times</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="skill-detail" id="skill-detail-1">
+                <div class="skill-detail-header">
+                    <div class="skill-icon">🛑</div>
+                    <h3>Boundaries & Saying "No"</h3>
+                </div>
+                <div class="skill-detail-content">
+                    <div class="skill-column">
+                        <h4>✅ What to Teach</h4>
+                        <ul>
+                            <li>Can say/sign/indicate "No" or "Stop"</li>
+                            <li>Pushes away unwanted items or touch</li>
+                            <li>Shows discomfort with unfamiliar people</li>
+                            <li>Can identify 3-5 "safe" trusted adults</li>
+                            <li>Understands basic body boundaries</li>
+                        </ul>
+                    </div>
+                    <div class="skill-column">
+                        <h4>🛠️ How to Teach It</h4>
+                        <ul>
+                            <li>When your child says "no"—HONOR IT</li>
+                            <li>Tickle games: "Say STOP" → immediately stop</li>
+                            <li>Create a photo board of safe people</li>
+                            <li>Teach body autonomy: "Your body belongs to YOU"</li>
+                            <li>Show them their words have POWER</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="skill-detail" id="skill-detail-2">
+                <div class="skill-detail-header">
+                    <div class="skill-icon">👂</div>
+                    <h3>Following Basic Instructions</h3>
+                </div>
+                <div class="skill-detail-content">
+                    <div class="skill-column">
+                        <h4>✅ What to Teach</h4>
+                        <ul>
+                            <li>Responds to their name</li>
+                            <li>Follows one-step directions: "Sit down," "Come here"</li>
+                            <li>Stops when told "Stop" or "Wait"</li>
+                            <li>Can transition between activities with support</li>
+                            <li>Can sit in a designated spot for 2-3 minutes</li>
+                        </ul>
+                    </div>
+                    <div class="skill-column">
+                        <h4>🛠️ How to Teach It</h4>
+                        <ul>
+                            <li>Start simple: one-word commands</li>
+                            <li>The 3-Second Rule: Give direction → Wait 3 sec → Guide if needed → Reward</li>
+                            <li>Never give a direction you can't enforce</li>
+                            <li>Use visual timers for transitions</li>
+                            <li>"First ___, then ___" structure</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="skill-detail" id="skill-detail-3">
+                <div class="skill-detail-header">
+                    <div class="skill-icon">😌</div>
+                    <h3>Basic Self-Regulation</h3>
+                </div>
+                <div class="skill-detail-content">
+                    <div class="skill-column">
+                        <h4>✅ What to Teach</h4>
+                        <ul>
+                            <li>Shows early warning signs of overwhelm</li>
+                            <li>Accepts help when upset</li>
+                            <li>Uses at least one calming strategy with prompting</li>
+                            <li>Can recover from upset in reasonable time</li>
+                            <li>Can wait briefly for something they want</li>
+                        </ul>
+                    </div>
+                    <div class="skill-column">
+                        <h4>🛠️ How to Teach It</h4>
+                        <ul>
+                            <li>Learn YOUR child's warning signs</li>
+                            <li>Build a calming toolkit (practice when CALM)</li>
+                            <li>Deep breaths, squeeze balls, weighted blanket</li>
+                            <li>Practice waiting: start with 5 seconds</li>
+                            <li>Don't try to teach DURING meltdowns</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="skill-detail" id="skill-detail-4">
+                <div class="skill-detail-header">
+                    <div class="skill-icon">🚶</div>
+                    <h3>Foundational Independence</h3>
+                </div>
+                <div class="skill-detail-content">
+                    <div class="skill-column">
+                        <h4>✅ What to Teach</h4>
+                        <ul>
+                            <li>Toilet trained OR can communicate needs</li>
+                            <li>Can eat provided food</li>
+                            <li>Can separate from parent without extreme distress</li>
+                            <li>Can sit at a table for short periods</li>
+                            <li>Can be in a room with other children</li>
+                        </ul>
+                    </div>
+                    <div class="skill-column">
+                        <h4>🛠️ How to Teach It</h4>
+                        <ul>
+                            <li>Toileting is #1 issue—work on this intensively at home</li>
+                            <li>Practice independent play: start with 30 seconds</li>
+                            <li>Consistent goodbye routine—don't sneak out</li>
+                            <li>Playdates, library time, community activities</li>
+                            <li>Gradually increase duration and newness</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Curriculum Section -->
+    <section class="curriculum" id="curriculum">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-label">6-Week Course</span>
+                <h2>What You'll Learn Each Week</h2>
+                <p>A comprehensive curriculum designed to transform overwhelmed parents into confident advocates.</p>
+            </div>
+            <div class="weeks-container">
+                <div class="week-card">
+                    <div class="week-header" onclick="toggleWeek(this.parentElement)">
+                        <div class="week-number">1</div>
+                        <div class="week-info">
+                            <h3>Understanding the Landscape</h3>
+                            <p>"What I Wish Someone Had Told Me"</p>
+                        </div>
+                        <div class="week-toggle">▼</div>
+                    </div>
+                    <div class="week-content">
+                        <div class="week-topics">
+                            <div class="week-topic">
+                                <span>📖</span>
+                                <p>How special education ACTUALLY works (IDEA, FAPE, LRE)</p>
+                            </div>
+                            <div class="week-topic">
+                                <span>🔄</span>
+                                <p>The IEP process demystified</p>
+                            </div>
+                            <div class="week-topic">
+                                <span>📊</span>
+                                <p>Understanding the continuum of services</p>
+                            </div>
+                            <div class="week-topic">
+                                <span>🎯</span>
+                                <p>Setting realistic expectations without losing hope</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="week-card">
+                    <div class="week-header" onclick="toggleWeek(this.parentElement)">
+                        <div class="week-number">2</div>
+                        <div class="week-info">
+                            <h3>Foundation Skills Your Child Needs</h3>
+                            <p>"Before School Can Work"</p>
+                        </div>
+                        <div class="week-toggle">▼</div>
+                    </div>
+                    <div class="week-content">
+                        <div class="week-topics">
+                            <div class="week-topic">
+                                <span>💬</span>
+                                <p>Teaching communication of basic needs</p>
+                            </div>
+                            <div class="week-topic">
+                                <span>🚽</span>
+                                <p>The game-changer: "I need to go potty"</p>
+                            </div>
+                            <div class="week-topic">
+                                <span>🖼️</span>
+                                <p>Visual supports and PECS introduction</p>
+                            </div>
+                            <div class="week-topic">
+                                <span>✅</span>
+                                <p>Assessing where YOUR child is on each skill</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="week-card">
+                    <div class="week-header" onclick="toggleWeek(this.parentElement)">
+                        <div class="week-number">3</div>
+                        <div class="week-info">
+                            <h3>Boundaries, Safety & Saying No</h3>
+                            <p>"Protecting Your Child by Empowering Them"</p>
+                        </div>
+                        <div class="week-toggle">▼</div>
+                    </div>
+                    <div class="week-content">
+                        <div class="week-topics">
+                            <div class="week-topic">
+                                <span>🛑</span>
+                                <p>Why "No" is the most important word</p>
+                            </div>
+                            <div class="week-topic">
+                                <span>👤</span>
+                                <p>Teaching body autonomy and personal boundaries</p>
+                            </div>
+                            <div class="week-topic">
+                                <span>🔒</span>
+                                <p>Safe vs. unsafe people and situations</p>
+                            </div>
+                            <div class="week-topic">
+                                <span>🗣️</span>
+                                <p>Building self-advocacy skills at home</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="week-card">
+                    <div class="week-header" onclick="toggleWeek(this.parentElement)">
+                        <div class="week-number">4</div>
+                        <div class="week-info">
+                            <h3>Understanding Behavior & Preventing Meltdowns</h3>
+                            <p>"Behavior is Communication"</p>
+                        </div>
+                        <div class="week-toggle">▼</div>
+                    </div>
+                    <div class="week-content">
+                        <div class="week-topics">
+                            <div class="week-topic">
+                                <span>🔬</span>
+                                <p>The ABC model: Antecedent-Behavior-Consequence</p>
+                            </div>
+                            <div class="week-topic">
+                                <span>🌊</span>
+                                <p>Meltdowns vs. tantrums (and why it matters)</p>
+                            </div>
+                            <div class="week-topic">
+                                <span>🛡️</span>
+                                <p>Proactive strategies: Preventing before it starts</p>
+                            </div>
+                            <div class="week-topic">
+                                <span>🧰</span>
+                                <p>Building your parent toolbox</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="week-card">
+                    <div class="week-header" onclick="toggleWeek(this.parentElement)">
+                        <div class="week-number">5</div>
+                        <div class="week-info">
+                            <h3>Navigating the IEP Process</h3>
+                            <p>"Being an Advocate, Not an Adversary"</p>
+                        </div>
+                        <div class="week-toggle">▼</div>
+                    </div>
+                    <div class="week-content">
+                        <div class="week-topics">
+                            <div class="week-topic">
+                                <span>⚖️</span>
+                                <p>Your rights under IDEA</p>
+                            </div>
+                            <div class="week-topic">
+                                <span>📋</span>
+                                <p>Reading an IEP: Goals, services, accommodations</p>
+                            </div>
+                            <div class="week-topic">
+                                <span>❓</span>
+                                <p>Asking the RIGHT questions in meetings</p>
+                            </div>
+                            <div class="week-topic">
+                                <span>📝</span>
+                                <p>Documentation: Your paper trail matters</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="week-card">
+                    <div class="week-header" onclick="toggleWeek(this.parentElement)">
+                        <div class="week-number">6</div>
+                        <div class="week-info">
+                            <h3>Building the Home-School Partnership</h3>
+                            <p>"We're on the Same Team"</p>
+                        </div>
+                        <div class="week-toggle">▼</div>
+                    </div>
+                    <div class="week-content">
+                        <div class="week-topics">
+                            <div class="week-topic">
+                                <span>📱</span>
+                                <p>Communication systems that work</p>
+                            </div>
+                            <div class="week-topic">
+                                <span>🏠</span>
+                                <p>Reinforcing school skills at home</p>
+                            </div>
+                            <div class="week-topic">
+                                <span>💚</span>
+                                <p>Managing your own stress and self-care</p>
+                            </div>
+                            <div class="week-topic">
+                                <span>🎉</span>
+                                <p>Celebrating progress and creating your action plan</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Audience Section -->
+    <section class="audience" id="audience">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-label">Who This Is For</span>
+                <h2>Benefits for Parents & Educators</h2>
+                <p>This course serves both sides of the table—because we're all working toward the same goal.</p>
+            </div>
+            <div class="audience-tabs">
+                <button class="audience-tab active" onclick="switchAudience('parents', this)">
+                    <span>👨‍👩‍👧</span> For Parents
+                </button>
+                <button class="audience-tab" onclick="switchAudience('educators', this)">
+                    <span>👩‍🏫</span> For Educators
+                </button>
+            </div>
+            <div class="audience-content active" id="parents-content">
+                <div class="benefits-grid">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🧠</div>
+                        <h3>Understand the System</h3>
+                        <p>Finally learn how special education actually works—what schools can and must do.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🛠️</div>
+                        <h3>Practical Skills</h3>
+                        <p>Get real tools to teach your child the foundational skills they need at home.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">💪</div>
+                        <h3>Confident Advocacy</h3>
+                        <p>Walk into IEP meetings prepared, informed, and ready to partner effectively.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🤝</div>
+                        <h3>Better Relationships</h3>
+                        <p>Build collaborative relationships with your child's school team.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">👥</div>
+                        <h3>Parent Community</h3>
+                        <p>Connect with other parents who understand what you're going through.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🎯</div>
+                        <h3>Realistic Expectations</h3>
+                        <p>Know what to expect—and what to fight for when it really matters.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="audience-content" id="educators-content">
+                <div class="benefits-grid">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">👂</div>
+                        <h3>Parent Perspective</h3>
+                        <p>Understand what parents are going through and why they advocate the way they do.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">💬</div>
+                        <h3>Better Communication</h3>
+                        <p>Learn strategies for more productive parent conferences and IEP meetings.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">📋</div>
+                        <h3>CEU Credits</h3>
+                        <p>Earn 9 contact hours applicable for license renewal in most states.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🏠</div>
+                        <h3>Home-School Connection</h3>
+                        <p>Understand what you can reasonably ask parents to work on at home.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🤝</div>
+                        <h3>Collaborative IEPs</h3>
+                        <p>Tools and language for building true partnerships with families.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">⚡</div>
+                        <h3>Reduce Conflict</h3>
+                        <p>When parents understand the system, meetings become collaborative—not adversarial.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-label">Enroll Today</span>
+                <h2>Choose Your Learning Path</h2>
+                <p>Multiple options to fit your schedule and learning style.</p>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-icon">📱</div>
+                    <h3>Self-Paced Online</h3>
+                    <div class="price">$297</div>
+                    <ul class="pricing-features">
+                        <li>6 video modules (60-90 min each)</li>
+                        <li>All downloadable materials</li>
+                        <li>Email support</li>
+                        <li>6 months access</li>
+                        <li>Learn at your own pace</li>
+                    </ul>
+                    <a href="#" class="btn btn-secondary" onclick="openModal()">Get Started</a>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">Most Popular</div>
+                    <div class="pricing-icon">💻</div>
+                    <h3>Live Virtual Group</h3>
+                    <div class="price">$497</div>
+                    <ul class="pricing-features">
+                        <li>6 weekly 90-min Zoom sessions</li>
+                        <li>Live Q&A and discussion</li>
+                        <li>All downloadable materials</li>
+                        <li>Session recordings for 30 days</li>
+                        <li>Private community access</li>
+                        <li>8-15 families per cohort</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary" onclick="openModal()">Enroll Now</a>
+                </div>
+                <div class="pricing-card">
+                    <div class="pricing-icon">🏫</div>
+                    <h3>In-Person Workshop</h3>
+                    <div class="price">$597</div>
+                    <ul class="pricing-features">
+                        <li>6 weekly 2-hour sessions</li>
+                        <li>Hands-on practice & role-play</li>
+                        <li>All printed materials</li>
+                        <li>Network with local families</li>
+                        <li>10-20 families per cohort</li>
+                    </ul>
+                    <a href="#" class="btn btn-secondary" onclick="openModal()">Join Waitlist</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials" id="testimonials">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-label">Success Stories</span>
+                <h2>What Parents Are Saying</h2>
+                <p>Real transformations from parents who took this journey.</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p>"I used to walk into IEP meetings ready to fight. Now I walk in ready to collaborate. The difference in my relationship with my son's school is night and day."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">SM</div>
+                        <div class="testimonial-info">
+                            <h4>Sarah M.</h4>
+                            <p>Mom of 7-year-old with autism</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p>"The foundational skills section changed everything. Once my daughter could ask for a break, her meltdowns at school dropped by 80%. I didn't know I needed to teach that at home."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">JT</div>
+                        <div class="testimonial-info">
+                            <h4>Jennifer T.</h4>
+                            <p>Mom of 5-year-old with autism</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p>"As a special ed teacher, I took this to understand parents better. Now I recommend it to every family I work with. It bridges the gap we've struggled with for years."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">MR</div>
+                        <div class="testimonial-info">
+                            <h4>Michelle R.</h4>
+                            <p>Special Education Teacher</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="about-container">
+            <div class="about-image">
+                <div class="about-photo">👩‍🏫</div>
+                <div class="about-credentials">
+                    <div class="credential">
+                        <span>🎓</span>
+                        <p>Ed.S. School Psychology</p>
+                    </div>
+                    <div class="credential">
+                        <span>📜</span>
+                        <p>Licensed Professional Counselor</p>
+                    </div>
+                    <div class="credential">
+                        <span>👩‍🏫</span>
+                        <p>Special Ed Teacher & Director</p>
+                    </div>
+                </div>
+            </div>
+            <div class="about-content">
+                <h2>Why I Created This Course</h2>
+                <p>
+                    After 35 years in special education—as a school psychologist, special education teacher,
+                    director, and licensed professional counselor—I've sat in hundreds of IEP meetings. I've seen
+                    the same struggles play out again and again.
+                </p>
+                <p>
+                    Parents come in wanting the best for their child, but without understanding how the system
+                    works. They ask for things that aren't reasonable—or miss the things that would actually help.
+                    And educators, limited by resources and time, struggle to bridge the gap.
+                </p>
+                <p>
+                    <strong>I created this course to share what I wish someone had told ME as a parent.</strong> The honest
+                    truths. The foundational skills your child needs before school can work. And how to advocate
+                    effectively—as a partner, not an adversary.
+                </p>
+                <div class="about-stats">
+                    <div class="stat">
+                        <div class="stat-number">35+</div>
+                        <div class="stat-label">Years Experience</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">States Licensed</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">500+</div>
+                        <div class="stat-label">Families Helped</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="section-container">
+            <h2>Ready to Bridge the Gap?</h2>
+            <p>Join parents who've transformed their relationship with their child's school—and learned what their child really needs to succeed.</p>
+            <a href="#" class="btn" onclick="openModal()">
+                <span>🚀</span> Enroll in the Course
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h3>🌉 Bridging the Gap</h3>
+                <p>Empowering parents and educators to work together for every child's success. Based on 35 years of experience in special education.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Course</h4>
+                <ul>
+                    <li><a href="#five-things">5 Things to Know</a></li>
+                    <li><a href="#foundation">Foundation Skills</a></li>
+                    <li><a href="#curriculum">Curriculum</a></li>
+                    <li><a href="#pricing">Pricing</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="iep-checklist.html">Free IEP Checklist</a></li>
+                    <li><a href="skills-assessment.html">Skills Assessment</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Connect</h4>
+                <ul>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="podcast.html">Podcast</a></li>
+                    <li><a href="newsletter.html">Newsletter</a></li>
+                    <li><a href="speaking.html">Speaking</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 Bridging the Gap. All rights reserved. | <a href="privacy.html" style="color: inherit;">Privacy Policy</a> | <a href="terms.html" style="color: inherit;">Terms of Service</a></p>
+        </div>
+    </footer>
+
+    </div><!-- End Main Content -->
+
+    <!-- Enrollment Modal -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <div class="modal-header">
+                <h2>Start Your Journey</h2>
+                <p>Join the next cohort of empowered parents</p>
+            </div>
+            <div class="modal-body">
+                <form id="enrollment-form">
+                    <div class="form-group">
+                        <label>Your Name</label>
+                        <input type="text" placeholder="Full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>I am a...</label>
+                        <select required>
+                            <option value="">Select one</option>
+                            <option value="parent">Parent of a child with autism</option>
+                            <option value="educator">Educator/School Professional</option>
+                            <option value="both">Both</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Preferred Format</label>
+                        <select required>
+                            <option value="">Select one</option>
+                            <option value="self-paced">Self-Paced Online ($297)</option>
+                            <option value="live-virtual">Live Virtual Group ($497)</option>
+                            <option value="in-person">In-Person Workshop ($597)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="form-submit">Continue to Enrollment →</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle Sidebar for mobile
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('active');
+            document.querySelector('.sidebar-overlay').classList.toggle('active');
+        }
+
+        // Close sidebar when clicking a nav link (mobile)
+        document.querySelectorAll('.sidebar .nav-links a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    toggleSidebar();
+                }
+            });
+        });
+
+        // Update active nav link based on scroll position
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.sidebar .nav-links a');
+
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Keep Home active if at top
+            if (window.scrollY < 300) {
+                navLinks.forEach(link => link.classList.remove('active'));
+                document.querySelector('.sidebar .nav-links a[href="#"]').classList.add('active');
+            }
+        });
+
+        // Toggle Five Things expansion
+        function toggleThing(card) {
+            const expand = card.querySelector('.thing-expand');
+            const isActive = expand.classList.contains('active');
+
+            // Close all others
+            document.querySelectorAll('.thing-expand').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            // Toggle current
+            if (!isActive) {
+                expand.classList.add('active');
+            }
+        }
+
+        // Show skill detail
+        function showSkillDetail(index, card) {
+            // Remove active from all cards
+            document.querySelectorAll('.skill-card').forEach(c => {
+                c.classList.remove('active');
+            });
+
+            // Hide all details
+            document.querySelectorAll('.skill-detail').forEach(d => {
+                d.classList.remove('active');
+            });
+
+            // Activate clicked card and show detail
+            card.classList.add('active');
+            document.getElementById('skill-detail-' + index).classList.add('active');
+        }
+
+        // Toggle week accordion
+        function toggleWeek(card) {
+            const isActive = card.classList.contains('active');
+
+            // Close all
+            document.querySelectorAll('.week-card').forEach(c => {
+                c.classList.remove('active');
+            });
+
+            // Toggle current
+            if (!isActive) {
+                card.classList.add('active');
+            }
+        }
+
+        // Switch audience tabs
+        function switchAudience(audience, tab) {
+            // Update tabs
+            document.querySelectorAll('.audience-tab').forEach(t => {
+                t.classList.remove('active');
+            });
+            tab.classList.add('active');
+
+            // Update content
+            document.querySelectorAll('.audience-content').forEach(c => {
+                c.classList.remove('active');
+            });
+            document.getElementById(audience + '-content').classList.add('active');
+        }
+
+        // Modal functions
+        function openModal() {
+            document.getElementById('modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close modal on overlay click
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href !== '#') {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }
+            });
+        });
+
+        // Form submission
+        document.getElementById('enrollment-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your interest! We will contact you soon with enrollment details.');
+            closeModal();
+        });
+
+        // Open first week by default
+        document.querySelector('.week-card').classList.add('active');
+    </script>
+</body>
+</html>

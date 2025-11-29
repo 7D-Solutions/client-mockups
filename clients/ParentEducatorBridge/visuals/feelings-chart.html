@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feelings Chart - Parent Educator Bridge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2E7D6B;
+            --secondary-color: #E8A54B;
+            --happy-color: #FFD700;
+            --sad-color: #4A90E2;
+            --angry-color: #E74C3C;
+            --scared-color: #9B59B6;
+            --worried-color: #E67E22;
+            --frustrated-color: #C0392B;
+            --tired-color: #7F8C8D;
+            --sick-color: #27AE60;
+            --excited-color: #F39C12;
+            --calm-color: #1ABC9C;
+            --confused-color: #95A5A6;
+            --hungry-color: #D35400;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fff;
+            padding: 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: background 0.3s;
+        }
+
+        .back-link:hover {
+            background: #1D5C4E;
+        }
+
+        @media print {
+            .back-link {
+                display: none;
+            }
+        }
+
+        .page-break {
+            page-break-after: always;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 4px solid var(--primary-color);
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            color: var(--secondary-color);
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .sentence-starter {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 36px;
+            font-weight: 700;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* Full Poster Version */
+        .emotions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .emotion-card {
+            background: white;
+            border: 4px solid;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .emotion-card:hover {
+            transform: scale(1.05);
+        }
+
+        .emotion-face {
+            font-size: 80px;
+            margin: 10px 0;
+            line-height: 1;
+        }
+
+        .emotion-label {
+            font-size: 28px;
+            font-weight: 700;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+
+        /* Color coding */
+        .emotion-happy { border-color: var(--happy-color); background: linear-gradient(135deg, #fff, #fffacd); }
+        .emotion-sad { border-color: var(--sad-color); background: linear-gradient(135deg, #fff, #e6f2ff); }
+        .emotion-angry { border-color: var(--angry-color); background: linear-gradient(135deg, #fff, #ffe6e6); }
+        .emotion-scared { border-color: var(--scared-color); background: linear-gradient(135deg, #fff, #f3e6ff); }
+        .emotion-worried { border-color: var(--worried-color); background: linear-gradient(135deg, #fff, #fff0e6); }
+        .emotion-frustrated { border-color: var(--frustrated-color); background: linear-gradient(135deg, #fff, #ffe0e0); }
+        .emotion-tired { border-color: var(--tired-color); background: linear-gradient(135deg, #fff, #f0f0f0); }
+        .emotion-sick { border-color: var(--sick-color); background: linear-gradient(135deg, #fff, #e6ffe6); }
+        .emotion-excited { border-color: var(--excited-color); background: linear-gradient(135deg, #fff, #fff5e6); }
+        .emotion-calm { border-color: var(--calm-color); background: linear-gradient(135deg, #fff, #e6fff9); }
+        .emotion-confused { border-color: var(--confused-color); background: linear-gradient(135deg, #fff, #f5f5f5); }
+        .emotion-hungry { border-color: var(--hungry-color); background: linear-gradient(135deg, #fff, #ffe8d9); }
+
+        /* Individual Emotion Cards (Cut-Apart) */
+        .cut-cards-section {
+            margin-top: 60px;
+        }
+
+        .section-title {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 32px;
+            font-weight: 700;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .cut-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            border: 2px dashed #ccc;
+            padding: 20px;
+        }
+
+        .cut-card {
+            border: 3px dashed #999;
+            padding: 15px;
+            text-align: center;
+            background: white;
+        }
+
+        .cut-card .emotion-face {
+            font-size: 60px;
+        }
+
+        .cut-card .emotion-label {
+            font-size: 20px;
+        }
+
+        .cut-instructions {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        /* Feelings Check-In Strip */
+        .check-in-strip {
+            margin-top: 40px;
+            border: 4px solid var(--primary-color);
+            border-radius: 15px;
+            padding: 20px;
+            background: #f9f9f9;
+        }
+
+        .check-in-emotions {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .check-in-emotion {
+            text-align: center;
+            flex: 1;
+            min-width: 80px;
+        }
+
+        .check-in-emotion .emotion-face {
+            font-size: 50px;
+        }
+
+        .check-in-emotion .emotion-label {
+            font-size: 16px;
+            margin-top: 5px;
+        }
+
+        .pointer-instruction {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        /* Body Sensation Guide */
+        .body-guide {
+            margin-top: 40px;
+        }
+
+        .body-sections {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .body-section {
+            border: 3px solid var(--primary-color);
+            border-radius: 15px;
+            padding: 20px;
+            background: white;
+        }
+
+        .body-section h3 {
+            color: var(--primary-color);
+            font-size: 24px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .sensation-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sensation-list li {
+            padding: 10px;
+            margin: 8px 0;
+            background: #f5f5f5;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary-color);
+            font-size: 16px;
+        }
+
+        .sensation-list li strong {
+            color: var(--primary-color);
+        }
+
+        /* Parent Instructions */
+        .parent-instructions {
+            margin-top: 60px;
+            background: linear-gradient(135deg, #f9f9f9, #e6f2ff);
+            border: 3px solid var(--primary-color);
+            border-radius: 15px;
+            padding: 30px;
+        }
+
+        .parent-instructions h2 {
+            color: var(--primary-color);
+            font-size: 32px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .instruction-section {
+            margin-bottom: 25px;
+        }
+
+        .instruction-section h3 {
+            color: var(--secondary-color);
+            font-size: 24px;
+            margin-bottom: 12px;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 5px;
+        }
+
+        .instruction-section ul {
+            margin-left: 25px;
+            margin-top: 10px;
+        }
+
+        .instruction-section li {
+            margin: 8px 0;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .tip-box {
+            background: #fff;
+            border-left: 5px solid var(--secondary-color);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .tip-box strong {
+            color: var(--primary-color);
+        }
+
+        /* Zones of Regulation Legend */
+        .zones-legend {
+            margin-top: 40px;
+            padding: 20px;
+            background: white;
+            border: 3px solid var(--primary-color);
+            border-radius: 15px;
+        }
+
+        .zones-legend h3 {
+            color: var(--primary-color);
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .zones-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .zone-box {
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .zone-box h4 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .zone-box ul {
+            list-style: none;
+            font-size: 14px;
+        }
+
+        .blue-zone { background: #e6f2ff; border: 3px solid var(--sad-color); }
+        .green-zone { background: #e6fff9; border: 3px solid var(--calm-color); }
+        .yellow-zone { background: #fff5e6; border: 3px solid var(--excited-color); }
+        .red-zone { background: #ffe6e6; border: 3px solid var(--angry-color); }
+
+        /* Print Styles */
+        @media print {
+            body {
+                padding: 10px;
+            }
+
+            .page-break {
+                page-break-after: always;
+            }
+
+            .emotion-card:hover {
+                transform: none;
+            }
+
+            .cut-card {
+                border: 2px dashed #000;
+            }
+
+            .header h1 {
+                font-size: 36px;
+            }
+
+            .sentence-starter {
+                font-size: 28px;
+                padding: 15px;
+            }
+
+            .emotion-face {
+                font-size: 60px !important;
+            }
+
+            .emotion-label {
+                font-size: 20px !important;
+            }
+
+            .section-title {
+                font-size: 24px;
+            }
+
+            @page {
+                margin: 0.5in;
+            }
+        }
+
+        /* Accessibility */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
+</head>
+<body>
+    <a href="../resources.html" class="back-link">← Back to Resources</a>
+
+    <!-- Full Poster Version -->
+    <div class="header">
+        <h1>How Do You Feel Today?</h1>
+        <div class="subtitle">Feelings Chart</div>
+    </div>
+
+    <div class="sentence-starter">
+        I feel...
+    </div>
+
+    <div class="emotions-grid">
+        <div class="emotion-card emotion-happy">
+            <div class="emotion-face" role="img" aria-label="Happy face">😊</div>
+            <div class="emotion-label" style="color: #CC9900;">Happy</div>
+        </div>
+
+        <div class="emotion-card emotion-sad">
+            <div class="emotion-face" role="img" aria-label="Sad face">😢</div>
+            <div class="emotion-label" style="color: var(--sad-color);">Sad</div>
+        </div>
+
+        <div class="emotion-card emotion-angry">
+            <div class="emotion-face" role="img" aria-label="Angry face">😠</div>
+            <div class="emotion-label" style="color: var(--angry-color);">Angry</div>
+        </div>
+
+        <div class="emotion-card emotion-scared">
+            <div class="emotion-face" role="img" aria-label="Scared face">😨</div>
+            <div class="emotion-label" style="color: var(--scared-color);">Scared</div>
+        </div>
+
+        <div class="emotion-card emotion-worried">
+            <div class="emotion-face" role="img" aria-label="Worried face">😟</div>
+            <div class="emotion-label" style="color: var(--worried-color);">Worried</div>
+        </div>
+
+        <div class="emotion-card emotion-frustrated">
+            <div class="emotion-face" role="img" aria-label="Frustrated face">😤</div>
+            <div class="emotion-label" style="color: var(--frustrated-color);">Frustrated</div>
+        </div>
+
+        <div class="emotion-card emotion-tired">
+            <div class="emotion-face" role="img" aria-label="Tired face">😴</div>
+            <div class="emotion-label" style="color: var(--tired-color);">Tired</div>
+        </div>
+
+        <div class="emotion-card emotion-sick">
+            <div class="emotion-face" role="img" aria-label="Sick face">🤢</div>
+            <div class="emotion-label" style="color: var(--sick-color);">Sick</div>
+        </div>
+
+        <div class="emotion-card emotion-excited">
+            <div class="emotion-face" role="img" aria-label="Excited face">🤩</div>
+            <div class="emotion-label" style="color: var(--excited-color);">Excited</div>
+        </div>
+
+        <div class="emotion-card emotion-calm">
+            <div class="emotion-face" role="img" aria-label="Calm face">😌</div>
+            <div class="emotion-label" style="color: var(--calm-color);">Calm</div>
+        </div>
+
+        <div class="emotion-card emotion-confused">
+            <div class="emotion-face" role="img" aria-label="Confused face">😕</div>
+            <div class="emotion-label" style="color: var(--confused-color);">Confused</div>
+        </div>
+
+        <div class="emotion-card emotion-hungry">
+            <div class="emotion-face" role="img" aria-label="Hungry face">😋</div>
+            <div class="emotion-label" style="color: var(--hungry-color);">Hungry</div>
+        </div>
+    </div>
+
+    <!-- Zones of Regulation Legend -->
+    <div class="zones-legend">
+        <h3>Zones of Regulation</h3>
+        <div class="zones-grid">
+            <div class="zone-box blue-zone">
+                <h4>Blue Zone</h4>
+                <ul>
+                    <li>Sad</li>
+                    <li>Tired</li>
+                    <li>Sick</li>
+                </ul>
+            </div>
+            <div class="zone-box green-zone">
+                <h4>Green Zone</h4>
+                <ul>
+                    <li>Happy</li>
+                    <li>Calm</li>
+                </ul>
+            </div>
+            <div class="zone-box yellow-zone">
+                <h4>Yellow Zone</h4>
+                <ul>
+                    <li>Worried</li>
+                    <li>Frustrated</li>
+                    <li>Excited</li>
+                </ul>
+            </div>
+            <div class="zone-box red-zone">
+                <h4>Red Zone</h4>
+                <ul>
+                    <li>Angry</li>
+                    <li>Scared</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Feelings Check-In Strip -->
+    <div class="check-in-strip">
+        <div class="pointer-instruction">
+            👉 Point to how you feel right now 👈
+        </div>
+        <div class="check-in-emotions">
+            <div class="check-in-emotion">
+                <div class="emotion-face">😊</div>
+                <div class="emotion-label" style="color: #CC9900;">Happy</div>
+            </div>
+            <div class="check-in-emotion">
+                <div class="emotion-face">😢</div>
+                <div class="emotion-label" style="color: var(--sad-color);">Sad</div>
+            </div>
+            <div class="check-in-emotion">
+                <div class="emotion-face">😠</div>
+                <div class="emotion-label" style="color: var(--angry-color);">Angry</div>
+            </div>
+            <div class="check-in-emotion">
+                <div class="emotion-face">😨</div>
+                <div class="emotion-label" style="color: var(--scared-color);">Scared</div>
+            </div>
+            <div class="check-in-emotion">
+                <div class="emotion-face">😟</div>
+                <div class="emotion-label" style="color: var(--worried-color);">Worried</div>
+            </div>
+            <div class="check-in-emotion">
+                <div class="emotion-face">😌</div>
+                <div class="emotion-label" style="color: var(--calm-color);">Calm</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Body Sensation Guide -->
+    <div class="body-guide">
+        <div class="section-title">Where Do You Feel It In Your Body?</div>
+        <div class="body-sections">
+            <div class="body-section">
+                <h3>Head & Face</h3>
+                <ul class="sensation-list">
+                    <li><strong>Happy:</strong> Smiling mouth, bright eyes</li>
+                    <li><strong>Sad:</strong> Heavy head, tears, droopy face</li>
+                    <li><strong>Angry:</strong> Hot face, tight jaw, frowning</li>
+                    <li><strong>Worried:</strong> Furrowed brow, biting lip</li>
+                    <li><strong>Confused:</strong> Tilted head, squinted eyes</li>
+                </ul>
+            </div>
+            <div class="body-section">
+                <h3>Chest & Tummy</h3>
+                <ul class="sensation-list">
+                    <li><strong>Scared:</strong> Fast heartbeat, tight chest</li>
+                    <li><strong>Excited:</strong> Butterflies, fluttery feeling</li>
+                    <li><strong>Nervous:</strong> Upset tummy, knots</li>
+                    <li><strong>Calm:</strong> Slow breathing, relaxed</li>
+                    <li><strong>Hungry:</strong> Empty tummy, rumbling</li>
+                </ul>
+            </div>
+            <div class="body-section">
+                <h3>Arms & Hands</h3>
+                <ul class="sensation-list">
+                    <li><strong>Angry:</strong> Tight fists, tense muscles</li>
+                    <li><strong>Frustrated:</strong> Clenched hands, stiff arms</li>
+                    <li><strong>Calm:</strong> Loose hands, relaxed arms</li>
+                    <li><strong>Excited:</strong> Wiggly fingers, moving hands</li>
+                </ul>
+            </div>
+            <div class="body-section">
+                <h3>Whole Body</h3>
+                <ul class="sensation-list">
+                    <li><strong>Tired:</strong> Heavy body, want to lay down</li>
+                    <li><strong>Sick:</strong> Achy, weak, no energy</li>
+                    <li><strong>Energetic:</strong> Want to move, jump, run</li>
+                    <li><strong>Calm:</strong> Still, peaceful, comfortable</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Individual Emotion Cards (Cut-Apart) -->
+    <div class="cut-cards-section">
+        <div class="section-title">Individual Emotion Cards (Cut Along Dashed Lines)</div>
+        <p class="cut-instructions">✂️ Cut out these cards for portable emotion identification or games ✂️</p>
+
+        <div class="cut-cards-grid">
+            <div class="cut-card emotion-happy">
+                <div class="emotion-face">😊</div>
+                <div class="emotion-label" style="color: #CC9900;">Happy</div>
+            </div>
+            <div class="cut-card emotion-sad">
+                <div class="emotion-face">😢</div>
+                <div class="emotion-label" style="color: var(--sad-color);">Sad</div>
+            </div>
+            <div class="cut-card emotion-angry">
+                <div class="emotion-face">😠</div>
+                <div class="emotion-label" style="color: var(--angry-color);">Angry</div>
+            </div>
+            <div class="cut-card emotion-scared">
+                <div class="emotion-face">😨</div>
+                <div class="emotion-label" style="color: var(--scared-color);">Scared</div>
+            </div>
+            <div class="cut-card emotion-worried">
+                <div class="emotion-face">😟</div>
+                <div class="emotion-label" style="color: var(--worried-color);">Worried</div>
+            </div>
+            <div class="cut-card emotion-frustrated">
+                <div class="emotion-face">😤</div>
+                <div class="emotion-label" style="color: var(--frustrated-color);">Frustrated</div>
+            </div>
+            <div class="cut-card emotion-tired">
+                <div class="emotion-face">😴</div>
+                <div class="emotion-label" style="color: var(--tired-color);">Tired</div>
+            </div>
+            <div class="cut-card emotion-sick">
+                <div class="emotion-face">🤢</div>
+                <div class="emotion-label" style="color: var(--sick-color);">Sick</div>
+            </div>
+            <div class="cut-card emotion-excited">
+                <div class="emotion-face">🤩</div>
+                <div class="emotion-label" style="color: var(--excited-color);">Excited</div>
+            </div>
+            <div class="cut-card emotion-calm">
+                <div class="emotion-face">😌</div>
+                <div class="emotion-label" style="color: var(--calm-color);">Calm</div>
+            </div>
+            <div class="cut-card emotion-confused">
+                <div class="emotion-face">😕</div>
+                <div class="emotion-label" style="color: var(--confused-color);">Confused</div>
+            </div>
+            <div class="cut-card emotion-hungry">
+                <div class="emotion-face">😋</div>
+                <div class="emotion-label" style="color: var(--hungry-color);">Hungry</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Parent Instructions -->
+    <div class="parent-instructions">
+        <h2>Parent & Educator Guide: Using the Feelings Chart</h2>
+
+        <div class="instruction-section">
+            <h3>How to Teach Emotion Identification</h3>
+            <ul>
+                <li><strong>Start simple:</strong> Begin with 3-4 basic emotions (happy, sad, angry, calm) before introducing more complex feelings</li>
+                <li><strong>Model emotions:</strong> Make faces and label your own emotions throughout the day: "I feel happy when we play together!"</li>
+                <li><strong>Use visual supports:</strong> Point to the chart when your child experiences an emotion in real-time</li>
+                <li><strong>Practice during calm moments:</strong> Review the chart when your child is regulated, not during meltdowns</li>
+                <li><strong>Connect to body sensations:</strong> Help children identify where they feel emotions physically (butterflies in tummy = nervous)</li>
+                <li><strong>Read emotion books together:</strong> Reinforce learning through stories about feelings</li>
+                <li><strong>Play emotion games:</strong> Use the cut-out cards for matching, sorting, or acting out emotions</li>
+            </ul>
+        </div>
+
+        <div class="tip-box">
+            <strong>Tip for Nonverbal Children:</strong> Use the check-in strip for quick communication. Laminate it and attach to a keyring or keep it accessible for your child to point to their current feeling.
+        </div>
+
+        <div class="instruction-section">
+            <h3>When to Use the Chart</h3>
+            <ul>
+                <li><strong>Morning check-ins:</strong> "How do you feel this morning?" to start the day with emotional awareness</li>
+                <li><strong>After transitions:</strong> School pick-up, bedtime, or activity changes when emotions may shift</li>
+                <li><strong>During teachable moments:</strong> When you notice your child expressing an emotion</li>
+                <li><strong>Before challenging activities:</strong> "How are you feeling about going to the store?"</li>
+                <li><strong>As a regulation tool:</strong> When you notice early signs of dysregulation</li>
+                <li><strong>Bedtime reflection:</strong> "What feelings did you have today?"</li>
+                <li><strong>NOT during meltdowns:</strong> Wait until your child is calm and receptive</li>
+            </ul>
+        </div>
+
+        <div class="tip-box">
+            <strong>Zones of Regulation Integration:</strong> The emotions are color-coded to align with Zones of Regulation. Use this to help your child understand their energy level and self-regulation needs. Blue = low energy, Green = regulated, Yellow = elevated energy, Red = extremely high energy/dysregulated.
+        </div>
+
+        <div class="instruction-section">
+            <h3>How to Validate Feelings</h3>
+            <ul>
+                <li><strong>Acknowledge first:</strong> "I see you're feeling angry" before problem-solving</li>
+                <li><strong>Normalize emotions:</strong> "It's okay to feel sad. Everyone feels sad sometimes."</li>
+                <li><strong>Avoid dismissing:</strong> Don't say "You're fine" or "Don't cry" - this invalidates their experience</li>
+                <li><strong>Name the emotion:</strong> "That frustrated feeling makes sense because your tower fell down"</li>
+                <li><strong>Connect to body:</strong> "I notice your hands are in fists. Your body is showing you're frustrated."</li>
+                <li><strong>Offer support:</strong> "What can help you feel better?" or "Would a hug help?"</li>
+                <li><strong>Teach coping skills:</strong> "When I feel worried, I take deep breaths. Want to try together?"</li>
+            </ul>
+        </div>
+
+        <div class="tip-box">
+            <strong>Script Examples:</strong><br>
+            ✓ "You're feeling sad because playtime ended. That makes sense."<br>
+            ✓ "I can see you're excited! Your body is bouncing and your smile is big!"<br>
+            ✓ "When you feel scared, it's okay to ask for help. I'm here with you."<br>
+            ✓ "Your tummy hurts and you feel sick. Let's rest and get you comfortable."
+        </div>
+
+        <div class="instruction-section">
+            <h3>Building Emotional Intelligence Over Time</h3>
+            <ul>
+                <li><strong>Expand vocabulary:</strong> Once basic emotions are mastered, introduce related feelings (frustrated, disappointed, proud, content)</li>
+                <li><strong>Discuss intensity:</strong> "Are you a little bit sad or very very sad?"</li>
+                <li><strong>Teach multiple emotions:</strong> "You can feel excited AND nervous at the same time"</li>
+                <li><strong>Encourage expression:</strong> Celebrate when your child identifies and communicates their feelings</li>
+                <li><strong>Model your own emotions:</strong> "Mommy feels frustrated when I can't find my keys, so I'm taking deep breaths"</li>
+                <li><strong>Connect emotions to choices:</strong> "I can see you're calm now. That's a great time to make good choices."</li>
+            </ul>
+        </div>
+
+        <div class="tip-box">
+            <strong>Printing Tips:</strong><br>
+            • Print the full poster on cardstock and laminate for durability<br>
+            • Print multiple copies of the check-in strip for different locations (home, car, backpack)<br>
+            • Laminate the cut-out cards and store in a small bag or box for portability<br>
+            • Use dry-erase markers on laminated versions for daily tracking<br>
+            • Print in color for maximum visual impact and zone recognition
+        </div>
+
+        <div class="instruction-section">
+            <h3>Special Considerations for Autism/Special Needs</h3>
+            <ul>
+                <li><strong>Alexithymia awareness:</strong> Some autistic individuals have difficulty identifying their own emotions. Be patient and provide extra support.</li>
+                <li><strong>Interoception challenges:</strong> Your child may struggle to recognize internal body signals. Explicitly teach body-emotion connections.</li>
+                <li><strong>Visual processing strengths:</strong> Leverage the visual nature of the chart - many autistic children are strong visual learners</li>
+                <li><strong>Routine integration:</strong> Make emotion check-ins a predictable part of the daily schedule</li>
+                <li><strong>Reduce verbal demands:</strong> Allow pointing, using AAC device, or other non-verbal communication methods</li>
+                <li><strong>Sensory considerations:</strong> Some emotions may be primarily sensory (overwhelmed, understimulated) - add these if relevant</li>
+                <li><strong>Concrete examples:</strong> Use specific scenarios: "Remember when your toy broke? That's when you felt frustrated."</li>
+            </ul>
+        </div>
+
+        <div class="tip-box">
+            <strong>Remember:</strong> Emotional regulation is a skill that develops over time. Your child is learning to understand and manage their internal world - this is complex work! Celebrate small victories and be patient with the process. You're doing a wonderful job supporting your child's emotional development.
+        </div>
+    </div>
+
+    <!-- Accessibility Enhancements -->
+    <div class="visually-hidden">
+        <h2>Feelings Chart Accessibility Information</h2>
+        <p>This feelings chart is designed to help children identify and communicate their emotions. Each emotion is represented by a large emoji-style face with a color-coded border and label. The chart includes 12 core emotions: Happy (yellow), Sad (blue), Angry (red), Scared (purple), Worried (orange), Frustrated (dark red), Tired (gray), Sick (green), Excited (bright orange), Calm (teal), Confused (light gray), and Hungry (dark orange).</p>
+    </div>
+</body>
+</html>

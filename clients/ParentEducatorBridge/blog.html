@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog | Bridging the Gap</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2E7D6B;
+            --primary-light: #4A9B89;
+            --primary-dark: #1D5C4E;
+            --secondary: #E8A54B;
+            --accent: #6B4E9B;
+            --warm: #D4726A;
+            --background: #FAFBF9;
+            --surface: #FFFFFF;
+            --text: #2D3436;
+            --text-light: #636E72;
+            --border: #E0E6E3;
+            --shadow: rgba(46, 125, 107, 0.1);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            box-shadow: 0 2px 20px var(--shadow);
+            z-index: 1000;
+            padding: 0.75rem 2rem;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--primary);
+        }
+
+        .nav-logo-icon {
+            width: 45px;
+            height: 45px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .nav-logo-text { font-weight: 800; font-size: 1.25rem; }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover { color: var(--primary); }
+
+        .nav-cta {
+            background: var(--gradient);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .hero-mini {
+            padding: 8rem 2rem 4rem;
+            background: linear-gradient(180deg, #E8F5F1 0%, var(--background) 100%);
+            text-align: center;
+        }
+
+        .hero-mini h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 2.75rem;
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+        }
+
+        .hero-mini p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .content-section {
+            padding: 4rem 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 3rem;
+        }
+
+        .category-tab {
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            border: 2px solid var(--border);
+            background: var(--surface);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-tab:hover, .category-tab.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .blog-card {
+            background: var(--surface);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px var(--shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px var(--shadow);
+        }
+
+        .blog-card.featured {
+            grid-column: span 2;
+        }
+
+        .blog-image {
+            height: 200px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .blog-card.featured .blog-image {
+            height: 280px;
+        }
+
+        .blog-content {
+            padding: 1.5rem;
+        }
+
+        .blog-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .blog-category {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .blog-date {
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        .blog-content h3 {
+            font-size: 1.25rem;
+            color: var(--text);
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .blog-card.featured .blog-content h3 {
+            font-size: 1.5rem;
+        }
+
+        .blog-content p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .blog-link {
+            color: var(--primary);
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .blog-link:hover {
+            text-decoration: underline;
+        }
+
+        .newsletter-section {
+            background: var(--gradient);
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            margin-top: 4rem;
+            color: white;
+        }
+
+        .newsletter-section h2 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .newsletter-section p {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 1rem;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+        }
+
+        .newsletter-form button {
+            padding: 1rem 2rem;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .footer {
+            background: var(--text);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .footer a { color: var(--secondary); text-decoration: none; }
+        .footer p { margin-top: 1rem; color: rgba(255,255,255,0.6); font-size: 0.9rem; }
+
+        @media (max-width: 968px) {
+            .blog-grid { grid-template-columns: repeat(2, 1fr); }
+            .blog-card.featured { grid-column: span 2; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero-mini h1 { font-size: 2rem; }
+            .blog-grid { grid-template-columns: 1fr; }
+            .blog-card.featured { grid-column: span 1; }
+            .newsletter-form { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <div class="nav-logo-icon">🌉</div>
+                <span class="nav-logo-text">Bridging the Gap</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html#curriculum">Course</a></li>
+                <li><a href="resources.html">Resources</a></li>
+                <li><a href="podcast.html">Podcast</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <a href="index.html#pricing" class="nav-cta">Enroll Now</a>
+        </div>
+    </nav>
+
+    <section class="hero-mini">
+        <h1>📝 Blog & Resources</h1>
+        <p>Practical advice, real stories, and evidence-based strategies for parents and educators.</p>
+    </section>
+
+    <section class="content-section">
+        <div class="category-tabs">
+            <button class="category-tab active">All Posts</button>
+            <button class="category-tab">Visual Supports</button>
+            <button class="category-tab">IEP Tips</button>
+            <button class="category-tab">Home Strategies</button>
+            <button class="category-tab">Behavior</button>
+            <button class="category-tab">Communication</button>
+            <button class="category-tab">For Educators</button>
+        </div>
+
+        <div class="blog-grid">
+            <article class="blog-card featured">
+                <div class="blog-image">📅</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span class="blog-category">Featured</span>
+                        <span class="blog-date">November 20, 2024</span>
+                    </div>
+                    <h3>Visual Schedules: The Complete Guide for Parents of Children with Autism</h3>
+                    <p>Visual schedules are one of the most powerful tools you can use. This comprehensive guide covers everything from the science behind them to step-by-step implementation.</p>
+                    <a href="blog/visual-schedules-complete-guide.html" class="blog-link">Read More →</a>
+                </div>
+            </article>
+
+            <article class="blog-card">
+                <div class="blog-image">📚</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span class="blog-category">Getting Started</span>
+                        <span class="blog-date">November 15, 2024</span>
+                    </div>
+                    <h3>The 5 Things I Wish Someone Had Told Me When My Child Was Diagnosed</h3>
+                    <p>After 35 years in special education, these are the truths every parent needs to hear—the ones that would have saved me years of frustration and conflict with schools.</p>
+                    <a href="blog/five-things-i-wish-someone-told-me.html" class="blog-link">Read More →</a>
+                </div>
+            </article>
+
+            <article class="blog-card">
+                <div class="blog-image">🚽</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span class="blog-category">Home Strategies</span>
+                        <span class="blog-date">November 10, 2024</span>
+                    </div>
+                    <h3>Teaching "I Need to Go Potty": The Game-Changer Skill</h3>
+                    <p>This single communication skill will transform your child's school experience. Here's exactly how to teach it.</p>
+                    <a href="blog/teaching-i-need-to-go-potty.html" class="blog-link">Read More →</a>
+                </div>
+            </article>
+
+            <article class="blog-card">
+                <div class="blog-image">📋</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span class="blog-category">IEP Tips</span>
+                        <span class="blog-date">November 5, 2024</span>
+                    </div>
+                    <h3>Why Requesting a 1:1 Aide Might Be Hurting Your Child</h3>
+                    <p>More support isn't always better. Here's what I've learned about the unintended consequences of 1:1 aides.</p>
+                    <a href="blog/why-one-on-one-aide-might-hurt-your-child.html" class="blog-link">Read More →</a>
+                </div>
+            </article>
+
+            <article class="blog-card">
+                <div class="blog-image">🛑</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span class="blog-category">Communication</span>
+                        <span class="blog-date">October 28, 2024</span>
+                    </div>
+                    <h3>Teaching Your Child to Say "No": Why It's Critical for Safety</h3>
+                    <p>Children with disabilities are at higher risk for abuse. Teaching "no" is about more than behavior—it's about protection.</p>
+                    <a href="blog/teaching-your-child-to-say-no.html" class="blog-link">Read More →</a>
+                </div>
+            </article>
+
+            <article class="blog-card">
+                <div class="blog-image">🌊</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span class="blog-category">Behavior</span>
+                        <span class="blog-date">October 20, 2024</span>
+                    </div>
+                    <h3>Meltdowns vs. Tantrums: Understanding the Difference Changes Everything</h3>
+                    <p>Your response depends entirely on which one you're dealing with. Here's how to tell—and what to do.</p>
+                    <a href="blog/meltdowns-vs-tantrums.html" class="blog-link">Read More →</a>
+                </div>
+            </article>
+
+            <article class="blog-card">
+                <div class="blog-image">👩‍🏫</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span class="blog-category">For Educators</span>
+                        <span class="blog-date">October 15, 2024</span>
+                    </div>
+                    <h3>What Parents Wish You Knew Before the IEP Meeting</h3>
+                    <p>A guide for teachers and school staff on building collaborative relationships with families.</p>
+                    <a href="blog/what-educators-wish-parents-knew.html" class="blog-link">Read More →</a>
+                </div>
+            </article>
+
+            <article class="blog-card">
+                <div class="blog-image">⚖️</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span class="blog-category">IEP Tips</span>
+                        <span class="blog-date">October 8, 2024</span>
+                    </div>
+                    <h3>"Appropriate" vs. "Optimal": Understanding What Schools Must Provide</h3>
+                    <p>The law requires "appropriate" education—not the best possible. Here's why that matters for your advocacy.</p>
+                    <a href="blog/appropriate-vs-optimal-education.html" class="blog-link">Read More →</a>
+                </div>
+            </article>
+
+            <article class="blog-card">
+                <div class="blog-image">🏠</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span class="blog-category">Home Strategies</span>
+                        <span class="blog-date">October 1, 2024</span>
+                    </div>
+                    <h3>The 3-Second Rule: How to Teach Your Child to Follow Directions</h3>
+                    <p>A simple technique that transforms direction-following at home—and prepares your child for school success.</p>
+                    <a href="blog/the-three-second-rule.html" class="blog-link">Read More →</a>
+                </div>
+            </article>
+
+            <article class="blog-card">
+                <div class="blog-image">📊</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span class="blog-category">Behavior</span>
+                        <span class="blog-date">September 25, 2024</span>
+                    </div>
+                    <h3>The ABC Model: Understanding Why Your Child Does What They Do</h3>
+                    <p>Antecedent, Behavior, Consequence. Master this framework and you'll understand your child like never before.</p>
+                    <a href="blog/the-abc-model-understanding-behavior.html" class="blog-link">Read More →</a>
+                </div>
+            </article>
+        </div>
+
+        <div class="newsletter-section">
+            <h2>📬 Get Weekly Tips in Your Inbox</h2>
+            <p>Join 2,000+ parents and educators receiving practical strategies every week. No spam, just helpful content.</p>
+            <form class="newsletter-form" onsubmit="handleSubscribe(event)">
+                <input type="email" placeholder="Enter your email" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <a href="index.html">🌉 Bridging the Gap</a>
+        <p>© 2024 Bridging the Gap. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function handleSubscribe(e) {
+            e.preventDefault();
+            alert('Thank you for subscribing! Check your email to confirm.');
+        }
+
+        document.querySelectorAll('.category-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

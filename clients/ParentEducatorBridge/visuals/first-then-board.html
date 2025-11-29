@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>First-Then Board - Visual Support Tool | Parent Educator Bridge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #2E7D6B;
+            --accent-gold: #E8A54B;
+            --dark-text: #2C3E50;
+            --light-bg: #F8F9FA;
+            --border-gray: #333;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background: var(--light-bg);
+            padding: 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            background: var(--primary-green);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: background 0.3s;
+        }
+
+        .back-link:hover {
+            background: #1D5C4E;
+        }
+
+        @media print {
+            .back-link {
+                display: none;
+            }
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--primary-green);
+        }
+
+        .page-header h1 {
+            color: var(--primary-green);
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: var(--dark-text);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .page-header .subtitle {
+            color: var(--accent-gold);
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        /* First-Then Board Sizes */
+        .board-container {
+            margin: 30px 0;
+            page-break-inside: avoid;
+        }
+
+        .board-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .first-then-board {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 30px;
+            background: white;
+            border: 5px solid var(--border-gray);
+            border-radius: 15px;
+            margin: 0 auto;
+        }
+
+        .first-then-board.full-page {
+            max-width: 100%;
+        }
+
+        .first-then-board.half-page {
+            max-width: 700px;
+        }
+
+        .first-then-board.portable {
+            max-width: 500px;
+            padding: 20px;
+            gap: 15px;
+        }
+
+        .task-box {
+            flex: 1;
+            background: white;
+            border: 4px solid var(--border-gray);
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .portable .task-box {
+            min-height: 180px;
+            padding: 25px;
+        }
+
+        .task-box.first {
+            border-color: var(--primary-green);
+            background: rgba(46, 125, 107, 0.05);
+        }
+
+        .task-box.then {
+            border-color: var(--accent-gold);
+            background: rgba(232, 165, 75, 0.05);
+        }
+
+        .task-label {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .portable .task-label {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .task-box.first .task-label {
+            color: var(--primary-green);
+        }
+
+        .task-box.then .task-label {
+            color: var(--accent-gold);
+        }
+
+        .card-placeholder {
+            width: 100%;
+            max-width: 200px;
+            height: 150px;
+            border: 3px dashed var(--border-gray);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .portable .card-placeholder {
+            max-width: 150px;
+            height: 120px;
+        }
+
+        .arrow {
+            font-size: 4rem;
+            color: var(--border-gray);
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .portable .arrow {
+            font-size: 2.5rem;
+        }
+
+        /* Task Cards */
+        .cards-section {
+            margin: 40px 0;
+            page-break-before: always;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: var(--primary-green);
+            color: white;
+            border-radius: 10px;
+        }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .section-header.then-section {
+            background: var(--accent-gold);
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .task-card {
+            background: white;
+            border: 4px solid var(--border-gray);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            page-break-inside: avoid;
+        }
+
+        .task-card.first-card {
+            border-color: var(--primary-green);
+        }
+
+        .task-card.then-card {
+            border-color: var(--accent-gold);
+        }
+
+        .card-icon {
+            font-size: 4rem;
+            line-height: 1;
+        }
+
+        .card-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark-text);
+        }
+
+        /* Parent Guide */
+        .guide-section {
+            margin: 40px 0;
+            page-break-before: always;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            border: 3px solid var(--primary-green);
+        }
+
+        .guide-section h2 {
+            color: var(--primary-green);
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .guide-section h3 {
+            color: var(--accent-gold);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        .guide-section p {
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+        }
+
+        .guide-section ul {
+            margin-left: 25px;
+            margin-bottom: 20px;
+        }
+
+        .guide-section li {
+            margin-bottom: 10px;
+            font-size: 1.05rem;
+        }
+
+        .tip-box {
+            background: rgba(46, 125, 107, 0.1);
+            border-left: 5px solid var(--primary-green);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .warning-box {
+            background: rgba(232, 165, 75, 0.1);
+            border-left: 5px solid var(--accent-gold);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid var(--primary-green);
+            color: #666;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .page-header {
+                margin-bottom: 20px;
+            }
+
+            .board-container,
+            .cards-section,
+            .guide-section {
+                page-break-inside: avoid;
+            }
+
+            .cards-section {
+                page-break-before: always;
+            }
+
+            .guide-section {
+                page-break-before: always;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+            @page {
+                margin: 0.5in;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .first-then-board {
+                flex-direction: column;
+                gap: 15px;
+                padding: 20px;
+            }
+
+            .arrow {
+                transform: rotate(90deg);
+                font-size: 3rem;
+            }
+
+            .task-label {
+                font-size: 2rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+
+            .card-icon {
+                font-size: 3rem;
+            }
+
+            .card-text {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="../resources.html" class="back-link">← Back to Resources</a>
+
+    <div class="page-header">
+        <h1>🎯 First-Then Board</h1>
+        <p>Visual Support Tool for Transitions & Motivation</p>
+        <p class="subtitle">Parent Educator Bridge - Evidence-Based Visual Supports</p>
+    </div>
+
+    <!-- Full Page Board -->
+    <div class="board-container">
+        <h2 class="board-title">Full Page Board (Standard)</h2>
+        <div class="first-then-board full-page">
+            <div class="task-box first">
+                <div class="task-label">FIRST</div>
+                <div class="card-placeholder">
+                    Place "First" card here
+                    <br>(Less preferred activity)
+                </div>
+            </div>
+            <div class="arrow">→</div>
+            <div class="task-box then">
+                <div class="task-label">THEN</div>
+                <div class="card-placeholder">
+                    Place "Then" card here
+                    <br>(Preferred activity/reward)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Half Page Board -->
+    <div class="board-container">
+        <h2 class="board-title">Half Page Board</h2>
+        <div class="first-then-board half-page">
+            <div class="task-box first">
+                <div class="task-label">FIRST</div>
+                <div class="card-placeholder">
+                    Place card here
+                </div>
+            </div>
+            <div class="arrow">→</div>
+            <div class="task-box then">
+                <div class="task-label">THEN</div>
+                <div class="card-placeholder">
+                    Place card here
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portable Board -->
+    <div class="board-container">
+        <h2 class="board-title">Portable Board (Travel Size)</h2>
+        <div class="first-then-board portable">
+            <div class="task-box first">
+                <div class="task-label">FIRST</div>
+                <div class="card-placeholder">
+                    Card
+                </div>
+            </div>
+            <div class="arrow">→</div>
+            <div class="task-box then">
+                <div class="task-label">THEN</div>
+                <div class="card-placeholder">
+                    Card
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- First Task Cards -->
+    <div class="cards-section">
+        <div class="section-header">
+            <h2>📋 "FIRST" Task Cards (Less Preferred Activities)</h2>
+        </div>
+        <div class="cards-grid">
+            <div class="task-card first-card">
+                <div class="card-icon">📚</div>
+                <div class="card-text">Homework</div>
+            </div>
+            <div class="task-card first-card">
+                <div class="card-icon">🧹</div>
+                <div class="card-text">Clean Up</div>
+            </div>
+            <div class="task-card first-card">
+                <div class="card-icon">👕</div>
+                <div class="card-text">Get Dressed</div>
+            </div>
+            <div class="task-card first-card">
+                <div class="card-icon">🪥</div>
+                <div class="card-text">Brush Teeth</div>
+            </div>
+            <div class="task-card first-card">
+                <div class="card-icon">🥦</div>
+                <div class="card-text">Eat Vegetables</div>
+            </div>
+            <div class="task-card first-card">
+                <div class="card-icon">💊</div>
+                <div class="card-text">Take Medicine</div>
+            </div>
+            <div class="task-card first-card">
+                <div class="card-icon">🤫</div>
+                <div class="card-text">Wait Quietly</div>
+            </div>
+            <div class="task-card first-card">
+                <div class="card-icon">✏️</div>
+                <div class="card-text">Finish Work</div>
+            </div>
+            <div class="task-card first-card">
+                <div class="card-icon">👟</div>
+                <div class="card-text">Put Shoes On</div>
+            </div>
+            <div class="task-card first-card">
+                <div class="card-icon">🛁</div>
+                <div class="card-text">Bath Time</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Then Reward Cards -->
+    <div class="cards-section">
+        <div class="section-header then-section">
+            <h2>🎁 "THEN" Reward Cards (Preferred Activities)</h2>
+        </div>
+        <div class="cards-grid">
+            <div class="task-card then-card">
+                <div class="card-icon">📱</div>
+                <div class="card-text">iPad Time</div>
+            </div>
+            <div class="task-card then-card">
+                <div class="card-icon">📺</div>
+                <div class="card-text">TV Time</div>
+            </div>
+            <div class="task-card then-card">
+                <div class="card-icon">🍪</div>
+                <div class="card-text">Snack</div>
+            </div>
+            <div class="task-card then-card">
+                <div class="card-icon">⚽</div>
+                <div class="card-text">Play Outside</div>
+            </div>
+            <div class="task-card then-card">
+                <div class="card-icon">🎮</div>
+                <div class="card-text">Video Games</div>
+            </div>
+            <div class="task-card then-card">
+                <div class="card-icon">🧸</div>
+                <div class="card-text">Toy Time</div>
+            </div>
+            <div class="task-card then-card">
+                <div class="card-icon">📖</div>
+                <div class="card-text">Story Time</div>
+            </div>
+            <div class="task-card then-card">
+                <div class="card-icon">🎵</div>
+                <div class="card-text">Music</div>
+            </div>
+            <div class="task-card then-card">
+                <div class="card-icon">🏊</div>
+                <div class="card-text">Swimming</div>
+            </div>
+            <div class="task-card then-card">
+                <div class="card-icon">🛝</div>
+                <div class="card-text">Playground</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Parent Guide -->
+    <div class="guide-section">
+        <h2>📖 Parent Guide: Using the First-Then Board Effectively</h2>
+
+        <h3>What is First-Then?</h3>
+        <p>
+            The First-Then board is a visual support tool based on the <strong>Premack Principle</strong>
+            (also called "Grandma's Rule"). This evidence-based strategy states that a less preferred
+            activity (low-probability behavior) can be reinforced by following it with a more preferred
+            activity (high-probability behavior).
+        </p>
+        <p>
+            In simple terms: <strong>"First you do this (less preferred), THEN you get this (more preferred)."</strong>
+        </p>
+
+        <h3>How First-Then Works (Premack Principle Explained)</h3>
+        <p>
+            The Premack Principle, discovered by psychologist David Premack, demonstrates that behaviors
+            a child performs frequently and enjoys can serve as reinforcers for behaviors they perform
+            less frequently or find less enjoyable.
+        </p>
+        <div class="tip-box">
+            <strong>The Science:</strong> By making access to a preferred activity contingent on completing
+            a non-preferred activity, you increase the likelihood that the child will complete the
+            non-preferred task. This creates a positive association and builds intrinsic motivation over time.
+        </div>
+
+        <h3>When to Use First-Then</h3>
+        <ul>
+            <li><strong>Transitions:</strong> Moving between activities (e.g., from playtime to homework)</li>
+            <li><strong>Task Motivation:</strong> Encouraging completion of non-preferred tasks</li>
+            <li><strong>Routine Building:</strong> Establishing daily routines and expectations</li>
+            <li><strong>Behavior Support:</strong> Reducing resistance to necessary activities</li>
+            <li><strong>Independence Building:</strong> Teaching self-management and delayed gratification</li>
+        </ul>
+
+        <h3>Tips for Choosing Effective Rewards ("Then" Activities)</h3>
+        <div class="tip-box">
+            <strong>Key Principle:</strong> The "Then" reward MUST be something the child genuinely
+            values and is motivated by in that moment. What works as a reward can change day to day.
+        </div>
+        <ul>
+            <li><strong>Individualize:</strong> Choose rewards based on your child's unique interests and preferences</li>
+            <li><strong>Immediate Access:</strong> The reward should be available immediately after task completion</li>
+            <li><strong>Age-Appropriate:</strong> Select rewards that match developmental level</li>
+            <li><strong>Vary Rewards:</strong> Rotate rewards to maintain motivation and prevent satiation</li>
+            <li><strong>Natural Consequences:</strong> When possible, use logical rewards (e.g., "First clean up toys, then we can play a new game")</li>
+            <li><strong>Time-Limit Rewards:</strong> Specify duration for time-based rewards (e.g., "10 minutes of iPad time")</li>
+            <li><strong>High-Value Items:</strong> Save special rewards for challenging tasks</li>
+        </ul>
+
+        <h3>How to Implement First-Then Successfully</h3>
+        <ol>
+            <li><strong>Prepare the Board:</strong> Place the "First" and "Then" cards on the board before presenting it</li>
+            <li><strong>Present Clearly:</strong> Show the board and state: "First [task], THEN [reward]"</li>
+            <li><strong>Point to Cards:</strong> Use gestures to emphasize the sequence</li>
+            <li><strong>Wait for Task Completion:</strong> Ensure the "First" activity is fully completed before providing the "Then" reward</li>
+            <li><strong>Deliver Immediately:</strong> Provide the reward right after task completion</li>
+            <li><strong>Praise Effort:</strong> Acknowledge completion with specific praise</li>
+            <li><strong>Be Consistent:</strong> Always follow through - if you say "Then," you must deliver</li>
+        </ol>
+
+        <h3>Common Mistakes to Avoid</h3>
+        <div class="warning-box">
+            <strong>⚠️ Critical Errors That Reduce Effectiveness:</strong>
+            <ul>
+                <li><strong>Giving the "Then" Early:</strong> Never provide the reward before the task is complete - this breaks the contingency</li>
+                <li><strong>Using Punishers as "Then":</strong> The "Then" must ALWAYS be something positive and preferred</li>
+                <li><strong>Unclear Completion Criteria:</strong> The child must know exactly what "done" looks like</li>
+                <li><strong>Choosing Weak Rewards:</strong> If the "Then" isn't motivating, the system won't work</li>
+                <li><strong>Inconsistent Follow-Through:</strong> Always deliver what you promise</li>
+                <li><strong>Using First-Then as Bribery:</strong> Introduce First-Then before the problem behavior occurs, not during a meltdown</li>
+                <li><strong>Making "First" Too Long:</strong> Start with short, achievable tasks and gradually increase duration</li>
+            </ul>
+        </div>
+
+        <h3>Assembly Instructions</h3>
+        <ol>
+            <li><strong>Print:</strong> Print boards and cards on heavy cardstock (110lb recommended)</li>
+            <li><strong>Laminate:</strong> Laminate all pieces for durability (optional but highly recommended)</li>
+            <li><strong>Apply Velcro:</strong> Attach hook velcro to board placeholders and loop velcro to backs of cards</li>
+            <li><strong>Cut Cards:</strong> Cut out individual task cards along borders</li>
+            <li><strong>Organize:</strong> Store cards in labeled containers or ziplock bags by category</li>
+            <li><strong>Create Portable Kit:</strong> Laminate portable board and store with cards in a small binder or pouch</li>
+        </ol>
+
+        <h3>Advanced Strategies</h3>
+        <ul>
+            <li><strong>Graduated First-Then:</strong> Chain multiple "First" tasks before the final "Then" reward</li>
+            <li><strong>First-Then Schedule:</strong> Create a visual schedule with multiple First-Then sequences for the day</li>
+            <li><strong>Child Choice:</strong> Let child choose their "Then" reward from 2-3 options to increase buy-in</li>
+            <li><strong>Self-Monitoring:</strong> Teach child to move cards themselves to build independence</li>
+            <li><strong>Fading Support:</strong> Gradually reduce visual support as child internalizes expectations</li>
+        </ul>
+
+        <div class="tip-box">
+            <strong>💡 Remember:</strong> The First-Then board is a teaching tool, not a permanent solution.
+            As your child develops self-regulation skills and intrinsic motivation, you can gradually
+            fade the use of the board. The goal is to build internal motivation and understanding of
+            task sequences, not create permanent dependence on external rewards.
+        </div>
+    </div>
+
+    <div class="footer">
+        <p><strong>Parent Educator Bridge</strong></p>
+        <p>Evidence-Based Visual Supports for Effective Parenting</p>
+        <p>© 2024 Parent Educator Bridge. For personal use only.</p>
+    </div>
+</body>
+</html>

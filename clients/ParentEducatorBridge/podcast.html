@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Podcast | Bridging the Gap</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2E7D6B;
+            --primary-light: #4A9B89;
+            --primary-dark: #1D5C4E;
+            --secondary: #E8A54B;
+            --accent: #6B4E9B;
+            --warm: #D4726A;
+            --background: #FAFBF9;
+            --surface: #FFFFFF;
+            --text: #2D3436;
+            --text-light: #636E72;
+            --border: #E0E6E3;
+            --shadow: rgba(46, 125, 107, 0.1);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            box-shadow: 0 2px 20px var(--shadow);
+            z-index: 1000;
+            padding: 0.75rem 2rem;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--primary);
+        }
+
+        .nav-logo-icon {
+            width: 45px;
+            height: 45px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .nav-logo-text { font-weight: 800; font-size: 1.25rem; }
+
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a { text-decoration: none; color: var(--text); font-weight: 600; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--primary); }
+
+        .nav-cta {
+            background: var(--gradient);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .hero-podcast {
+            padding: 8rem 2rem 4rem;
+            background: linear-gradient(180deg, #1D5C4E 0%, #2E7D6B 100%);
+            color: white;
+        }
+
+        .hero-podcast-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .podcast-cover {
+            background: var(--surface);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+        }
+
+        .podcast-cover-image {
+            width: 100%;
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, var(--secondary) 0%, #D4976A 100%);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .podcast-cover-image .icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        .podcast-cover-image h3 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .podcast-cover-image p {
+            color: rgba(255,255,255,0.9);
+            font-size: 0.95rem;
+        }
+
+        .hero-podcast-content h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 2.75rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero-podcast-content .tagline {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-podcast-content p {
+            opacity: 0.85;
+            margin-bottom: 2rem;
+            font-size: 1.05rem;
+        }
+
+        .podcast-platforms {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .platform-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: rgba(255,255,255,0.15);
+            border-radius: 50px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .platform-btn:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+        }
+
+        .platform-btn span {
+            font-size: 1.25rem;
+        }
+
+        .podcast-stats {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .content-section {
+            padding: 4rem 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 2rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .featured-episode {
+            background: var(--surface);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px var(--shadow);
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 2rem;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .featured-image {
+            width: 200px;
+            height: 200px;
+            background: var(--gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .featured-content {
+            flex: 1;
+        }
+
+        .featured-badge {
+            display: inline-block;
+            background: var(--secondary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+
+        .featured-content h3 {
+            font-size: 1.5rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .featured-meta {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .featured-content p {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .play-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--gradient);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .play-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px var(--shadow);
+        }
+
+        .play-btn .icon {
+            width: 30px;
+            height: 30px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+
+        .episodes-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .episode-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            box-shadow: 0 5px 20px var(--shadow);
+            transition: all 0.3s;
+        }
+
+        .episode-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 10px 30px var(--shadow);
+        }
+
+        .episode-number {
+            width: 60px;
+            height: 60px;
+            background: var(--background);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .episode-info {
+            flex: 1;
+        }
+
+        .episode-info h4 {
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .episode-info p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .episode-meta {
+            display: flex;
+            gap: 1rem;
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        .episode-play {
+            width: 45px;
+            height: 45px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+
+        .episode-play:hover {
+            transform: scale(1.1);
+        }
+
+        .topics-section {
+            background: linear-gradient(180deg, #E8F5F1 0%, var(--background) 100%);
+            padding: 4rem 2rem;
+        }
+
+        .topics-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        .topic-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px var(--shadow);
+        }
+
+        .topic-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .topic-card h4 {
+            font-size: 1rem;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .topic-card p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .subscribe-section {
+            background: var(--surface);
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            max-width: 800px;
+            margin: 4rem auto;
+            box-shadow: 0 20px 60px var(--shadow);
+        }
+
+        .subscribe-section h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.75rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .subscribe-section p {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        .subscribe-platforms {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .subscribe-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            background: var(--background);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .subscribe-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .subscribe-btn span {
+            font-size: 1.5rem;
+        }
+
+        .host-section {
+            padding: 4rem 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .host-card {
+            background: var(--surface);
+            border-radius: 24px;
+            padding: 2.5rem;
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 2rem;
+            align-items: center;
+            box-shadow: 0 20px 60px var(--shadow);
+        }
+
+        .host-avatar {
+            width: 150px;
+            height: 150px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .host-info h3 {
+            font-size: 1.5rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .host-info .title {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .host-info p {
+            color: var(--text-light);
+        }
+
+        .footer {
+            background: var(--text);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .footer a { color: var(--secondary); text-decoration: none; }
+        .footer p { margin-top: 1rem; color: rgba(255,255,255,0.6); font-size: 0.9rem; }
+
+        @media (max-width: 968px) {
+            .hero-podcast-container { grid-template-columns: 1fr; text-align: center; }
+            .podcast-cover { max-width: 350px; margin: 0 auto; }
+            .podcast-platforms, .podcast-stats { justify-content: center; }
+            .featured-episode { grid-template-columns: 1fr; text-align: center; }
+            .featured-image { margin: 0 auto; }
+            .topics-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero-podcast-content h1 { font-size: 2rem; }
+            .episode-card { flex-direction: column; text-align: center; }
+            .host-card { grid-template-columns: 1fr; text-align: center; }
+            .host-avatar { margin: 0 auto; }
+            .topics-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <div class="nav-logo-icon">🌉</div>
+                <span class="nav-logo-text">Bridging the Gap</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html#curriculum">Course</a></li>
+                <li><a href="resources.html">Resources</a></li>
+                <li><a href="podcast.html">Podcast</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <a href="index.html#pricing" class="nav-cta">Enroll Now</a>
+        </div>
+    </nav>
+
+    <section class="hero-podcast">
+        <div class="hero-podcast-container">
+            <div class="podcast-cover">
+                <div class="podcast-cover-image">
+                    <span class="icon">🎙️</span>
+                    <h3>Bridging the Gap</h3>
+                    <p>Real talk for parents & educators</p>
+                </div>
+            </div>
+            <div class="hero-podcast-content">
+                <h1>The Bridging the Gap Podcast</h1>
+                <p class="tagline">Real talk about autism, IEPs, and what nobody tells you.</p>
+                <p>Weekly conversations for parents navigating special education and educators working to understand families. No fluff, no jargon—just 35 years of experience sharing what actually works.</p>
+
+                <div class="podcast-platforms">
+                    <a href="#" class="platform-btn"><span>🎧</span> Apple Podcasts</a>
+                    <a href="#" class="platform-btn"><span>🎵</span> Spotify</a>
+                    <a href="#" class="platform-btn"><span>📺</span> YouTube</a>
+                    <a href="#" class="platform-btn"><span>📱</span> Google Podcasts</a>
+                </div>
+
+                <div class="podcast-stats">
+                    <div class="stat">
+                        <span class="stat-number">50+</span>
+                        <span class="stat-label">Episodes</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">10K+</span>
+                        <span class="stat-label">Downloads</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">4.9</span>
+                        <span class="stat-label">Rating</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <div class="section-header">
+            <h2>🎧 Latest Episode</h2>
+            <p>New episodes every Tuesday</p>
+        </div>
+
+        <div class="featured-episode">
+            <div class="featured-image">🎤</div>
+            <div class="featured-content">
+                <span class="featured-badge">New Episode</span>
+                <h3>Episode 52: The "I Need to Go Potty" Conversation</h3>
+                <p class="featured-meta">November 19, 2024 • 38 minutes</p>
+                <p>Why this single skill changes everything about your child's school experience—and exactly how to teach it, step by step. Plus, listener questions about communication breakthroughs.</p>
+                <a href="#" class="play-btn">
+                    <span class="icon">▶</span>
+                    Listen Now
+                </a>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h2>📚 Recent Episodes</h2>
+        </div>
+
+        <div class="episodes-grid">
+            <div class="episode-card">
+                <div class="episode-number">51</div>
+                <div class="episode-info">
+                    <h4>Why I Stopped Recommending 1:1 Aides</h4>
+                    <p>The unintended consequences of constant adult support</p>
+                </div>
+                <div class="episode-meta">
+                    <span>Nov 12, 2024</span>
+                    <span>42 min</span>
+                </div>
+                <div class="episode-play">▶</div>
+            </div>
+
+            <div class="episode-card">
+                <div class="episode-number">50</div>
+                <div class="episode-info">
+                    <h4>Teaching Your Child to Say "No" (And Why It Matters)</h4>
+                    <p>Safety, boundaries, and building self-advocacy</p>
+                </div>
+                <div class="episode-meta">
+                    <span>Nov 5, 2024</span>
+                    <span>35 min</span>
+                </div>
+                <div class="episode-play">▶</div>
+            </div>
+
+            <div class="episode-card">
+                <div class="episode-number">49</div>
+                <div class="episode-info">
+                    <h4>The IEP Meeting Nobody Prepared Me For</h4>
+                    <p>What I wish I knew as a new parent</p>
+                </div>
+                <div class="episode-meta">
+                    <span>Oct 29, 2024</span>
+                    <span>45 min</span>
+                </div>
+                <div class="episode-play">▶</div>
+            </div>
+
+            <div class="episode-card">
+                <div class="episode-number">48</div>
+                <div class="episode-info">
+                    <h4>When School Says "We Can't Do That"</h4>
+                    <p>Understanding what schools must vs. can provide</p>
+                </div>
+                <div class="episode-meta">
+                    <span>Oct 22, 2024</span>
+                    <span>40 min</span>
+                </div>
+                <div class="episode-play">▶</div>
+            </div>
+
+            <div class="episode-card">
+                <div class="episode-number">47</div>
+                <div class="episode-info">
+                    <h4>Meltdowns vs. Tantrums: A Deep Dive</h4>
+                    <p>Understanding the difference changes your response</p>
+                </div>
+                <div class="episode-meta">
+                    <span>Oct 15, 2024</span>
+                    <span>38 min</span>
+                </div>
+                <div class="episode-play">▶</div>
+            </div>
+
+            <div class="episode-card">
+                <div class="episode-number">46</div>
+                <div class="episode-info">
+                    <h4>A Teacher's Perspective: What We Wish Parents Knew</h4>
+                    <p>Special guest: veteran special ed teacher shares insights</p>
+                </div>
+                <div class="episode-meta">
+                    <span>Oct 8, 2024</span>
+                    <span>52 min</span>
+                </div>
+                <div class="episode-play">▶</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="topics-section">
+        <div class="section-header">
+            <h2>🎯 Topics We Cover</h2>
+            <p>Real conversations about what matters most</p>
+        </div>
+        <div class="topics-grid">
+            <div class="topic-card">
+                <div class="topic-icon">📋</div>
+                <h4>IEP Navigation</h4>
+                <p>Rights, meetings, advocacy</p>
+            </div>
+            <div class="topic-card">
+                <div class="topic-icon">🏠</div>
+                <h4>Home Strategies</h4>
+                <p>Skills you teach at home</p>
+            </div>
+            <div class="topic-card">
+                <div class="topic-icon">💬</div>
+                <h4>Communication</h4>
+                <p>Teaching needs & boundaries</p>
+            </div>
+            <div class="topic-card">
+                <div class="topic-icon">🌊</div>
+                <h4>Behavior</h4>
+                <p>Understanding & preventing</p>
+            </div>
+            <div class="topic-card">
+                <div class="topic-icon">🤝</div>
+                <h4>School Partnership</h4>
+                <p>Working together effectively</p>
+            </div>
+            <div class="topic-card">
+                <div class="topic-icon">👩‍🏫</div>
+                <h4>For Educators</h4>
+                <p>Understanding families</p>
+            </div>
+            <div class="topic-card">
+                <div class="topic-icon">💚</div>
+                <h4>Parent Self-Care</h4>
+                <p>Taking care of yourself</p>
+            </div>
+            <div class="topic-card">
+                <div class="topic-icon">🎤</div>
+                <h4>Guest Experts</h4>
+                <p>Specialists & parent stories</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="subscribe-section">
+        <h2>🎧 Never Miss an Episode</h2>
+        <p>Subscribe on your favorite podcast platform and get new episodes every Tuesday.</p>
+        <div class="subscribe-platforms">
+            <a href="#" class="subscribe-btn"><span>🍎</span> Apple Podcasts</a>
+            <a href="#" class="subscribe-btn"><span>💚</span> Spotify</a>
+            <a href="#" class="subscribe-btn"><span>🔴</span> YouTube</a>
+            <a href="#" class="subscribe-btn"><span>🎙️</span> Google Podcasts</a>
+            <a href="#" class="subscribe-btn"><span>📡</span> RSS Feed</a>
+        </div>
+    </div>
+
+    <section class="host-section">
+        <div class="section-header">
+            <h2>👋 Meet Your Host</h2>
+        </div>
+        <div class="host-card">
+            <div class="host-avatar">👩‍🏫</div>
+            <div class="host-info">
+                <h3>Your Name</h3>
+                <p class="title">School Psychologist • LPC • 35+ Years Experience</p>
+                <p>After 35 years as a school psychologist, special education teacher and director, licensed professional counselor, and child development center owner, I've seen it all. I started this podcast to share what I wish someone had told ME—the honest truths that help parents and educators work together instead of against each other.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <a href="index.html">🌉 Bridging the Gap</a>
+        <p>© 2024 Bridging the Gap. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service | Bridging the Gap</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2E7D6B;
+            --primary-light: #4A9B89;
+            --primary-dark: #1D5C4E;
+            --secondary: #E8A54B;
+            --accent: #6B4E9B;
+            --warm: #D4726A;
+            --background: #FAFBF9;
+            --surface: #FFFFFF;
+            --text: #2D3436;
+            --text-light: #636E72;
+            --border: #E0E6E3;
+            --shadow: rgba(46, 125, 107, 0.1);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            box-shadow: 0 2px 20px var(--shadow);
+            z-index: 1000;
+            padding: 0.75rem 2rem;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--primary);
+        }
+
+        .nav-logo-icon {
+            width: 45px;
+            height: 45px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .nav-logo-text {
+            font-weight: 800;
+            font-size: 1.25rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 600;
+            transition: color 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-cta {
+            background: var(--gradient);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px var(--shadow);
+        }
+
+        /* Hero Section */
+        .hero-mini {
+            padding: 8rem 2rem 4rem;
+            background: linear-gradient(180deg, #E8F5F1 0%, var(--background) 100%);
+            text-align: center;
+        }
+
+        .hero-mini h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 2.75rem;
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+        }
+
+        .hero-mini p {
+            font-size: 1.15rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 4rem 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .last-updated {
+            background: var(--surface);
+            border-left: 4px solid var(--primary);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            color: var(--text-light);
+        }
+
+        .last-updated strong {
+            color: var(--primary);
+        }
+
+        .toc {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 5px 20px var(--shadow);
+        }
+
+        .toc h2 {
+            font-size: 1.25rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .toc ol {
+            margin-left: 1.5rem;
+        }
+
+        .toc li {
+            margin-bottom: 0.5rem;
+        }
+
+        .toc a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        .terms-section {
+            margin-bottom: 3rem;
+            scroll-margin-top: 100px;
+        }
+
+        .terms-section h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.75rem;
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            padding-top: 1rem;
+        }
+
+        .terms-section h3 {
+            font-size: 1.25rem;
+            color: var(--text);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .terms-section p {
+            margin-bottom: 1rem;
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .terms-section ul {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .terms-section li {
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #F5F0FF 0%, #EDE5FF 100%);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+
+        .highlight-box p {
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        .contact-box {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+            box-shadow: 0 10px 40px var(--shadow);
+        }
+
+        .contact-box h3 {
+            font-size: 1.5rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .contact-box p {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-box a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--gradient);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .contact-box a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--shadow);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text);
+            color: white;
+            padding: 4rem 2rem 2rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .footer-brand h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand p {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .footer-links h4 {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.95rem;
+            display: block;
+            padding: 0.5rem 0;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 3rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .footer-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero-mini h1 {
+                font-size: 2rem;
+            }
+
+            .terms-section h2 {
+                font-size: 1.5rem;
+            }
+
+            .footer-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <div class="nav-logo-icon">🌉</div>
+                <span class="nav-logo-text">Bridging the Gap</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html#curriculum">Course</a></li>
+                <li><a href="resources.html">Resources</a></li>
+                <li><a href="podcast.html">Podcast</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <a href="index.html#pricing" class="nav-cta">Enroll Now</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-mini">
+        <h1>Terms of Service</h1>
+        <p>Please read these terms carefully before using our services or enrolling in our courses.</p>
+    </section>
+
+    <!-- Content Section -->
+    <section class="content-section">
+        <div class="last-updated">
+            <strong>Last Updated:</strong> November 28, 2024
+        </div>
+
+        <!-- Table of Contents -->
+        <div class="toc">
+            <h2>Table of Contents</h2>
+            <ol>
+                <li><a href="#agreement">Agreement to Terms</a></li>
+                <li><a href="#services">Description of Services</a></li>
+                <li><a href="#accounts">User Accounts</a></li>
+                <li><a href="#enrollment">Course Enrollment and Payment</a></li>
+                <li><a href="#refunds">Refund Policy</a></li>
+                <li><a href="#intellectual-property">Intellectual Property Rights</a></li>
+                <li><a href="#user-conduct">User Conduct and Community Guidelines</a></li>
+                <li><a href="#disclaimers">Educational Disclaimers</a></li>
+                <li><a href="#liability">Limitation of Liability</a></li>
+                <li><a href="#governing-law">Governing Law</a></li>
+                <li><a href="#contact">Contact Information</a></li>
+            </ol>
+        </div>
+
+        <!-- Section 1: Agreement to Terms -->
+        <div class="terms-section" id="agreement">
+            <h2>1. Agreement to Terms</h2>
+            <p>By accessing our website at BridgingTheGap.com (the "Site"), enrolling in our courses, or using any of our services, you agree to be bound by these Terms of Service and all applicable laws and regulations.</p>
+
+            <p>If you do not agree with any part of these terms, you may not access the Site or use our services.</p>
+
+            <div class="highlight-box">
+                <p><strong>Important:</strong> These Terms of Service constitute a legally binding agreement between you and Bridging the Gap. Please read them carefully.</p>
+            </div>
+        </div>
+
+        <!-- Section 2: Description of Services -->
+        <div class="terms-section" id="services">
+            <h2>2. Description of Services</h2>
+            <p>Bridging the Gap provides educational courses, content, and resources designed for parents and educators of children with autism and other developmental disabilities.</p>
+
+            <h3>Our Services Include:</h3>
+            <ul>
+                <li>Self-paced online courses with video modules and downloadable materials</li>
+                <li>Live virtual group sessions via video conferencing</li>
+                <li>In-person workshops and training sessions</li>
+                <li>Educational blog content and resources</li>
+                <li>Email support and community access (depending on enrollment level)</li>
+            </ul>
+
+            <div class="highlight-box">
+                <p><strong>Educational Purpose Only:</strong> All content and courses are provided for educational and informational purposes only. Our services are not therapy, medical advice, psychological counseling, or legal counsel.</p>
+            </div>
+        </div>
+
+        <!-- Section 3: User Accounts -->
+        <div class="terms-section" id="accounts">
+            <h2>3. User Accounts</h2>
+
+            <h3>Account Creation</h3>
+            <p>To access certain features of our services, you may be required to create an account. When creating an account, you agree to:</p>
+            <ul>
+                <li>Provide accurate, current, and complete information</li>
+                <li>Maintain and update your information to keep it accurate and current</li>
+                <li>Maintain the security and confidentiality of your login credentials</li>
+                <li>Notify us immediately of any unauthorized use of your account</li>
+            </ul>
+
+            <h3>Account Responsibility</h3>
+            <p>You are responsible for all activities that occur under your account. We recommend using a strong, unique password and not sharing your account credentials with others.</p>
+
+            <h3>One Account Per Person</h3>
+            <p>Each account is for individual use only. You may not share your account access with others or allow multiple people to use a single enrollment.</p>
+        </div>
+
+        <!-- Section 4: Course Enrollment and Payment -->
+        <div class="terms-section" id="enrollment">
+            <h2>4. Course Enrollment and Payment</h2>
+
+            <h3>Payment Terms</h3>
+            <p>Course fees are due at the time of enrollment unless otherwise specified. We accept payment via credit card, debit card, and other payment methods as indicated on our enrollment page.</p>
+
+            <h3>Course Access Period</h3>
+            <p>Access to course materials varies by enrollment type:</p>
+            <ul>
+                <li><strong>Self-Paced Online Courses:</strong> 6 months from date of enrollment</li>
+                <li><strong>Live Virtual Group Sessions:</strong> Duration of the cohort plus 30 days for recorded session access</li>
+                <li><strong>In-Person Workshops:</strong> Access to materials provided during the workshop period</li>
+            </ul>
+
+            <h3>Login Credential Restrictions</h3>
+            <p>You may not share your login credentials with others. Sharing account access or distributing course materials to non-enrolled individuals is strictly prohibited and may result in immediate account termination without refund.</p>
+
+            <h3>Price Changes</h3>
+            <p>We reserve the right to modify course pricing at any time. Price changes will not affect enrollments already completed, but will apply to future enrollments.</p>
+        </div>
+
+        <!-- Section 5: Refund Policy -->
+        <div class="terms-section" id="refunds">
+            <h2>5. Refund Policy</h2>
+
+            <div class="highlight-box">
+                <p><strong>14-Day Money-Back Guarantee:</strong> We offer a full refund if requested within 14 days of enrollment and before substantial course content has been accessed.</p>
+            </div>
+
+            <h3>Refund Eligibility</h3>
+            <p>You are eligible for a full refund if:</p>
+            <ul>
+                <li>You request the refund within 14 days of your enrollment date</li>
+                <li>You have not accessed more than 25% of the course content</li>
+                <li>You have not attended more than one live session (for group enrollments)</li>
+            </ul>
+
+            <h3>How to Request a Refund</h3>
+            <p>To request a refund, please email us at support@bridgingthegap.com with:</p>
+            <ul>
+                <li>Your full name and email address used for enrollment</li>
+                <li>Your order number or enrollment confirmation</li>
+                <li>Brief reason for the refund request (optional but appreciated)</li>
+            </ul>
+
+            <h3>Refund Processing</h3>
+            <p>Approved refunds will be processed within 7-10 business days and credited to the original payment method.</p>
+
+            <h3>Non-Refundable After 14 Days</h3>
+            <p>After the 14-day guarantee period expires, all course enrollments are final and non-refundable. This policy allows us to maintain course quality and support our educational mission.</p>
+
+            <h3>Exceptions</h3>
+            <p>We may make exceptions to this policy on a case-by-case basis for extenuating circumstances such as serious illness, family emergency, or technical issues that prevented course access. Please contact us to discuss your situation.</p>
+        </div>
+
+        <!-- Section 6: Intellectual Property -->
+        <div class="terms-section" id="intellectual-property">
+            <h2>6. Intellectual Property Rights</h2>
+
+            <h3>Ownership</h3>
+            <p>All course content, materials, videos, worksheets, templates, and resources provided through Bridging the Gap are owned by Bridging the Gap and are protected by United States and international copyright laws.</p>
+
+            <h3>Personal Use License</h3>
+            <p>Upon enrollment, you are granted a limited, non-exclusive, non-transferable license to:</p>
+            <ul>
+                <li>Access and view course content for personal educational use only</li>
+                <li>Download materials designated as downloadable for your personal use</li>
+                <li>Use strategies and techniques learned in the course with your own child or students</li>
+            </ul>
+
+            <h3>Prohibited Uses</h3>
+            <p>You may NOT:</p>
+            <ul>
+                <li>Reproduce, distribute, or share course materials with others</li>
+                <li>Record, copy, or redistribute live sessions or video content</li>
+                <li>Use course materials for commercial purposes or to teach your own courses</li>
+                <li>Modify, adapt, or create derivative works from course content</li>
+                <li>Remove copyright notices or proprietary markings from materials</li>
+            </ul>
+
+            <div class="highlight-box">
+                <p><strong>Educators:</strong> If you wish to share course concepts or materials with colleagues, please direct them to enroll individually or contact us about group licensing options.</p>
+            </div>
+        </div>
+
+        <!-- Section 7: User Conduct -->
+        <div class="terms-section" id="user-conduct">
+            <h2>7. User Conduct and Community Guidelines</h2>
+
+            <h3>Respectful Community Participation</h3>
+            <p>Our courses and community spaces are intended to be supportive, respectful environments for learning and growth. All participants agree to:</p>
+            <ul>
+                <li>Treat other participants, instructors, and staff with respect and kindness</li>
+                <li>Maintain confidentiality of personal stories and information shared by others</li>
+                <li>Contribute constructively to discussions and group sessions</li>
+                <li>Respect diverse perspectives, experiences, and backgrounds</li>
+            </ul>
+
+            <h3>Prohibited Conduct</h3>
+            <p>The following behaviors are strictly prohibited:</p>
+            <ul>
+                <li>Harassment, bullying, or intimidation of any kind</li>
+                <li>Discriminatory language or behavior based on race, ethnicity, religion, gender, disability, or any other protected characteristic</li>
+                <li>Sharing others' personal information without consent</li>
+                <li>Promotional activity or solicitation for commercial purposes</li>
+                <li>Spam, advertising, or off-topic content</li>
+                <li>Impersonating others or providing false information</li>
+            </ul>
+
+            <h3>Commercial Use Prohibition</h3>
+            <p>Our courses are for personal educational use only. You may not use course content, materials, or concepts to:</p>
+            <ul>
+                <li>Create or teach your own courses or workshops</li>
+                <li>Provide professional consulting services</li>
+                <li>Develop commercial products or services</li>
+            </ul>
+
+            <h3>Enforcement</h3>
+            <p>We reserve the right to remove participants who violate these guidelines, with or without warning, and without refund.</p>
+        </div>
+
+        <!-- Section 8: Disclaimers -->
+        <div class="terms-section" id="disclaimers">
+            <h2>8. Educational Disclaimers</h2>
+
+            <div class="highlight-box">
+                <p><strong>Not Medical, Therapeutic, or Legal Advice:</strong> The information provided in our courses is for educational purposes only and should not be considered medical advice, psychological therapy, or legal counsel.</p>
+            </div>
+
+            <h3>Educational Content Only</h3>
+            <p>Our courses provide educational information, strategies, and perspectives based on professional experience in special education. However:</p>
+            <ul>
+                <li>Course content does not replace individualized assessment or professional evaluation</li>
+                <li>Strategies discussed may not be appropriate for every child or situation</li>
+                <li>We do not diagnose conditions or prescribe specific interventions for individual children</li>
+                <li>Legal information shared is general in nature and not specific legal advice for your situation</li>
+            </ul>
+
+            <h3>Not a Substitute for Professional Services</h3>
+            <p>Our courses are NOT a substitute for:</p>
+            <ul>
+                <li>Medical evaluation, diagnosis, or treatment by a licensed physician</li>
+                <li>Psychological assessment or therapy by a licensed mental health professional</li>
+                <li>Speech, occupational, or physical therapy by licensed therapists</li>
+                <li>Special education advocacy or legal representation by qualified professionals</li>
+            </ul>
+
+            <h3>Individual Results Vary</h3>
+            <p>While we share evidence-based strategies and real success stories, individual results will vary based on numerous factors including:</p>
+            <ul>
+                <li>Your child's unique strengths, challenges, and developmental level</li>
+                <li>Consistency of strategy implementation</li>
+                <li>Quality of school resources and staff</li>
+                <li>Family circumstances and support systems</li>
+            </ul>
+
+            <p>We cannot guarantee specific outcomes or results from participating in our courses.</p>
+
+            <h3>Seek Professional Guidance</h3>
+            <p>Always consult with qualified professionals regarding specific questions about your child's development, medical needs, educational placement, or legal rights.</p>
+        </div>
+
+        <!-- Section 9: Limitation of Liability -->
+        <div class="terms-section" id="liability">
+            <h2>9. Limitation of Liability</h2>
+
+            <p>To the fullest extent permitted by law, Bridging the Gap, its instructors, employees, and affiliates shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of or relating to your use of our services or course content.</p>
+
+            <h3>No Liability For:</h3>
+            <ul>
+                <li>Results or outcomes from applying course strategies</li>
+                <li>Decisions made based on course information</li>
+                <li>Technical difficulties or interruptions in service access</li>
+                <li>Loss of data or course access due to user error or technical issues</li>
+                <li>Actions or outcomes in IEP meetings, school interactions, or legal proceedings</li>
+            </ul>
+
+            <h3>Maximum Liability</h3>
+            <p>In no event shall our total liability to you for all damages, losses, and causes of action exceed the amount you paid for your course enrollment.</p>
+
+            <h3>As-Is Provision</h3>
+            <p>Our courses and services are provided on an "as is" and "as available" basis without warranties of any kind, either express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, or non-infringement.</p>
+        </div>
+
+        <!-- Section 10: Governing Law -->
+        <div class="terms-section" id="governing-law">
+            <h2>10. Governing Law</h2>
+
+            <p>These Terms of Service shall be governed by and construed in accordance with the laws of the United States of America, without regard to conflict of law principles.</p>
+
+            <h3>Dispute Resolution</h3>
+            <p>Any disputes arising out of or relating to these Terms of Service or your use of our services shall be resolved through good faith negotiation. If negotiation is unsuccessful, disputes may be submitted to binding arbitration in accordance with the rules of the American Arbitration Association.</p>
+
+            <h3>Jurisdiction</h3>
+            <p>You agree to submit to the personal jurisdiction of the state and federal courts located in the United States for the purpose of litigating any disputes that cannot be resolved through arbitration.</p>
+        </div>
+
+        <!-- Section 11: Changes to Terms -->
+        <div class="terms-section">
+            <h2>Changes to These Terms</h2>
+            <p>We reserve the right to modify these Terms of Service at any time. Changes will be effective immediately upon posting to our website. Your continued use of our services after changes are posted constitutes acceptance of the modified terms.</p>
+
+            <p>We will make reasonable efforts to notify enrolled students of material changes to these terms via email.</p>
+        </div>
+
+        <!-- Section 12: Severability -->
+        <div class="terms-section">
+            <h2>Severability</h2>
+            <p>If any provision of these Terms of Service is found to be unenforceable or invalid, that provision shall be limited or eliminated to the minimum extent necessary so that these Terms shall otherwise remain in full force and effect.</p>
+        </div>
+
+        <!-- Section 13: Entire Agreement -->
+        <div class="terms-section">
+            <h2>Entire Agreement</h2>
+            <p>These Terms of Service, together with our Privacy Policy, constitute the entire agreement between you and Bridging the Gap regarding your use of our services and supersede all prior agreements and understandings.</p>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="terms-section" id="contact">
+            <h2>11. Contact Information</h2>
+            <p>If you have questions about these Terms of Service, please contact us:</p>
+
+            <div class="contact-box">
+                <h3>Questions About Our Terms?</h3>
+                <p>We're here to help clarify any questions you may have about these terms or your enrollment.</p>
+                <a href="contact.html">
+                    <span>📧</span> Contact Us
+                </a>
+            </div>
+        </div>
+
+        <div class="highlight-box" style="margin-top: 3rem;">
+            <p><strong>Thank you for reading our Terms of Service.</strong> We're committed to providing valuable educational content while protecting both your rights and ours. We look forward to supporting you on your journey to bridge the gap between home and school.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h3>🌉 Bridging the Gap</h3>
+                <p>Empowering parents and educators to work together for every child's success. Based on 35 years of experience in special education.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Course</h4>
+                <ul>
+                    <li><a href="index.html#five-things">5 Things to Know</a></li>
+                    <li><a href="index.html#foundation">Foundation Skills</a></li>
+                    <li><a href="index.html#curriculum">Curriculum</a></li>
+                    <li><a href="index.html#pricing">Pricing</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="index.html#about">About</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 Bridging the Gap. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href !== '#' && href.length > 1) {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

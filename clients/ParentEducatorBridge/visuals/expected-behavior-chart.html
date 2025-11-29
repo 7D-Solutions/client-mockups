@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expected vs. Unexpected Behavior Chart</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2E7D6B;
+            --secondary-color: #E8A54B;
+            --expected-green: #4CAF50;
+            --expected-light: #E8F5E9;
+            --unexpected-red: #E57373;
+            --unexpected-light: #FFEBEE;
+            --neutral-bg: #F5F5F5;
+            --text-dark: #333;
+            --text-medium: #666;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: white;
+            padding: 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: background 0.3s;
+        }
+
+        .back-link:hover {
+            background: #1D5C4E;
+        }
+
+        @media print {
+            .back-link {
+                display: none;
+            }
+        }
+
+        .page-break {
+            page-break-after: always;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 10px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .main-chart {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .column {
+            border: 3px solid;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .expected {
+            border-color: var(--expected-green);
+            background: var(--expected-light);
+        }
+
+        .unexpected {
+            border-color: var(--unexpected-red);
+            background: var(--unexpected-light);
+        }
+
+        .column-header {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            font-weight: 800;
+            color: white;
+        }
+
+        .expected .column-header {
+            background: var(--expected-green);
+        }
+
+        .unexpected .column-header {
+            background: var(--unexpected-red);
+        }
+
+        .behavior-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .behavior-icon {
+            font-size: 3em;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .behavior-text {
+            font-size: 1.2em;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .feeling-bubble {
+            background: #FFF9E6;
+            border: 2px solid var(--secondary-color);
+            border-radius: 20px;
+            padding: 10px 15px;
+            margin-top: 10px;
+            position: relative;
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-medium);
+        }
+
+        .feeling-bubble:before {
+            content: '💭';
+            position: absolute;
+            left: 10px;
+            top: -5px;
+            font-size: 1.5em;
+        }
+
+        .feeling-icon {
+            font-size: 2em;
+            margin: 5px;
+        }
+
+        .scenario-section {
+            margin-bottom: 40px;
+        }
+
+        .scenario-title {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.8em;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .replacement-card {
+            background: white;
+            border: 3px solid var(--primary-color);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .replacement-header {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .replacement-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .replacement-box {
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            text-align: center;
+            min-width: 200px;
+        }
+
+        .problem-box {
+            background: var(--unexpected-light);
+            border: 2px solid var(--unexpected-red);
+        }
+
+        .arrow {
+            font-size: 2em;
+            color: var(--primary-color);
+        }
+
+        .solution-box {
+            background: var(--expected-light);
+            border: 2px solid var(--expected-green);
+        }
+
+        .guide-section {
+            background: var(--neutral-bg);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 40px;
+        }
+
+        .guide-title {
+            font-size: 1.8em;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .guide-content {
+            font-size: 1.1em;
+            line-height: 1.8;
+        }
+
+        .guide-content h3 {
+            color: var(--primary-color);
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .guide-content ul {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+
+        .guide-content li {
+            margin-bottom: 8px;
+        }
+
+        .thinking-format {
+            background: #E3F2FD;
+            border-left: 5px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-style: italic;
+            font-weight: 600;
+        }
+
+        @media print {
+            body {
+                padding: 10px;
+            }
+
+            .header {
+                background: var(--primary-color);
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .column-header,
+            .scenario-title,
+            .expected,
+            .unexpected,
+            .behavior-item,
+            .feeling-bubble,
+            .replacement-card,
+            .guide-section {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .page-break {
+                page-break-after: always;
+            }
+
+            .no-print {
+                display: none;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .main-chart,
+            .scenario-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .replacement-flow {
+                flex-direction: column;
+            }
+
+            .arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="../resources.html" class="back-link">← Back to Resources</a>
+
+    <!-- Page 1: Main Chart -->
+    <div class="header">
+        <h1>Expected vs. Unexpected Behaviors</h1>
+        <p>Learning to Be a Good Friend and Student</p>
+    </div>
+
+    <div class="main-chart">
+        <div class="column expected">
+            <div class="column-header">✓ EXPECTED</div>
+
+            <div class="behavior-item">
+                <div class="behavior-icon">✋</div>
+                <div class="behavior-text">Raising My Hand</div>
+                <div class="feeling-bubble">
+                    <div class="feeling-icon">😊😊😊</div>
+                    People think I'm respectful when I raise my hand
+                </div>
+            </div>
+
+            <div class="behavior-item">
+                <div class="behavior-icon">🤐</div>
+                <div class="behavior-text">Using My Quiet Voice</div>
+                <div class="feeling-bubble">
+                    <div class="feeling-icon">😌😌😌</div>
+                    People think I'm considerate when I use a quiet voice
+                </div>
+            </div>
+
+            <div class="behavior-item">
+                <div class="behavior-icon">⏳</div>
+                <div class="behavior-text">Waiting My Turn</div>
+                <div class="feeling-bubble">
+                    <div class="feeling-icon">🙂🙂🙂</div>
+                    People think I'm patient when I wait my turn
+                </div>
+            </div>
+
+            <div class="behavior-item">
+                <div class="behavior-icon">🤝</div>
+                <div class="behavior-text">Keeping Hands to Myself</div>
+                <div class="feeling-bubble">
+                    <div class="feeling-icon">😊😊😊</div>
+                    People think I'm safe when I keep hands to myself
+                </div>
+            </div>
+
+            <div class="behavior-item">
+                <div class="behavior-icon">👂</div>
+                <div class="behavior-text">Following Directions</div>
+                <div class="feeling-bubble">
+                    <div class="feeling-icon">😃😃😃</div>
+                    People think I'm a good listener when I follow directions
+                </div>
+            </div>
+
+            <div class="behavior-item">
+                <div class="behavior-icon">🤗</div>
+                <div class="behavior-text">Sharing with Others</div>
+                <div class="feeling-bubble">
+                    <div class="feeling-icon">🥰🥰🥰</div>
+                    People think I'm kind when I share
+                </div>
+            </div>
+        </div>
+
+        <div class="column unexpected">
+            <div class="column-header">✗ UNEXPECTED</div>
+
+            <div class="behavior-item">
+                <div class="behavior-icon">🗣️</div>
+                <div class="behavior-text">Calling Out</div>
+                <div class="feeling-bubble">
+                    <div class="feeling-icon">😕😕😕</div>
+                    People think I'm rude when I call out
+                </div>
+            </div>
+
+            <div class="behavior-item">
+                <div class="behavior-icon">📢</div>
+                <div class="behavior-text">Yelling or Screaming</div>
+                <div class="feeling-bubble">
+                    <div class="feeling-icon">😣😣😣</div>
+                    People think I'm too loud when I yell
+                </div>
+            </div>
+
+            <div class="behavior-item">
+                <div class="behavior-icon">🏃</div>
+                <div class="behavior-text">Cutting in Line</div>
+                <div class="feeling-bubble">
+                    <div class="feeling-icon">😠😠😠</div>
+                    People think I'm unfair when I cut in line
+                </div>
+            </div>
+
+            <div class="behavior-item">
+                <div class="behavior-icon">👊</div>
+                <div class="behavior-text">Hitting or Pushing</div>
+                <div class="feeling-bubble">
+                    <div class="feeling-icon">😢😢😢</div>
+                    People think I'm mean when I hit or push
+                </div>
+            </div>
+
+            <div class="behavior-item">
+                <div class="behavior-icon">🙉</div>
+                <div class="behavior-text">Ignoring the Teacher</div>
+                <div class="feeling-bubble">
+                    <div class="feeling-icon">😞😞😞</div>
+                    People think I'm not listening when I ignore
+                </div>
+            </div>
+
+            <div class="behavior-item">
+                <div class="behavior-icon">🤲</div>
+                <div class="behavior-text">Grabbing Without Asking</div>
+                <div class="feeling-bubble">
+                    <div class="feeling-icon">😤😤😤</div>
+                    People think I'm selfish when I grab
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Page 2: Classroom Behaviors -->
+    <div class="scenario-section">
+        <div class="scenario-title">🎒 Classroom Behaviors</div>
+
+        <div class="scenario-grid">
+            <div class="column expected">
+                <div class="column-header">✓ EXPECTED</div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">🪑</div>
+                    <div class="behavior-text">Sitting in My Seat</div>
+                    <div class="feeling-bubble">
+                        Teacher is happy 😊
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">📝</div>
+                    <div class="behavior-text">Doing My Work</div>
+                    <div class="feeling-bubble">
+                        Teacher is proud 🌟
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">✋</div>
+                    <div class="behavior-text">Asking for Help Quietly</div>
+                    <div class="feeling-bubble">
+                        Teacher can help me 👍
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">📚</div>
+                    <div class="behavior-text">Getting Materials Ready</div>
+                    <div class="feeling-bubble">
+                        Teacher thinks I'm responsible 💪
+                    </div>
+                </div>
+            </div>
+
+            <div class="column unexpected">
+                <div class="column-header">✗ UNEXPECTED</div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">🚶</div>
+                    <div class="behavior-text">Walking Around</div>
+                    <div class="feeling-bubble">
+                        Teacher is confused 🤔
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">🎮</div>
+                    <div class="behavior-text">Playing Instead of Working</div>
+                    <div class="feeling-bubble">
+                        Teacher is disappointed 😔
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">😫</div>
+                    <div class="behavior-text">Whining or Complaining</div>
+                    <div class="feeling-bubble">
+                        Teacher can't understand 😕
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">📱</div>
+                    <div class="behavior-text">Being Distracted</div>
+                    <div class="feeling-bubble">
+                        Teacher thinks I'm not ready 😐
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Page 3: Lunchroom Behaviors -->
+    <div class="scenario-section">
+        <div class="scenario-title">🍽️ Lunchroom/Cafeteria Behaviors</div>
+
+        <div class="scenario-grid">
+            <div class="column expected">
+                <div class="column-header">✓ EXPECTED</div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">🚶‍♂️</div>
+                    <div class="behavior-text">Walking in Line</div>
+                    <div class="feeling-bubble">
+                        Everyone feels safe 😊
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">🤫</div>
+                    <div class="behavior-text">Using Inside Voice</div>
+                    <div class="feeling-bubble">
+                        Friends can talk 💬
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">🧹</div>
+                    <div class="behavior-text">Cleaning Up My Spot</div>
+                    <div class="feeling-bubble">
+                        Others think I'm helpful 🌟
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">🍴</div>
+                    <div class="behavior-text">Using Good Table Manners</div>
+                    <div class="feeling-bubble">
+                        Friends want to sit with me 🤗
+                    </div>
+                </div>
+            </div>
+
+            <div class="column unexpected">
+                <div class="column-header">✗ UNEXPECTED</div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">🏃‍♂️</div>
+                    <div class="behavior-text">Running in Cafeteria</div>
+                    <div class="feeling-bubble">
+                        Others feel unsafe 😰
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">📣</div>
+                    <div class="behavior-text">Yelling Across Room</div>
+                    <div class="feeling-bubble">
+                        Friends can't hear 😣
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">🗑️</div>
+                    <div class="behavior-text">Leaving My Mess</div>
+                    <div class="feeling-bubble">
+                        Others think I'm messy 😞
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">🍕</div>
+                    <div class="behavior-text">Throwing Food</div>
+                    <div class="feeling-bubble">
+                        Friends don't want me near 😠
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Page 4: Playground Behaviors -->
+    <div class="scenario-section">
+        <div class="scenario-title">⚽ Playground Behaviors</div>
+
+        <div class="scenario-grid">
+            <div class="column expected">
+                <div class="column-header">✓ EXPECTED</div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">🤝</div>
+                    <div class="behavior-text">Playing Fair</div>
+                    <div class="feeling-bubble">
+                        Friends want to play with me 😊
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">↔️</div>
+                    <div class="behavior-text">Taking Turns</div>
+                    <div class="feeling-bubble">
+                        Everyone has fun 🎉
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">🙋</div>
+                    <div class="behavior-text">Asking to Join In</div>
+                    <div class="feeling-bubble">
+                        Friends think I'm polite 😌
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">🏃‍♀️</div>
+                    <div class="behavior-text">Playing Safely</div>
+                    <div class="feeling-bubble">
+                        No one gets hurt 💚
+                    </div>
+                </div>
+            </div>
+
+            <div class="column unexpected">
+                <div class="column-header">✗ UNEXPECTED</div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">😤</div>
+                    <div class="behavior-text">Cheating in Games</div>
+                    <div class="feeling-bubble">
+                        Friends don't trust me 😕
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">🎯</div>
+                    <div class="behavior-text">Hogging Equipment</div>
+                    <div class="feeling-bubble">
+                        Friends are frustrated 😠
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">👋</div>
+                    <div class="behavior-text">Pushing Into Games</div>
+                    <div class="feeling-bubble">
+                        Friends think I'm bossy 😒
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">⚠️</div>
+                    <div class="behavior-text">Playing Rough</div>
+                    <div class="feeling-bubble">
+                        Someone might get hurt 😢
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Page 5: Home Behaviors -->
+    <div class="scenario-section">
+        <div class="scenario-title">🏠 Home Behaviors</div>
+
+        <div class="scenario-grid">
+            <div class="column expected">
+                <div class="column-header">✓ EXPECTED</div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">👂</div>
+                    <div class="behavior-text">Listening to Parents</div>
+                    <div class="feeling-bubble">
+                        Parents feel respected 🥰
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">🧺</div>
+                    <div class="behavior-text">Helping with Chores</div>
+                    <div class="feeling-bubble">
+                        Family is proud of me 🌟
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">🗣️</div>
+                    <div class="behavior-text">Using Kind Words</div>
+                    <div class="feeling-bubble">
+                        Family feels loved ❤️
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">🤗</div>
+                    <div class="behavior-text">Being Gentle with Siblings</div>
+                    <div class="feeling-bubble">
+                        Everyone gets along 😊
+                    </div>
+                </div>
+            </div>
+
+            <div class="column unexpected">
+                <div class="column-header">✗ UNEXPECTED</div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">🙅</div>
+                    <div class="behavior-text">Arguing with Parents</div>
+                    <div class="feeling-bubble">
+                        Parents feel disrespected 😔
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">🛋️</div>
+                    <div class="behavior-text">Refusing to Help</div>
+                    <div class="feeling-bubble">
+                        Family is disappointed 😞
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">😠</div>
+                    <div class="behavior-text">Using Mean Words</div>
+                    <div class="feeling-bubble">
+                        Family feels hurt 💔
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">⚡</div>
+                    <div class="behavior-text">Fighting with Siblings</div>
+                    <div class="feeling-bubble">
+                        Everyone is upset 😣
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Page 6: Store/Community Behaviors -->
+    <div class="scenario-section">
+        <div class="scenario-title">🏪 Store/Community Behaviors</div>
+
+        <div class="scenario-grid">
+            <div class="column expected">
+                <div class="column-header">✓ EXPECTED</div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">🚶</div>
+                    <div class="behavior-text">Staying with Adult</div>
+                    <div class="feeling-bubble">
+                        Adult feels safe 😌
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">🤐</div>
+                    <div class="behavior-text">Using Quiet Voice</div>
+                    <div class="feeling-bubble">
+                        Others can shop peacefully 😊
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">🙏</div>
+                    <div class="behavior-text">Asking Before Touching</div>
+                    <div class="feeling-bubble">
+                        Adult trusts me 💚
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">⏳</div>
+                    <div class="behavior-text">Waiting Patiently</div>
+                    <div class="feeling-bubble">
+                        Adult is proud 🌟
+                    </div>
+                </div>
+            </div>
+
+            <div class="column unexpected">
+                <div class="column-header">✗ UNEXPECTED</div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">🏃</div>
+                    <div class="behavior-text">Running Away</div>
+                    <div class="feeling-bubble">
+                        Adult feels worried 😰
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">📢</div>
+                    <div class="behavior-text">Yelling or Screaming</div>
+                    <div class="feeling-bubble">
+                        Others are bothered 😣
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">🤲</div>
+                    <div class="behavior-text">Grabbing Things</div>
+                    <div class="feeling-bubble">
+                        Adult can't trust me 😔
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="behavior-icon">😤</div>
+                    <div class="behavior-text">Having a Tantrum</div>
+                    <div class="feeling-bubble">
+                        Everyone is uncomfortable 😞
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Page 7: What Should I Do Instead? -->
+    <div class="scenario-section">
+        <div class="scenario-title">💡 What Should I Do Instead?</div>
+
+        <div class="replacement-card">
+            <div class="replacement-header">When I Want to Talk</div>
+            <div class="replacement-flow">
+                <div class="replacement-box problem-box">
+                    ✗ Calling out<br>or interrupting
+                </div>
+                <div class="arrow">→</div>
+                <div class="replacement-box solution-box">
+                    ✓ Raise my hand<br>and wait to be called on
+                </div>
+            </div>
+        </div>
+
+        <div class="replacement-card">
+            <div class="replacement-header">When I'm Frustrated</div>
+            <div class="replacement-flow">
+                <div class="replacement-box problem-box">
+                    ✗ Yelling, hitting,<br>or throwing things
+                </div>
+                <div class="arrow">→</div>
+                <div class="replacement-box solution-box">
+                    ✓ Take deep breaths,<br>use words, ask for help
+                </div>
+            </div>
+        </div>
+
+        <div class="replacement-card">
+            <div class="replacement-header">When I Want a Turn</div>
+            <div class="replacement-flow">
+                <div class="replacement-box problem-box">
+                    ✗ Grabbing or<br>cutting in line
+                </div>
+                <div class="arrow">→</div>
+                <div class="replacement-box solution-box">
+                    ✓ Wait my turn,<br>ask "Can I have a turn?"
+                </div>
+            </div>
+        </div>
+
+        <div class="replacement-card">
+            <div class="replacement-header">When I Don't Understand</div>
+            <div class="replacement-flow">
+                <div class="replacement-box problem-box">
+                    ✗ Ignoring directions<br>or giving up
+                </div>
+                <div class="arrow">→</div>
+                <div class="replacement-box solution-box">
+                    ✓ Raise my hand,<br>say "I need help please"
+                </div>
+            </div>
+        </div>
+
+        <div class="replacement-card">
+            <div class="replacement-header">When Someone Bothers Me</div>
+            <div class="replacement-flow">
+                <div class="replacement-box problem-box">
+                    ✗ Pushing, hitting,<br>or being mean
+                </div>
+                <div class="arrow">→</div>
+                <div class="replacement-box solution-box">
+                    ✓ Use words: "Stop please"<br>or tell an adult
+                </div>
+            </div>
+        </div>
+
+        <div class="replacement-card">
+            <div class="replacement-header">When I Want Something</div>
+            <div class="replacement-flow">
+                <div class="replacement-box problem-box">
+                    ✗ Whining, crying,<br>or demanding
+                </div>
+                <div class="arrow">→</div>
+                <div class="replacement-box solution-box">
+                    ✓ Use polite words:<br>"May I please have...?"
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Page 8: Social Story Format -->
+    <div class="scenario-section">
+        <div class="scenario-title">📖 Social Story: Being a Good Classroom Friend</div>
+
+        <div style="background: white; padding: 30px; border-radius: 15px; font-size: 1.3em; line-height: 2;">
+            <p style="margin-bottom: 20px;">
+                <strong>When I am at school, I am part of a classroom community.</strong>
+            </p>
+
+            <p style="margin-bottom: 20px;">
+                When I raise my hand and wait to be called on, my teacher can help me.
+                <span style="color: var(--expected-green); font-weight: 700;">This makes my teacher happy. ✓</span>
+            </p>
+
+            <p style="margin-bottom: 20px;">
+                When I use my quiet voice in class, other students can learn.
+                <span style="color: var(--expected-green); font-weight: 700;">This makes everyone feel calm. ✓</span>
+            </p>
+
+            <p style="margin-bottom: 20px;">
+                When I wait my turn, everyone gets a chance.
+                <span style="color: var(--expected-green); font-weight: 700;">This makes my friends think I'm fair. ✓</span>
+            </p>
+
+            <p style="margin-bottom: 20px;">
+                When I keep my hands to myself, everyone stays safe.
+                <span style="color: var(--expected-green); font-weight: 700;">This makes people want to be near me. ✓</span>
+            </p>
+
+            <p style="margin-bottom: 20px;">
+                <strong>I can try my best to do these expected behaviors. When I do, I am being a good classroom friend!</strong>
+            </p>
+        </div>
+
+        <div class="thinking-format" style="margin-top: 30px; font-size: 1.2em;">
+            <strong>Practice Activity:</strong> Draw a picture of yourself doing an expected behavior.
+            Show how it makes others feel.
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Page 9: Parent/Teacher Guide -->
+    <div class="guide-section">
+        <div class="guide-title">👨‍🏫 Parent & Teacher Guide</div>
+        <div class="guide-content">
+            <h3>Using This Chart Effectively</h3>
+            <p>This expected vs. unexpected behavior chart is designed to help children with autism and special needs develop social awareness and self-regulation skills. The focus is on teaching replacement behaviors rather than simply correcting problem behaviors.</p>
+
+            <h3>Teaching Expected Behaviors (Not Shaming)</h3>
+            <ul>
+                <li><strong>Use positive language:</strong> Focus on "Let's practice using our quiet voice" rather than "Stop yelling!"</li>
+                <li><strong>Model the behavior:</strong> Demonstrate the expected behavior and explain how it makes others feel</li>
+                <li><strong>Practice during calm times:</strong> Role-play scenarios when the child is regulated, not during meltdowns</li>
+                <li><strong>Celebrate small wins:</strong> Notice and praise when the child uses expected behaviors</li>
+                <li><strong>Avoid shame or embarrassment:</strong> Frame unexpected behaviors as learning opportunities, not failures</li>
+            </ul>
+
+            <h3>Proactive vs. Reactive Use</h3>
+            <p><strong>Proactive (Recommended):</strong></p>
+            <ul>
+                <li>Review the chart before transitions (e.g., "Let's look at our lunchroom expectations")</li>
+                <li>Practice expected behaviors through role-play and social stories</li>
+                <li>Use visual reminders posted in relevant areas (classroom, cafeteria, etc.)</li>
+                <li>Prime the child before challenging situations</li>
+                <li>Create a routine of reviewing expectations daily</li>
+            </ul>
+
+            <p><strong>Reactive (Use Sparingly):</strong></p>
+            <ul>
+                <li>After an unexpected behavior, calmly refer to the chart: "Let's see what we can do instead"</li>
+                <li>Help the child identify the replacement behavior</li>
+                <li>Practice the expected behavior immediately if possible</li>
+                <li>Avoid using the chart as punishment or shame</li>
+            </ul>
+
+            <h3>Role-Playing Scenarios</h3>
+            <p><strong>How to Practice:</strong></p>
+            <ul>
+                <li><strong>Set up the scenario:</strong> "Let's pretend we're in the lunchroom and you want to sit with your friend"</li>
+                <li><strong>Act it out:</strong> Use toys, stuffed animals, or take turns playing different roles</li>
+                <li><strong>Practice the expected behavior:</strong> Walk through the steps together</li>
+                <li><strong>Show the feelings:</strong> Use the feeling icons to show how others react to expected vs. unexpected behaviors</li>
+                <li><strong>Make it fun:</strong> Use humor, exaggeration, and positive reinforcement</li>
+                <li><strong>Repeat regularly:</strong> Practice the same scenarios multiple times until they become routine</li>
+            </ul>
+
+            <h3>Adapting for Individual Needs</h3>
+            <ul>
+                <li><strong>Verbal children:</strong> Use the "People think I'm ___ when I ___" format to build perspective-taking</li>
+                <li><strong>Nonverbal children:</strong> Focus on visual icons and feelings faces, use gesture prompts</li>
+                <li><strong>High support needs:</strong> Start with 2-3 core behaviors, use simplified language and larger visuals</li>
+                <li><strong>Lower support needs:</strong> Add more nuanced scenarios and discuss "why" behind expectations</li>
+            </ul>
+
+            <h3>Creating Consistency Across Environments</h3>
+            <ul>
+                <li>Use the same chart at home and school for consistency</li>
+                <li>Share with all adults who work with the child (teachers, therapists, family members)</li>
+                <li>Use consistent language when referring to behaviors</li>
+                <li>Post visual reminders in relevant locations</li>
+                <li>Review expectations before new or challenging situations</li>
+            </ul>
+
+            <h3>Important Reminders</h3>
+            <ul>
+                <li><strong>This is not about compliance:</strong> The goal is helping the child understand social expectations and make informed choices</li>
+                <li><strong>Progress takes time:</strong> Be patient and celebrate small improvements</li>
+                <li><strong>Context matters:</strong> What's expected in one setting may not apply to another</li>
+                <li><strong>Behavior is communication:</strong> Unexpected behaviors often signal unmet needs (sensory, communication, regulation)</li>
+                <li><strong>Focus on teaching, not punishing:</strong> Every unexpected behavior is an opportunity to teach the replacement</li>
+            </ul>
+
+            <h3>Additional Resources</h3>
+            <p>Consider pairing this chart with:</p>
+            <ul>
+                <li>Visual schedules to reduce anxiety and increase predictability</li>
+                <li>Emotion regulation tools (feelings thermometer, calm-down strategies)</li>
+                <li>Social stories for specific situations</li>
+                <li>Reinforcement systems (token boards, choice boards)</li>
+                <li>Sensory breaks and movement opportunities</li>
+            </ul>
+
+            <div class="thinking-format" style="margin-top: 30px;">
+                <strong>Remember:</strong> The most effective behavior support comes from understanding the "why" behind the behavior
+                and teaching the child alternative ways to meet their needs. This chart is a tool for teaching, not a punishment system.
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

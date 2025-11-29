@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foundation Skills Assessment | Bridging the Gap</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2E7D6B;
+            --primary-light: #4A9B89;
+            --primary-dark: #1D5C4E;
+            --secondary: #E8A54B;
+            --secondary-light: #F5C77D;
+            --accent: #6B4E9B;
+            --warm: #D4726A;
+            --background: #FAFBF9;
+            --surface: #FFFFFF;
+            --text: #2D3436;
+            --text-light: #636E72;
+            --border: #E0E6E3;
+            --shadow: rgba(46, 125, 107, 0.1);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            box-shadow: 0 2px 20px var(--shadow);
+            z-index: 1000;
+            padding: 0.75rem 2rem;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--primary);
+        }
+
+        .nav-logo-icon {
+            width: 45px;
+            height: 45px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .nav-logo-text {
+            font-weight: 800;
+            font-size: 1.25rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-cta {
+            background: var(--gradient);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .hero-mini {
+            padding: 8rem 2rem 4rem;
+            background: linear-gradient(180deg, #F5F0FF 0%, var(--background) 100%);
+            text-align: center;
+        }
+
+        .hero-mini h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 2.75rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .hero-mini p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .content-section {
+            padding: 4rem 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .intro-card {
+            background: linear-gradient(135deg, #F5F0FF 0%, #EDE5FF 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .intro-card p {
+            font-size: 1.1rem;
+            color: var(--text);
+        }
+
+        .assessment-container {
+            background: var(--surface);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px var(--shadow);
+        }
+
+        .progress-bar {
+            background: var(--border);
+            border-radius: 50px;
+            height: 12px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: var(--gradient);
+            height: 100%;
+            border-radius: 50px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        .skill-section {
+            display: none;
+        }
+
+        .skill-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .skill-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .skill-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+        }
+
+        .skill-header h2 {
+            font-size: 1.5rem;
+            color: var(--text);
+        }
+
+        .skill-header p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .question-group {
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background: var(--background);
+            border-radius: 12px;
+        }
+
+        .question-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .rating-options {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .rating-option {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .rating-option input {
+            display: none;
+        }
+
+        .rating-option span {
+            display: block;
+            padding: 1rem;
+            text-align: center;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .rating-option input:checked + span {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .rating-option span:hover {
+            border-color: var(--primary);
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .btn-secondary {
+            background: var(--background);
+            color: var(--text);
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .results-header h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 2rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .overall-score {
+            width: 150px;
+            height: 150px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: white;
+        }
+
+        .overall-score .number {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .overall-score .label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .score-interpretation {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .score-interpretation.green {
+            background: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .score-interpretation.yellow {
+            background: #FFF8E1;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .score-interpretation.orange {
+            background: #FFF3E0;
+            border-left: 4px solid #FF9800;
+        }
+
+        .score-interpretation.red {
+            background: #FFEBEE;
+            border-left: 4px solid var(--warm);
+        }
+
+        .skill-results {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .skill-result {
+            background: var(--background);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .skill-result-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .skill-result-info {
+            flex: 1;
+        }
+
+        .skill-result-info h4 {
+            font-size: 1rem;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .skill-result-bar {
+            background: var(--border);
+            border-radius: 50px;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .skill-result-fill {
+            height: 100%;
+            border-radius: 50px;
+            transition: width 0.5s ease;
+        }
+
+        .skill-result-score {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--primary);
+            min-width: 50px;
+            text-align: right;
+        }
+
+        .cta-section {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .cta-section h3 {
+            font-size: 1.35rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .footer {
+            background: var(--text);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .footer a {
+            color: var(--secondary);
+            text-decoration: none;
+        }
+
+        .footer p {
+            margin-top: 1rem;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero-mini h1 {
+                font-size: 2rem;
+            }
+
+            .rating-options {
+                flex-direction: column;
+            }
+
+            .rating-option {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <div class="nav-logo-icon">🌉</div>
+                <span class="nav-logo-text">Bridging the Gap</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html#curriculum">Course</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <a href="index.html#pricing" class="nav-cta">Enroll Now</a>
+        </div>
+    </nav>
+
+    <section class="hero-mini">
+        <h1>📊 Foundation Skills Assessment</h1>
+        <p>Discover where your child stands on the 5 critical skills they need before school can work effectively. Takes about 5 minutes.</p>
+    </section>
+
+    <section class="content-section">
+        <div class="intro-card">
+            <p><strong>How it works:</strong> Rate your child on each skill from 0-3. Be honest—this assessment is for YOUR information to help you know where to focus. There are no wrong answers.</p>
+        </div>
+
+        <div class="assessment-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+            <p class="progress-text" id="progress-text">Section 1 of 5: Communication</p>
+
+            <!-- Section 1: Communication -->
+            <div class="skill-section active" id="section-1">
+                <div class="skill-header">
+                    <div class="skill-icon">💬</div>
+                    <div>
+                        <h2>Communicating Basic Needs</h2>
+                        <p>Can your child express essential needs to caregivers?</p>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>Can your child communicate "I need to go to the bathroom" (verbal, sign, picture, or device)?</label>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="q1" value="0"><span>0 - Not yet</span></label>
+                        <label class="rating-option"><input type="radio" name="q1" value="1"><span>1 - Sometimes</span></label>
+                        <label class="rating-option"><input type="radio" name="q1" value="2"><span>2 - With help</span></label>
+                        <label class="rating-option"><input type="radio" name="q1" value="3"><span>3 - Independently</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>Can your child ask for help when they need it?</label>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="q2" value="0"><span>0 - Not yet</span></label>
+                        <label class="rating-option"><input type="radio" name="q2" value="1"><span>1 - Sometimes</span></label>
+                        <label class="rating-option"><input type="radio" name="q2" value="2"><span>2 - With help</span></label>
+                        <label class="rating-option"><input type="radio" name="q2" value="3"><span>3 - Independently</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>Can your child indicate "I need a break" when overwhelmed?</label>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="q3" value="0"><span>0 - Not yet</span></label>
+                        <label class="rating-option"><input type="radio" name="q3" value="1"><span>1 - Sometimes</span></label>
+                        <label class="rating-option"><input type="radio" name="q3" value="2"><span>2 - With help</span></label>
+                        <label class="rating-option"><input type="radio" name="q3" value="3"><span>3 - Independently</span></label>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" disabled>← Previous</button>
+                    <button class="btn btn-primary" onclick="nextSection(1)">Next →</button>
+                </div>
+            </div>
+
+            <!-- Section 2: Boundaries -->
+            <div class="skill-section" id="section-2">
+                <div class="skill-header">
+                    <div class="skill-icon">🛑</div>
+                    <div>
+                        <h2>Boundaries & Saying No</h2>
+                        <p>Can your child set boundaries and express refusal?</p>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>Can your child say or indicate "No" or "Stop"?</label>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="q4" value="0"><span>0 - Not yet</span></label>
+                        <label class="rating-option"><input type="radio" name="q4" value="1"><span>1 - Sometimes</span></label>
+                        <label class="rating-option"><input type="radio" name="q4" value="2"><span>2 - With help</span></label>
+                        <label class="rating-option"><input type="radio" name="q4" value="3"><span>3 - Independently</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>Does your child show discomfort with unfamiliar people?</label>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="q5" value="0"><span>0 - Not yet</span></label>
+                        <label class="rating-option"><input type="radio" name="q5" value="1"><span>1 - Sometimes</span></label>
+                        <label class="rating-option"><input type="radio" name="q5" value="2"><span>2 - With help</span></label>
+                        <label class="rating-option"><input type="radio" name="q5" value="3"><span>3 - Independently</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>Can your child identify safe/trusted adults?</label>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="q6" value="0"><span>0 - Not yet</span></label>
+                        <label class="rating-option"><input type="radio" name="q6" value="1"><span>1 - Sometimes</span></label>
+                        <label class="rating-option"><input type="radio" name="q6" value="2"><span>2 - With help</span></label>
+                        <label class="rating-option"><input type="radio" name="q6" value="3"><span>3 - Independently</span></label>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="prevSection(2)">← Previous</button>
+                    <button class="btn btn-primary" onclick="nextSection(2)">Next →</button>
+                </div>
+            </div>
+
+            <!-- Section 3: Following Instructions -->
+            <div class="skill-section" id="section-3">
+                <div class="skill-header">
+                    <div class="skill-icon">👂</div>
+                    <div>
+                        <h2>Following Instructions</h2>
+                        <p>Can your child respond to basic directions?</p>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>Does your child respond when you say their name?</label>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="q7" value="0"><span>0 - Not yet</span></label>
+                        <label class="rating-option"><input type="radio" name="q7" value="1"><span>1 - Sometimes</span></label>
+                        <label class="rating-option"><input type="radio" name="q7" value="2"><span>2 - With help</span></label>
+                        <label class="rating-option"><input type="radio" name="q7" value="3"><span>3 - Independently</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>Can your child follow one-step directions ("Sit down," "Come here")?</label>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="q8" value="0"><span>0 - Not yet</span></label>
+                        <label class="rating-option"><input type="radio" name="q8" value="1"><span>1 - Sometimes</span></label>
+                        <label class="rating-option"><input type="radio" name="q8" value="2"><span>2 - With help</span></label>
+                        <label class="rating-option"><input type="radio" name="q8" value="3"><span>3 - Independently</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>Can your child transition between activities (with warning)?</label>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="q9" value="0"><span>0 - Not yet</span></label>
+                        <label class="rating-option"><input type="radio" name="q9" value="1"><span>1 - Sometimes</span></label>
+                        <label class="rating-option"><input type="radio" name="q9" value="2"><span>2 - With help</span></label>
+                        <label class="rating-option"><input type="radio" name="q9" value="3"><span>3 - Independently</span></label>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="prevSection(3)">← Previous</button>
+                    <button class="btn btn-primary" onclick="nextSection(3)">Next →</button>
+                </div>
+            </div>
+
+            <!-- Section 4: Self-Regulation -->
+            <div class="skill-section" id="section-4">
+                <div class="skill-header">
+                    <div class="skill-icon">😌</div>
+                    <div>
+                        <h2>Self-Regulation</h2>
+                        <p>Can your child manage their emotions and behavior?</p>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>Does your child show warning signs before becoming overwhelmed that you can recognize?</label>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="q10" value="0"><span>0 - Not yet</span></label>
+                        <label class="rating-option"><input type="radio" name="q10" value="1"><span>1 - Sometimes</span></label>
+                        <label class="rating-option"><input type="radio" name="q10" value="2"><span>2 - With help</span></label>
+                        <label class="rating-option"><input type="radio" name="q10" value="3"><span>3 - Independently</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>Can your child use at least one calming strategy (with prompting)?</label>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="q11" value="0"><span>0 - Not yet</span></label>
+                        <label class="rating-option"><input type="radio" name="q11" value="1"><span>1 - Sometimes</span></label>
+                        <label class="rating-option"><input type="radio" name="q11" value="2"><span>2 - With help</span></label>
+                        <label class="rating-option"><input type="radio" name="q11" value="3"><span>3 - Independently</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>Can your child wait briefly for something they want?</label>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="q12" value="0"><span>0 - Not yet</span></label>
+                        <label class="rating-option"><input type="radio" name="q12" value="1"><span>1 - Sometimes</span></label>
+                        <label class="rating-option"><input type="radio" name="q12" value="2"><span>2 - With help</span></label>
+                        <label class="rating-option"><input type="radio" name="q12" value="3"><span>3 - Independently</span></label>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="prevSection(4)">← Previous</button>
+                    <button class="btn btn-primary" onclick="nextSection(4)">Next →</button>
+                </div>
+            </div>
+
+            <!-- Section 5: Independence -->
+            <div class="skill-section" id="section-5">
+                <div class="skill-header">
+                    <div class="skill-icon">🚶</div>
+                    <div>
+                        <h2>Basic Independence</h2>
+                        <p>Can your child handle basic daily activities?</p>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>Is your child toilet trained OR able to clearly communicate bathroom needs?</label>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="q13" value="0"><span>0 - Not yet</span></label>
+                        <label class="rating-option"><input type="radio" name="q13" value="1"><span>1 - Sometimes</span></label>
+                        <label class="rating-option"><input type="radio" name="q13" value="2"><span>2 - With help</span></label>
+                        <label class="rating-option"><input type="radio" name="q13" value="3"><span>3 - Independently</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>Can your child separate from you without extreme distress?</label>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="q14" value="0"><span>0 - Not yet</span></label>
+                        <label class="rating-option"><input type="radio" name="q14" value="1"><span>1 - Sometimes</span></label>
+                        <label class="rating-option"><input type="radio" name="q14" value="2"><span>2 - With help</span></label>
+                        <label class="rating-option"><input type="radio" name="q14" value="3"><span>3 - Independently</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>Can your child engage in an activity independently for a few minutes?</label>
+                    <div class="rating-options">
+                        <label class="rating-option"><input type="radio" name="q15" value="0"><span>0 - Not yet</span></label>
+                        <label class="rating-option"><input type="radio" name="q15" value="1"><span>1 - Sometimes</span></label>
+                        <label class="rating-option"><input type="radio" name="q15" value="2"><span>2 - With help</span></label>
+                        <label class="rating-option"><input type="radio" name="q15" value="3"><span>3 - Independently</span></label>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="prevSection(5)">← Previous</button>
+                    <button class="btn btn-primary" onclick="calculateResults()">See My Results →</button>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section" id="results">
+                <div class="results-header">
+                    <h2>Your Child's Foundation Skills Assessment</h2>
+                    <div class="overall-score">
+                        <span class="number" id="total-score">0</span>
+                        <span class="label">out of 45</span>
+                    </div>
+                </div>
+
+                <div class="score-interpretation" id="interpretation">
+                    <!-- Filled by JavaScript -->
+                </div>
+
+                <div class="skill-results" id="skill-results">
+                    <!-- Filled by JavaScript -->
+                </div>
+
+                <div class="cta-section">
+                    <h3>Ready to Build These Skills?</h3>
+                    <p>Our 6-week course teaches you exactly HOW to develop these foundational skills at home—with practical strategies that work.</p>
+                    <a href="index.html#pricing" class="btn btn-primary">Learn More About the Course →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <a href="index.html">🌉 Bridging the Gap</a>
+        <p>© 2024 Bridging the Gap. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const skillNames = [
+            { name: 'Communication', icon: '💬', questions: [1, 2, 3] },
+            { name: 'Boundaries', icon: '🛑', questions: [4, 5, 6] },
+            { name: 'Following Instructions', icon: '👂', questions: [7, 8, 9] },
+            { name: 'Self-Regulation', icon: '😌', questions: [10, 11, 12] },
+            { name: 'Independence', icon: '🚶', questions: [13, 14, 15] }
+        ];
+
+        const sectionLabels = [
+            'Section 1 of 5: Communication',
+            'Section 2 of 5: Boundaries',
+            'Section 3 of 5: Following Instructions',
+            'Section 4 of 5: Self-Regulation',
+            'Section 5 of 5: Independence'
+        ];
+
+        function updateProgress(section) {
+            const progress = (section / 5) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = sectionLabels[section - 1];
+        }
+
+        function nextSection(current) {
+            document.getElementById('section-' + current).classList.remove('active');
+            document.getElementById('section-' + (current + 1)).classList.add('active');
+            updateProgress(current + 1);
+            window.scrollTo({ top: 200, behavior: 'smooth' });
+        }
+
+        function prevSection(current) {
+            document.getElementById('section-' + current).classList.remove('active');
+            document.getElementById('section-' + (current - 1)).classList.add('active');
+            updateProgress(current - 1);
+            window.scrollTo({ top: 200, behavior: 'smooth' });
+        }
+
+        function calculateResults() {
+            let total = 0;
+            let skillScores = [];
+
+            skillNames.forEach((skill, index) => {
+                let skillTotal = 0;
+                skill.questions.forEach(q => {
+                    const selected = document.querySelector(`input[name="q${q}"]:checked`);
+                    if (selected) {
+                        skillTotal += parseInt(selected.value);
+                    }
+                });
+                skillScores.push(skillTotal);
+                total += skillTotal;
+            });
+
+            // Hide assessment, show results
+            document.querySelectorAll('.skill-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('results').classList.add('active');
+            document.getElementById('progress').style.width = '100%';
+            document.getElementById('progress-text').textContent = 'Assessment Complete!';
+
+            // Display total score
+            document.getElementById('total-score').textContent = total;
+
+            // Interpretation
+            let interpDiv = document.getElementById('interpretation');
+            if (total >= 38) {
+                interpDiv.className = 'score-interpretation green';
+                interpDiv.innerHTML = '<strong>Strong Foundation (38-45):</strong> Your child has a solid foundation of skills. They are well-prepared to benefit from school programming. Continue reinforcing these skills and focus on any areas that scored lower.';
+            } else if (total >= 28) {
+                interpDiv.className = 'score-interpretation yellow';
+                interpDiv.innerHTML = '<strong>Good Progress (28-37):</strong> Your child is developing these skills nicely. Focus on daily practice in the areas that scored lower. With consistent work, you\'ll see continued improvement.';
+            } else if (total >= 18) {
+                interpDiv.className = 'score-interpretation orange';
+                interpDiv.innerHTML = '<strong>Emerging Skills (18-27):</strong> Your child has some foundation skills but needs more development before school can be most effective. Prioritize the lowest-scoring areas for intensive home practice.';
+            } else {
+                interpDiv.className = 'score-interpretation red';
+                interpDiv.innerHTML = '<strong>Foundation Building Needed (0-17):</strong> Your child needs focused skill-building before school programs can be effective. This is the perfect time to invest in learning HOW to teach these skills. Our course can help.';
+            }
+
+            // Individual skill results
+            let resultsHTML = '';
+            skillNames.forEach((skill, index) => {
+                const score = skillScores[index];
+                const percent = (score / 9) * 100;
+                let color = '#4CAF50';
+                if (percent < 33) color = '#E57373';
+                else if (percent < 67) color = '#FFB74D';
+
+                resultsHTML += `
+                    <div class="skill-result">
+                        <div class="skill-result-icon">${skill.icon}</div>
+                        <div class="skill-result-info">
+                            <h4>${skill.name}</h4>
+                            <div class="skill-result-bar">
+                                <div class="skill-result-fill" style="width: ${percent}%; background: ${color};"></div>
+                            </div>
+                        </div>
+                        <div class="skill-result-score">${score}/9</div>
+                    </div>
+                `;
+            });
+            document.getElementById('skill-results').innerHTML = resultsHTML;
+
+            window.scrollTo({ top: 200, behavior: 'smooth' });
+        }
+
+        // Initialize
+        updateProgress(1);
+    </script>
+</body>
+</html>

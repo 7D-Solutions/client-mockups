@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Bridging the Gap | Frequently Asked Questions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2E7D6B;
+            --primary-light: #4A9B89;
+            --primary-dark: #1D5C4E;
+            --secondary: #E8A54B;
+            --secondary-light: #F5C77D;
+            --accent: #6B4E9B;
+            --accent-light: #8B6EBB;
+            --warm: #D4726A;
+            --warm-light: #E89890;
+            --background: #FAFBF9;
+            --surface: #FFFFFF;
+            --text: #2D3436;
+            --text-light: #636E72;
+            --border: #E0E6E3;
+            --shadow: rgba(46, 125, 107, 0.1);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            box-shadow: 0 2px 20px var(--shadow);
+            z-index: 1000;
+            padding: 0.75rem 2rem;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--primary);
+        }
+
+        .nav-logo-icon {
+            width: 45px;
+            height: 45px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .nav-logo-text {
+            font-weight: 800;
+            font-size: 1.25rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 600;
+            transition: color 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-cta {
+            background: var(--gradient);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px var(--shadow);
+        }
+
+        .mobile-menu {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 8rem 2rem 4rem;
+            background: linear-gradient(180deg, #E8F5F1 0%, var(--background) 100%);
+            min-height: 40vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+        }
+
+        .hero-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--surface);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .hero h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 3rem;
+            line-height: 1.2;
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 span {
+            color: var(--secondary);
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        /* Search Section */
+        .search-section {
+            padding: 3rem 2rem;
+            background: var(--surface);
+        }
+
+        .search-container {
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 1.25rem 3.5rem 1.25rem 1.5rem;
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-family: inherit;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 5px 20px var(--shadow);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: var(--primary);
+            pointer-events: none;
+        }
+
+        .search-results {
+            margin-top: 1rem;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            padding: 4rem 2rem;
+            background: var(--background);
+        }
+
+        .section-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .faq-category {
+            margin-bottom: 4rem;
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            flex-shrink: 0;
+        }
+
+        .category-header h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.85rem;
+            color: var(--text);
+        }
+
+        .faq-item {
+            background: var(--surface);
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px var(--shadow);
+            transition: all 0.3s;
+        }
+
+        .faq-item:hover {
+            box-shadow: 0 5px 20px var(--shadow);
+        }
+
+        .faq-question {
+            padding: 1.5rem 2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+            user-select: none;
+        }
+
+        .faq-question h3 {
+            font-size: 1.15rem;
+            color: var(--text);
+            font-weight: 700;
+            flex: 1;
+        }
+
+        .faq-toggle {
+            width: 40px;
+            height: 40px;
+            background: var(--background);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: var(--primary);
+            flex-shrink: 0;
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .faq-item.active .faq-toggle {
+            transform: rotate(180deg);
+            background: var(--primary);
+            color: white;
+        }
+
+        .faq-answer {
+            display: none;
+            padding: 0 2rem 1.5rem;
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .faq-answer p {
+            margin-bottom: 1rem;
+        }
+
+        .faq-answer ul {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .faq-answer li {
+            margin-bottom: 0.5rem;
+        }
+
+        .faq-answer strong {
+            color: var(--text);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 5rem 2rem;
+            background: var(--gradient);
+            text-align: center;
+            color: white;
+        }
+
+        .cta-section h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.15rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: var(--primary);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text);
+            color: white;
+            padding: 4rem 2rem 2rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .footer-brand h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand p {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .footer-links h4 {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.95rem;
+            display: block;
+            padding: 0.5rem 0;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 3rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .footer-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2.25rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .category-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .faq-question {
+                padding: 1.25rem 1.5rem;
+            }
+
+            .faq-question h3 {
+                font-size: 1.05rem;
+            }
+
+            .faq-answer {
+                padding: 0 1.5rem 1.25rem;
+            }
+
+            .footer-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .cta-section h2 {
+                font-size: 2rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                padding: 6rem 1rem 3rem;
+            }
+
+            .hero h1 {
+                font-size: 1.85rem;
+            }
+
+            .search-box {
+                font-size: 1rem;
+                padding: 1rem 3rem 1rem 1.25rem;
+            }
+
+            .category-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <div class="nav-logo-icon">🌉</div>
+                <span class="nav-logo-text">Bridging the Gap</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html#curriculum">Course</a></li>
+                <li><a href="resources.html">Resources</a></li>
+                <li><a href="podcast.html">Podcast</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <a href="index.html#pricing" class="nav-cta">Enroll Now</a>
+            <button class="mobile-menu">☰</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-badge">
+                <span>❓</span> Frequently Asked Questions
+            </div>
+            <h1>Your Questions, <span>Answered</span></h1>
+            <p class="hero-subtitle">
+                Everything you need to know about "Bridging the Gap"—from enrollment to CEU credits
+            </p>
+        </div>
+    </section>
+
+    <!-- Search Section -->
+    <section class="search-section">
+        <div class="search-container">
+            <input type="text" id="faq-search" class="search-box" placeholder="Search for your question...">
+            <span class="search-icon">🔍</span>
+            <div class="search-results" id="search-results"></div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="section-container">
+
+            <!-- About the Course -->
+            <div class="faq-category" data-category="course">
+                <div class="category-header">
+                    <div class="category-icon">📚</div>
+                    <h2>About the Course</h2>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this.parentElement)">
+                        <h3>What is the "Bridging the Gap" course?</h3>
+                        <div class="faq-toggle">▼</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>"Bridging the Gap" is a 6-week comprehensive course designed to help parents and educators understand what children with autism need BEFORE school can work effectively. Created by a school psychologist and Licensed Professional Counselor with 35+ years of experience, this course bridges the communication gap between families and schools.</p>
+                        <p>The course covers five critical foundation skills, navigating the IEP process, understanding special education law, and building effective partnerships with your child's school team.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this.parentElement)">
+                        <h3>Who is this course for?</h3>
+                        <div class="faq-toggle">▼</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>This course is designed for:</p>
+                        <ul>
+                            <li><strong>Parents of children with autism</strong> who want to understand the special education system and learn how to teach foundational skills at home</li>
+                            <li><strong>Educators and school professionals</strong> seeking to understand the parent perspective and improve collaboration</li>
+                            <li><strong>Speech therapists, occupational therapists, and BCBAs</strong> who work with families</li>
+                            <li><strong>Anyone who supports children with autism</strong> and wants evidence-based, practical strategies</li>
+                        </ul>
+                        <p>The course is especially valuable if you've felt frustrated by IEP meetings, confused about what services your child should receive, or overwhelmed by where to start.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this.parentElement)">
+                        <h3>How long is the course?</h3>
+                        <div class="faq-toggle">▼</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>The course runs for <strong>6 weeks</strong>, with each week covering a specific topic:</p>
+                        <ul>
+                            <li>Week 1: Understanding the special education landscape</li>
+                            <li>Week 2: Foundation skills your child needs</li>
+                            <li>Week 3: Boundaries, safety, and saying "no"</li>
+                            <li>Week 4: Understanding behavior and preventing meltdowns</li>
+                            <li>Week 5: Navigating the IEP process</li>
+                            <li>Week 6: Building the home-school partnership</li>
+                        </ul>
+                        <p>Each session is 90 minutes for live formats, or 60-90 minute pre-recorded modules for self-paced learning.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this.parentElement)">
+                        <h3>What format options are available?</h3>
+                        <div class="faq-toggle">▼</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We offer three formats to fit your schedule and learning style:</p>
+                        <ul>
+                            <li><strong>Self-Paced Online ($297):</strong> Video modules you can watch anytime, with 6 months access and email support</li>
+                            <li><strong>Live Virtual Group ($497):</strong> Weekly 90-minute Zoom sessions with live Q&A, recordings, and private community access (8-15 families per cohort)</li>
+                            <li><strong>In-Person Workshop ($597):</strong> Weekly 2-hour sessions with hands-on practice, role-playing, and local networking (10-20 families per cohort)</li>
+                        </ul>
+                        <p>All formats include downloadable materials and resources.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this.parentElement)">
+                        <h3>Do I need any special materials?</h3>
+                        <div class="faq-toggle">▼</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>No special materials are required! Everything you need is provided:</p>
+                        <ul>
+                            <li>Downloadable workbooks and handouts</li>
+                            <li>Visual support templates (PECS, visual schedules)</li>
+                            <li>IEP meeting checklists and preparation guides</li>
+                            <li>Skill assessment tools</li>
+                            <li>Resource lists and reference materials</li>
+                        </ul>
+                        <p>We recommend having a notebook for personal reflections and action planning.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enrollment & Pricing -->
+            <div class="faq-category" data-category="enrollment">
+                <div class="category-header">
+                    <div class="category-icon">💳</div>
+                    <h2>Enrollment & Pricing</h2>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this.parentElement)">
+                        <h3>How much does the course cost?</h3>
+                        <div class="faq-toggle">▼</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Course pricing varies by format:</p>
+                        <ul>
+                            <li><strong>Self-Paced Online: $297</strong> (best value for flexibility)</li>
+                            <li><strong>Live Virtual Group: $497</strong> (most popular—includes live interaction and community)</li>
+                            <li><strong>In-Person Workshop: $597</strong> (includes hands-on practice and local networking)</li>
+                        </ul>
+                        <p>All formats include lifetime access to course materials and updates.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this.parentElement)">
+                        <h3>Are payment plans available?</h3>
+                        <div class="faq-toggle">▼</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! We offer flexible payment plans for all course formats:</p>
+                        <ul>
+                            <li><strong>Self-Paced:</strong> 3 monthly payments of $99</li>
+                            <li><strong>Live Virtual:</strong> 3 monthly payments of $166</li>
+                            <li><strong>In-Person:</strong> 3 monthly payments of $199</li>
+                        </ul>
+                        <p>Payment plans are interest-free and can be selected during checkout. Contact us if you need a custom payment arrangement.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this.parentElement)">
+                        <h3>What is your refund policy?</h3>
+                        <div class="faq-toggle">▼</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We offer a <strong>30-day money-back guarantee</strong>. If you're not satisfied with the course within the first 30 days (or after Week 2 for live formats), we'll refund your full payment—no questions asked.</p>
+                        <p>We want you to feel confident in your investment. If the course isn't the right fit for you, simply email us at support@bridgingthegap.com within 30 days of purchase.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this.parentElement)">
+                        <h3>When does the next cohort start?</h3>
+                        <div class="faq-toggle">▼</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We run new cohorts quarterly:</p>
+                        <ul>
+                            <li><strong>Next Live Virtual Cohort:</strong> January 15, 2025 (Registration closes January 8)</li>
+                            <li><strong>Next In-Person Workshop:</strong> Contact us for locations and dates</li>
+                            <li><strong>Self-Paced Online:</strong> Available anytime—start immediately after enrollment</li>
+                        </ul>
+                        <p>Sign up for our waitlist to receive early notification and early-bird pricing for upcoming cohorts.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this.parentElement)">
+                        <h3>Can I take the course with my spouse/partner?</h3>
+                        <div class="faq-toggle">▼</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Absolutely!</strong> We encourage both parents/caregivers to participate together. In fact, couples who take the course together report better consistency at home and stronger advocacy at school.</p>
+                        <p>One enrollment covers your household—both parents can attend live sessions, access materials, and participate in the community at no additional cost.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- For Parents -->
+            <div class="faq-category" data-category="parents">
+                <div class="category-header">
+                    <div class="category-icon">👨‍👩‍👧</div>
+                    <h2>For Parents</h2>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this.parentElement)">
+                        <h3>My child was just diagnosed—is this course right for me?</h3>
+                        <div class="faq-toggle">▼</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Yes—this is the perfect time!</strong> Early intervention is critical, and understanding what your child needs NOW (before school starts or in the early years) will set you up for long-term success.</p>
+                        <p>This course will help you:</p>
+                        <ul>
+                            <li>Understand what to prioritize in the early years</li>
+                            <li>Learn the foundational skills to teach at home</li>
+                            <li>Navigate early intervention services and school transitions</li>
+                            <li>Build a strong foundation before IEP meetings become complex</li>
+                        </ul>
+                        <p>Many parents say, "I wish I had taken this course right after diagnosis."</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this.parentElement)">
+                        <h3>Will this course help me at IEP meetings?</h3>
+                        <div class="faq-toggle">▼</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Absolutely.</strong> Week 5 is dedicated specifically to IEP navigation, and you'll learn:</p>
+                        <ul>
+                            <li>Your legal rights under IDEA</li>
+                            <li>How to read and understand IEP documents</li>
+                            <li>What questions to ask (and when to ask them)</li>
+                            <li>How to advocate effectively without burning bridges</li>
+                            <li>When to push back—and when to compromise</li>
+                            <li>How to document progress and concerns</li>
+                        </ul>
+                        <p>Parents consistently report feeling more confident, prepared, and collaborative in IEP meetings after taking this course.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this.parentElement)">
+                        <h3>What if my child is nonverbal?</h3>
+                        <div class="faq-toggle">▼</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>This course is specifically designed with nonverbal children in mind.</strong> Communication is communication—whether through words, sign language, PECS, or AAC devices.</p>
+                        <p>You'll learn:</p>
+                        <ul>
+                            <li>Alternative communication methods (PECS, sign language, AAC)</li>
+                            <li>How to teach basic needs communication without verbal speech</li>
+                            <li>Visual supports and strategies that work</li>
+                            <li>How to advocate for speech/communication services in IEP meetings</li>
+                        </ul>
+                        <p>The instructor has extensive experience working with nonverbal children and their families.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this.parentElement)">
+                        <h3>Is this course only for children with autism?</h3>
+                        <div class="faq-toggle">▼</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>While the course was designed with autism in mind, the principles and strategies apply to <strong>any child with developmental delays, communication challenges, or behavioral needs</strong>.</p>
+                        <p>Parents of children with ADHD, intellectual disabilities, speech delays, sensory processing disorders, and other diagnoses have found tremendous value in this course.</p>
+                        <p>The foundational skills (communication, boundaries, following instructions, self-regulation, and independence) are universal—every child benefits from these.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this.parentElement)">
+                        <h3>What ages is this appropriate for?</h3>
+                        <div class="faq-toggle">▼</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>The course content is most relevant for <strong>children ages 2-12</strong>, but the principles apply across all ages.</p>
+                        <ul>
+                            <li><strong>Early Childhood (2-5):</strong> Perfect timing for foundational skills and early intervention navigation</li>
+                            <li><strong>Elementary (6-12):</strong> Focus on IEP advocacy, behavior management, and school partnership</li>
+                            <li><strong>Older Children (13+):</strong> Adapt strategies for self-advocacy, transition planning, and independence</li>
+                        </ul>
+                        <p>Many strategies can be modified for developmental age rather than chronological age.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- For Educators -->
+            <div class="faq-category" data-category="educators">
+                <div class="category-header">
+                    <div class="category-icon">👩‍🏫</div>
+                    <h2>For Educators</h2>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this.parentElement)">
+                        <h3>Can I earn CEU credits?</h3>
+                        <div class="faq-toggle">▼</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Yes!</strong> This course provides <strong>9 contact hours</strong> of continuing education credit.</p>
+                        <p>We are approved for:</p>
+                        <ul>
+                            <li>Teachers and administrators in most states</li>
+                            <li>Licensed Professional Counselors (LPC)</li>
+                            <li>School Psychologists</li>
+                            <li>Social workers (check your state requirements)</li>
+                            <li>Speech-language pathologists (ASHA CEUs pending)</li>
+                        </ul>
+                        <p>A certificate of completion is provided upon finishing the course.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this.parentElement)">
+                        <h3>How many contact hours are provided?</h3>
+                        <div class="faq-toggle">▼</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>The course provides <strong>9 contact hours</strong> total:</p>
+                        <ul>
+                            <li>6 weekly sessions × 1.5 hours each = 9 hours</li>
+                            <li>Additional optional readings and resources available</li>
+                        </ul>
+                        <p>For self-paced learners, contact hours are calculated based on module completion and assessment activities.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this.parentElement)">
+                        <h3>Is this approved for my license renewal?</h3>
+                        <div class="faq-toggle">▼</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Contact hours are accepted in most states for teacher and counselor license renewal. Topics covered include:</p>
+                        <ul>
+                            <li>Special education law and compliance (IDEA, FAPE)</li>
+                            <li>Parent-professional collaboration</li>
+                            <li>Behavior management and functional communication</li>
+                            <li>IEP development and implementation</li>
+                        </ul>
+                        <p><strong>Before enrolling, check with your state licensing board</strong> to confirm acceptance of contact hours from this provider. We provide detailed course syllabi and certificates upon request for approval submissions.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this.parentElement)">
+                        <h3>Can I take this as a team/school?</h3>
+                        <div class="faq-toggle">▼</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Yes!</strong> We offer group rates for schools and teams of 5 or more educators.</p>
+                        <p><strong>School/Team Benefits:</strong></p>
+                        <ul>
+                            <li>Discounted pricing (20% off for groups of 5+)</li>
+                            <li>Customized professional development format</li>
+                            <li>Can be scheduled as staff training days</li>
+                            <li>Builds common language and approach across your team</li>
+                            <li>Strengthens home-school partnerships school-wide</li>
+                        </ul>
+                        <p>Contact us for custom pricing and scheduling: info@bridgingthegap.com</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technical Questions -->
+            <div class="faq-category" data-category="technical">
+                <div class="category-header">
+                    <div class="category-icon">💻</div>
+                    <h2>Technical Questions</h2>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this.parentElement)">
+                        <h3>How do I access the course materials?</h3>
+                        <div class="faq-toggle">▼</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>After enrollment, you'll receive:</p>
+                        <ul>
+                            <li><strong>Login credentials</strong> to our course platform within 24 hours</li>
+                            <li><strong>Welcome email</strong> with access instructions and start date</li>
+                            <li><strong>Course dashboard</strong> where you can view modules, download materials, and access recordings</li>
+                            <li><strong>Zoom links</strong> (for live virtual format) sent before each session</li>
+                        </ul>
+                        <p>All materials are accessible from any device—computer, tablet, or smartphone.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this.parentElement)">
+                        <h3>Can I watch the recordings later?</h3>
+                        <div class="faq-toggle">▼</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Yes!</strong></p>
+                        <ul>
+                            <li><strong>Live Virtual:</strong> Recordings available within 24 hours of each session, accessible for 30 days after the course ends</li>
+                            <li><strong>Self-Paced:</strong> Unlimited access to all video modules for 6 months (can be extended)</li>
+                            <li><strong>In-Person:</strong> Recordings not typically available, but materials and slides provided</li>
+                        </ul>
+                        <p>Recordings allow you to review content, catch up if you miss a session, or revisit key concepts.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this.parentElement)">
+                        <h3>What if I miss a live session?</h3>
+                        <div class="faq-toggle">▼</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Life happens! If you miss a live session:</p>
+                        <ul>
+                            <li><strong>Watch the recording</strong> within 24 hours (available for 30 days)</li>
+                            <li><strong>Submit questions</strong> via email or the community forum</li>
+                            <li><strong>Catch up before the next session</strong> using provided materials</li>
+                            <li><strong>Schedule office hours</strong> if you need additional support</li>
+                        </ul>
+                        <p>We understand that 100% attendance isn't always possible—the materials and recordings ensure you don't fall behind.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="section-container">
+            <h2>Still Have Questions?</h2>
+            <p>We're here to help! Reach out and we'll get back to you within 24 hours.</p>
+            <div class="cta-buttons">
+                <a href="contact.html" class="btn btn-primary">
+                    <span>📧</span> Contact Us
+                </a>
+                <a href="index.html#pricing" class="btn btn-secondary">
+                    <span>🚀</span> Enroll Now
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h3>🌉 Bridging the Gap</h3>
+                <p>Empowering parents and educators to work together for every child's success. Based on 35 years of experience in special education.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Course</h4>
+                <ul>
+                    <li><a href="index.html#five-things">5 Things to Know</a></li>
+                    <li><a href="index.html#foundation">Foundation Skills</a></li>
+                    <li><a href="index.html#curriculum">Curriculum</a></li>
+                    <li><a href="index.html#pricing">Pricing</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">Free IEP Checklist</a></li>
+                    <li><a href="#">Skills Assessment</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Connect</h4>
+                <ul>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="#">Facebook Group</a></li>
+                    <li><a href="#">Newsletter</a></li>
+                    <li><a href="#">Speaking</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 Bridging the Gap. All rights reserved. | <a href="#" style="color: inherit;">Privacy Policy</a> | <a href="#" style="color: inherit;">Terms of Service</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // Toggle FAQ accordion
+        function toggleFaq(item) {
+            const isActive = item.classList.contains('active');
+
+            // Close all items in the same category
+            const category = item.closest('.faq-category');
+            category.querySelectorAll('.faq-item').forEach(i => {
+                i.classList.remove('active');
+            });
+
+            // Toggle current item
+            if (!isActive) {
+                item.classList.add('active');
+            }
+        }
+
+        // Search functionality
+        const searchInput = document.getElementById('faq-search');
+        const searchResults = document.getElementById('search-results');
+        const faqItems = document.querySelectorAll('.faq-item');
+
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+
+            if (searchTerm.length < 2) {
+                searchResults.textContent = '';
+                faqItems.forEach(item => {
+                    item.style.display = 'block';
+                });
+                return;
+            }
+
+            let matchCount = 0;
+
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question h3').textContent.toLowerCase();
+                const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+
+                if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                    item.style.display = 'block';
+                    matchCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            if (matchCount === 0) {
+                searchResults.textContent = 'No results found. Try a different search term.';
+            } else {
+                searchResults.textContent = `Found ${matchCount} result${matchCount !== 1 ? 's' : ''}`;
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href !== '#' && href !== '#!') {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }
+            });
+        });
+
+        // Open first FAQ item in each category by default
+        document.querySelectorAll('.faq-category').forEach(category => {
+            const firstItem = category.querySelector('.faq-item');
+            if (firstItem) {
+                firstItem.classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>

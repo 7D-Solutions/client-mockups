@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speaking & Workshops | Bridging the Gap</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2E7D6B;
+            --primary-light: #4A9B89;
+            --primary-dark: #1D5C4E;
+            --secondary: #E8A54B;
+            --secondary-light: #F5C77D;
+            --accent: #6B4E9B;
+            --accent-light: #8B6EBB;
+            --warm: #D4726A;
+            --warm-light: #E89890;
+            --background: #FAFBF9;
+            --surface: #FFFFFF;
+            --text: #2D3436;
+            --text-light: #636E72;
+            --border: #E0E6E3;
+            --shadow: rgba(46, 125, 107, 0.1);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            box-shadow: 0 2px 20px var(--shadow);
+            z-index: 1000;
+            padding: 0.75rem 2rem;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--primary);
+        }
+
+        .nav-logo-icon {
+            width: 45px;
+            height: 45px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .nav-logo-text { font-weight: 800; font-size: 1.25rem; }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 600;
+            transition: color 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover { color: var(--primary); }
+
+        .nav-cta {
+            background: var(--gradient);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px var(--shadow);
+        }
+
+        .mobile-menu {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 8rem 2rem 4rem;
+            background: linear-gradient(180deg, #E8F5F1 0%, var(--background) 100%);
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 3rem;
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 span {
+            color: var(--secondary);
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--surface);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        /* Bio Section */
+        .bio {
+            padding: 4rem 2rem;
+            background: var(--surface);
+        }
+
+        .bio-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .bio-image {
+            width: 100%;
+            aspect-ratio: 4/5;
+            background: var(--gradient);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            color: white;
+            box-shadow: 0 20px 60px var(--shadow);
+        }
+
+        .bio-content h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 2rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .bio-content p {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+        }
+
+        .credentials-list {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+
+        .credentials-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .credentials-list li span {
+            font-size: 1.25rem;
+        }
+
+        /* Section Utilities */
+        .section-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-label {
+            display: inline-block;
+            background: var(--gradient);
+            color: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 2.5rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            font-size: 1.15rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Topics Section */
+        .topics {
+            padding: 4rem 2rem;
+            background: linear-gradient(180deg, var(--background) 0%, #E8F5F1 100%);
+        }
+
+        .topics-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .topic-card {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px var(--shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px var(--shadow);
+        }
+
+        .topic-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .topic-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            flex-shrink: 0;
+        }
+
+        .topic-info h3 {
+            font-size: 1.35rem;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .topic-duration {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .topic-card p {
+            color: var(--text-light);
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .topic-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--warm-light) 0%, var(--warm) 100%);
+            color: white;
+            padding: 0.35rem 0.85rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-top: 1rem;
+        }
+
+        /* Audiences Section */
+        .audiences {
+            padding: 4rem 2rem;
+            background: var(--surface);
+        }
+
+        .audiences-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .audience-card {
+            background: var(--background);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .audience-card:hover {
+            background: var(--surface);
+            border-color: var(--primary);
+            box-shadow: 0 15px 40px var(--shadow);
+            transform: translateY(-5px);
+        }
+
+        .audience-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1rem;
+        }
+
+        .audience-card h3 {
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .audience-card p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            padding: 4rem 2rem;
+            background: linear-gradient(180deg, #E8F5F1 0%, var(--background) 100%);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            box-shadow: 0 10px 40px var(--shadow);
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 4rem;
+            color: var(--primary);
+            opacity: 0.2;
+            font-family: 'Merriweather', serif;
+            line-height: 1;
+        }
+
+        .testimonial-card p {
+            font-style: italic;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .testimonial-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+        }
+
+        .testimonial-info h4 {
+            font-weight: 700;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .testimonial-info p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-style: normal;
+            margin: 0;
+        }
+
+        /* Booking Form Section */
+        .booking {
+            padding: 4rem 2rem;
+            background: var(--surface);
+        }
+
+        .booking-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-submit {
+            width: 100%;
+            padding: 1.25rem;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .form-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px var(--shadow);
+        }
+
+        /* Past Speaking Section */
+        .past-speaking {
+            padding: 4rem 2rem;
+            background: linear-gradient(180deg, var(--background) 0%, #E8F5F1 100%);
+            text-align: center;
+        }
+
+        .logos-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .logo-placeholder {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            aspect-ratio: 16/9;
+            box-shadow: 0 5px 20px var(--shadow);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text);
+            color: white;
+            padding: 4rem 2rem 2rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .footer-brand h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand p {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .footer-links h4 {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.95rem;
+            display: block;
+            padding: 0.5rem 0;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 3rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .mobile-menu { display: block; }
+            .hero h1 { font-size: 2.25rem; }
+            .section-header h2 { font-size: 1.85rem; }
+            .bio-container { grid-template-columns: 1fr; }
+            .bio-image { max-width: 300px; margin: 0 auto; }
+            .audiences-grid { grid-template-columns: 1fr; }
+            .testimonials-grid { grid-template-columns: 1fr; }
+            .logos-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-container { grid-template-columns: 1fr; text-align: center; }
+        }
+
+        @media (max-width: 480px) {
+            .hero { padding: 6rem 1rem 3rem; }
+            .hero h1 { font-size: 1.85rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <div class="nav-logo-icon">🌉</div>
+                <span class="nav-logo-text">Bridging the Gap</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html#curriculum">Course</a></li>
+                <li><a href="resources.html">Resources</a></li>
+                <li><a href="podcast.html">Podcast</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <a href="#booking-form" class="nav-cta">Book Speaking</a>
+            <button class="mobile-menu">☰</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badge">
+            <span>🎤</span> Professional Speaker & Workshop Leader
+        </div>
+        <h1>Bring <span>Bridging the Gap</span> to Your Organization</h1>
+        <p>
+            Transform your parent support group, school district, or conference with evidence-based
+            strategies from 35 years of experience in special education.
+        </p>
+    </section>
+
+    <!-- Bio Section -->
+    <section class="bio">
+        <div class="bio-container">
+            <div class="bio-image">👩‍🏫</div>
+            <div class="bio-content">
+                <h2>Expert Speaker on Parent-Educator Partnerships</h2>
+                <p>
+                    With over three decades of experience in special education, I've sat on both sides
+                    of the table—as a professional and as an advocate for families. My presentations
+                    bridge the gap between what parents need and what educators can provide.
+                </p>
+                <p>
+                    I bring practical, actionable strategies grounded in real-world experience, not
+                    just theory. My goal is simple: help parents and educators work together more
+                    effectively for every child's success.
+                </p>
+                <ul class="credentials-list">
+                    <li><span>🎓</span> School Psychologist, Ed.S.</li>
+                    <li><span>📜</span> Licensed Professional Counselor</li>
+                    <li><span>👩‍🏫</span> Former Special Education Teacher & Director</li>
+                    <li><span>🏢</span> Former Child Development Center Owner</li>
+                    <li><span>📍</span> 35+ years experience in 3 states</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Topics Section -->
+    <section class="topics">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-label">Speaking Topics</span>
+                <h2>Presentations & Workshops Available</h2>
+                <p>From keynotes to full-day workshops, all content is customizable for your audience.</p>
+            </div>
+            <div class="topics-grid">
+                <div class="topic-card">
+                    <div class="topic-header">
+                        <div class="topic-icon">💡</div>
+                        <div class="topic-info">
+                            <h3>The 5 Things I Wish Someone Told Me</h3>
+                            <span class="topic-duration">Keynote | 60-90 minutes</span>
+                        </div>
+                    </div>
+                    <p>
+                        An inspiring keynote that shares the honest truths every parent needs to hear—from
+                        understanding the IEP process to teaching foundational skills at home. Perfect for
+                        parent conferences, autism organizations, and school events.
+                    </p>
+                    <span class="topic-badge">Most Popular</span>
+                </div>
+
+                <div class="topic-card">
+                    <div class="topic-header">
+                        <div class="topic-icon">🏗️</div>
+                        <div class="topic-info">
+                            <h3>Before School Can Work: Foundation Skills</h3>
+                            <span class="topic-duration">Workshop | 2-3 hours</span>
+                        </div>
+                    </div>
+                    <p>
+                        A hands-on workshop teaching parents the 5 critical skills every child needs before
+                        school can be successful—communication, boundaries, following directions, self-regulation,
+                        and basic independence. Includes practical teaching strategies.
+                    </p>
+                </div>
+
+                <div class="topic-card">
+                    <div class="topic-header">
+                        <div class="topic-icon">🌉</div>
+                        <div class="topic-info">
+                            <h3>Bridging the Gap: Building Parent-Educator Partnerships</h3>
+                            <span class="topic-duration">Full Day Workshop | 6 hours (with breaks)</span>
+                        </div>
+                    </div>
+                    <p>
+                        A comprehensive workshop covering the IEP process, parent advocacy, home-school
+                        communication, and collaborative problem-solving. Designed for both parents and
+                        educators to attend together. CEUs available for teachers.
+                    </p>
+                </div>
+
+                <div class="topic-card">
+                    <div class="topic-header">
+                        <div class="topic-icon">🗣️</div>
+                        <div class="topic-info">
+                            <h3>Understanding Behavior as Communication</h3>
+                            <span class="topic-duration">Workshop | 2 hours</span>
+                        </div>
+                    </div>
+                    <p>
+                        Learn the ABC model (Antecedent-Behavior-Consequence) and how to decode what your
+                        child is really saying through their behavior. Includes prevention strategies and
+                        practical tools for managing meltdowns vs. tantrums.
+                    </p>
+                </div>
+
+                <div class="topic-card">
+                    <div class="topic-header">
+                        <div class="topic-icon">📋</div>
+                        <div class="topic-info">
+                            <h3>IEP 101 for Parents</h3>
+                            <span class="topic-duration">Workshop | 2 hours</span>
+                        </div>
+                    </div>
+                    <p>
+                        Demystify the IEP process from evaluation to implementation. Learn your rights under
+                        IDEA, how to read an IEP, what "appropriate" really means, and how to be an effective
+                        advocate without burning bridges.
+                    </p>
+                </div>
+
+                <div class="topic-card">
+                    <div class="topic-header">
+                        <div class="topic-icon">✨</div>
+                        <div class="topic-info">
+                            <h3>Custom Topic Available</h3>
+                            <span class="topic-duration">Flexible duration</span>
+                        </div>
+                    </div>
+                    <p>
+                        Have a specific topic or need? I can customize a presentation for your organization's
+                        unique needs. Topics can include communication strategies, transition planning,
+                        behavior management, or professional development for educators.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Audiences Section -->
+    <section class="audiences">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-label">Ideal For</span>
+                <h2>Who Benefits from These Presentations</h2>
+                <p>My speaking engagements serve diverse audiences across the special education community.</p>
+            </div>
+            <div class="audiences-grid">
+                <div class="audience-card">
+                    <div class="audience-icon">👨‍👩‍👧</div>
+                    <h3>Parent Support Groups</h3>
+                    <p>Autism organizations, special needs parent networks, and family advocacy groups</p>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon">🏫</div>
+                    <h3>School Districts & Teachers</h3>
+                    <p>Professional development days, teacher in-service, and staff training</p>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon">🎓</div>
+                    <h3>Special Education Conferences</h3>
+                    <p>Regional and national conferences for parents, educators, and professionals</p>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon">🧩</div>
+                    <h3>Autism Organizations</h3>
+                    <p>Local autism chapters, advocacy groups, and family support networks</p>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon">🏢</div>
+                    <h3>Child Development Centers</h3>
+                    <p>Daycare centers, preschools, and early intervention programs</p>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon">💼</div>
+                    <h3>Professional Organizations</h3>
+                    <p>School psychology associations, counseling groups, and education networks</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-label">What Attendees Say</span>
+                <h2>Speaking Engagement Testimonials</h2>
+                <p>Feedback from organizations who've hosted these presentations.</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p>
+                        "This was the most practical parent training we've ever offered. Families left
+                        with actual strategies they could use immediately—not just theory. We've already
+                        booked her for next year."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">DM</div>
+                        <div class="testimonial-info">
+                            <h4>Dr. Maria Lopez</h4>
+                            <p>Special Education Director</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p>
+                        "As a parent, I finally understood why the school says 'no' to certain things.
+                        As an educator, I finally understood why parents ask for them. This should be
+                        required training for every IEP team."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">KC</div>
+                        <div class="testimonial-info">
+                            <h4>Karen Chen</h4>
+                            <p>Parent & School Psychologist</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p>
+                        "The 'Before School Can Work' workshop completely changed how we prepare families
+                        for kindergarten. We now have a framework for what to teach—and can point to
+                        evidence-based strategies."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">RP</div>
+                        <div class="testimonial-info">
+                            <h4>Rachel Patterson</h4>
+                            <p>Autism Center Director</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Form Section -->
+    <section class="booking" id="booking-form">
+        <div class="booking-container">
+            <div class="section-header">
+                <span class="section-label">Let's Connect</span>
+                <h2>Book a Speaking Engagement</h2>
+                <p>Fill out the form below and I'll get back to you within 48 hours.</p>
+            </div>
+            <form id="booking-inquiry-form" onsubmit="handleBookingSubmit(event)">
+                <div class="form-group">
+                    <label>Your Name *</label>
+                    <input type="text" placeholder="Full name" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address *</label>
+                    <input type="email" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" placeholder="(555) 123-4567">
+                </div>
+                <div class="form-group">
+                    <label>Organization Name *</label>
+                    <input type="text" placeholder="School District, Parent Group, etc." required>
+                </div>
+                <div class="form-group">
+                    <label>Event Type *</label>
+                    <select required>
+                        <option value="">Select event type</option>
+                        <option value="keynote">Keynote (60-90 min)</option>
+                        <option value="workshop-short">Workshop (2-3 hours)</option>
+                        <option value="workshop-full">Full Day Workshop (6 hours)</option>
+                        <option value="custom">Custom/Not Sure</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Topic Interest *</label>
+                    <select required>
+                        <option value="">Select preferred topic</option>
+                        <option value="5-things">The 5 Things I Wish Someone Told Me</option>
+                        <option value="foundation">Before School Can Work</option>
+                        <option value="bridging">Bridging the Gap Partnership</option>
+                        <option value="behavior">Understanding Behavior</option>
+                        <option value="iep-101">IEP 101 for Parents</option>
+                        <option value="custom">Custom Topic</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Preferred Date (or date range)</label>
+                    <input type="text" placeholder="e.g., March 2025 or Spring 2025">
+                </div>
+                <div class="form-group">
+                    <label>Expected Audience Size</label>
+                    <input type="text" placeholder="e.g., 50 parents, 100 educators">
+                </div>
+                <div class="form-group">
+                    <label>Additional Details</label>
+                    <textarea placeholder="Tell me about your event, audience, or any specific needs..."></textarea>
+                </div>
+                <button type="submit" class="form-submit">Submit Booking Inquiry →</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Past Speaking Section -->
+    <section class="past-speaking">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-label">Experience</span>
+                <h2>Past Speaking Engagements</h2>
+                <p>Proud to have served these organizations and many more.</p>
+            </div>
+            <div class="logos-grid">
+                <div class="logo-placeholder">🏫</div>
+                <div class="logo-placeholder">🧩</div>
+                <div class="logo-placeholder">🎓</div>
+                <div class="logo-placeholder">👥</div>
+                <div class="logo-placeholder">🏢</div>
+                <div class="logo-placeholder">📚</div>
+                <div class="logo-placeholder">🌟</div>
+                <div class="logo-placeholder">💼</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h3>🌉 Bridging the Gap</h3>
+                <p>Empowering parents and educators to work together for every child's success. Based on 35 years of experience in special education.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Learn</h4>
+                <ul>
+                    <li><a href="index.html">Course</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="podcast.html">Podcast</a></li>
+                    <li><a href="speaking.html">Speaking</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">Free IEP Checklist</a></li>
+                    <li><a href="#">Skills Assessment</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Newsletter</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Connect</h4>
+                <ul>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="#">Facebook Group</a></li>
+                    <li><a href="#">LinkedIn</a></li>
+                    <li><a href="#">YouTube</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 Bridging the Gap. All rights reserved. | <a href="#" style="color: inherit;">Privacy Policy</a> | <a href="#" style="color: inherit;">Terms of Service</a></p>
+        </div>
+    </footer>
+
+    <script>
+        function handleBookingSubmit(e) {
+            e.preventDefault();
+            alert('Thank you for your speaking inquiry! I will review your information and respond within 48 hours.');
+            e.target.reset();
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href !== '#') {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Visual Supports & Resources | Parent Educator Bridge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2E7D6B;
+            --primary-light: #4A9B89;
+            --primary-dark: #1D5C4E;
+            --secondary: #E8A54B;
+            --secondary-light: #F5C77D;
+            --accent: #6B4E9B;
+            --accent-light: #8B6EBB;
+            --warm: #D4726A;
+            --warm-light: #E89890;
+            --background: #FAFBF9;
+            --surface: #FFFFFF;
+            --text: #2D3436;
+            --text-light: #636E72;
+            --border: #E0E6E3;
+            --shadow: rgba(46, 125, 107, 0.1);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            box-shadow: 0 2px 20px var(--shadow);
+            z-index: 1000;
+            padding: 0.75rem 2rem;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--primary);
+        }
+
+        .nav-logo-icon {
+            width: 45px;
+            height: 45px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .nav-logo-text {
+            font-weight: 800;
+            font-size: 1.25rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 600;
+            transition: color 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-cta {
+            background: var(--gradient);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px var(--shadow);
+        }
+
+        .mobile-menu {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 8rem 2rem 4rem;
+            background: linear-gradient(180deg, #E8F5F1 0%, var(--background) 100%);
+            text-align: center;
+        }
+
+        .hero-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--surface);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .hero h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 3rem;
+            line-height: 1.2;
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 span {
+            color: var(--secondary);
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        /* Intro Section */
+        .intro-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem 3rem;
+        }
+
+        .intro-box {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 40px var(--shadow);
+            border-left: 5px solid var(--secondary);
+        }
+
+        .intro-box h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .intro-box p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        /* Resource Categories */
+        .resources-section {
+            padding: 4rem 2rem;
+            background: var(--background);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .section-label {
+            display: inline-block;
+            background: var(--gradient);
+            color: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 2.5rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .category-section {
+            max-width: 1200px;
+            margin: 0 auto 4rem;
+        }
+
+        .category-header {
+            margin-bottom: 2rem;
+        }
+
+        .category-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .category-description {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .resource-card {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px var(--shadow);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px var(--shadow);
+            border-color: var(--primary);
+        }
+
+        .resource-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .resource-card h3 {
+            font-size: 1.5rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+
+        .resource-description {
+            color: var(--text-light);
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .resource-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-tag {
+            background: var(--background);
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--text);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .resource-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--gradient);
+            color: white;
+            padding: 0.9rem 1.75rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .resource-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px var(--shadow);
+        }
+
+        /* How to Use Section */
+        .how-to-use {
+            padding: 4rem 2rem;
+            background: var(--surface);
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 3rem auto 0;
+        }
+
+        .tip-card {
+            background: var(--background);
+            border-radius: 16px;
+            padding: 2rem;
+            border-left: 5px solid var(--primary);
+        }
+
+        .tip-card h3 {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tip-card ul {
+            list-style: none;
+        }
+
+        .tip-card li {
+            padding: 0.5rem 0;
+            color: var(--text-light);
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .tip-card li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--secondary);
+            font-weight: 700;
+        }
+
+        /* Email Signup */
+        .signup-section {
+            padding: 4rem 2rem;
+            background: var(--gradient);
+            text-align: center;
+            color: white;
+        }
+
+        .signup-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .signup-section h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .signup-section p {
+            font-size: 1.15rem;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+        }
+
+        .signup-form {
+            display: flex;
+            gap: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .signup-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .signup-btn {
+            background: white;
+            color: var(--primary);
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .signup-btn:hover {
+            background: var(--secondary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text);
+            color: white;
+            padding: 4rem 2rem 2rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .footer-brand h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand p {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .footer-links h4 {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.95rem;
+            display: block;
+            padding: 0.5rem 0;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 3rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2.25rem;
+            }
+
+            .section-header h2 {
+                font-size: 1.85rem;
+            }
+
+            .resource-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .signup-form {
+                flex-direction: column;
+            }
+
+            .footer-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                padding: 6rem 1rem 3rem;
+            }
+
+            .hero h1 {
+                font-size: 1.85rem;
+            }
+
+            .category-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <div class="nav-logo-icon">🌉</div>
+                <span class="nav-logo-text">Bridging the Gap</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html#curriculum">Course</a></li>
+                <li><a href="resources.html">Resources</a></li>
+                <li><a href="podcast.html">Podcast</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <a href="index.html#pricing" class="nav-cta">Enroll Now</a>
+            <button class="mobile-menu">☰</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-badge">
+                <span>🎁</span> Free for All Families
+            </div>
+            <h1>Free Visual Supports <span>& Resources</span></h1>
+            <p class="hero-subtitle">
+                Printable tools and materials to support your child at home and school.
+                Download, print, laminate, and use immediately—no signup required.
+            </p>
+        </div>
+    </section>
+
+    <!-- Introduction -->
+    <section class="intro-section">
+        <div class="intro-box">
+            <h2>💡 Why Visual Supports Matter</h2>
+            <p>
+                After 35 years in special education, I've seen firsthand how visual supports transform
+                communication and reduce frustration for children with autism. These tools bridge the gap
+                between what a child wants to say and their ability to express it.
+            </p>
+            <p>
+                <strong>Visual supports work because they:</strong> provide consistent, concrete references that
+                don't disappear like spoken words; reduce anxiety by making expectations clear; give children
+                a way to communicate when words fail; and create consistency between home and school.
+            </p>
+            <p style="margin-bottom: 0;">
+                All resources below are <strong>completely free</strong>. Download, customize, and share with
+                your child's school team. These are the exact tools I've used with hundreds of families.
+            </p>
+        </div>
+    </section>
+
+    <!-- Resources Categories -->
+    <section class="resources-section">
+        <div class="section-header">
+            <span class="section-label">Browse by Category</span>
+            <h2>All Resources</h2>
+        </div>
+
+        <!-- Communication Tools -->
+        <div class="category-section">
+            <div class="category-header">
+                <h3 class="category-title">💬 Communication Tools</h3>
+                <p class="category-description">Essential communication boards and systems for expressing basic needs</p>
+            </div>
+            <div class="resource-grid">
+                <div class="resource-card">
+                    <div class="resource-icon">🚽</div>
+                    <h3>Bathroom Communication Board</h3>
+                    <p class="resource-description">
+                        The #1 tool for school readiness. Complete bathroom communication system with symbols,
+                        portable cards, and step-by-step teaching guide.
+                    </p>
+                    <div class="resource-meta">
+                        <span class="meta-tag">📄 Printable</span>
+                        <span class="meta-tag">✂️ Cut & Laminate</span>
+                        <span class="meta-tag">🏫 School Ready</span>
+                    </div>
+                    <a href="visuals/bathroom-communication-board.html" class="resource-btn">
+                        <span>📥</span> View & Download
+                    </a>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-icon">😊</div>
+                    <h3>Feelings & Emotions Chart</h3>
+                    <p class="resource-description">
+                        Help your child identify and express emotions with visual supports. Includes basic feelings,
+                        intensity levels, and "What I Need When I Feel..." guide.
+                    </p>
+                    <div class="resource-meta">
+                        <span class="meta-tag">📄 Printable</span>
+                        <span class="meta-tag">🎨 Color-Coded</span>
+                        <span class="meta-tag">🏠 Home & School</span>
+                    </div>
+                    <a href="visuals/feelings-chart.html" class="resource-btn">
+                        <span>📥</span> View & Download
+                    </a>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-icon">✅</div>
+                    <h3>Choice Boards</h3>
+                    <p class="resource-description">
+                        Give your child autonomy and reduce conflict with visual choice boards. Includes templates
+                        for activities, snacks, rewards, and calming strategies.
+                    </p>
+                    <div class="resource-meta">
+                        <span class="meta-tag">📄 Printable</span>
+                        <span class="meta-tag">✏️ Customizable</span>
+                        <span class="meta-tag">🔄 Reusable</span>
+                    </div>
+                    <a href="visuals/choice-board.html" class="resource-btn">
+                        <span>📥</span> View & Download
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visual Schedules & Routines -->
+        <div class="category-section">
+            <div class="category-header">
+                <h3 class="category-title">📅 Visual Schedules & Routines</h3>
+                <p class="category-description">Reduce anxiety and increase independence with predictable routines</p>
+            </div>
+            <div class="resource-grid">
+                <div class="resource-card">
+                    <div class="resource-icon">📆</div>
+                    <h3>Daily Visual Schedule</h3>
+                    <p class="resource-description">
+                        Morning, school, and bedtime routine cards. Velcro-ready format lets you arrange and
+                        rearrange to match your family's schedule.
+                    </p>
+                    <div class="resource-meta">
+                        <span class="meta-tag">📄 Printable</span>
+                        <span class="meta-tag">🔄 Flexible</span>
+                        <span class="meta-tag">🏠 Daily Use</span>
+                    </div>
+                    <a href="visuals/visual-schedule.html" class="resource-btn">
+                        <span>📥</span> View & Download
+                    </a>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-icon">1️⃣</div>
+                    <h3>First-Then Board</h3>
+                    <p class="resource-description">
+                        Simple visual support for transitions and compliance. "First we do THIS, then we do THAT."
+                        Includes blank templates for customization.
+                    </p>
+                    <div class="resource-meta">
+                        <span class="meta-tag">📄 Printable</span>
+                        <span class="meta-tag">⚡ Quick Setup</span>
+                        <span class="meta-tag">✏️ Blank Templates</span>
+                    </div>
+                    <a href="visuals/first-then-board.html" class="resource-btn">
+                        <span>📥</span> View & Download
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Behavior Supports -->
+        <div class="category-section">
+            <div class="category-header">
+                <h3 class="category-title">⭐ Behavior Supports</h3>
+                <p class="category-description">Positive reinforcement systems and behavior tracking tools</p>
+            </div>
+            <div class="resource-grid">
+                <div class="resource-card">
+                    <div class="resource-icon">🌟</div>
+                    <h3>Token/Reward System</h3>
+                    <p class="resource-description">
+                        Customizable token boards and reward charts. Track progress toward goals and celebrate
+                        successes. Includes setup guide for maximum effectiveness.
+                    </p>
+                    <div class="resource-meta">
+                        <span class="meta-tag">📄 Printable</span>
+                        <span class="meta-tag">🎯 Goal-Based</span>
+                        <span class="meta-tag">✨ Motivating</span>
+                    </div>
+                    <a href="visuals/token-board.html" class="resource-btn">
+                        <span>📥</span> View & Download
+                    </a>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-icon">👍</div>
+                    <h3>Expected Behavior Chart</h3>
+                    <p class="resource-description">
+                        Visual guide to expected behaviors in different settings (classroom, cafeteria, library,
+                        home). Clarify expectations before problems arise.
+                    </p>
+                    <div class="resource-meta">
+                        <span class="meta-tag">📄 Printable</span>
+                        <span class="meta-tag">🏫 School Settings</span>
+                        <span class="meta-tag">🔍 Preventive</span>
+                    </div>
+                    <a href="visuals/expected-behavior-chart.html" class="resource-btn">
+                        <span>📥</span> View & Download
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assessment Tools -->
+        <div class="category-section">
+            <div class="category-header">
+                <h3 class="category-title">📋 Assessment & Planning Tools</h3>
+                <p class="category-description">Evaluate your child's skills and prepare for IEP meetings</p>
+            </div>
+            <div class="resource-grid">
+                <div class="resource-card">
+                    <div class="resource-icon">📊</div>
+                    <h3>Foundation Skills Assessment</h3>
+                    <p class="resource-description">
+                        Assess your child's readiness across the 5 foundational skills. Identify what to work on
+                        at home before school starts. Includes scoring guide.
+                    </p>
+                    <div class="resource-meta">
+                        <span class="meta-tag">📄 Fillable PDF</span>
+                        <span class="meta-tag">🎯 Actionable</span>
+                        <span class="meta-tag">📈 Progress Tracking</span>
+                    </div>
+                    <a href="skills-assessment.html" class="resource-btn">
+                        <span>📥</span> Take Assessment
+                    </a>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-icon">✔️</div>
+                    <h3>IEP Meeting Checklist</h3>
+                    <p class="resource-description">
+                        Never walk into an IEP meeting unprepared again. Questions to ask, documents to bring,
+                        rights to know, and what to do if you disagree.
+                    </p>
+                    <div class="resource-meta">
+                        <span class="meta-tag">📄 Printable</span>
+                        <span class="meta-tag">⚖️ Know Your Rights</span>
+                        <span class="meta-tag">💼 Professional</span>
+                    </div>
+                    <a href="iep-checklist.html" class="resource-btn">
+                        <span>📥</span> View & Download
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How to Use Resources -->
+    <section class="how-to-use">
+        <div class="section-header">
+            <span class="section-label">Implementation Guide</span>
+            <h2>How to Use These Resources</h2>
+        </div>
+
+        <div class="tips-grid">
+            <div class="tip-card">
+                <h3>🖨️ Printing & Laminating</h3>
+                <ul>
+                    <li>Print on cardstock for durability</li>
+                    <li>Use color printer for maximum engagement</li>
+                    <li>Laminate with 5-mil pouches or contact paper</li>
+                    <li>Cut carefully along borders for clean edges</li>
+                    <li>Use Velcro dots for reusable schedule boards</li>
+                    <li>Keep digital copies for reprinting</li>
+                </ul>
+            </div>
+
+            <div class="tip-card">
+                <h3>✏️ Customization Tips</h3>
+                <ul>
+                    <li>Add your child's name or photo to personalize</li>
+                    <li>Draw or paste pictures of your child's favorites</li>
+                    <li>Use consistent symbols between home and school</li>
+                    <li>Let your child help decorate their boards</li>
+                    <li>Start simple, add complexity gradually</li>
+                    <li>Adapt language to match your child's level</li>
+                </ul>
+            </div>
+
+            <div class="tip-card">
+                <h3>🏫 Sharing with School</h3>
+                <ul>
+                    <li>Email teacher digital versions before printing</li>
+                    <li>Send laminated copies to school and keep backups</li>
+                    <li>Schedule brief meeting to explain system</li>
+                    <li>Request daily/weekly feedback on usage</li>
+                    <li>Ask teacher to take photos of child using tools</li>
+                    <li>Include in IEP/504 accommodations if needed</li>
+                </ul>
+            </div>
+
+            <div class="tip-card">
+                <h3>🎯 Implementation Strategy</h3>
+                <ul>
+                    <li>Introduce one tool at a time, not all at once</li>
+                    <li>Practice when child is calm, not during crisis</li>
+                    <li>Model how to use each visual support</li>
+                    <li>Respond immediately when child uses correctly</li>
+                    <li>Celebrate attempts, not just perfect use</li>
+                    <li>Be consistent for 2-3 weeks before assessing</li>
+                </ul>
+            </div>
+
+            <div class="tip-card">
+                <h3>📈 Tracking Progress</h3>
+                <ul>
+                    <li>Take photos/videos of successful use</li>
+                    <li>Keep simple tally of daily usage</li>
+                    <li>Note what works and what doesn't</li>
+                    <li>Adjust visuals based on child's feedback</li>
+                    <li>Share successes with school team</li>
+                    <li>Document for IEP/progress reports</li>
+                </ul>
+            </div>
+
+            <div class="tip-card">
+                <h3>💡 Troubleshooting</h3>
+                <ul>
+                    <li>Child ignores visuals? Try high-interest activities first</li>
+                    <li>Too complex? Simplify to 2-3 choices maximum</li>
+                    <li>Not portable enough? Make mini versions for backpack</li>
+                    <li>Child tears/loses them? Keep spares and teach care</li>
+                    <li>School not using? Schedule follow-up and offer support</li>
+                    <li>Still stuck? Join parent community for ideas</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Email Signup -->
+    <section class="signup-section">
+        <div class="signup-container">
+            <h2>Get Notified About New Resources</h2>
+            <p>Be the first to know when we add new visual supports, checklists, and tools. No spam—just helpful resources delivered to your inbox.</p>
+            <form class="signup-form" id="resource-signup">
+                <input type="email" class="signup-input" placeholder="your@email.com" required>
+                <button type="submit" class="signup-btn">Notify Me</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h3>🌉 Bridging the Gap</h3>
+                <p>Empowering parents and educators to work together for every child's success. Based on 35 years of experience in special education.</p>
+                <p style="margin-top: 1rem; font-style: italic;">"Whatever you do, work heartily, as for the Lord and not for men." - Colossians 3:23</p>
+            </div>
+            <div class="footer-links">
+                <h4>Course</h4>
+                <ul>
+                    <li><a href="index.html#five-things">5 Things to Know</a></li>
+                    <li><a href="index.html#foundation">Foundation Skills</a></li>
+                    <li><a href="index.html#curriculum">Curriculum</a></li>
+                    <li><a href="index.html#pricing">Pricing</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="resources.html">All Resources</a></li>
+                    <li><a href="iep-checklist.html">IEP Checklist</a></li>
+                    <li><a href="skills-assessment.html">Skills Assessment</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Connect</h4>
+                <ul>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="podcast.html">Podcast</a></li>
+                    <li><a href="newsletter.html">Newsletter</a></li>
+                    <li><a href="index.html#about">About</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 Bridging the Gap. All rights reserved. | <a href="privacy.html" style="color: inherit;">Privacy Policy</a> | <a href="terms.html" style="color: inherit;">Terms of Service</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // Email signup form
+        document.getElementById('resource-signup').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you! You\'ll be notified when new resources are available.');
+            this.reset();
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href !== '#') {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
