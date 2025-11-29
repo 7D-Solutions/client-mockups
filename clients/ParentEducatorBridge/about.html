@@ -7,579 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #2E7D6B;
-            --primary-light: #4A9B89;
-            --primary-dark: #1D5C4E;
-            --secondary: #E8A54B;
-            --secondary-light: #F5C77D;
-            --accent: #6B4E9B;
-            --accent-light: #8B6EBB;
-            --warm: #D4726A;
-            --warm-light: #E89890;
-            --background: #FAFBF9;
-            --surface: #FFFFFF;
-            --text: #2D3436;
-            --text-light: #636E72;
-            --border: #E0E6E3;
-            --shadow: rgba(46, 125, 107, 0.1);
-            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Nunito', sans-serif;
-            background: var(--background);
-            color: var(--text);
-            line-height: 1.7;
-            overflow-x: hidden;
-        }
-
-        /* Sidebar Navigation */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 280px;
-            height: 100vh;
-            background: var(--surface);
-            box-shadow: 2px 0 20px var(--shadow);
-            z-index: 1000;
-            padding: 2rem 1.5rem;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-
-        .main-content {
-            margin-left: 280px;
-            width: calc(100% - 280px);
-        }
-
-        .nav-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            text-decoration: none;
-            color: var(--primary);
-            margin-bottom: 2rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 2px solid var(--border);
-        }
-
-        .nav-logo-icon {
-            width: 45px;
-            height: 45px;
-            background: var(--gradient);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-
-        .nav-logo-text {
-            font-weight: 800;
-            font-size: 1.1rem;
-            line-height: 1.2;
-        }
-
-        .nav-links {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            list-style: none;
-            flex: 1;
-        }
-
-        .nav-links li a {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            text-decoration: none;
-            color: var(--text);
-            font-weight: 600;
-            padding: 0.85rem 1rem;
-            border-radius: 10px;
-            transition: all 0.3s;
-            font-size: 0.95rem;
-        }
-
-        .nav-links li a:hover {
-            background: var(--background);
-            color: var(--primary);
-        }
-
-        .nav-links li a.active {
-            background: var(--gradient);
-            color: white;
-        }
-
-        .nav-links li a span {
-            font-size: 1.1rem;
-        }
-
-        .nav-divider {
-            height: 1px;
-            background: var(--border);
-            margin: 1rem 0;
-        }
-
-        .nav-cta {
-            background: var(--gradient);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 700;
-            transition: transform 0.3s, box-shadow 0.3s;
-            text-align: center;
-            margin-top: 1rem;
-        }
-
-        .nav-cta:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px var(--shadow);
-        }
-
-        .mobile-menu {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--primary);
-            position: fixed;
-            top: 1rem;
-            left: 1rem;
-            z-index: 1001;
-            width: 50px;
-            height: 50px;
-            background: var(--surface);
-            border-radius: 50%;
-            box-shadow: 0 2px 10px var(--shadow);
-            align-items: center;
-            justify-content: center;
-        }
-
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 999;
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 4rem 2rem;
-            background: linear-gradient(180deg, #E8F5F1 0%, var(--background) 100%);
-            text-align: center;
-        }
-
-        .hero-container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .hero h1 {
-            font-family: 'Merriweather', serif;
-            font-size: 3rem;
-            line-height: 1.2;
-            color: var(--primary-dark);
-            margin-bottom: 1rem;
-        }
-
-        .hero h1 em {
-            color: var(--secondary);
-            font-style: normal;
-        }
-
-        .hero-subtitle {
-            font-size: 1.25rem;
-            color: var(--text-light);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* About Section */
-        .about-section {
-            padding: 4rem 2rem;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .about-intro {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 3rem;
-            align-items: start;
-            margin-bottom: 4rem;
-        }
-
-        .about-photo {
-            width: 100%;
-            aspect-ratio: 1;
-            background: var(--gradient);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 8rem;
-            color: white;
-            box-shadow: 0 10px 40px var(--shadow);
-        }
-
-        .about-photo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 20px;
-        }
-
-        .about-text h2 {
-            font-family: 'Merriweather', serif;
-            font-size: 2rem;
-            color: var(--primary-dark);
-            margin-bottom: 1rem;
-        }
-
-        .about-text p {
-            color: var(--text-light);
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-            line-height: 1.8;
-        }
-
-        .about-text p strong {
-            color: var(--text);
-        }
-
-        /* Credentials Section */
-        .credentials-section {
-            background: var(--surface);
-            padding: 4rem 2rem;
-        }
-
-        .credentials-container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            font-family: 'Merriweather', serif;
-            font-size: 2rem;
-            color: var(--primary-dark);
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .credentials-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-        }
-
-        .credential-card {
-            background: var(--background);
-            border-radius: 16px;
-            padding: 2rem;
-            border-left: 4px solid var(--primary);
-        }
-
-        .credential-card h3 {
-            color: var(--primary);
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .credential-card p {
-            color: var(--text-light);
-            font-size: 1rem;
-        }
-
-        /* Experience Section */
-        .experience-section {
-            padding: 4rem 2rem;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .experience-list {
-            list-style: none;
-        }
-
-        .experience-item {
-            display: flex;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-            padding-bottom: 2rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .experience-item:last-child {
-            border-bottom: none;
-        }
-
-        .experience-icon {
-            width: 60px;
-            height: 60px;
-            background: var(--gradient);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-
-        .experience-content h3 {
-            color: var(--text);
-            font-size: 1.25rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .experience-content .years {
-            color: var(--secondary);
-            font-weight: 700;
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .experience-content p {
-            color: var(--text-light);
-        }
-
-        /* Mission Section */
-        .mission-section {
-            background: var(--gradient);
-            padding: 4rem 2rem;
-            text-align: center;
-            color: white;
-        }
-
-        .mission-container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .mission-section h2 {
-            font-family: 'Merriweather', serif;
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .mission-section p {
-            font-size: 1.25rem;
-            line-height: 1.8;
-            opacity: 0.95;
-            margin-bottom: 1.5rem;
-        }
-
-        .mission-verse {
-            font-style: italic;
-            font-size: 1.1rem;
-            opacity: 0.9;
-            border-top: 1px solid rgba(255,255,255,0.3);
-            padding-top: 1.5rem;
-            margin-top: 1.5rem;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            padding: 4rem 2rem;
-            text-align: center;
-            background: var(--surface);
-        }
-
-        .cta-container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .cta-section h2 {
-            font-family: 'Merriweather', serif;
-            font-size: 2rem;
-            color: var(--primary-dark);
-            margin-bottom: 1rem;
-        }
-
-        .cta-section p {
-            color: var(--text-light);
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn-primary {
-            background: var(--gradient);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 700;
-            transition: all 0.3s;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px var(--shadow);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--primary);
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 700;
-            border: 2px solid var(--primary);
-            transition: all 0.3s;
-        }
-
-        .btn-secondary:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        /* Footer */
-        .footer {
-            background: var(--text);
-            color: white;
-            padding: 4rem 2rem 2rem;
-        }
-
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 3rem;
-        }
-
-        .footer-brand h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .footer-brand p {
-            color: rgba(255,255,255,0.7);
-            font-size: 0.95rem;
-            line-height: 1.8;
-        }
-
-        .footer-links h4 {
-            font-size: 1rem;
-            margin-bottom: 1.5rem;
-            color: var(--secondary);
-        }
-
-        .footer-links ul {
-            list-style: none;
-        }
-
-        .footer-links a {
-            color: rgba(255,255,255,0.7);
-            text-decoration: none;
-            font-size: 0.95rem;
-            display: block;
-            padding: 0.5rem 0;
-            transition: color 0.3s;
-        }
-
-        .footer-links a:hover {
-            color: white;
-        }
-
-        .footer-bottom {
-            max-width: 1200px;
-            margin: 3rem auto 0;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            text-align: center;
-            color: rgba(255,255,255,0.5);
-            font-size: 0.9rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
-            .sidebar-overlay.active {
-                display: block;
-            }
-
-            .main-content {
-                margin-left: 0;
-                width: 100%;
-            }
-
-            .mobile-menu {
-                display: flex;
-            }
-
-            .hero h1 {
-                font-size: 2.25rem;
-            }
-
-            .about-intro {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-
-            .about-photo {
-                max-width: 250px;
-                margin: 0 auto;
-            }
-
-            .credentials-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .experience-item {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .experience-icon {
-                margin: 0 auto;
-            }
-
-            .footer-container {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-
-            .cta-buttons {
-                flex-direction: column;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <!-- Mobile Menu Button -->
@@ -588,28 +16,9 @@
     <!-- Sidebar Overlay -->
     <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-    <!-- Sidebar Navigation -->
-    <nav class="sidebar">
-        <a href="index.html" class="nav-logo">
-            <div class="nav-logo-icon">🌉</div>
-            <span class="nav-logo-text">Bridging the Gap</span>
-        </a>
-        <ul class="nav-links">
-            <li><a href="index.html"><span>🏠</span> Home</a></li>
-            <li><a href="index.html#curriculum"><span>📚</span> Course</a></li>
-            <li><a href="index.html#five-things"><span>💡</span> 5 Things to Know</a></li>
-            <li><a href="index.html#foundation"><span>🎯</span> Foundation Skills</a></li>
-            <div class="nav-divider"></div>
-            <li><a href="resources.html"><span>📁</span> Resources</a></li>
-            <li><a href="podcast.html"><span>🎙️</span> Podcast</a></li>
-            <li><a href="blog.html"><span>✍️</span> Blog</a></li>
-            <div class="nav-divider"></div>
-            <li><a href="about.html" class="active"><span>👤</span> About</a></li>
-            <li><a href="faq.html"><span>❓</span> FAQ</a></li>
-            <li><a href="contact.html"><span>📧</span> Contact</a></li>
-        </ul>
-        <a href="index.html#pricing" class="nav-cta">🚀 Enroll Now</a>
-    </nav>
+    <!-- Sidebar Navigation (loaded by navigation.js) -->
+    <nav class="sidebar"></nav>
+    <script src="js/navigation.js"></script>
 
     <!-- Main Content -->
     <div class="main-content">
@@ -624,25 +33,32 @@
         </div>
     </section>
 
-    <!-- About Intro -->
+    <!-- About Section -->
     <section class="about-section">
         <div class="about-intro">
             <div class="about-photo">
-                <!-- Replace with actual photo: <img src="images/profile.jpg" alt="Your Name"> -->
+                <!-- Replace with actual photo: <img src="images/profile.jpg" alt="Shannon Andrews"> -->
                 👩‍🏫
             </div>
             <div class="about-text">
-                <h2>Hello, I'm [Your Name]</h2>
+                <h2>Hello, I'm Shannon Andrews</h2>
                 <p>
-                    <strong>School Psychologist & Licensed Professional Counselor</strong> with over 35 years
-                    of experience working with children with autism and their families.
+                    <strong>School Psychologist, Licensed Professional Counselor & Special Education Director</strong>
                 </p>
                 <p>
-                    [Add your personal story here - why you started this work, what drives you,
-                    your passion for helping families bridge the gap between home and school.]
+                    My career in special education began in the classroom, where I spent a decade working with children from pre-K through sixth grade. Those early years taught me that every child learns differently, and the key to success lies in understanding each child's unique strengths and challenges.
                 </p>
                 <p>
-                    [Add more about your approach, philosophy, or what makes your perspective unique.]
+                    While teaching, I also worked with Oklahoma's SoonerStart program, providing early intervention services to infants and toddlers with developmental delays in their homes. This experience showed me how crucial those first three years are, and how much parents need support and guidance during this formative time.
+                </p>
+                <p>
+                    Driven to deepen my understanding of child development and behavior, I pursued certification as a School Psychologist. I've served school districts across Oklahoma, Oregon, and Texas, conducting comprehensive evaluations, developing behavior management programs, and providing counseling to students and families.
+                </p>
+                <p>
+                    As a Licensed Professional Counselor, I've also provided therapy services to individuals, groups, and families outside the school setting—helping parents navigate the challenges of raising children with special needs.
+                </p>
+                <p>
+                    Today, I serve as both Special Education Director and School Psychologist. But my greatest passion is sharing what I've learned with parents like you—the strategies, insights, and practical tools that make a real difference in children's lives.
                 </p>
             </div>
         </div>
@@ -651,57 +67,26 @@
     <!-- Credentials Section -->
     <section class="credentials-section">
         <div class="credentials-container">
-            <h2 class="section-title">Credentials & Certifications</h2>
+            <h2 class="section-title">Credentials</h2>
             <div class="credentials-grid">
                 <div class="credential-card">
-                    <h3>🎓 Education</h3>
-                    <p>[Your degree, university, year]</p>
+                    <h3>🎓 Master of Education</h3>
+                    <p>Special Education</p>
                 </div>
                 <div class="credential-card">
-                    <h3>📜 School Psychologist</h3>
-                    <p>[State certification, license number if applicable]</p>
+                    <h3>📜 Certified School Psychologist</h3>
+                    <p>K-12 psychological services</p>
                 </div>
                 <div class="credential-card">
                     <h3>💼 Licensed Professional Counselor</h3>
-                    <p>[LPC credentials, state, license number]</p>
+                    <p>Individual, group, and family therapy</p>
                 </div>
                 <div class="credential-card">
-                    <h3>🏆 Additional Certifications</h3>
-                    <p>[Any additional relevant certifications]</p>
+                    <h3>🎓 Bachelor of Science</h3>
+                    <p>Elementary Education</p>
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- Experience Section -->
-    <section class="experience-section">
-        <h2 class="section-title">Professional Experience</h2>
-        <ul class="experience-list">
-            <li class="experience-item">
-                <div class="experience-icon">🏫</div>
-                <div class="experience-content">
-                    <h3>[Position Title]</h3>
-                    <p class="years">[Years, e.g., 2000 - Present]</p>
-                    <p>[Description of role and key accomplishments]</p>
-                </div>
-            </li>
-            <li class="experience-item">
-                <div class="experience-icon">👨‍👩‍👧‍👦</div>
-                <div class="experience-content">
-                    <h3>[Previous Position]</h3>
-                    <p class="years">[Years]</p>
-                    <p>[Description of role and key accomplishments]</p>
-                </div>
-            </li>
-            <li class="experience-item">
-                <div class="experience-icon">📚</div>
-                <div class="experience-content">
-                    <h3>[Another Experience]</h3>
-                    <p class="years">[Years]</p>
-                    <p>[Description of role and key accomplishments]</p>
-                </div>
-            </li>
-        </ul>
     </section>
 
     <!-- Mission Section -->
@@ -728,57 +113,20 @@
                 Join the course or reach out to connect.
             </p>
             <div class="cta-buttons">
-                <a href="index.html#pricing" class="btn-primary">View Course</a>
-                <a href="contact.html" class="btn-secondary">Get in Touch</a>
+                <a href="index.html#pricing" class="btn btn-primary">View Course</a>
+                <a href="contact.html" class="btn btn-outline">Get in Touch</a>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-brand">
-                <h3>🌉 Bridging the Gap</h3>
-                <p>Empowering parents and educators to work together for every child's success. Based on 35 years of experience in special education.</p>
-                <p style="margin-top: 1rem; font-style: italic;">"Whatever you do, work heartily, as for the Lord and not for men." - Colossians 3:23</p>
-            </div>
-            <div class="footer-links">
-                <h4>Course</h4>
-                <ul>
-                    <li><a href="index.html#five-things">5 Things to Know</a></li>
-                    <li><a href="index.html#foundation">Foundation Skills</a></li>
-                    <li><a href="index.html#curriculum">Curriculum</a></li>
-                    <li><a href="index.html#pricing">Pricing</a></li>
-                </ul>
-            </div>
-            <div class="footer-links">
-                <h4>Resources</h4>
-                <ul>
-                    <li><a href="resources.html">All Resources</a></li>
-                    <li><a href="iep-checklist.html">IEP Checklist</a></li>
-                    <li><a href="skills-assessment.html">Skills Assessment</a></li>
-                    <li><a href="blog.html">Blog</a></li>
-                </ul>
-            </div>
-            <div class="footer-links">
-                <h4>Connect</h4>
-                <ul>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                    <li><a href="podcast.html">Podcast</a></li>
-                    <li><a href="newsletter.html">Newsletter</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>© 2024 Bridging the Gap. All rights reserved. | <a href="privacy.html" style="color: inherit;">Privacy Policy</a> | <a href="terms.html" style="color: inherit;">Terms of Service</a></p>
-        </div>
-    </footer>
+    <!-- Footer (loaded by footer.js) -->
+    <footer class="footer"></footer>
 
     </div><!-- End Main Content -->
 
+    <script src="js/config.js"></script>
+    <script src="js/footer.js"></script>
     <script>
-        // Toggle Sidebar for mobile
         function toggleSidebar() {
             document.querySelector('.sidebar').classList.toggle('active');
             document.querySelector('.sidebar-overlay').classList.toggle('active');
