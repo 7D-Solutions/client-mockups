@@ -1,0 +1,92 @@
+/* Tenants Page Styles */
+
+.tenantsPage {
+  padding: var(--space-6);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-6);
+  gap: var(--space-4);
+}
+
+.pageTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.pageDescription {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Form Layout */
+.formRow {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+/* Table Cell Styles */
+.nameCell,
+.propertyCell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.nameCell svg,
+.propertyCell svg {
+  flex-shrink: 0;
+  color: var(--color-text-tertiary);
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 768px) {
+  .tenantsPage {
+    padding: var(--space-4);
+  }
+
+  .pageHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pageTitle {
+    font-size: var(--font-size-xl);
+  }
+
+  .formRow {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+}
+
+@media (max-width: 640px) {
+  .tenantsPage {
+    padding: var(--space-3);
+  }
+
+  .pageTitle {
+    font-size: var(--font-size-lg);
+  }
+
+  .pageDescription {
+    font-size: var(--font-size-sm);
+  }
+}

@@ -1,0 +1,98 @@
+/* Base badge styles */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+}
+
+/* Badge size variants using shared component size system */
+.badgeCompact {
+  padding: 4px 12px;
+  font-size: var(--table-header-font-size);
+  height: var(--component-size-compact-min-height);
+  min-height: var(--component-size-compact-min-height);
+  line-height: 1;
+}
+
+.badgeXS {
+  padding: calc(var(--component-size-xs-padding-y) / 2) var(--component-size-xs-padding-x);
+  font-size: calc(var(--component-size-xs-font-size) * 0.875);
+  min-height: calc(var(--component-size-xs-min-height) * 0.75);
+}
+
+.badgeSM {
+  padding: calc(var(--component-size-sm-padding-y) / 2) var(--component-size-sm-padding-x);
+  font-size: calc(var(--component-size-sm-font-size) * 0.875);
+  min-height: calc(var(--component-size-sm-min-height) * 0.75);
+}
+
+.badgeMD {
+  padding: calc(var(--component-size-md-padding-y) / 2) var(--component-size-md-padding-x);
+  font-size: calc(var(--component-size-md-font-size) * 0.875);
+  min-height: calc(var(--component-size-md-min-height) * 0.75);
+}
+
+.badgeLG {
+  padding: calc(var(--component-size-lg-padding-y) / 2) var(--component-size-lg-padding-x);
+  font-size: calc(var(--component-size-lg-font-size) * 0.875);
+  min-height: calc(var(--component-size-lg-min-height) * 0.75);
+}
+
+.badgeXL {
+  padding: calc(var(--component-size-xl-padding-y) / 2) var(--component-size-xl-padding-x);
+  font-size: calc(var(--component-size-xl-font-size) * 0.875);
+  min-height: calc(var(--component-size-xl-min-height) * 0.75);
+}
+
+/* Badge count variant - more circular for numbers */
+.badgeCount {
+  min-width: 1.5rem;
+  padding-left: var(--space-2);
+  padding-right: var(--space-2);
+  border-radius: 9999px;
+}
+
+/* Badge color variants */
+.badgeSuccess {
+  background-color: var(--color-success-bg, #d4edda);
+  color: var(--color-success-text, #155724);
+}
+
+.badgeWarning {
+  background-color: var(--color-warning-bg, #fff3cd);
+  color: var(--color-warning-text, #856404);
+}
+
+.badgeDanger {
+  background-color: var(--color-danger, #ef4444);
+  color: var(--color-text-inverse, #ffffff);
+}
+
+.badgeInfo {
+  background-color: var(--color-info-bg, #d1ecf1);
+  color: var(--color-info-text, #0c5460);
+}
+
+.badgePrimary {
+  background-color: var(--color-primary-bg, #e7f2ff);
+  color: var(--color-primary-dark);
+}
+
+.badgeSecondary {
+  background-color: var(--color-gray-200);
+  color: var(--color-gray-700);
+}
+
+.badgeDefault {
+  background-color: var(--color-gray-200);
+  color: var(--color-gray-700);
+}
+
+.badgeAlert {
+  background-color: var(--color-danger);
+  color: var(--color-text-inverse);
+}

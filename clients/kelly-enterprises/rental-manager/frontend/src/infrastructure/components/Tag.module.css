@@ -1,0 +1,114 @@
+/* Base tag styles */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  border-radius: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1;
+}
+
+/* Tag size variants using shared component size system */
+.tagXS {
+  padding: var(--component-size-xs-padding-y) var(--component-size-xs-padding-x);
+  font-size: var(--component-size-xs-font-size);
+  min-height: var(--component-size-xs-min-height);
+}
+
+.tagSM {
+  padding: var(--component-size-sm-padding-y) var(--component-size-sm-padding-x);
+  font-size: var(--component-size-sm-font-size);
+  min-height: var(--component-size-sm-min-height);
+}
+
+.tagMD {
+  padding: var(--component-size-md-padding-y) var(--component-size-md-padding-x);
+  font-size: var(--component-size-md-font-size);
+  min-height: var(--component-size-md-min-height);
+}
+
+.tagLG {
+  padding: var(--component-size-lg-padding-y) var(--component-size-lg-padding-x);
+  font-size: var(--component-size-lg-font-size);
+  min-height: var(--component-size-lg-min-height);
+}
+
+.tagXL {
+  padding: var(--component-size-xl-padding-y) var(--component-size-xl-padding-x);
+  font-size: var(--component-size-xl-font-size);
+  min-height: var(--component-size-xl-min-height);
+}
+
+/* Icon sizing within tags based on size */
+.tagXS :global(.fa),
+.tagXS :global(.fas),
+.tagXS :global(.far),
+.tagXS :global(.fab) {
+  font-size: var(--component-size-xs-font-size);
+}
+
+.tagSM :global(.fa),
+.tagSM :global(.fas),
+.tagSM :global(.far),
+.tagSM :global(.fab) {
+  font-size: var(--component-size-sm-font-size);
+}
+
+.tagMD :global(.fa),
+.tagMD :global(.fas),
+.tagMD :global(.far),
+.tagMD :global(.fab) {
+  font-size: var(--component-size-md-font-size);
+}
+
+.tagLG :global(.fa),
+.tagLG :global(.fas),
+.tagLG :global(.far),
+.tagLG :global(.fab) {
+  font-size: var(--component-size-lg-font-size);
+}
+
+.tagXL :global(.fa),
+.tagXL :global(.fas),
+.tagXL :global(.far),
+.tagXL :global(.fab) {
+  font-size: var(--component-size-xl-font-size);
+}
+
+/* Tag color variants */
+.tagSuccess {
+  background-color: var(--color-success-bg, #d1f7e5);
+  color: var(--color-success-text, #0e6e3d);
+}
+
+.tagWarning {
+  background-color: var(--color-warning-bg, #fff8e1);
+  color: var(--color-warning-text, #8b5a00);
+}
+
+.tagDanger {
+  background-color: var(--color-danger-bg, #ffe0e0);
+  color: var(--color-danger-text, #d93025);
+}
+
+.tagInfo {
+  background-color: var(--color-primary-bg, #e7f2ff);
+  color: var(--color-primary-dark);
+}
+
+.tagPrimary {
+  background-color: var(--color-primary-bg, #e7f2ff);
+  color: var(--color-primary-dark);
+}
+
+.tagSecondary {
+  background-color: var(--color-gray-100);
+  color: var(--color-gray-600);
+}
+
+.tagDefault {
+  background-color: var(--color-gray-100);
+  color: var(--color-gray-600);
+}

@@ -1,0 +1,54 @@
+/* Alert component styles */
+.alert {
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-4);
+  border: 1px solid;
+}
+
+.alertHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.alertTitle {
+  font-weight: var(--font-weight-medium);
+  margin: 0;
+}
+
+.alertContent {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.alertContent span {
+  margin: 0;
+}
+
+/* Variant styles */
+.alert.info {
+  background-color: var(--color-info-light-bg);
+  border-color: var(--color-info-light);
+  color: var(--color-info-dark);
+}
+
+.alert.success {
+  background-color: var(--color-success-light-bg);
+  border-color: var(--color-success-light);
+  color: var(--color-success-dark);
+}
+
+.alert.warning {
+  background-color: var(--color-warning-light-bg);
+  border-color: var(--color-warning-light);
+  color: var(--color-warning-dark);
+}
+
+.alert.danger {
+  background-color: var(--color-danger-light-bg);
+  border-color: var(--color-danger-light);
+  color: var(--color-danger-dark);
+}

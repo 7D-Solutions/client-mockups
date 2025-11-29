@@ -1,0 +1,3811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelly Enterprises - Rental Manager</title>
+
+    <!-- 7D Solutions UI Kit -->
+    <script src="../../../ui-kit/js/mockup-core.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-primary: #2c5282;
+            --color-primary-dark: #1a365d;
+            --color-success: #28a745;
+            --color-warning: #ffc107;
+            --color-danger: #dc3545;
+            --color-border: #dee2e6;
+            --color-border-light: #e9ecef;
+            --color-bg-light: #f8f9fa;
+            --color-text: #333;
+            --color-text-light: #666;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 20px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            color: var(--color-text);
+        }
+
+        .page-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: var(--space-5);
+        }
+
+        .page-header {
+            background: white;
+            padding: var(--space-5);
+            border-radius: 8px;
+            margin-bottom: var(--space-5);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .page-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-4);
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .btn-success {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #1e7e34;
+        }
+
+        .btn-danger {
+            background: var(--color-danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+
+        /* Dashboard Metrics */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-5);
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 8px;
+            padding: var(--space-5);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .metric-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--space-2);
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: var(--space-2);
+        }
+
+        .metric-subtitle {
+            font-size: 13px;
+            color: var(--color-text-light);
+        }
+
+        /* Filters */
+        .filters-section {
+            display: flex;
+            gap: var(--space-3);
+            flex-wrap: wrap;
+            padding-top: var(--space-4);
+            border-top: 1px solid var(--color-border-light);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .filter-input,
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+        }
+
+        /* Table Container */
+        .datatable-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .datatable-toolbar {
+            padding: var(--space-4);
+            border-bottom: 1px solid var(--color-border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--color-bg-light);
+        }
+
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .record-count {
+            font-size: 14px;
+            color: var(--color-text-light);
+            font-weight: 500;
+        }
+
+        /* Table */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .datatable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .datatable thead {
+            background: var(--color-bg-light);
+        }
+
+        .datatable th {
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--color-text);
+            border-bottom: 2px solid var(--color-border);
+            white-space: nowrap;
+        }
+
+        .datatable td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--color-border-light);
+            font-size: 14px;
+        }
+
+        .datatable tbody tr:hover {
+            background: var(--color-bg-light);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        /* Payment Source Badges */
+        .payment-source {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .payment-source.bank { background: #e3f2fd; color: #1976d2; }
+        .payment-source.venmo { background: #e8f5e9; color: #388e3c; }
+        .payment-source.airbnb { background: #fce4ec; color: #c2185b; }
+        .payment-source.cash { background: #f3e5f5; color: #7b1fa2; }
+        .payment-source.check { background: #fff3e0; color: #e65100; }
+
+        /* Balance Colors */
+        .balance-positive { color: var(--color-success); font-weight: 600; }
+        .balance-negative { color: var(--color-danger); font-weight: 600; }
+        .balance-zero { color: var(--color-text-light); }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        /* Temp modals (detail views) have lower z-index so edit modals appear on top */
+        [id^="temp-"] {
+            z-index: 900;
+            background: rgba(0,0,0,0.85); /* Solid dark background - no see-through */
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            padding: var(--space-5);
+            border-bottom: 1px solid var(--color-border-light);
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .modal-body {
+            padding: var(--space-5);
+        }
+
+        .modal-footer {
+            padding: var(--space-4);
+            border-top: 1px solid var(--color-border-light);
+            display: flex;
+            gap: var(--space-2);
+            justify-content: flex-end;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: var(--space-4);
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-4);
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-4);
+            border-top: 1px solid var(--color-border-light);
+        }
+
+        .pagination-info {
+            font-size: 14px;
+            color: var(--color-text-light);
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        .page-btn {
+            padding: 6px 12px;
+            border: 1px solid var(--color-border);
+            background: white;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: var(--color-bg-light);
+        }
+
+        .page-btn.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Alert Banner */
+        .alert-banner {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            color: white;
+            padding: var(--space-4);
+            border-radius: 8px;
+            margin-bottom: var(--space-4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(238, 90, 82, 0.3);
+        }
+
+        .alert-banner-text {
+            font-weight: 600;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            min-width: 300px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: var(--space-4);
+            display: none;
+            align-items: center;
+            gap: var(--space-3);
+            z-index: 2000;
+        }
+
+        .toast.show {
+            display: flex;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast-success { border-left: 4px solid var(--color-success); }
+        .toast-error { border-left: 4px solid var(--color-danger); }
+        .toast-warning { border-left: 4px solid var(--color-warning); }
+        .toast-info { border-left: 4px solid #17a2b8; }
+
+        /* Property Cards */
+        .property-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: var(--space-4);
+        }
+
+        .property-card {
+            background: white;
+            border-radius: 8px;
+            padding: var(--space-5);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .property-card-header {
+            margin-bottom: var(--space-4);
+            padding-bottom: var(--space-3);
+            border-bottom: 1px solid var(--color-border-light);
+        }
+
+        .property-card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: var(--space-2);
+        }
+
+        .property-card-subtitle {
+            font-size: 13px;
+            color: var(--color-text-light);
+        }
+
+        .property-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-3);
+            margin-bottom: var(--space-4);
+        }
+
+        .property-stat {
+            text-align: center;
+        }
+
+        .property-stat-label {
+            font-size: 11px;
+            color: var(--color-text-light);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .property-stat-value {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .property-actions {
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        /* View Tabs */
+        .view-tabs {
+            background: white;
+        }
+
+        .view-tab {
+            padding: var(--space-4) var(--space-5);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-text-light);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .view-tab:hover {
+            color: var(--color-text);
+            background: var(--color-bg-light);
+        }
+
+        .view-tab.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+
+        .view-content {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Category Badges */
+        .category-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .category-supplies { background: #fff3e0; color: #e65100; }
+        .category-contractor { background: #e3f2fd; color: #1976d2; }
+        .category-utilities { background: #f3e5f5; color: #7b1fa2; }
+        .category-taxes { background: #fce4ec; color: #c2185b; }
+        .category-insurance { background: #e8f5e9; color: #388e3c; }
+        .category-housekeeping { background: #fff9c4; color: #f57f17; }
+        .category-maintenance { background: #e0f2f1; color: #00695c; }
+        .category-other { background: var(--color-bg-light); color: var(--color-text); }
+
+        /* View Toggle */
+        .view-toggle {
+            display: flex;
+            gap: 8px;
+            background: var(--color-bg-light);
+            padding: 4px;
+            border-radius: 6px;
+        }
+
+        .view-toggle-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            color: var(--color-text);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .view-toggle-btn:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .view-toggle-btn.active {
+            background: white;
+            color: var(--color-primary);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Card View */
+        .card-view-container {
+            padding: var(--space-4);
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: var(--space-4);
+        }
+
+        .tenant-card {
+            background: white;
+            border: 1px solid var(--color-border-light);
+            border-radius: 8px;
+            padding: var(--space-4);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .tenant-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .tenant-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-3);
+            padding-bottom: var(--space-3);
+            border-bottom: 1px solid var(--color-border-light);
+        }
+
+        .tenant-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 4px;
+        }
+
+        .tenant-card-subtitle {
+            font-size: 14px;
+            color: var(--color-text-light);
+        }
+
+        .tenant-card-body {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+        }
+
+        .tenant-card-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .tenant-card-label {
+            font-size: 13px;
+            color: var(--color-text-light);
+        }
+
+        .tenant-card-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-text);
+        }
+
+        .tenant-card-actions {
+            display: flex;
+            gap: var(--space-2);
+            margin-top: var(--space-3);
+            padding-top: var(--space-3);
+            border-top: 1px solid var(--color-border-light);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: #1a202c;
+            color: white;
+            border-right: 1px solid #2d3748;
+            overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: var(--space-5);
+            border-bottom: 1px solid #2d3748;
+        }
+
+        .sidebar-logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: var(--space-2);
+        }
+
+        .sidebar-subtitle {
+            font-size: 12px;
+            color: #a0aec0;
+        }
+
+        .sidebar-section {
+            border-bottom: 1px solid #2d3748;
+            padding: var(--space-2) 0;
+        }
+
+        .sidebar-section-title {
+            padding: var(--space-1) var(--space-5) var(--space-1) var(--space-2);
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #a0aec0;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .sidebar-nav-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .sidebar-nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-2) var(--space-5) var(--space-2) var(--space-2);
+            cursor: pointer;
+            transition: all 0.2s;
+            background: transparent;
+            border: none;
+            width: 100%;
+            text-align: left;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .sidebar-nav-item:hover {
+            background: #2d3748;
+        }
+
+        .sidebar-nav-item.active {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .sidebar-nav-item.active:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .sidebar-nav-icon {
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: #2d3748;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #4a5568;
+            border-radius: 3px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #718096;
+        }
+
+        /* Main content with sidebar offset */
+        .main-content {
+            margin-left: 260px;
+        }
+
+        @media (max-width: 1023px) {
+            .sidebar {
+                display: none;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">🏠 Kelly Enterprises</div>
+            <div class="sidebar-subtitle">Property Management</div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Main</div>
+            <div class="sidebar-nav-items">
+                <button class="sidebar-nav-item active" data-view="rent-log" onclick="switchViewFromSidebar('rent-log')">
+                    <span class="sidebar-nav-icon">📊</span>
+                    <span>Rent Log</span>
+                </button>
+                <button class="sidebar-nav-item" data-view="properties" onclick="switchViewFromSidebar('properties')">
+                    <span class="sidebar-nav-icon">🏘️</span>
+                    <span>Properties</span>
+                </button>
+                <button class="sidebar-nav-item" data-view="expenses" onclick="switchViewFromSidebar('expenses')">
+                    <span class="sidebar-nav-icon">💰</span>
+                    <span>Expenses</span>
+                </button>
+                <button class="sidebar-nav-item" data-view="messages" onclick="switchViewFromSidebar('messages')">
+                    <span class="sidebar-nav-icon">💬</span>
+                    <span>Messages</span>
+                </button>
+                <button class="sidebar-nav-item" data-view="applications" onclick="switchViewFromSidebar('applications')">
+                    <span class="sidebar-nav-icon">📋</span>
+                    <span>Applications</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Actions</div>
+            <div class="sidebar-nav-items">
+                <button class="sidebar-nav-item" onclick="showAddTenantModal()">
+                    <span class="sidebar-nav-icon">➕</span>
+                    <span>Add Tenant</span>
+                </button>
+                <button class="sidebar-nav-item" onclick="showAddPropertyModal()">
+                    <span class="sidebar-nav-icon">🏗️</span>
+                    <span>Add Property</span>
+                </button>
+                <button class="sidebar-nav-item" onclick="showAddExpenseModal()">
+                    <span class="sidebar-nav-icon">📝</span>
+                    <span>Add Expense</span>
+                </button>
+                <button class="sidebar-nav-item" onclick="sendDelinquencyMessages()">
+                    <span class="sidebar-nav-icon">📧</span>
+                    <span>Send Notices</span>
+                </button>
+                <button class="sidebar-nav-item" onclick="resetAllData()" style="margin-top: var(--space-4); border-top: 1px solid rgba(255,255,255,0.1); padding-top: var(--space-3);">
+                    <span class="sidebar-nav-icon">🔄</span>
+                    <span>Reset Data</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+    <div class="page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-header-top">
+                <h1 class="page-title">🏠 Kelly Enterprises - Rental Manager</h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary btn-sm" onclick="sendDelinquencyMessages()">📧 Send Delinquency Notices</button>
+                    <button class="btn btn-primary" onclick="showAddTenantModal()">➕ Add Tenant</button>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-section">
+                <div class="filter-group">
+                    <label class="filter-label">Search</label>
+                    <input type="text" class="filter-input" id="search-filter" placeholder="Search tenants..." onkeyup="applyFilters()">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Property</label>
+                    <select class="filter-select" id="property-filter" onchange="applyFilters()">
+                        <option value="">All Properties</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Status</label>
+                    <select class="filter-select" id="status-filter" onchange="applyFilters()">
+                        <option value="">All Statuses</option>
+                        <option value="paid">Paid</option>
+                        <option value="partial">Partial</option>
+                        <option value="late">Late</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">&nbsp;</label>
+                    <button class="btn btn-secondary" onclick="clearFilters()">Clear Filters</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Banner (shown when delinquencies exist) -->
+        <div id="alert-banner" style="display: none;"></div>
+
+        <!-- Dashboard Metrics -->
+        <div class="dashboard-grid">
+            <div class="metric-card">
+                <div class="metric-label">Total Rent Due</div>
+                <div class="metric-value" id="metric-rent-due">$0</div>
+                <div class="metric-subtitle">This month</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Collected</div>
+                <div class="metric-value" id="metric-collected" style="color: var(--color-success);">$0</div>
+                <div class="metric-subtitle">Payments received</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Outstanding</div>
+                <div class="metric-value" id="metric-outstanding" style="color: var(--color-danger);">$0</div>
+                <div class="metric-subtitle">Amount owed</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Delinquent Tenants</div>
+                <div class="metric-value" id="metric-delinquent" style="color: var(--color-warning);">0</div>
+                <div class="metric-subtitle">After grace period (5th)</div>
+            </div>
+        </div>
+
+        <!-- View Tabs -->
+        <div class="datatable-container" style="margin-bottom: var(--space-4);">
+            <div class="view-tabs" style="display: flex; border-bottom: 2px solid var(--color-border-light);">
+                <button class="view-tab active" data-view="rent-log" onclick="switchView('rent-log')">📊 Rent Log</button>
+                <button class="view-tab" data-view="properties" onclick="switchView('properties')">🏘️ Properties</button>
+                <button class="view-tab" data-view="expenses" onclick="switchView('expenses')">💰 Expenses</button>
+                <button class="view-tab" data-view="messages" onclick="switchView('messages')">💬 Messages</button>
+                <button class="view-tab" data-view="applications" onclick="switchView('applications')">📋 Applications</button>
+            </div>
+        </div>
+
+        <!-- Rent Log View -->
+        <div id="rent-log-view" class="view-content">
+            <div class="datatable-container">
+                <div class="datatable-toolbar">
+                    <div class="toolbar-left">
+                        <span class="record-count" id="record-count">0 tenants</span>
+                    </div>
+                    <div class="toolbar-right">
+                        <div class="view-toggle">
+                            <button class="view-toggle-btn active" data-view="table" onclick="toggleRentLogView('table')">
+                                📋 Table
+                            </button>
+                            <button class="view-toggle-btn" data-view="card" onclick="toggleRentLogView('card')">
+                                🃏 Cards
+                            </button>
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="showColumnSettingsModal()" style="margin-left: 12px;">
+                            ⚙️ Columns
+                        </button>
+                    </div>
+                </div>
+
+            <div class="table-wrapper" id="rent-table-view">
+                <table class="datatable" id="rent-table">
+                    <thead>
+                        <tr id="rent-table-header">
+                            <!-- Dynamically populated by JavaScript -->
+                        </tr>
+                    </thead>
+                    <tbody id="rent-table-body">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card-view-container" id="rent-card-view" style="display: none;">
+                <div id="rent-cards-body" class="cards-grid">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+
+                <div class="pagination" id="pagination">
+                    <!-- Pagination controls -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Properties View -->
+        <div id="properties-view" class="view-content" style="display: none;">
+            <div class="datatable-container" style="margin-bottom: var(--space-4);">
+                <div class="datatable-toolbar">
+                    <div class="toolbar-left">
+                        <span class="record-count" id="property-count">0 properties</span>
+                    </div>
+                    <div class="toolbar-right" style="display: flex; gap: var(--space-3); align-items: center;">
+                        <div class="view-toggle">
+                            <button class="view-toggle-btn active" data-view="table" onclick="togglePropertiesView('table')">
+                                📋 Table
+                            </button>
+                            <button class="view-toggle-btn" data-view="card" onclick="togglePropertiesView('card')">
+                                🃏 Cards
+                            </button>
+                        </div>
+                        <button class="btn btn-primary" onclick="showAddPropertyModal()">➕ Add Property</button>
+                    </div>
+                </div>
+
+                <!-- Table View -->
+                <div class="table-wrapper" id="properties-table-view">
+                    <table class="datatable" id="property-table">
+                        <thead>
+                            <tr>
+                                <th>Address</th>
+                                <th>Type</th>
+                                <th>Purchase Price</th>
+                                <th>Tenants</th>
+                                <th>Monthly Income</th>
+                                <th>YTD Expenses</th>
+                                <th>Net P&L</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="property-table-body">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Card View -->
+                <div class="property-grid" id="property-card-view" style="display: none;">
+                    <!-- Property cards populated by JavaScript -->
+                </div>
+
+                <!-- Pagination Controls -->
+                <div id="properties-pagination" class="pagination" style="margin-top: var(--space-4);"></div>
+            </div>
+        </div>
+
+        <!-- Expenses View -->
+        <div id="expenses-view" class="view-content" style="display: none;">
+            <div class="datatable-container">
+                <div class="datatable-toolbar">
+                    <div class="toolbar-left">
+                        <span class="record-count" id="expense-count">0 expenses</span>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" onclick="showAddExpenseModal()">➕ Add Expense</button>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="datatable" id="expense-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Property</th>
+                                <th>Category</th>
+                                <th>Vendor</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Payment Method</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expense-table-body">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination Controls -->
+                <div id="expenses-pagination" class="pagination" style="margin-top: var(--space-4);"></div>
+            </div>
+        </div>
+
+        <!-- Messages View -->
+        <div id="messages-view" class="view-content" style="display: none;">
+            <div class="datatable-container">
+                <div class="datatable-toolbar">
+                    <div class="toolbar-left">
+                        <span class="record-count" id="message-count">0 messages</span>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="datatable" id="message-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Tenant</th>
+                                <th>Property</th>
+                                <th>Type</th>
+                                <th>Subject</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="message-table-body">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination Controls -->
+                <div id="messages-pagination" class="pagination" style="margin-top: var(--space-4);"></div>
+            </div>
+        </div>
+
+        <!-- Applications View -->
+        <div id="applications-view" class="view-content" style="display: none;">
+            <div class="datatable-container">
+                <div class="datatable-toolbar">
+                    <div class="toolbar-left">
+                        <span class="record-count" id="application-count">0 applications</span>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="datatable" id="application-table">
+                        <thead>
+                            <tr>
+                                <th>Date Applied</th>
+                                <th>Applicant Name</th>
+                                <th>Property Interest</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Monthly Income</th>
+                                <th>Credit Score</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="application-table-body">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination Controls -->
+                <div id="applications-pagination" class="pagination" style="margin-top: var(--space-4);"></div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+    <!-- Add/Edit Tenant Modal -->
+    <div id="tenant-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="tenant-modal-title">Add Tenant</h2>
+            </div>
+            <div class="modal-body">
+                <form id="tenant-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Name *</label>
+                            <input type="text" class="form-control" id="tenant-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Property *</label>
+                            <select class="form-control" id="tenant-property" required>
+                                <option value="">Select property...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" class="form-control" id="tenant-phone">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="tenant-email">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Monthly Rent *</label>
+                            <input type="number" class="form-control" id="tenant-rent" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Due Day</label>
+                            <input type="number" class="form-control" id="tenant-due-day" value="5" min="1" max="31">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Lease Start</label>
+                            <input type="date" class="form-control" id="tenant-lease-start">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Lease End</label>
+                            <input type="date" class="form-control" id="tenant-lease-end">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('tenant-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveTenant()">Save Tenant</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Payment Modal -->
+    <div id="payment-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Record Payment</h2>
+            </div>
+            <div class="modal-body">
+                <form id="payment-form">
+                    <input type="hidden" id="payment-tenant-id">
+
+                    <div class="form-group">
+                        <label class="form-label">Tenant</label>
+                        <input type="text" class="form-control" id="payment-tenant-name" disabled>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Amount *</label>
+                            <input type="number" class="form-control" id="payment-amount" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Date *</label>
+                            <input type="date" class="form-control" id="payment-date" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Payment Source *</label>
+                            <select class="form-control" id="payment-source" required>
+                                <option value="">Select source...</option>
+                                <option value="bank">Bank Deposit</option>
+                                <option value="venmo">Venmo</option>
+                                <option value="airbnb">Airbnb</option>
+                                <option value="cash">Cash</option>
+                                <option value="check">Check</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Late Fee</label>
+                            <input type="number" class="form-control" id="payment-late-fee" step="0.01" value="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Reference/Notes</label>
+                        <input type="text" class="form-control" id="payment-reference" placeholder="Check #, transaction ID, etc.">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('payment-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="savePayment()">Record Payment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Property Modal -->
+    <div id="property-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="property-modal-title">Add Property</h2>
+            </div>
+            <div class="modal-body">
+                <form id="property-form">
+                    <div class="form-group">
+                        <label class="form-label">Address *</label>
+                        <input type="text" class="form-control" id="property-address" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Property Type *</label>
+                            <select class="form-control" id="property-type" required>
+                                <option value="">Select type...</option>
+                                <option value="Single Family">Single Family</option>
+                                <option value="Multi-Family Duplex">Multi-Family Duplex</option>
+                                <option value="Multi-Family Triplex">Multi-Family Triplex</option>
+                                <option value="Condo">Condo</option>
+                                <option value="Townhouse">Townhouse</option>
+                                <option value="Apartment">Apartment</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Purchase Price</label>
+                            <input type="number" class="form-control" id="property-price" step="0.01">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('property-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveProperty()">Save Property</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Expense Modal -->
+    <div id="expense-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="expense-modal-title">Add Expense</h2>
+            </div>
+            <div class="modal-body">
+                <form id="expense-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Property *</label>
+                            <select class="form-control" id="expense-property" required>
+                                <option value="">Select property...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Date *</label>
+                            <input type="date" class="form-control" id="expense-date" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Category *</label>
+                            <select class="form-control" id="expense-category" required>
+                                <option value="">Select category...</option>
+                                <option value="Supplies">Supplies (Home Depot, etc.)</option>
+                                <option value="Contractor">Contractor (Plumber, Electrician)</option>
+                                <option value="Utilities">Utilities</option>
+                                <option value="Taxes">Property Taxes</option>
+                                <option value="Insurance">Insurance</option>
+                                <option value="Housekeeping">Housekeeping</option>
+                                <option value="Maintenance">General Maintenance</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Vendor *</label>
+                            <input type="text" class="form-control" id="expense-vendor" placeholder="Home Depot, ABC Plumbing..." required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <input type="text" class="form-control" id="expense-description" placeholder="Brief description...">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Amount *</label>
+                            <input type="number" class="form-control" id="expense-amount" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Payment Method *</label>
+                            <select class="form-control" id="expense-payment-method" required>
+                                <option value="">Select method...</option>
+                                <option value="Credit Card">Credit Card</option>
+                                <option value="Check">Check</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="Venmo">Venmo</option>
+                                <option value="Cash">Cash</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Upload Receipt</label>
+                        <input type="file" class="form-control" id="expense-receipt" accept="image/*,.pdf">
+                        <small style="color: var(--color-text-light); display: block; margin-top: 4px;">
+                            Accepted formats: JPG, PNG, PDF
+                        </small>
+                        <div id="receipt-status" style="margin-top: 8px; display: none;">
+                            <!-- Receipt upload status -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('expense-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveExpense()">Save Expense</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tenant Details Modal -->
+    <div id="tenant-details-modal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="tenant-details-title">Tenant Details</h2>
+            </div>
+            <div class="modal-body" id="tenant-details-body">
+                <!-- Populated by JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('tenant-details-modal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lease Management Modal -->
+    <div id="lease-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Lease Document Management</h2>
+            </div>
+            <div class="modal-body">
+                <div id="lease-status" style="margin-bottom: var(--space-4); padding: var(--space-3); background: var(--color-bg-light); border-radius: 4px;">
+                    <!-- Lease status info -->
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Upload Lease Document</label>
+                    <input type="file" class="form-control" id="lease-file" accept=".pdf,.doc,.docx">
+                    <small style="color: var(--color-text-light); display: block; margin-top: 4px;">
+                        Accepted formats: PDF, DOC, DOCX
+                    </small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('lease-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="uploadLease()">Upload</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Column Settings Modal -->
+    <div id="column-settings-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Customize Columns</h2>
+            </div>
+            <div class="modal-body">
+                <p style="color: var(--color-text-light); margin-bottom: var(--space-4); font-size: 14px;">
+                    Select which columns to display in the Rent Log table:
+                </p>
+                <div id="column-checkboxes" style="display: grid; grid-template-columns: 1fr; gap: var(--space-3);">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="resetColumnSettings()">Reset to Default</button>
+                <button class="btn btn-secondary" onclick="closeModal('column-settings-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveColumnSettings()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <span id="toast-message"></span>
+    </div>
+
+    <script>
+        // Initialize data stores
+        const propertiesStore = new MockupStore('kelly-properties');
+        const tenantsStore = new MockupStore('kelly-tenants');
+        const paymentsStore = new MockupStore('kelly-payments');
+        const expensesStore = new MockupStore('kelly-expenses');
+        const messagesStore = new MockupStore('kelly-messages');
+        const applicationsStore = new MockupStore('kelly-applications');
+
+        // Rent Log pagination
+        let currentPage = 1;
+        let itemsPerPage = 10;
+
+        // Properties pagination
+        let propertiesCurrentPage = 1;
+        let propertiesItemsPerPage = 10;
+
+        // Expenses pagination
+        let expensesCurrentPage = 1;
+        let expensesItemsPerPage = 10;
+
+        // Messages pagination
+        let messagesCurrentPage = 1;
+        let messagesItemsPerPage = 10;
+
+        // Applications pagination
+        let applicationsCurrentPage = 1;
+        let applicationsItemsPerPage = 10;
+        let currentTenantId = null;
+
+        // Column customization for Rent Log table
+        const defaultRentLogColumns = {
+            tenant: { label: 'Tenant', visible: true, order: 0, locked: false },
+            property: { label: 'Property', visible: true, order: 1, locked: false },
+            monthlyRent: { label: 'Monthly Rent', visible: true, order: 2, locked: false },
+            paidThisMonth: { label: 'Paid This Month', visible: true, order: 3, locked: false },
+            balance: { label: 'Balance', visible: true, order: 4, locked: false },
+            lateFees: { label: 'Late Fees', visible: true, order: 5, locked: false },
+            lastPayment: { label: 'Last Payment', visible: true, order: 6, locked: false },
+            status: { label: 'Status', visible: true, order: 7, locked: false },
+            actions: { label: 'Actions', visible: true, order: 8, locked: true }
+        };
+
+        let rentLogColumns = JSON.parse(JSON.stringify(defaultRentLogColumns));
+
+        // Load column settings from sessionStorage
+        function loadColumnSettings() {
+            const saved = sessionStorage.getItem('kelly-rent-log-columns');
+            if (saved) {
+                try {
+                    const savedCols = JSON.parse(saved);
+                    // Merge with defaults to handle any new columns
+                    Object.keys(defaultRentLogColumns).forEach(key => {
+                        if (savedCols[key]) {
+                            rentLogColumns[key] = { ...defaultRentLogColumns[key], ...savedCols[key] };
+                        }
+                    });
+                } catch (e) {
+                    console.error('Failed to load column preferences:', e);
+                }
+            }
+        }
+
+        // Save column settings to sessionStorage
+        function saveColumnSettingsToStorage() {
+            sessionStorage.setItem('kelly-rent-log-columns', JSON.stringify(rentLogColumns));
+        }
+
+        // Initialize sample data
+        function initializeSampleData() {
+            if (propertiesStore.getAll().length === 0) {
+                const properties = [
+                    // Springfield Properties
+                    { address: '123 Oak Street, Springfield', type: 'Single Family', purchasePrice: 250000 },
+                    { address: '456 Elm Avenue, Springfield', type: 'Multi-Family Duplex', purchasePrice: 380000 },
+                    { address: '789 Pine Road, Springfield', type: 'Condo', purchasePrice: 180000 },
+                    { address: '321 Maple Drive, Springfield', type: 'Townhouse', purchasePrice: 220000 },
+                    { address: '555 Cherry Lane, Springfield', type: 'Single Family', purchasePrice: 275000 },
+                    { address: '876 Birch Court, Springfield', type: 'Single Family', purchasePrice: 295000 },
+                    { address: '234 Willow Way, Springfield', type: 'Condo', purchasePrice: 165000 },
+                    { address: '987 Cedar Boulevard, Springfield', type: 'Multi-Family Duplex', purchasePrice: 420000 },
+                    // Riverside Properties
+                    { address: '101 River Road, Riverside', type: 'Single Family', purchasePrice: 310000 },
+                    { address: '202 Lake Drive, Riverside', type: 'Townhouse', purchasePrice: 245000 },
+                    { address: '303 Harbor Street, Riverside', type: 'Condo', purchasePrice: 195000 },
+                    { address: '404 Marina Way, Riverside', type: 'Single Family', purchasePrice: 340000 },
+                    { address: '505 Dock Lane, Riverside', type: 'Multi-Family Duplex', purchasePrice: 450000 },
+                    { address: '606 Bay Avenue, Riverside', type: 'Townhouse', purchasePrice: 265000 },
+                    // Lakeside Properties
+                    { address: '711 Lakefront Drive, Lakeside', type: 'Single Family', purchasePrice: 385000 },
+                    { address: '822 Shore Road, Lakeside', type: 'Condo', purchasePrice: 215000 },
+                    { address: '933 Beach Boulevard, Lakeside', type: 'Townhouse', purchasePrice: 280000 },
+                    { address: '1044 Sunset Way, Lakeside', type: 'Single Family', purchasePrice: 395000 },
+                    // Downtown Properties
+                    { address: '155 Main Street #201, Downtown', type: 'Apartment', purchasePrice: 175000 },
+                    { address: '266 Central Avenue #405, Downtown', type: 'Apartment', purchasePrice: 185000 },
+                    { address: '377 Broadway #102, Downtown', type: 'Apartment', purchasePrice: 165000 },
+                    { address: '488 Commerce Street, Downtown', type: 'Multi-Family Triplex', purchasePrice: 525000 },
+                    // Hillcrest Properties
+                    { address: '1200 Summit Drive, Hillcrest', type: 'Single Family', purchasePrice: 415000 },
+                    { address: '1311 Ridge Road, Hillcrest', type: 'Single Family', purchasePrice: 435000 },
+                    { address: '1422 Vista Avenue, Hillcrest', type: 'Townhouse', purchasePrice: 295000 },
+                    { address: '1533 Peak Lane, Hillcrest', type: 'Condo', purchasePrice: 225000 },
+                    // Meadowbrook Properties
+                    { address: '2100 Meadow Lane, Meadowbrook', type: 'Single Family', purchasePrice: 265000 },
+                    { address: '2211 Garden Road, Meadowbrook', type: 'Single Family', purchasePrice: 275000 },
+                    { address: '2322 Park Avenue, Meadowbrook', type: 'Townhouse', purchasePrice: 235000 },
+                    { address: '2433 Green Street, Meadowbrook', type: 'Single Family', purchasePrice: 285000 },
+                    // Oakwood Properties
+                    { address: '3100 Forest Drive, Oakwood', type: 'Single Family', purchasePrice: 305000 },
+                    { address: '3211 Timber Road, Oakwood', type: 'Multi-Family Duplex', purchasePrice: 395000 },
+                    { address: '3322 Grove Avenue, Oakwood', type: 'Single Family', purchasePrice: 315000 }
+                ];
+                properties.forEach(p => propertiesStore.add(p));
+            }
+
+            const props = propertiesStore.getAll();
+
+            if (tenantsStore.getAll().length === 0) {
+                const tenants = [
+                    // Springfield Properties
+                    { name: 'John Smith', propertyId: props[0].id, phone: '555-0101', email: 'john.smith@email.com', monthlyRent: 1850, dueDay: 5, leaseStart: '2023-06-01', leaseEnd: '2025-06-01', leaseUploaded: true, leaseUploadDate: '2023-05-28' },
+                    { name: 'Sarah Martinez', propertyId: props[1].id, phone: '555-0102', email: 'sarah.m@email.com', monthlyRent: 2400, dueDay: 5, leaseStart: '2024-01-15', leaseEnd: '2026-01-15', leaseUploaded: true, leaseUploadDate: '2024-01-10' },
+                    { name: 'Michael Chen', propertyId: props[2].id, phone: '555-0103', email: 'mchen@email.com', monthlyRent: 1200, dueDay: 5, leaseStart: '2024-08-01', leaseEnd: '2025-08-01', leaseUploaded: true, leaseUploadDate: '2024-07-25' },
+                    { name: 'Emily Rodriguez', propertyId: props[3].id, phone: '555-0104', email: 'emily.r@email.com', monthlyRent: 1950, dueDay: 5, leaseStart: '2023-11-01', leaseEnd: '2025-11-01', leaseUploaded: true, leaseUploadDate: '2023-10-28' },
+                    { name: 'David Thompson', propertyId: props[4].id, phone: '555-0105', email: 'dthompson@email.com', monthlyRent: 1600, dueDay: 5, leaseStart: '2024-03-01', leaseEnd: '2025-03-01', leaseUploaded: true, leaseUploadDate: '2024-02-26' },
+                    { name: 'Amanda White', propertyId: props[5].id, phone: '555-0106', email: 'awhite@email.com', monthlyRent: 2100, dueDay: 5, leaseStart: '2024-05-15', leaseEnd: '2025-05-15', leaseUploaded: true, leaseUploadDate: '2024-05-10' },
+                    { name: 'James Wilson', propertyId: props[6].id, phone: '555-0107', email: 'jwilson@email.com', monthlyRent: 1750, dueDay: 5, leaseStart: '2024-02-01', leaseEnd: '2025-02-01', leaseUploaded: true, leaseUploadDate: '2024-01-28' },
+                    { name: 'Lisa Brown', propertyId: props[7].id, phone: '555-0108', email: 'lbrown@email.com', monthlyRent: 1300, dueDay: 5, leaseStart: '2024-09-01', leaseEnd: '2025-09-01', leaseUploaded: false },
+
+                    // Riverside Properties
+                    { name: 'Robert Garcia', propertyId: props[8].id, phone: '555-0109', email: 'rgarcia@email.com', monthlyRent: 2200, dueDay: 5, leaseStart: '2023-07-01', leaseEnd: '2025-07-01', leaseUploaded: true, leaseUploadDate: '2023-06-25' },
+                    { name: 'Jennifer Lee', propertyId: props[9].id, phone: '555-0110', email: 'jlee@email.com', monthlyRent: 2850, dueDay: 5, leaseStart: '2024-04-01', leaseEnd: '2026-04-01', leaseUploaded: true, leaseUploadDate: '2024-03-28' },
+                    { name: 'Christopher Miller', propertyId: props[10].id, phone: '555-0111', email: 'cmiller@email.com', monthlyRent: 1950, dueDay: 5, leaseStart: '2024-06-01', leaseEnd: '2025-06-01', leaseUploaded: true, leaseUploadDate: '2024-05-29' },
+                    { name: 'Patricia Davis', propertyId: props[11].id, phone: '555-0112', email: 'pdavis@email.com', monthlyRent: 2500, dueDay: 5, leaseStart: '2023-12-01', leaseEnd: '2025-12-01', leaseUploaded: true, leaseUploadDate: '2023-11-27' },
+                    { name: 'Daniel Anderson', propertyId: props[12].id, phone: '555-0113', email: 'danderson@email.com', monthlyRent: 1800, dueDay: 5, leaseStart: '2024-07-15', leaseEnd: '2025-07-15', leaseUploaded: true, leaseUploadDate: '2024-07-10' },
+                    { name: 'Mary Taylor', propertyId: props[13].id, phone: '555-0114', email: 'mtaylor@email.com', monthlyRent: 2100, dueDay: 5, leaseStart: '2024-01-01', leaseEnd: '2025-01-01', leaseUploaded: true, leaseUploadDate: '2023-12-28' },
+
+                    // Lakeside Properties
+                    { name: 'Thomas Jackson', propertyId: props[14].id, phone: '555-0115', email: 'tjackson@email.com', monthlyRent: 2600, dueDay: 5, leaseStart: '2023-08-01', leaseEnd: '2025-08-01', leaseUploaded: true, leaseUploadDate: '2023-07-28' },
+                    { name: 'Barbara Harris', propertyId: props[15].id, phone: '555-0116', email: 'bharris@email.com', monthlyRent: 2900, dueDay: 5, leaseStart: '2024-03-15', leaseEnd: '2026-03-15', leaseUploaded: true, leaseUploadDate: '2024-03-10' },
+                    { name: 'Charles Martin', propertyId: props[16].id, phone: '555-0117', email: 'cmartin@email.com', monthlyRent: 2300, dueDay: 5, leaseStart: '2024-05-01', leaseEnd: '2025-05-01', leaseUploaded: true, leaseUploadDate: '2024-04-26' },
+                    { name: 'Susan Thompson', propertyId: props[17].id, phone: '555-0118', email: 'sthompson@email.com', monthlyRent: 2750, dueDay: 5, leaseStart: '2023-10-01', leaseEnd: '2025-10-01', leaseUploaded: true, leaseUploadDate: '2023-09-27' },
+
+                    // Downtown Properties
+                    { name: 'Joseph Martinez', propertyId: props[18].id, phone: '555-0119', email: 'jmartinez@email.com', monthlyRent: 1450, dueDay: 5, leaseStart: '2024-02-15', leaseEnd: '2025-02-15', leaseUploaded: true, leaseUploadDate: '2024-02-10' },
+                    { name: 'Nancy Robinson', propertyId: props[19].id, phone: '555-0120', email: 'nrobinson@email.com', monthlyRent: 3200, dueDay: 5, leaseStart: '2023-09-01', leaseEnd: '2025-09-01', leaseUploaded: true, leaseUploadDate: '2023-08-28' },
+                    { name: 'Matthew Clark', propertyId: props[20].id, phone: '555-0121', email: 'mclark@email.com', monthlyRent: 1550, dueDay: 5, leaseStart: '2024-06-15', leaseEnd: '2025-06-15', leaseUploaded: false },
+                    { name: 'Karen Lewis', propertyId: props[21].id, phone: '555-0122', email: 'klewis@email.com', monthlyRent: 2950, dueDay: 5, leaseStart: '2024-04-01', leaseEnd: '2026-04-01', leaseUploaded: true, leaseUploadDate: '2024-03-28' },
+                    { name: 'Ryan Walker', propertyId: props[22].id, phone: '555-0123', email: 'rwalker@email.com', monthlyRent: 1400, dueDay: 5, leaseStart: '2024-08-01', leaseEnd: '2025-08-01', leaseUploaded: true, leaseUploadDate: '2024-07-28' },
+
+                    // Hillcrest Properties
+                    { name: 'Betty Hall', propertyId: props[23].id, phone: '555-0124', email: 'bhall@email.com', monthlyRent: 2350, dueDay: 5, leaseStart: '2023-11-15', leaseEnd: '2025-11-15', leaseUploaded: true, leaseUploadDate: '2023-11-10' },
+                    { name: 'Kevin Allen', propertyId: props[24].id, phone: '555-0125', email: 'kallen@email.com', monthlyRent: 2700, dueDay: 5, leaseStart: '2024-01-01', leaseEnd: '2026-01-01', leaseUploaded: true, leaseUploadDate: '2023-12-27' },
+                    { name: 'Helen Young', propertyId: props[25].id, phone: '555-0126', email: 'hyoung@email.com', monthlyRent: 2150, dueDay: 5, leaseStart: '2024-07-01', leaseEnd: '2025-07-01', leaseUploaded: true, leaseUploadDate: '2024-06-26' },
+
+                    // Meadowbrook Properties
+                    { name: 'Brian King', propertyId: props[26].id, phone: '555-0127', email: 'bking@email.com', monthlyRent: 2400, dueDay: 5, leaseStart: '2024-02-01', leaseEnd: '2025-02-01', leaseUploaded: true, leaseUploadDate: '2024-01-28' },
+                    { name: 'Sandra Wright', propertyId: props[27].id, phone: '555-0128', email: 'swright@email.com', monthlyRent: 1850, dueDay: 5, leaseStart: '2024-09-15', leaseEnd: '2025-09-15', leaseUploaded: false },
+                    { name: 'George Lopez', propertyId: props[28].id, phone: '555-0129', email: 'glopez@email.com', monthlyRent: 1700, dueDay: 5, leaseStart: '2024-05-01', leaseEnd: '2025-05-01', leaseUploaded: true, leaseUploadDate: '2024-04-27' },
+                    { name: 'Dorothy Hill', propertyId: props[29].id, phone: '555-0130', email: 'dhill@email.com', monthlyRent: 2050, dueDay: 5, leaseStart: '2023-12-15', leaseEnd: '2025-12-15', leaseUploaded: true, leaseUploadDate: '2023-12-10' },
+                    { name: 'Edward Scott', propertyId: props[30].id, phone: '555-0131', email: 'escott@email.com', monthlyRent: 1950, dueDay: 5, leaseStart: '2024-03-15', leaseEnd: '2025-03-15', leaseUploaded: true, leaseUploadDate: '2024-03-10' },
+
+                    // Oakwood Properties
+                    { name: 'Carol Green', propertyId: props[31].id, phone: '555-0132', email: 'cgreen@email.com', monthlyRent: 2250, dueDay: 5, leaseStart: '2024-06-01', leaseEnd: '2025-06-01', leaseUploaded: true, leaseUploadDate: '2024-05-28' },
+                    { name: 'Steven Adams', propertyId: props[32].id, phone: '555-0133', email: 'sadams@email.com', monthlyRent: 2600, dueDay: 5, leaseStart: '2023-10-15', leaseEnd: '2025-10-15', leaseUploaded: true, leaseUploadDate: '2023-10-10' }
+                ];
+                tenants.forEach(t => tenantsStore.add(t));
+            }
+
+            const tenants = tenantsStore.getAll();
+
+            if (paymentsStore.getAll().length === 0) {
+                const today = new Date();
+                const currentMonth = today.getMonth();
+                const currentYear = today.getFullYear();
+
+                const payments = [];
+
+                // Generate payment history for each tenant (last 6 months)
+                tenants.forEach((tenant, index) => {
+                    for (let monthsAgo = 5; monthsAgo >= 0; monthsAgo--) {
+                        const paymentMonth = currentMonth - monthsAgo;
+                        const paymentYear = paymentMonth < 0 ? currentYear - 1 : currentYear;
+                        const adjustedMonth = paymentMonth < 0 ? 12 + paymentMonth : paymentMonth;
+
+                        // Vary payment timing (some on time, some late)
+                        let paymentDay;
+                        let lateFee = 0;
+
+                        if (index % 5 === 0 && monthsAgo === 0) {
+                            // Current month - some tenants haven't paid yet
+                            if (today.getDate() > 5) continue;
+                        }
+
+                        if (index % 7 === 0 && monthsAgo < 2) {
+                            // Occasional late payers
+                            paymentDay = 8;
+                            lateFee = 50;
+                        } else if (index % 11 === 0) {
+                            // Very late payer
+                            paymentDay = 12;
+                            lateFee = 75;
+                        } else {
+                            // On-time payment
+                            paymentDay = Math.floor(Math.random() * 3) + 1; // 1-3rd of month
+                        }
+
+                        // Vary payment sources
+                        const sources = ['bank', 'venmo', 'cash', 'check', 'airbnb'];
+                        const sourceIndex = (index + monthsAgo) % sources.length;
+                        const source = sources[sourceIndex];
+
+                        const references = {
+                            'bank': 'ACH Transfer',
+                            'venmo': `@${tenant.name.split(' ')[0].toLowerCase()}`,
+                            'cash': 'Cash Payment',
+                            'check': `Check #${1000 + index + monthsAgo * 10}`,
+                            'airbnb': 'Airbnb Payout'
+                        };
+
+                        payments.push({
+                            tenantId: tenant.id,
+                            date: `${paymentYear}-${String(adjustedMonth + 1).padStart(2, '0')}-${String(paymentDay).padStart(2, '0')}`,
+                            amount: tenant.monthlyRent,
+                            source: source,
+                            lateFee: lateFee,
+                            reference: references[source]
+                        });
+                    }
+                });
+
+                payments.forEach(p => paymentsStore.add(p));
+            }
+
+            if (expensesStore.getAll().length === 0) {
+                const today = new Date();
+                const currentMonth = today.getMonth();
+                const currentYear = today.getFullYear();
+
+                const expenses = [];
+
+                // Define expense templates
+                const expenseTemplates = [
+                    { category: 'Supplies', vendor: 'Home Depot', descriptions: ['Flooring materials', 'Paint and supplies', 'Plumbing fixtures', 'Light fixtures', 'Door hardware'], amountRange: [150, 800] },
+                    { category: 'Supplies', vendor: "Lowe's", descriptions: ['Carpet cleaning supplies', 'Landscaping materials', 'Electrical supplies', 'HVAC filters'], amountRange: [100, 600] },
+                    { category: 'Contractor', vendor: 'ABC Plumbing', descriptions: ['Fix water heater', 'Repair leak', 'Install new toilet', 'Unclog drain'], amountRange: [200, 850] },
+                    { category: 'Contractor', vendor: 'Elite HVAC Services', descriptions: ['AC repair', 'Furnace maintenance', 'Replace thermostat', 'Duct cleaning'], amountRange: [300, 1200] },
+                    { category: 'Contractor', vendor: 'Quality Roofing Co.', descriptions: ['Roof repair', 'Gutter cleaning', 'Fix shingles', 'Chimney inspection'], amountRange: [400, 2500] },
+                    { category: 'Contractor', vendor: 'Precision Electric', descriptions: ['Outlet repair', 'Panel upgrade', 'Install ceiling fan', 'Light fixture replacement'], amountRange: [150, 900] },
+                    { category: 'Landscaping', vendor: 'Green Lawn Care', descriptions: ['Monthly lawn service', 'Tree trimming', 'Fertilizer treatment', 'Mulch installation'], amountRange: [80, 350] },
+                    { category: 'Utilities', vendor: 'City Water Department', descriptions: ['Water bill - vacant unit', 'Sewer service'], amountRange: [45, 120] },
+                    { category: 'Utilities', vendor: 'Power Company', descriptions: ['Electric - common areas', 'Electric - vacant unit'], amountRange: [60, 200] },
+                    { category: 'Insurance', vendor: 'Property Insurance Co.', descriptions: ['Property insurance premium', 'Liability insurance'], amountRange: [800, 1500] },
+                    { category: 'Taxes', vendor: 'County Tax Office', descriptions: ['Property tax payment', 'Property tax Q1', 'Property tax Q2', 'Property tax Q3', 'Property tax Q4'], amountRange: [1000, 2200] },
+                    { category: 'Management', vendor: 'Kelly Enterprises', descriptions: ['Property management fee', 'Advertising fee', 'Tenant screening'], amountRange: [100, 300] },
+                    { category: 'Legal', vendor: 'Smith & Associates Law', descriptions: ['Eviction filing', 'Legal consultation', 'Lease review'], amountRange: [250, 1200] }
+                ];
+
+                const paymentMethods = ['Credit Card', 'Check', 'ACH Transfer', 'Debit Card'];
+
+                // Generate expenses for random properties over last 6 months
+                for (let monthsAgo = 5; monthsAgo >= 0; monthsAgo--) {
+                    const expenseMonth = currentMonth - monthsAgo;
+                    const expenseYear = expenseMonth < 0 ? currentYear - 1 : currentYear;
+                    const adjustedMonth = expenseMonth < 0 ? 12 + expenseMonth : expenseMonth;
+
+                    // Each property gets 2-4 expenses per month
+                    props.forEach((property, propIndex) => {
+                        const numExpenses = Math.floor(Math.random() * 3) + 2; // 2-4 expenses
+
+                        for (let i = 0; i < numExpenses; i++) {
+                            const template = expenseTemplates[Math.floor(Math.random() * expenseTemplates.length)];
+                            const description = template.descriptions[Math.floor(Math.random() * template.descriptions.length)];
+                            const amount = Math.floor(Math.random() * (template.amountRange[1] - template.amountRange[0])) + template.amountRange[0];
+                            const day = Math.floor(Math.random() * 28) + 1;
+                            const paymentMethod = paymentMethods[Math.floor(Math.random() * paymentMethods.length)];
+
+                            expenses.push({
+                                propertyId: property.id,
+                                date: `${expenseYear}-${String(adjustedMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
+                                category: template.category,
+                                vendor: template.vendor,
+                                description: description,
+                                amount: amount,
+                                paymentMethod: paymentMethod
+                            });
+                        }
+                    });
+                }
+
+                expenses.forEach(e => expensesStore.add(e));
+            }
+
+            // Initialize messages (delinquency notices and communications)
+            if (messagesStore.getAll().length === 0) {
+                const today = new Date();
+                const currentMonth = today.getMonth();
+                const currentYear = today.getFullYear();
+
+                const messages = [];
+
+                // Generate delinquency messages for late-paying tenants over last 3 months
+                tenants.forEach((tenant, index) => {
+                    if (index % 7 === 0 || index % 11 === 0) {
+                        // These are our late payers based on payment history logic
+                        for (let monthsAgo = 2; monthsAgo >= 0; monthsAgo--) {
+                            const msgMonth = currentMonth - monthsAgo;
+                            const msgYear = msgMonth < 0 ? currentYear - 1 : currentYear;
+                            const adjustedMonth = msgMonth < 0 ? 12 + msgMonth : msgMonth;
+
+                            const property = propertiesStore.getById(tenant.propertyId);
+
+                            messages.push({
+                                tenantId: tenant.id,
+                                propertyId: tenant.propertyId,
+                                date: `${msgYear}-${String(adjustedMonth + 1).padStart(2, '0')}-10`,
+                                type: 'Delinquency Notice',
+                                subject: `Rent Past Due - ${property.address}`,
+                                message: `Dear ${tenant.name},\n\nThis is a reminder that your rent payment of $${tenant.monthlyRent} was due on the 5th and has not been received. A late fee of $50 has been applied to your account.\n\nPlease submit payment immediately to avoid further action.\n\nThank you,\nKelly Enterprises Property Management`,
+                                sentVia: 'Email',
+                                status: 'Sent'
+                            });
+                        }
+                    }
+
+                    // Add some general communications for random tenants
+                    if (index % 3 === 0) {
+                        messages.push({
+                            tenantId: tenant.id,
+                            propertyId: tenant.propertyId,
+                            date: `${currentYear}-${String(currentMonth).padStart(2, '0')}-15`,
+                            type: 'Maintenance Update',
+                            subject: 'Scheduled Maintenance Notification',
+                            message: `Dear ${tenant.name},\n\nThis is to inform you that scheduled maintenance will be performed on ${new Date(currentYear, currentMonth, 20).toLocaleDateString()} between 9 AM and 12 PM.\n\nPlease ensure access to the property during this time.\n\nThank you,\nKelly Enterprises`,
+                            sentVia: 'Email',
+                            status: 'Sent'
+                        });
+                    }
+                });
+
+                messages.forEach(m => messagesStore.add(m));
+            }
+
+            // Initialize applications (prospective tenants)
+            if (applicationsStore.getAll().length === 0) {
+                const today = new Date();
+
+                const firstNames = ['Alex', 'Taylor', 'Jordan', 'Morgan', 'Casey', 'Riley', 'Avery', 'Quinn'];
+                const lastNames = ['Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Wilson'];
+
+                const applications = [];
+
+                for (let i = 0; i < 12; i++) {
+                    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+                    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+                    const name = `${firstName} ${lastName}`;
+
+                    const daysAgo = Math.floor(Math.random() * 45);
+                    const appDate = new Date(today);
+                    appDate.setDate(appDate.getDate() - daysAgo);
+
+                    const property = props[Math.floor(Math.random() * props.length)];
+
+                    const statuses = ['Pending Review', 'Approved', 'Rejected', 'Under Review', 'Awaiting Documents'];
+                    const status = statuses[Math.floor(Math.random() * statuses.length)];
+
+                    const monthlyIncome = Math.floor(Math.random() * 5000) + 3000; // $3k-$8k
+                    const creditScore = Math.floor(Math.random() * 200) + 600; // 600-800
+
+                    applications.push({
+                        dateApplied: appDate.toISOString().split('T')[0],
+                        applicantName: name,
+                        propertyInterest: property.address,
+                        propertyId: property.id,
+                        phone: `555-${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}`,
+                        email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@email.com`,
+                        monthlyIncome: monthlyIncome,
+                        creditScore: creditScore,
+                        status: status,
+                        notes: status === 'Approved' ? 'Application approved, lease pending' :
+                               status === 'Rejected' ? 'Insufficient income' :
+                               status === 'Awaiting Documents' ? 'Waiting for employment verification' :
+                               'Background check in progress'
+                    });
+                }
+
+                applications.forEach(a => applicationsStore.add(a));
+            }
+        }
+
+        // Calculate tenant balance
+        function calculateTenantBalance(tenantId) {
+            const tenant = tenantsStore.getById(tenantId);
+            if (!tenant) return { balance: 0, paidThisMonth: 0, lateFees: 0 };
+
+            const today = new Date();
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
+
+            const payments = paymentsStore.getAll().filter(p => {
+                if (p.tenantId !== tenantId) return false;
+                const paymentDate = new Date(p.date);
+                return paymentDate.getMonth() === currentMonth && paymentDate.getFullYear() === currentYear;
+            });
+
+            const paidThisMonth = payments.reduce((sum, p) => sum + parseFloat(p.amount), 0);
+            const lateFees = payments.reduce((sum, p) => sum + parseFloat(p.lateFee || 0), 0);
+
+            // Auto-calculate late fee if after 5th and not paid in full
+            const autoLateFee = (today.getDate() > 5 && paidThisMonth < tenant.monthlyRent) ? 50 : 0;
+
+            const balance = tenant.monthlyRent - paidThisMonth + autoLateFee;
+
+            const lastPayment = payments.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+
+            return {
+                balance: balance,
+                paidThisMonth: paidThisMonth,
+                lateFees: lateFees + autoLateFee,
+                lastPaymentDate: lastPayment ? lastPayment.date : null,
+                lastPaymentSource: lastPayment ? lastPayment.source : null
+            };
+        }
+
+        // Update dashboard metrics
+        function updateDashboard() {
+            const tenants = tenantsStore.getAll();
+            const today = new Date();
+
+            let totalRentDue = 0;
+            let totalCollected = 0;
+            let totalOutstanding = 0;
+            let delinquentCount = 0;
+            const delinquentTenants = [];
+
+            tenants.forEach(tenant => {
+                const balance = calculateTenantBalance(tenant.id);
+                totalRentDue += tenant.monthlyRent;
+                totalCollected += balance.paidThisMonth;
+
+                if (balance.balance > 0) {
+                    totalOutstanding += balance.balance;
+                    if (today.getDate() > 5) {
+                        delinquentCount++;
+                        delinquentTenants.push({
+                            name: tenant.name,
+                            balance: balance.balance
+                        });
+                    }
+                }
+            });
+
+            document.getElementById('metric-rent-due').textContent = `$${totalRentDue.toLocaleString()}`;
+            document.getElementById('metric-collected').textContent = `$${totalCollected.toLocaleString()}`;
+            document.getElementById('metric-outstanding').textContent = `$${totalOutstanding.toLocaleString()}`;
+            document.getElementById('metric-delinquent').textContent = delinquentCount;
+
+            // Show alert banner if delinquent tenants exist
+            const alertBanner = document.getElementById('alert-banner');
+            if (delinquentCount > 0 && today.getDate() >= 10) {
+                alertBanner.style.display = 'block';
+                alertBanner.className = 'alert-banner';
+                alertBanner.innerHTML = `
+                    <div class="alert-banner-text">
+                        ⚠️ ${delinquentCount} tenant(s) are past due. Consider sending delinquency notices.
+                    </div>
+                    <button class="btn btn-sm" style="background: white; color: var(--color-danger);" onclick="sendDelinquencyMessages()">
+                        Send Notices Now
+                    </button>
+                `;
+            } else {
+                alertBanner.style.display = 'none';
+            }
+        }
+
+        // Render table
+        function renderTable(data = null) {
+            let tenants = data || tenantsStore.getAll();
+            const properties = propertiesStore.getAll();
+
+            // Apply filters
+            const searchTerm = document.getElementById('search-filter').value.toLowerCase();
+            const propertyFilter = document.getElementById('property-filter').value;
+            const statusFilter = document.getElementById('status-filter').value;
+
+            if (searchTerm) {
+                tenants = tenants.filter(t => t.name.toLowerCase().includes(searchTerm));
+            }
+
+            if (propertyFilter) {
+                tenants = tenants.filter(t => t.propertyId === propertyFilter);
+            }
+
+            if (statusFilter) {
+                tenants = tenants.filter(t => {
+                    const balance = calculateTenantBalance(t.id);
+                    if (statusFilter === 'paid') return balance.balance <= 0;
+                    if (statusFilter === 'partial') return balance.paidThisMonth > 0 && balance.balance > 0;
+                    if (statusFilter === 'late') return balance.paidThisMonth === 0;
+                    return true;
+                });
+            }
+
+            // Update record count
+            document.getElementById('record-count').textContent = `${tenants.length} tenant${tenants.length !== 1 ? 's' : ''}`;
+
+            // Pagination
+            const totalPages = Math.ceil(tenants.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, tenants.length);
+            const paginatedTenants = tenants.slice(startIndex, endIndex);
+
+            // Render rows
+            const tbody = document.getElementById('rent-table-body');
+            tbody.innerHTML = '';
+
+            paginatedTenants.forEach(tenant => {
+                const property = properties.find(p => p.id === tenant.propertyId);
+                const balance = calculateTenantBalance(tenant.id);
+
+                let status = '';
+                let statusClass = '';
+                if (balance.balance <= 0) {
+                    status = 'Paid';
+                    statusClass = 'badge-success';
+                } else if (balance.paidThisMonth > 0) {
+                    status = 'Partial';
+                    statusClass = 'badge-warning';
+                } else {
+                    status = 'Unpaid';
+                    statusClass = 'badge-danger';
+                }
+
+                const balanceClass = balance.balance > 0 ? 'balance-negative' : balance.balance < 0 ? 'balance-positive' : 'balance-zero';
+
+                const lastPayment = balance.lastPaymentDate
+                    ? `<span class="payment-source ${balance.lastPaymentSource}">${balance.lastPaymentSource}</span><br><small>${new Date(balance.lastPaymentDate).toLocaleDateString()}</small>`
+                    : '<small style="color: var(--color-text-light);">No payments</small>';
+
+                const leaseIndicator = tenant.leaseUploaded
+                    ? '<span class="badge badge-success" style="font-size: 11px;">✓ Lease</span>'
+                    : '<span class="badge badge-warning" style="font-size: 11px;">⚠ No Lease</span>';
+
+                tbody.innerHTML += `
+                    <tr style="cursor: pointer;" onclick="showTenantDetails('${tenant.id}')">
+                        <td>
+                            <strong>${tenant.name}</strong><br>
+                            <small>${tenant.phone || tenant.email}</small><br>
+                            ${leaseIndicator}
+                        </td>
+                        <td><small>${property ? property.address : 'N/A'}</small></td>
+                        <td><strong>$${tenant.monthlyRent.toLocaleString()}</strong></td>
+                        <td>$${balance.paidThisMonth.toLocaleString()}</td>
+                        <td class="${balanceClass}">$${Math.abs(balance.balance).toLocaleString()}</td>
+                        <td>${balance.lateFees > 0 ? `<span style="color: var(--color-danger);">$${balance.lateFees}</span>` : '-'}</td>
+                        <td>${lastPayment}</td>
+                        <td><span class="badge ${statusClass}">${status}</span></td>
+                        <td onclick="event.stopPropagation()">
+                            <button class="btn btn-sm btn-primary" onclick="showPaymentModal('${tenant.id}')">💵 Pay</button>
+                            <button class="btn btn-sm btn-secondary" onclick="editTenant('${tenant.id}')">Edit</button>
+                            <button class="btn btn-sm btn-secondary" onclick="manageLease('${tenant.id}')" title="Manage Lease">📄</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            renderPaginationControls(totalPages);
+        }
+
+        // Render cards view for rent log
+        function renderCards(data = null) {
+            let tenants = data || tenantsStore.getAll();
+            const properties = propertiesStore.getAll();
+
+            // Apply same filters as table view
+            const searchTerm = document.getElementById('search-filter').value.toLowerCase();
+            const propertyFilter = document.getElementById('property-filter').value;
+            const statusFilter = document.getElementById('status-filter').value;
+
+            if (searchTerm) {
+                tenants = tenants.filter(t => t.name.toLowerCase().includes(searchTerm));
+            }
+
+            if (propertyFilter) {
+                tenants = tenants.filter(t => t.propertyId === propertyFilter);
+            }
+
+            if (statusFilter) {
+                tenants = tenants.filter(t => {
+                    const balance = calculateTenantBalance(t.id);
+                    if (statusFilter === 'paid') return balance.balance <= 0;
+                    if (statusFilter === 'partial') return balance.paidThisMonth > 0 && balance.balance > 0;
+                    if (statusFilter === 'late') return balance.paidThisMonth === 0;
+                    return true;
+                });
+            }
+
+            // Update record count
+            document.getElementById('record-count').textContent = `${tenants.length} tenant${tenants.length !== 1 ? 's' : ''}`;
+
+            // Pagination
+            const totalPages = Math.ceil(tenants.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, tenants.length);
+            const paginatedTenants = tenants.slice(startIndex, endIndex);
+
+            // Render cards
+            const cardsBody = document.getElementById('rent-cards-body');
+            cardsBody.innerHTML = '';
+
+            paginatedTenants.forEach(tenant => {
+                const property = properties.find(p => p.id === tenant.propertyId);
+                const balance = calculateTenantBalance(tenant.id);
+
+                let status = '';
+                let statusClass = '';
+                if (balance.balance <= 0) {
+                    status = 'Paid';
+                    statusClass = 'badge-success';
+                } else if (balance.paidThisMonth > 0) {
+                    status = 'Partial';
+                    statusClass = 'badge-warning';
+                } else {
+                    status = 'Unpaid';
+                    statusClass = 'badge-danger';
+                }
+
+                const leaseIndicator = tenant.leaseUploaded
+                    ? '<span class="badge badge-success" style="font-size: 11px;">✓ Lease</span>'
+                    : '<span class="badge badge-warning" style="font-size: 11px;">⚠ No Lease</span>';
+
+                cardsBody.innerHTML += `
+                    <div class="tenant-card" onclick="showTenantDetails('${tenant.id}')">
+                        <div class="tenant-card-header">
+                            <div>
+                                <div class="tenant-card-title">${tenant.name}</div>
+                                <div class="tenant-card-subtitle">${property ? property.address : 'N/A'}</div>
+                            </div>
+                            <span class="badge ${statusClass}">${status}</span>
+                        </div>
+                        <div class="tenant-card-body">
+                            <div class="tenant-card-row">
+                                <span class="tenant-card-label">Monthly Rent</span>
+                                <span class="tenant-card-value">$${tenant.monthlyRent.toLocaleString()}</span>
+                            </div>
+                            <div class="tenant-card-row">
+                                <span class="tenant-card-label">Paid This Month</span>
+                                <span class="tenant-card-value">$${balance.paidThisMonth.toLocaleString()}</span>
+                            </div>
+                            <div class="tenant-card-row">
+                                <span class="tenant-card-label">Balance</span>
+                                <span class="tenant-card-value" style="color: ${balance.balance > 0 ? 'var(--color-danger)' : 'var(--color-success)'}">
+                                    $${Math.abs(balance.balance).toLocaleString()}
+                                </span>
+                            </div>
+                            ${balance.lateFees > 0 ? `
+                            <div class="tenant-card-row">
+                                <span class="tenant-card-label">Late Fees</span>
+                                <span class="tenant-card-value" style="color: var(--color-danger)">$${balance.lateFees}</span>
+                            </div>
+                            ` : ''}
+                            <div class="tenant-card-row">
+                                <span class="tenant-card-label">Lease Status</span>
+                                <span class="tenant-card-value">${leaseIndicator}</span>
+                            </div>
+                        </div>
+                        <div class="tenant-card-actions" onclick="event.stopPropagation()">
+                            <button class="btn btn-sm btn-primary" onclick="showPaymentModal('${tenant.id}')">💵 Pay</button>
+                            <button class="btn btn-sm btn-secondary" onclick="editTenant('${tenant.id}')">Edit</button>
+                            <button class="btn btn-sm btn-secondary" onclick="manageLease('${tenant.id}')" title="Manage Lease">📄</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            renderPaginationControls(totalPages);
+        }
+
+        // Toggle between table and card view for Rent Log
+        let rentLogViewMode = 'table'; // default to table view
+
+        function toggleRentLogView(viewMode) {
+            rentLogViewMode = viewMode;
+
+            // Update button active states
+            document.querySelectorAll('#rent-log-view .view-toggle-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.view === viewMode) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Show/hide appropriate view
+            const tableView = document.getElementById('rent-table-view');
+            const cardView = document.getElementById('rent-card-view');
+
+            if (viewMode === 'table') {
+                tableView.style.display = 'block';
+                cardView.style.display = 'none';
+                renderTable();
+            } else {
+                tableView.style.display = 'none';
+                cardView.style.display = 'block';
+                renderCards();
+            }
+        }
+
+        // Render pagination
+        function renderPaginationControls(totalPages) {
+            const pagination = document.getElementById('pagination');
+
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+                return;
+            }
+
+            pagination.style.display = 'flex';
+
+            const startIndex = (currentPage - 1) * itemsPerPage + 1;
+            const endIndex = Math.min(currentPage * itemsPerPage, tenantsStore.getAll().length);
+            const total = tenantsStore.getAll().length;
+
+            pagination.innerHTML = `
+                <div class="pagination-info">Showing ${startIndex}-${endIndex} of ${total}</div>
+                <div class="pagination-controls">
+                    <button class="page-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>
+                    ${generatePageNumbers(totalPages)}
+                    <button class="page-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>
+                </div>
+            `;
+        }
+
+        function generatePageNumbers(totalPages) {
+            let html = '';
+            const maxVisible = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+            if (endPage - startPage < maxVisible - 1) {
+                startPage = Math.max(1, endPage - maxVisible + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+            }
+
+            return html;
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            if (rentLogViewMode === 'table') {
+                renderTable();
+            } else {
+                renderCards();
+            }
+        }
+
+        // Properties pagination
+        function renderPropertiesPaginationControls(totalPages) {
+            const pagination = document.getElementById('properties-pagination');
+
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+                return;
+            }
+
+            pagination.style.display = 'flex';
+
+            const startIndex = (propertiesCurrentPage - 1) * propertiesItemsPerPage + 1;
+            const endIndex = Math.min(propertiesCurrentPage * propertiesItemsPerPage, propertiesStore.getAll().length);
+            const total = propertiesStore.getAll().length;
+
+            pagination.innerHTML = `
+                <div class="pagination-info">Showing ${startIndex}-${endIndex} of ${total}</div>
+                <div class="pagination-controls">
+                    <button class="page-btn" onclick="changePropertiesPage(${propertiesCurrentPage - 1})" ${propertiesCurrentPage === 1 ? 'disabled' : ''}>Previous</button>
+                    ${generatePropertiesPageNumbers(totalPages)}
+                    <button class="page-btn" onclick="changePropertiesPage(${propertiesCurrentPage + 1})" ${propertiesCurrentPage === totalPages ? 'disabled' : ''}>Next</button>
+                </div>
+            `;
+        }
+
+        function generatePropertiesPageNumbers(totalPages) {
+            let html = '';
+            const maxVisible = 5;
+            let startPage = Math.max(1, propertiesCurrentPage - Math.floor(maxVisible / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+            if (endPage - startPage < maxVisible - 1) {
+                startPage = Math.max(1, endPage - maxVisible + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="page-btn ${i === propertiesCurrentPage ? 'active' : ''}" onclick="changePropertiesPage(${i})">${i}</button>`;
+            }
+
+            return html;
+        }
+
+        function changePropertiesPage(page) {
+            propertiesCurrentPage = page;
+            if (propertiesViewMode === 'table') {
+                renderPropertiesTable();
+            } else {
+                renderPropertiesCards();
+            }
+        }
+
+        // Expenses Pagination Controls
+        function renderExpensesPaginationControls(totalPages) {
+            const pagination = document.getElementById('expenses-pagination');
+
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+                return;
+            }
+
+            pagination.style.display = 'flex';
+
+            const startIndex = (expensesCurrentPage - 1) * expensesItemsPerPage + 1;
+            const endIndex = Math.min(expensesCurrentPage * expensesItemsPerPage, expensesStore.getAll().length);
+            const total = expensesStore.getAll().length;
+
+            pagination.innerHTML = `
+                <div class="pagination-info">Showing ${startIndex}-${endIndex} of ${total}</div>
+                <div class="pagination-controls">
+                    <button class="page-btn" onclick="changeExpensesPage(${expensesCurrentPage - 1})" ${expensesCurrentPage === 1 ? 'disabled' : ''}>Previous</button>
+                    ${generateExpensesPageNumbers(totalPages)}
+                    <button class="page-btn" onclick="changeExpensesPage(${expensesCurrentPage + 1})" ${expensesCurrentPage === totalPages ? 'disabled' : ''}>Next</button>
+                </div>
+            `;
+        }
+
+        function generateExpensesPageNumbers(totalPages) {
+            let html = '';
+            const maxVisible = 5;
+            let startPage = Math.max(1, expensesCurrentPage - Math.floor(maxVisible / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+            if (endPage - startPage < maxVisible - 1) {
+                startPage = Math.max(1, endPage - maxVisible + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="page-btn ${i === expensesCurrentPage ? 'active' : ''}" onclick="changeExpensesPage(${i})">${i}</button>`;
+            }
+
+            return html;
+        }
+
+        function changeExpensesPage(page) {
+            expensesCurrentPage = page;
+            renderExpensesView();
+        }
+
+        // Messages Pagination Controls
+        function renderMessagesPaginationControls(totalPages) {
+            const pagination = document.getElementById('messages-pagination');
+
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+                return;
+            }
+
+            pagination.style.display = 'flex';
+
+            const startIndex = (messagesCurrentPage - 1) * messagesItemsPerPage + 1;
+            const endIndex = Math.min(messagesCurrentPage * messagesItemsPerPage, messagesStore.getAll().length);
+            const total = messagesStore.getAll().length;
+
+            pagination.innerHTML = `
+                <div class="pagination-info">Showing ${startIndex}-${endIndex} of ${total}</div>
+                <div class="pagination-controls">
+                    <button class="page-btn" onclick="changeMessagesPage(${messagesCurrentPage - 1})" ${messagesCurrentPage === 1 ? 'disabled' : ''}>Previous</button>
+                    ${generateMessagesPageNumbers(totalPages)}
+                    <button class="page-btn" onclick="changeMessagesPage(${messagesCurrentPage + 1})" ${messagesCurrentPage === totalPages ? 'disabled' : ''}>Next</button>
+                </div>
+            `;
+        }
+
+        function generateMessagesPageNumbers(totalPages) {
+            let html = '';
+            const maxVisible = 5;
+            let startPage = Math.max(1, messagesCurrentPage - Math.floor(maxVisible / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+            if (endPage - startPage < maxVisible - 1) {
+                startPage = Math.max(1, endPage - maxVisible + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="page-btn ${i === messagesCurrentPage ? 'active' : ''}" onclick="changeMessagesPage(${i})">${i}</button>`;
+            }
+
+            return html;
+        }
+
+        function changeMessagesPage(page) {
+            messagesCurrentPage = page;
+            renderMessagesView();
+        }
+
+        // Applications Pagination Controls
+        function renderApplicationsPaginationControls(totalPages) {
+            const pagination = document.getElementById('applications-pagination');
+
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+                return;
+            }
+
+            pagination.style.display = 'flex';
+
+            const startIndex = (applicationsCurrentPage - 1) * applicationsItemsPerPage + 1;
+            const endIndex = Math.min(applicationsCurrentPage * applicationsItemsPerPage, applicationsStore.getAll().length);
+            const total = applicationsStore.getAll().length;
+
+            pagination.innerHTML = `
+                <div class="pagination-info">Showing ${startIndex}-${endIndex} of ${total}</div>
+                <div class="pagination-controls">
+                    <button class="page-btn" onclick="changeApplicationsPage(${applicationsCurrentPage - 1})" ${applicationsCurrentPage === 1 ? 'disabled' : ''}>Previous</button>
+                    ${generateApplicationsPageNumbers(totalPages)}
+                    <button class="page-btn" onclick="changeApplicationsPage(${applicationsCurrentPage + 1})" ${applicationsCurrentPage === totalPages ? 'disabled' : ''}>Next</button>
+                </div>
+            `;
+        }
+
+        function generateApplicationsPageNumbers(totalPages) {
+            let html = '';
+            const maxVisible = 5;
+            let startPage = Math.max(1, applicationsCurrentPage - Math.floor(maxVisible / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+            if (endPage - startPage < maxVisible - 1) {
+                startPage = Math.max(1, endPage - maxVisible + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="page-btn ${i === applicationsCurrentPage ? 'active' : ''}" onclick="changeApplicationsPage(${i})">${i}</button>`;
+            }
+
+            return html;
+        }
+
+        function changeApplicationsPage(page) {
+            applicationsCurrentPage = page;
+            renderApplicationsView();
+        }
+
+        // Filters
+        function applyFilters() {
+            currentPage = 1;
+            if (rentLogViewMode === 'table') {
+                renderTable();
+            } else {
+                renderCards();
+            }
+        }
+
+        function clearFilters() {
+            document.getElementById('search-filter').value = '';
+            document.getElementById('property-filter').value = '';
+            document.getElementById('status-filter').value = '';
+            applyFilters();
+        }
+
+        // Populate property filter dropdown
+        function populatePropertyFilter() {
+            const properties = propertiesStore.getAll();
+            const propertyFilter = document.getElementById('property-filter');
+            const tenantProperty = document.getElementById('tenant-property');
+
+            // Clear existing options (keep the first "All Properties" option for filter)
+            propertyFilter.innerHTML = '<option value="">All Properties</option>';
+            tenantProperty.innerHTML = '';
+
+            properties.forEach(property => {
+                propertyFilter.innerHTML += `<option value="${property.id}">${property.address}</option>`;
+                tenantProperty.innerHTML += `<option value="${property.id}">${property.address}</option>`;
+            });
+        }
+
+        // Modal controls
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId, skipReturn = false) {
+            document.getElementById(modalId).classList.remove('show');
+
+            // Check if we need to return to tenant details
+            if (!skipReturn && returnToDetailsAfterSave && (modalId === 'payment-modal' || modalId === 'tenant-modal' || modalId === 'lease-modal')) {
+                const tenantId = returnToDetailsAfterSave;
+                returnToDetailsAfterSave = null;
+                showTenantDetails(tenantId);
+            } else {
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Column Settings Modal Functions
+        function showColumnSettingsModal() {
+            const checkboxContainer = document.getElementById('column-checkboxes');
+            checkboxContainer.innerHTML = '';
+
+            // Get columns in order
+            const columnsArray = Object.entries(rentLogColumns).sort((a, b) => a[1].order - b[1].order);
+
+            columnsArray.forEach(([key, col]) => {
+                const checkboxWrapper = document.createElement('div');
+                checkboxWrapper.style.cssText = 'display: flex; align-items: center; padding: var(--space-2); background: var(--color-bg-light); border-radius: 4px;';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `col-${key}`;
+                checkbox.checked = col.visible;
+                checkbox.disabled = col.locked;
+                checkbox.style.marginRight = 'var(--space-3)';
+
+                const label = document.createElement('label');
+                label.htmlFor = `col-${key}`;
+                label.textContent = col.label;
+                label.style.cssText = 'flex: 1; cursor: pointer; user-select: none;';
+                if (col.locked) {
+                    label.style.color = 'var(--color-text-light)';
+                    label.style.cursor = 'not-allowed';
+                }
+
+                checkboxWrapper.appendChild(checkbox);
+                checkboxWrapper.appendChild(label);
+
+                if (col.locked) {
+                    const lockedBadge = document.createElement('span');
+                    lockedBadge.textContent = 'Required';
+                    lockedBadge.style.cssText = 'font-size: 11px; padding: 2px 8px; background: var(--color-border); color: var(--color-text-light); border-radius: 4px;';
+                    checkboxWrapper.appendChild(lockedBadge);
+                }
+
+                checkboxContainer.appendChild(checkboxWrapper);
+            });
+
+            showModal('column-settings-modal');
+        }
+
+        function saveColumnSettings() {
+            // Update column visibility based on checkboxes
+            Object.keys(rentLogColumns).forEach(key => {
+                const checkbox = document.getElementById(`col-${key}`);
+                if (checkbox && !rentLogColumns[key].locked) {
+                    rentLogColumns[key].visible = checkbox.checked;
+                }
+            });
+
+            // Save to sessionStorage
+            saveColumnSettingsToStorage();
+
+            // Re-render table with new column visibility
+            renderTable();
+
+            // Close modal
+            closeModal('column-settings-modal');
+
+            showToast('Column settings saved!', 'success');
+        }
+
+        function resetColumnSettings() {
+            // Reset to default
+            rentLogColumns = JSON.parse(JSON.stringify(defaultRentLogColumns));
+
+            // Save to sessionStorage
+            saveColumnSettingsToStorage();
+
+            // Re-render checkboxes
+            showColumnSettingsModal();
+
+            // Re-render table
+            renderTable();
+
+            showToast('Columns reset to default!', 'success');
+        }
+
+        function showAddTenantModal() {
+            currentTenantId = null;
+            document.getElementById('tenant-modal-title').textContent = 'Add Tenant';
+            document.getElementById('tenant-form').reset();
+            showModal('tenant-modal');
+        }
+
+        function editTenant(id) {
+            currentTenantId = id;
+            const tenant = tenantsStore.getById(id);
+
+            document.getElementById('tenant-modal-title').textContent = 'Edit Tenant';
+            document.getElementById('tenant-name').value = tenant.name;
+            document.getElementById('tenant-property').value = tenant.propertyId;
+            document.getElementById('tenant-phone').value = tenant.phone || '';
+            document.getElementById('tenant-email').value = tenant.email || '';
+            document.getElementById('tenant-rent').value = tenant.monthlyRent;
+            document.getElementById('tenant-due-day').value = tenant.dueDay;
+            document.getElementById('tenant-lease-start').value = tenant.leaseStart || '';
+            document.getElementById('tenant-lease-end').value = tenant.leaseEnd || '';
+
+            showModal('tenant-modal');
+        }
+
+        let returnToDetailsAfterSave = null;
+
+        function saveTenant() {
+            const data = {
+                name: document.getElementById('tenant-name').value,
+                propertyId: document.getElementById('tenant-property').value,
+                phone: document.getElementById('tenant-phone').value,
+                email: document.getElementById('tenant-email').value,
+                monthlyRent: parseFloat(document.getElementById('tenant-rent').value),
+                dueDay: parseInt(document.getElementById('tenant-due-day').value),
+                leaseStart: document.getElementById('tenant-lease-start').value,
+                leaseEnd: document.getElementById('tenant-lease-end').value
+            };
+
+            if (currentTenantId) {
+                tenantsStore.update(currentTenantId, data);
+                showToast('Tenant updated successfully!', 'success');
+            } else {
+                tenantsStore.add(data);
+                showToast('Tenant added successfully!', 'success');
+            }
+
+            closeModal('tenant-modal');
+            updateDashboard();
+            renderTable();
+
+            // Return to details if we came from there
+            if (returnToDetailsAfterSave) {
+                const tenantId = returnToDetailsAfterSave;
+                returnToDetailsAfterSave = null;
+                showTenantDetails(tenantId);
+            }
+        }
+
+        function showPaymentModal(tenantId) {
+            const tenant = tenantsStore.getById(tenantId);
+            const balance = calculateTenantBalance(tenantId);
+
+            document.getElementById('payment-tenant-id').value = tenantId;
+            document.getElementById('payment-tenant-name').value = tenant.name;
+            document.getElementById('payment-amount').value = balance.balance > 0 ? balance.balance : tenant.monthlyRent;
+            document.getElementById('payment-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('payment-late-fee').value = balance.lateFees;
+            document.getElementById('payment-source').value = '';
+            document.getElementById('payment-reference').value = '';
+
+            showModal('payment-modal');
+        }
+
+        function savePayment() {
+            const data = {
+                tenantId: document.getElementById('payment-tenant-id').value,
+                date: document.getElementById('payment-date').value,
+                amount: parseFloat(document.getElementById('payment-amount').value),
+                source: document.getElementById('payment-source').value,
+                lateFee: parseFloat(document.getElementById('payment-late-fee').value) || 0,
+                reference: document.getElementById('payment-reference').value
+            };
+
+            paymentsStore.add(data);
+            showToast('Payment recorded successfully!', 'success');
+            closeModal('payment-modal');
+            updateDashboard();
+            renderTable();
+
+            // Return to details if we came from there
+            if (returnToDetailsAfterSave) {
+                const tenantId = returnToDetailsAfterSave;
+                returnToDetailsAfterSave = null;
+                showTenantDetails(tenantId);
+            }
+        }
+
+        // Delinquency messaging
+        function sendDelinquencyMessages() {
+            const tenants = tenantsStore.getAll();
+            const today = new Date();
+            const delinquentTenants = [];
+
+            tenants.forEach(tenant => {
+                const balance = calculateTenantBalance(tenant.id);
+                if (balance.balance > 0 && today.getDate() >= 10) {
+                    delinquentTenants.push({ tenant, balance: balance.balance });
+                }
+            });
+
+            if (delinquentTenants.length === 0) {
+                showToast('No delinquent tenants to message', 'info');
+                return;
+            }
+
+            delinquentTenants.forEach(({ tenant, balance }) => {
+                const message = `Hi ${tenant.name}, this is a friendly reminder that your rent payment of $${tenant.monthlyRent} was due on the 5th. You currently have an outstanding balance of $${balance.toLocaleString()}. Please submit your payment as soon as possible to avoid additional late fees.`;
+
+                messagesStore.add({
+                    tenantId: tenant.id,
+                    recipient: `${tenant.name} (${tenant.phone || tenant.email})`,
+                    message: message,
+                    date: new Date().toISOString(),
+                    type: 'delinquency'
+                });
+            });
+
+            showToast(`Sent ${delinquentTenants.length} delinquency notice(s)!`, 'success');
+            updateDashboard();
+        }
+
+        // Toast notifications
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+
+            toast.className = `toast toast-${type} show`;
+            toastMessage.textContent = message;
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Reset all data to fresh sample data
+        function resetAllData() {
+            if (confirm('This will clear all data and reload fresh sample data. Continue?')) {
+                sessionStorage.clear();
+                location.reload();
+            }
+        }
+
+        // View switching
+        function switchView(viewName) {
+            // Hide all views
+            document.querySelectorAll('.view-content').forEach(view => {
+                view.style.display = 'none';
+            });
+
+            // Remove active class from all tabs
+            document.querySelectorAll('.view-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Remove active class from sidebar items
+            document.querySelectorAll('.sidebar-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Show selected view
+            document.getElementById(`${viewName}-view`).style.display = 'block';
+
+            // Add active class to selected tab
+            const tabElement = document.querySelector(`.view-tab[data-view="${viewName}"]`);
+            if (tabElement) {
+                tabElement.classList.add('active');
+            }
+
+            // Add active class to selected sidebar item
+            const sidebarElement = document.querySelector(`.sidebar-nav-item[data-view="${viewName}"]`);
+            if (sidebarElement) {
+                sidebarElement.classList.add('active');
+            }
+
+            // Render the appropriate content
+            if (viewName === 'properties') {
+                renderPropertiesView();
+            } else if (viewName === 'expenses') {
+                renderExpensesView();
+            } else if (viewName === 'messages') {
+                renderMessagesView();
+            } else if (viewName === 'applications') {
+                renderApplicationsView();
+            }
+        }
+
+        // Sidebar view switching (keeps it synced)
+        function switchViewFromSidebar(viewName) {
+            switchView(viewName);
+        }
+
+        // Properties View
+        // Properties View - Table/Card Toggle
+        let propertiesViewMode = 'table';
+
+        function togglePropertiesView(viewMode) {
+            propertiesViewMode = viewMode;
+
+            // Update button active states
+            document.querySelectorAll('#properties-view .view-toggle-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.view === viewMode) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Show/hide appropriate view
+            const tableView = document.getElementById('properties-table-view');
+            const cardView = document.getElementById('property-card-view');
+
+            if (viewMode === 'table') {
+                tableView.style.display = 'block';
+                cardView.style.display = 'none';
+                renderPropertiesTable();
+            } else {
+                tableView.style.display = 'none';
+                cardView.style.display = 'grid';
+                renderPropertiesCards();
+            }
+        }
+
+        function renderPropertiesView() {
+            if (propertiesViewMode === 'table') {
+                renderPropertiesTable();
+            } else {
+                renderPropertiesCards();
+            }
+        }
+
+        function renderPropertiesTable() {
+            const properties = propertiesStore.getAll();
+            const tenants = tenantsStore.getAll();
+            const expenses = expensesStore.getAll();
+            const today = new Date();
+            const currentYear = today.getFullYear();
+
+            // Pagination
+            const totalPages = Math.ceil(properties.length / propertiesItemsPerPage);
+            const startIndex = (propertiesCurrentPage - 1) * propertiesItemsPerPage;
+            const endIndex = Math.min(startIndex + propertiesItemsPerPage, properties.length);
+            const paginatedProperties = properties.slice(startIndex, endIndex);
+
+            document.getElementById('property-count').textContent = `${properties.length} propert${properties.length === 1 ? 'y' : 'ies'}`;
+
+            const tbody = document.getElementById('property-table-body');
+            tbody.innerHTML = '';
+
+            paginatedProperties.forEach(property => {
+                const propertyTenants = tenants.filter(t => t.propertyId === property.id);
+
+                // Calculate YTD expenses
+                const ytdExpenses = expenses.filter(e => {
+                    if (e.propertyId !== property.id) return false;
+                    const expenseDate = new Date(e.date);
+                    return expenseDate.getFullYear() === currentYear;
+                }).reduce((sum, e) => sum + parseFloat(e.amount), 0);
+
+                // Calculate monthly income
+                let monthlyIncome = 0;
+                propertyTenants.forEach(tenant => {
+                    monthlyIncome += tenant.monthlyRent || 0;
+                });
+
+                const annualIncome = monthlyIncome * 12;
+                const netPL = annualIncome - ytdExpenses;
+
+                tbody.innerHTML += `
+                    <tr style="cursor: pointer;" onclick="showPropertyDetails('${property.id}')">
+                        <td><strong>${property.address}</strong></td>
+                        <td>${property.type}</td>
+                        <td>$${(property.purchasePrice || 0).toLocaleString()}</td>
+                        <td><span class="badge badge-info">${propertyTenants.length}</span></td>
+                        <td style="color: var(--color-success);"><strong>$${monthlyIncome.toLocaleString()}</strong></td>
+                        <td style="color: var(--color-danger);">$${ytdExpenses.toLocaleString()}</td>
+                        <td style="color: ${netPL >= 0 ? 'var(--color-success)' : 'var(--color-danger)'};">
+                            <strong>$${Math.abs(netPL).toLocaleString()}</strong>
+                        </td>
+                        <td onclick="event.stopPropagation()">
+                            <button class="btn btn-sm btn-secondary" onclick="editProperty('${property.id}')">Edit</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteProperty('${property.id}')">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            renderPropertiesPaginationControls(totalPages);
+        }
+
+        function renderPropertiesCards() {
+            const properties = propertiesStore.getAll();
+            const tenants = tenantsStore.getAll();
+            const expenses = expensesStore.getAll();
+            const today = new Date();
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
+
+            // Pagination
+            const totalPages = Math.ceil(properties.length / propertiesItemsPerPage);
+            const startIndex = (propertiesCurrentPage - 1) * propertiesItemsPerPage;
+            const endIndex = Math.min(startIndex + propertiesItemsPerPage, properties.length);
+            const paginatedProperties = properties.slice(startIndex, endIndex);
+
+            document.getElementById('property-count').textContent = `${properties.length} propert${properties.length === 1 ? 'y' : 'ies'}`;
+
+            const propertyGrid = document.getElementById('property-card-view');
+            propertyGrid.innerHTML = '';
+
+            paginatedProperties.forEach(property => {
+                const propertyTenants = tenants.filter(t => t.propertyId === property.id);
+                const propertyExpenses = expenses.filter(e => {
+                    if (e.propertyId !== property.id) return false;
+                    const expenseDate = new Date(e.date);
+                    return expenseDate.getMonth() === currentMonth && expenseDate.getFullYear() === currentYear;
+                });
+
+                let monthlyIncome = 0;
+                propertyTenants.forEach(tenant => {
+                    const balance = calculateTenantBalance(tenant.id);
+                    monthlyIncome += balance.paidThisMonth;
+                });
+
+                const monthlyExpenses = propertyExpenses.reduce((sum, e) => sum + parseFloat(e.amount), 0);
+                const netIncome = monthlyIncome - monthlyExpenses;
+
+                propertyGrid.innerHTML += `
+                    <div class="property-card" style="cursor: pointer;" onclick="showPropertyDetails('${property.id}')">
+                        <div class="property-card-header">
+                            <div class="property-card-title">${property.address}</div>
+                            <div class="property-card-subtitle">${property.type}</div>
+                        </div>
+                        <div class="property-stats">
+                            <div class="property-stat">
+                                <div class="property-stat-label">Tenants</div>
+                                <div class="property-stat-value">${propertyTenants.length}</div>
+                            </div>
+                            <div class="property-stat">
+                                <div class="property-stat-label">Income</div>
+                                <div class="property-stat-value" style="color: var(--color-success);">$${monthlyIncome.toLocaleString()}</div>
+                            </div>
+                            <div class="property-stat">
+                                <div class="property-stat-label">Expenses</div>
+                                <div class="property-stat-value" style="color: var(--color-danger);">$${monthlyExpenses.toLocaleString()}</div>
+                            </div>
+                        </div>
+                        <div style="text-align: center; padding-top: var(--space-3); border-top: 1px solid var(--color-border-light);">
+                            <div style="font-size: 12px; color: var(--color-text-light); margin-bottom: 4px;">Net Income (This Month)</div>
+                            <div style="font-size: 24px; font-weight: 700; color: ${netIncome >= 0 ? 'var(--color-success)' : 'var(--color-danger)'};">
+                                $${Math.abs(netIncome).toLocaleString()}
+                            </div>
+                        </div>
+                        <div class="property-actions" style="margin-top: var(--space-4);" onclick="event.stopPropagation()">
+                            <button class="btn btn-sm btn-secondary" onclick="editProperty('${property.id}')">Edit</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteProperty('${property.id}')">Delete</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            renderPropertiesPaginationControls(totalPages);
+        }
+
+        // Show property details modal for drill-down
+        function showPropertyDetails(propertyId) {
+            const property = propertiesStore.getById(propertyId);
+            const tenants = tenantsStore.getAll().filter(t => t.propertyId === propertyId);
+            const expenses = expensesStore.getAll().filter(e => e.propertyId === propertyId);
+
+            const today = new Date();
+            const currentYear = today.getFullYear();
+
+            // Calculate YTD expenses
+            const ytdExpenses = expenses.filter(e => {
+                const expenseDate = new Date(e.date);
+                return expenseDate.getFullYear() === currentYear;
+            }).reduce((sum, e) => sum + parseFloat(e.amount), 0);
+
+            // Calculate monthly income
+            let monthlyIncome = 0;
+            tenants.forEach(tenant => {
+                monthlyIncome += tenant.monthlyRent || 0;
+            });
+
+            const modalContent = `
+                <div style="padding: var(--space-4);">
+                    <h3 style="margin-bottom: var(--space-4);">${property.address}</h3>
+
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); margin-bottom: var(--space-4);">
+                        <div class="property-stat-card">
+                            <div style="font-size: 12px; color: var(--color-text-light); margin-bottom: 4px;">Type</div>
+                            <div style="font-size: 16px; font-weight: 600;">${property.type}</div>
+                        </div>
+                        <div class="property-stat-card">
+                            <div style="font-size: 12px; color: var(--color-text-light); margin-bottom: 4px;">Purchase Price</div>
+                            <div style="font-size: 16px; font-weight: 600;">$${(property.purchasePrice || 0).toLocaleString()}</div>
+                        </div>
+                        <div class="property-stat-card">
+                            <div style="font-size: 12px; color: var(--color-text-light); margin-bottom: 4px;">Active Tenants</div>
+                            <div style="font-size: 16px; font-weight: 600;">${tenants.length}</div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); margin-bottom: var(--space-4);">
+                        <div class="property-stat-card">
+                            <div style="font-size: 12px; color: var(--color-text-light); margin-bottom: 4px;">Monthly Income</div>
+                            <div style="font-size: 18px; font-weight: 700; color: var(--color-success);">$${monthlyIncome.toLocaleString()}</div>
+                        </div>
+                        <div class="property-stat-card">
+                            <div style="font-size: 12px; color: var(--color-text-light); margin-bottom: 4px;">YTD Expenses</div>
+                            <div style="font-size: 18px; font-weight: 700; color: var(--color-danger);">$${ytdExpenses.toLocaleString()}</div>
+                        </div>
+                        <div class="property-stat-card">
+                            <div style="font-size: 12px; color: var(--color-text-light); margin-bottom: 4px;">Annual Net P&L</div>
+                            <div style="font-size: 18px; font-weight: 700; color: ${(monthlyIncome * 12 - ytdExpenses) >= 0 ? 'var(--color-success)' : 'var(--color-danger)'};">
+                                $${Math.abs(monthlyIncome * 12 - ytdExpenses).toLocaleString()}
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4 style="margin-top: var(--space-5); margin-bottom: var(--space-3);">Tenants (${tenants.length})</h4>
+                    <div style="max-height: 200px; overflow-y: auto; border: 1px solid var(--color-border-light); border-radius: 4px;">
+                        <table class="datatable" style="margin: 0;">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Monthly Rent</th>
+                                    <th>Lease End</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${tenants.length > 0 ? tenants.map(t => `
+                                    <tr style="cursor: pointer;" onclick="closeTempModal(); showTenantDetails('${t.id}');">
+                                        <td>${t.name}</td>
+                                        <td>$${t.monthlyRent.toLocaleString()}</td>
+                                        <td>${new Date(t.leaseEnd).toLocaleDateString()}</td>
+                                    </tr>
+                                `).join('') : '<tr><td colspan="3" style="text-align: center; padding: var(--space-4); color: var(--color-text-light);">No tenants</td></tr>'}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h4 style="margin-top: var(--space-4); margin-bottom: var(--space-3);">Recent Expenses</h4>
+                    <div style="max-height: 200px; overflow-y: auto; border: 1px solid var(--color-border-light); border-radius: 4px;">
+                        <table class="datatable" style="margin: 0;">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Category</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${expenses.length > 0 ? expenses.slice(0, 10).map(e => `
+                                    <tr>
+                                        <td>${new Date(e.date).toLocaleDateString()}</td>
+                                        <td>${e.category}</td>
+                                        <td>${e.description}</td>
+                                        <td>$${parseFloat(e.amount).toLocaleString()}</td>
+                                    </tr>
+                                `).join('') : '<tr><td colspan="4" style="text-align: center; padding: var(--space-4); color: var(--color-text-light);">No expenses</td></tr>'}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+
+            // Create modal
+            const existingModal = document.getElementById('temp-property-modal');
+            if (existingModal) existingModal.remove();
+
+            const modalHtml = `
+                <div id="temp-property-modal" class="modal show">
+                    <div class="modal-content" style="max-width: 900px;">
+                        <div class="modal-header">
+                            <h3>Property Details</h3>
+                        </div>
+                        <div class="modal-body">
+                            ${modalContent}
+                        </div>
+                        <div class="modal-footer" style="display: flex; justify-content: space-between;">
+                            <button class="btn btn-primary" onclick="closeTempModal(); editProperty('${propertyId}')">Edit Property</button>
+                            <div style="display: flex; gap: var(--space-2);">
+                                <button class="btn btn-success" onclick="closeTempModal(); showAddExpenseModal('${propertyId}')">Add Expense</button>
+                                <button class="btn btn-secondary" onclick="closeTempModal()">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Expenses View
+        function renderExpensesView() {
+            const allExpenses = expensesStore.getAll().sort((a, b) => new Date(b.date) - new Date(a.date));
+            const properties = propertiesStore.getAll();
+
+            // Pagination
+            const totalPages = Math.ceil(allExpenses.length / expensesItemsPerPage);
+            const startIndex = (expensesCurrentPage - 1) * expensesItemsPerPage;
+            const endIndex = Math.min(startIndex + expensesItemsPerPage, allExpenses.length);
+            const paginatedExpenses = allExpenses.slice(startIndex, endIndex);
+
+            document.getElementById('expense-count').textContent = `${allExpenses.length} expense${allExpenses.length === 1 ? '' : 's'}`;
+
+            const tbody = document.getElementById('expense-table-body');
+
+            // Build rows array for better performance
+            const rows = paginatedExpenses.map(expense => {
+                const property = properties.find(p => p.id === expense.propertyId);
+                const categoryClass = `category-${expense.category.toLowerCase().replace(/\s+/g, '-')}`;
+
+                const receiptIndicator = expense.receiptUploaded
+                    ? '<span class="badge badge-success" style="font-size: 11px;" title="Receipt uploaded">📎 Receipt</span>'
+                    : '<span class="badge badge-warning" style="font-size: 11px;" title="No receipt">⚠ No Receipt</span>';
+
+                return `
+                    <tr style="cursor: pointer;" onclick="showExpenseDetails('${expense.id}')">
+                        <td>${new Date(expense.date).toLocaleDateString()}</td>
+                        <td><small>${property ? property.address : 'N/A'}</small></td>
+                        <td><span class="category-badge ${categoryClass}">${expense.category}</span></td>
+                        <td>
+                            <strong>${expense.vendor}</strong><br>
+                            ${receiptIndicator}
+                        </td>
+                        <td>${expense.description || '-'}</td>
+                        <td><strong>$${parseFloat(expense.amount).toLocaleString()}</strong></td>
+                        <td><small>${expense.paymentMethod}</small></td>
+                        <td onclick="event.stopPropagation()">
+                            <button class="btn btn-sm btn-secondary" onclick="editExpense('${expense.id}')">Edit</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteExpense('${expense.id}')">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            // Update DOM once instead of in loop
+            tbody.innerHTML = rows.join('');
+
+            // Render pagination controls
+            renderExpensesPaginationControls(totalPages);
+        }
+
+        // Show expense details modal
+        function showExpenseDetails(expenseId) {
+            const expense = expensesStore.getById(expenseId);
+            const property = propertiesStore.getById(expense.propertyId);
+
+            const categoryClass = `category-${expense.category.toLowerCase().replace(/\s+/g, '-')}`;
+
+            const receiptInfo = expense.receiptUploaded
+                ? `<span class="badge badge-success">📎 Receipt Uploaded</span>
+                   <br><small style="color: var(--color-text-light); margin-top: 4px; display: block;">${expense.receiptFileName}</small>
+                   <small style="color: var(--color-text-light);">Uploaded: ${new Date(expense.receiptUploadDate).toLocaleDateString()}</small>`
+                : '<span class="badge badge-warning">⚠ No Receipt</span>';
+
+            const modalContent = `
+                <div style="padding: var(--space-4);">
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); margin-bottom: var(--space-4);">
+                        <div>
+                            <p style="margin-bottom: var(--space-2);"><strong>Property:</strong></p>
+                            <p style="color: var(--color-text-light);">${property ? property.address : 'N/A'}</p>
+                        </div>
+                        <div>
+                            <p style="margin-bottom: var(--space-2);"><strong>Date:</strong></p>
+                            <p style="color: var(--color-text-light);">${new Date(expense.date).toLocaleDateString()}</p>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); margin-bottom: var(--space-4);">
+                        <div>
+                            <p style="margin-bottom: var(--space-2);"><strong>Category:</strong></p>
+                            <span class="category-badge ${categoryClass}">${expense.category}</span>
+                        </div>
+                        <div>
+                            <p style="margin-bottom: var(--space-2);"><strong>Vendor:</strong></p>
+                            <p style="color: var(--color-text-light);">${expense.vendor}</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: var(--space-4);">
+                        <p style="margin-bottom: var(--space-2);"><strong>Description:</strong></p>
+                        <p style="color: var(--color-text-light);">${expense.description || 'No description provided'}</p>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); margin-bottom: var(--space-4);">
+                        <div>
+                            <p style="margin-bottom: var(--space-2);"><strong>Amount:</strong></p>
+                            <p style="font-size: 24px; font-weight: 700; color: var(--color-danger);">$${parseFloat(expense.amount).toLocaleString()}</p>
+                        </div>
+                        <div>
+                            <p style="margin-bottom: var(--space-2);"><strong>Payment Method:</strong></p>
+                            <p style="color: var(--color-text-light);">${expense.paymentMethod}</p>
+                        </div>
+                    </div>
+
+                    <div style="padding: var(--space-3); background: var(--color-bg-light); border-radius: 4px;">
+                        <p style="margin-bottom: var(--space-2);"><strong>Receipt:</strong></p>
+                        ${receiptInfo}
+                    </div>
+                </div>
+            `;
+
+            // Create modal
+            const existingModal = document.getElementById('temp-expense-modal');
+            if (existingModal) existingModal.remove();
+
+            const modalHtml = `
+                <div id="temp-expense-modal" class="modal show">
+                    <div class="modal-content" style="max-width: 700px;">
+                        <div class="modal-header">
+                            <h3>Expense Details</h3>
+                        </div>
+                        <div class="modal-body">
+                            ${modalContent}
+                        </div>
+                        <div class="modal-footer" style="display: flex; justify-content: space-between;">
+                            <button class="btn btn-primary" onclick="closeTempModal(); editExpense('${expenseId}')">Edit Expense</button>
+                            <div style="display: flex; gap: var(--space-2);">
+                                <button class="btn btn-secondary" onclick="closeTempModal()">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Messages View
+        function renderMessagesView() {
+            const allMessages = messagesStore.getAll().sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            document.getElementById('message-count').textContent = `${allMessages.length} message${allMessages.length === 1 ? '' : 's'}`;
+
+            const tbody = document.getElementById('message-table-body');
+            tbody.innerHTML = '';
+
+            if (allMessages.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: var(--space-5); color: var(--color-text-light);">
+                            No messages sent yet. Delinquency notices will appear here.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            // Pagination
+            const totalPages = Math.ceil(allMessages.length / messagesItemsPerPage);
+            const startIndex = (messagesCurrentPage - 1) * messagesItemsPerPage;
+            const endIndex = Math.min(startIndex + messagesItemsPerPage, allMessages.length);
+            const paginatedMessages = allMessages.slice(startIndex, endIndex);
+
+            paginatedMessages.forEach(message => {
+                const tenant = tenantsStore.getById(message.tenantId);
+                const property = propertiesStore.getById(message.propertyId);
+
+                tbody.innerHTML += `
+                    <tr style="cursor: pointer;" onclick="showMessageDetails('${message.id}')">
+                        <td>${new Date(message.date).toLocaleDateString()}</td>
+                        <td>${tenant ? tenant.name : 'Unknown'}</td>
+                        <td>${property ? property.address : 'Unknown'}</td>
+                        <td><span class="badge badge-info">${message.type}</span></td>
+                        <td>${message.subject}</td>
+                        <td><span class="badge badge-success">${message.status}</span></td>
+                    </tr>
+                `;
+            });
+
+            // Render pagination controls
+            renderMessagesPaginationControls(totalPages);
+        }
+
+        function showMessageDetails(messageId) {
+            const message = messagesStore.getById(messageId);
+            const tenant = tenantsStore.getById(message.tenantId);
+            const property = propertiesStore.getById(message.propertyId);
+
+            const modalContent = `
+                <div style="padding: var(--space-4);">
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); margin-bottom: var(--space-4);">
+                        <div>
+                            <p style="margin: 0 0 var(--space-2) 0;"><strong>Date:</strong></p>
+                            <p style="margin: 0; color: var(--color-text-light);">${new Date(message.date).toLocaleDateString()}</p>
+                        </div>
+                        <div>
+                            <p style="margin: 0 0 var(--space-2) 0;"><strong>Type:</strong></p>
+                            <p style="margin: 0;"><span class="badge badge-info">${message.type}</span></p>
+                        </div>
+                        <div>
+                            <p style="margin: 0 0 var(--space-2) 0;"><strong>Tenant:</strong></p>
+                            <p style="margin: 0; color: var(--color-text-light);">${tenant ? tenant.name : 'Unknown'}</p>
+                        </div>
+                        <div>
+                            <p style="margin: 0 0 var(--space-2) 0;"><strong>Property:</strong></p>
+                            <p style="margin: 0; color: var(--color-text-light);">${property ? property.address : 'Unknown'}</p>
+                        </div>
+                        <div>
+                            <p style="margin: 0 0 var(--space-2) 0;"><strong>Sent Via:</strong></p>
+                            <p style="margin: 0; color: var(--color-text-light);">${message.sentVia || 'N/A'}</p>
+                        </div>
+                        <div>
+                            <p style="margin: 0 0 var(--space-2) 0;"><strong>Status:</strong></p>
+                            <p style="margin: 0;"><span class="badge badge-success">${message.status}</span></p>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: var(--space-4);">
+                        <p style="margin: 0 0 var(--space-2) 0;"><strong>Subject:</strong></p>
+                        <p style="margin: 0 0 var(--space-3) 0; color: var(--color-text-light);">${message.subject}</p>
+                    </div>
+
+                    <div style="margin-top: var(--space-4);">
+                        <p style="margin: 0 0 var(--space-2) 0;"><strong>Message:</strong></p>
+                        <div style="padding: var(--space-3); background: var(--color-bg-light); border-radius: 4px; white-space: pre-wrap; font-family: inherit; color: var(--color-text-light);">${message.message}</div>
+                    </div>
+                </div>
+            `;
+
+            const existingModal = document.getElementById('temp-message-modal');
+            if (existingModal) existingModal.remove();
+
+            const modalHtml = `
+                <div id="temp-message-modal" class="modal show">
+                    <div class="modal-content" style="max-width: 800px;">
+                        <div class="modal-header">
+                            <h3>Message Details</h3>
+                        </div>
+                        <div class="modal-body">
+                            ${modalContent}
+                        </div>
+                        <div class="modal-footer" style="display: flex; justify-content: flex-end;">
+                            <button class="btn btn-secondary" onclick="closeTempModal()">Close</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function renderApplicationsView() {
+            const allApplications = applicationsStore.getAll().sort((a, b) => new Date(b.dateApplied) - new Date(a.dateApplied));
+
+            document.getElementById('application-count').textContent = `${allApplications.length} application${allApplications.length === 1 ? '' : 's'}`;
+
+            const tbody = document.getElementById('application-table-body');
+            tbody.innerHTML = '';
+
+            if (allApplications.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" style="text-align: center; padding: var(--space-5); color: var(--color-text-light);">
+                            No applications received yet.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            // Pagination
+            const totalPages = Math.ceil(allApplications.length / applicationsItemsPerPage);
+            const startIndex = (applicationsCurrentPage - 1) * applicationsItemsPerPage;
+            const endIndex = Math.min(startIndex + applicationsItemsPerPage, allApplications.length);
+            const paginatedApplications = allApplications.slice(startIndex, endIndex);
+
+            paginatedApplications.forEach(app => {
+                const statusBadgeClass =
+                    app.status === 'Approved' ? 'badge-success' :
+                    app.status === 'Rejected' ? 'badge-danger' :
+                    app.status === 'Under Review' ? 'badge-warning' :
+                    'badge-info';
+
+                tbody.innerHTML += `
+                    <tr style="cursor: pointer;" onclick="viewApplication('${app.id}')">
+                        <td>${new Date(app.dateApplied).toLocaleDateString()}</td>
+                        <td><strong>${app.applicantName}</strong></td>
+                        <td>${app.propertyInterest}</td>
+                        <td>${app.phone}</td>
+                        <td>${app.email}</td>
+                        <td>$${app.monthlyIncome.toLocaleString()}</td>
+                        <td>${app.creditScore}</td>
+                        <td><span class="badge ${statusBadgeClass}">${app.status}</span></td>
+                        <td onclick="event.stopPropagation()">
+                            <button class="btn btn-sm btn-primary" onclick="viewApplication('${app.id}')">View</button>
+                            ${app.status === 'Pending Review' || app.status === 'Under Review' ?
+                                `<button class="btn btn-sm btn-success" onclick="approveApplication('${app.id}')">Approve</button>
+                                 <button class="btn btn-sm btn-danger" onclick="rejectApplication('${app.id}')">Reject</button>` :
+                                ''}
+                        </td>
+                    </tr>
+                `;
+            });
+
+            // Render pagination controls
+            renderApplicationsPaginationControls(totalPages);
+        }
+
+        function viewApplication(id) {
+            const app = applicationsStore.getById(id);
+            if (!app) return;
+
+            const modalContent = `
+                <div style="padding: var(--space-4);">
+                    <h3 style="margin-bottom: var(--space-4);">${app.applicantName}</h3>
+
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); margin-bottom: var(--space-4);">
+                        <div>
+                            <p><strong>Date Applied:</strong> ${new Date(app.dateApplied).toLocaleDateString()}</p>
+                            <p><strong>Property Interest:</strong> ${app.propertyInterest}</p>
+                            <p><strong>Phone:</strong> ${app.phone}</p>
+                            <p><strong>Email:</strong> ${app.email}</p>
+                        </div>
+                        <div>
+                            <p><strong>Monthly Income:</strong> $${app.monthlyIncome.toLocaleString()}</p>
+                            <p><strong>Credit Score:</strong> ${app.creditScore}</p>
+                            <p><strong>Status:</strong> <span class="badge ${
+                                app.status === 'Approved' ? 'badge-success' :
+                                app.status === 'Rejected' ? 'badge-danger' :
+                                app.status === 'Under Review' ? 'badge-warning' : 'badge-info'
+                            }">${app.status}</span></p>
+                        </div>
+                    </div>
+
+                    <div style="padding: var(--space-3); background: var(--color-bg-light); border-radius: 4px;">
+                        <p><strong>Notes:</strong></p>
+                        <p>${app.notes}</p>
+                    </div>
+                </div>
+            `;
+
+            // Create a temporary modal for viewing application
+            const existingModal = document.getElementById('temp-app-modal');
+            if (existingModal) existingModal.remove();
+
+            const modalHtml = `
+                <div id="temp-app-modal" class="modal show">
+                    <div class="modal-content" style="max-width: 700px;">
+                        <div class="modal-header">
+                            <h3>Application Details</h3>
+                        </div>
+                        <div class="modal-body">
+                            ${modalContent}
+                        </div>
+                        <div class="modal-footer" style="display: flex; justify-content: flex-end;">
+                            <button class="btn btn-secondary" onclick="closeTempModal()">Close</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeTempModal() {
+            // Close all temp modals
+            const tempModals = document.querySelectorAll('[id^="temp-"]');
+            tempModals.forEach(modal => modal.remove());
+            document.body.style.overflow = '';
+        }
+
+        function approveApplication(id) {
+            applicationsStore.update(id, { status: 'Approved', notes: 'Application approved, lease pending' });
+            showToast('Application approved!', 'success');
+            renderApplicationsView();
+        }
+
+        function rejectApplication(id) {
+            const reason = prompt('Enter rejection reason:');
+            if (reason) {
+                applicationsStore.update(id, { status: 'Rejected', notes: reason });
+                showToast('Application rejected', 'info');
+                renderApplicationsView();
+            }
+        }
+
+        // Property CRUD
+        let currentPropertyId = null;
+
+        function showAddPropertyModal() {
+            currentPropertyId = null;
+            document.getElementById('property-modal-title').textContent = 'Add Property';
+            document.getElementById('property-form').reset();
+            showModal('property-modal');
+        }
+
+        function editProperty(id) {
+            currentPropertyId = id;
+            const property = propertiesStore.getById(id);
+
+            document.getElementById('property-modal-title').textContent = 'Edit Property';
+            document.getElementById('property-address').value = property.address;
+            document.getElementById('property-type').value = property.type;
+            document.getElementById('property-price').value = property.purchasePrice || '';
+
+            showModal('property-modal');
+        }
+
+        function saveProperty() {
+            const data = {
+                address: document.getElementById('property-address').value,
+                type: document.getElementById('property-type').value,
+                purchasePrice: parseFloat(document.getElementById('property-price').value) || 0
+            };
+
+            if (currentPropertyId) {
+                propertiesStore.update(currentPropertyId, data);
+                showToast('Property updated successfully!', 'success');
+            } else {
+                propertiesStore.add(data);
+                showToast('Property added successfully!', 'success');
+            }
+
+            closeModal('property-modal');
+            populatePropertyFilter();
+            renderPropertiesView();
+        }
+
+        function deleteProperty(id) {
+            const tenants = tenantsStore.getAll().filter(t => t.propertyId === id);
+            if (tenants.length > 0) {
+                showToast('Cannot delete property with active tenants', 'error');
+                return;
+            }
+
+            if (confirm('Are you sure you want to delete this property?')) {
+                propertiesStore.delete(id);
+                showToast('Property deleted successfully!', 'success');
+                renderPropertiesView();
+                populatePropertyFilter();
+            }
+        }
+
+        // Expense CRUD
+        let currentExpenseId = null;
+
+        function showAddExpenseModal(preselectedPropertyId = null) {
+            currentExpenseId = null;
+            document.getElementById('expense-modal-title').textContent = 'Add Expense';
+            document.getElementById('expense-form').reset();
+            document.getElementById('expense-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('receipt-status').style.display = 'none';
+            populateExpensePropertyDropdown();
+
+            // Pre-select property if provided
+            if (preselectedPropertyId) {
+                document.getElementById('expense-property').value = preselectedPropertyId;
+            }
+
+            showModal('expense-modal');
+        }
+
+        function editExpense(id) {
+            currentExpenseId = id;
+            const expense = expensesStore.getById(id);
+
+            document.getElementById('expense-modal-title').textContent = 'Edit Expense';
+            document.getElementById('expense-property').value = expense.propertyId;
+            document.getElementById('expense-date').value = expense.date;
+            document.getElementById('expense-category').value = expense.category;
+            document.getElementById('expense-vendor').value = expense.vendor;
+            document.getElementById('expense-description').value = expense.description || '';
+            document.getElementById('expense-amount').value = expense.amount;
+            document.getElementById('expense-payment-method').value = expense.paymentMethod;
+
+            // Show receipt status if exists
+            const receiptStatus = document.getElementById('receipt-status');
+            if (expense.receiptUploaded) {
+                receiptStatus.style.display = 'block';
+                receiptStatus.innerHTML = `
+                    <span class="badge badge-success">✓ Receipt Uploaded</span>
+                    <small style="margin-left: 8px; color: var(--color-text-light);">${expense.receiptFileName}</small>
+                `;
+            } else {
+                receiptStatus.style.display = 'none';
+            }
+
+            populateExpensePropertyDropdown();
+            showModal('expense-modal');
+        }
+
+        function saveExpense() {
+            const receiptInput = document.getElementById('expense-receipt');
+            const receiptFile = receiptInput.files[0];
+
+            const data = {
+                propertyId: document.getElementById('expense-property').value,
+                date: document.getElementById('expense-date').value,
+                category: document.getElementById('expense-category').value,
+                vendor: document.getElementById('expense-vendor').value,
+                description: document.getElementById('expense-description').value,
+                amount: parseFloat(document.getElementById('expense-amount').value),
+                paymentMethod: document.getElementById('expense-payment-method').value,
+                receiptUploaded: receiptFile ? true : false,
+                receiptFileName: receiptFile ? receiptFile.name : null,
+                receiptUploadDate: receiptFile ? new Date().toISOString() : null
+            };
+
+            if (currentExpenseId) {
+                expensesStore.update(currentExpenseId, data);
+                showToast('Expense updated successfully!', 'success');
+            } else {
+                expensesStore.add(data);
+                showToast('Expense added successfully!', 'success');
+            }
+
+            closeModal('expense-modal');
+            renderExpensesView();
+            updateDashboard();
+        }
+
+        function deleteExpense(id) {
+            if (confirm('Are you sure you want to delete this expense?')) {
+                expensesStore.delete(id);
+                showToast('Expense deleted successfully!', 'success');
+                renderExpensesView();
+                updateDashboard();
+            }
+        }
+
+        function populateExpensePropertyDropdown() {
+            const properties = propertiesStore.getAll();
+            const expenseProperty = document.getElementById('expense-property');
+            expenseProperty.innerHTML = '<option value="">Select property...</option>';
+
+            properties.forEach(property => {
+                expenseProperty.innerHTML += `<option value="${property.id}">${property.address}</option>`;
+            });
+        }
+
+        // Tenant Details View
+        function showTenantDetails(tenantId) {
+            const tenant = tenantsStore.getById(tenantId);
+            const property = propertiesStore.getById(tenant.propertyId);
+            const balance = calculateTenantBalance(tenantId);
+            const payments = paymentsStore.getAll().filter(p => p.tenantId === tenantId).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            document.getElementById('tenant-details-title').textContent = tenant.name;
+
+            let paymentHistory = '';
+            if (payments.length === 0) {
+                paymentHistory = '<p style="color: var(--color-text-light); text-align: center; padding: var(--space-4);">No payment history</p>';
+            } else {
+                paymentHistory = `
+                    <table class="datatable" style="font-size: 13px;">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Source</th>
+                                <th>Late Fee</th>
+                                <th>Reference</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                payments.slice(0, 10).forEach(payment => {
+                    paymentHistory += `
+                        <tr>
+                            <td>${new Date(payment.date).toLocaleDateString()}</td>
+                            <td><strong>$${parseFloat(payment.amount).toLocaleString()}</strong></td>
+                            <td><span class="payment-source ${payment.source}">${payment.source}</span></td>
+                            <td>${payment.lateFee > 0 ? `<span style="color: var(--color-danger);">$${payment.lateFee}</span>` : '-'}</td>
+                            <td><small>${payment.reference || '-'}</small></td>
+                        </tr>
+                    `;
+                });
+                paymentHistory += '</tbody></table>';
+            }
+
+            const leaseStatus = tenant.leaseUploaded
+                ? '<span class="badge badge-success">✓ Lease on file</span>'
+                : '<span class="badge badge-warning">⚠ No lease uploaded</span>';
+
+            document.getElementById('tenant-details-body').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); margin-bottom: var(--space-5);">
+                    <div>
+                        <h3 style="font-size: 14px; font-weight: 600; color: var(--color-text-light); text-transform: uppercase; margin-bottom: var(--space-3);">Contact Information</h3>
+                        <div style="margin-bottom: var(--space-2);"><strong>Phone:</strong> ${tenant.phone || 'N/A'}</div>
+                        <div style="margin-bottom: var(--space-2);"><strong>Email:</strong> ${tenant.email || 'N/A'}</div>
+                        <div style="margin-bottom: var(--space-2);"><strong>Property:</strong> ${property ? property.address : 'N/A'}</div>
+                    </div>
+                    <div>
+                        <h3 style="font-size: 14px; font-weight: 600; color: var(--color-text-light); text-transform: uppercase; margin-bottom: var(--space-3);">Lease Information</h3>
+                        <div style="margin-bottom: var(--space-2);"><strong>Monthly Rent:</strong> $${tenant.monthlyRent.toLocaleString()}</div>
+                        <div style="margin-bottom: var(--space-2);"><strong>Due Day:</strong> ${tenant.dueDay}th of each month</div>
+                        <div style="margin-bottom: var(--space-2);"><strong>Lease Period:</strong> ${tenant.leaseStart ? new Date(tenant.leaseStart).toLocaleDateString() : 'N/A'} - ${tenant.leaseEnd ? new Date(tenant.leaseEnd).toLocaleDateString() : 'N/A'}</div>
+                        <div style="margin-bottom: var(--space-2);"><strong>Lease Status:</strong> ${leaseStatus}</div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); margin-bottom: var(--space-5); padding: var(--space-4); background: var(--color-bg-light); border-radius: 8px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 11px; color: var(--color-text-light); text-transform: uppercase; margin-bottom: 4px;">Paid This Month</div>
+                        <div style="font-size: 24px; font-weight: 700; color: var(--color-success);">$${balance.paidThisMonth.toLocaleString()}</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 11px; color: var(--color-text-light); text-transform: uppercase; margin-bottom: 4px;">Balance</div>
+                        <div style="font-size: 24px; font-weight: 700; color: ${balance.balance > 0 ? 'var(--color-danger)' : 'var(--color-success)'};">$${Math.abs(balance.balance).toLocaleString()}</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 11px; color: var(--color-text-light); text-transform: uppercase; margin-bottom: 4px;">Late Fees</div>
+                        <div style="font-size: 24px; font-weight: 700; color: var(--color-danger);">$${balance.lateFees.toLocaleString()}</div>
+                    </div>
+                </div>
+
+                <h3 style="font-size: 14px; font-weight: 600; color: var(--color-text-light); text-transform: uppercase; margin-bottom: var(--space-3);">Payment History</h3>
+                ${paymentHistory}
+
+                <div style="display: flex; gap: var(--space-2); margin-top: var(--space-4); justify-content: flex-end;">
+                    <button class="btn btn-primary" onclick="showPaymentModalFromDetails('${tenantId}')">💵 Record Payment</button>
+                    <button class="btn btn-secondary" onclick="manageLeaseFromDetails('${tenantId}')">📄 Manage Lease</button>
+                    <button class="btn btn-secondary" onclick="editTenantFromDetails('${tenantId}')">✏️ Edit Tenant</button>
+                </div>
+            `;
+
+            showModal('tenant-details-modal');
+        }
+
+        // Lease Management
+        let currentLeaseTenantId = null;
+
+        function manageLease(tenantId) {
+            currentLeaseTenantId = tenantId;
+            const tenant = tenantsStore.getById(tenantId);
+
+            const statusHtml = tenant.leaseUploaded
+                ? `
+                    <div style="color: var(--color-success); font-weight: 600;">
+                        ✓ Lease document on file for ${tenant.name}
+                    </div>
+                    <div style="margin-top: var(--space-2); font-size: 13px; color: var(--color-text-light);">
+                        Uploaded: ${tenant.leaseUploadDate ? new Date(tenant.leaseUploadDate).toLocaleDateString() : 'Unknown date'}
+                    </div>
+                `
+                : `
+                    <div style="color: var(--color-warning); font-weight: 600;">
+                        ⚠ No lease document on file for ${tenant.name}
+                    </div>
+                    <div style="margin-top: var(--space-2); font-size: 13px; color: var(--color-text-light);">
+                        Please upload the signed lease agreement.
+                    </div>
+                `;
+
+            document.getElementById('lease-status').innerHTML = statusHtml;
+            showModal('lease-modal');
+        }
+
+        function uploadLease() {
+            const fileInput = document.getElementById('lease-file');
+
+            if (!fileInput.files || fileInput.files.length === 0) {
+                showToast('Please select a file to upload', 'warning');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+
+            if (!allowedTypes.includes(file.type)) {
+                showToast('Invalid file type. Please upload PDF, DOC, or DOCX', 'error');
+                return;
+            }
+
+            // In a real app, upload file to server
+            // For mockup, just mark as uploaded
+            const tenant = tenantsStore.getById(currentLeaseTenantId);
+            tenantsStore.update(currentLeaseTenantId, {
+                ...tenant,
+                leaseUploaded: true,
+                leaseUploadDate: new Date().toISOString(),
+                leaseFileName: file.name
+            });
+
+            showToast('Lease uploaded successfully!', 'success');
+            closeModal('lease-modal');
+            renderTable();
+
+            // Return to details if we came from there
+            if (returnToDetailsAfterSave) {
+                const tenantId = returnToDetailsAfterSave;
+                returnToDetailsAfterSave = null;
+                showTenantDetails(tenantId);
+            }
+        }
+
+        // Wrapper functions to handle modal navigation from details
+        function showPaymentModalFromDetails(tenantId) {
+            returnToDetailsAfterSave = tenantId;
+            closeModal('tenant-details-modal', true);
+            showPaymentModal(tenantId);
+        }
+
+        function manageLeaseFromDetails(tenantId) {
+            returnToDetailsAfterSave = tenantId;
+            closeModal('tenant-details-modal', true);
+            manageLease(tenantId);
+        }
+
+        function editTenantFromDetails(tenantId) {
+            returnToDetailsAfterSave = tenantId;
+            closeModal('tenant-details-modal', true);
+            editTenant(tenantId);
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSampleData();
+            populatePropertyFilter();
+            updateDashboard();
+            renderTable();
+        });
+    </script>
+</body>
+</html>

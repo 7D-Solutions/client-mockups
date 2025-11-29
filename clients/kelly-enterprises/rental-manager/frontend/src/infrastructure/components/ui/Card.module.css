@@ -1,0 +1,54 @@
+/* Card Component Styles */
+.card {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-light);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Card Header */
+.cardHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: var(--space-6);
+}
+
+/* Card Title */
+.cardTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+
+/* Card Content */
+.cardContent {
+  padding: 0 var(--space-6) var(--space-6) var(--space-6);
+}
+
+/* Size variants affect content padding */
+.cardCompact .cardContent {
+  padding: 0 var(--space-3) var(--space-3) var(--space-3);
+}
+
+.cardCompact .cardHeader {
+  padding: var(--space-3);
+}
+
+.cardDefault .cardContent {
+  padding: 0 var(--space-6) var(--space-6) var(--space-6);
+}
+
+.cardDefault .cardHeader {
+  padding: var(--space-6);
+}
+
+.cardSpacious .cardContent {
+  padding: 0 var(--space-8) var(--space-8) var(--space-8);
+}
+
+.cardSpacious .cardHeader {
+  padding: var(--space-8);
+}

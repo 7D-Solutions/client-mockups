@@ -1,0 +1,16 @@
+/* Kelly Rental Manager - Global Styles */
+
+/* Import Fireproof's Design Token System */
+@import './styles/tokens.css';
+@import './styles/reset.css';
+@import './styles/utilities.css';
+
+/* Application-Specific Overrides (if needed) */
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-normal);
+}

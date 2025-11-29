@@ -1,0 +1,128 @@
+/* Utility Classes for Fire-Proof ERP */
+
+/* Text Color Utilities - For use on colored backgrounds */
+.text-inverse {
+  color: var(--color-text-inverse) !important;
+}
+
+.text-inverse h1,
+.text-inverse h2,
+.text-inverse h3,
+.text-inverse h4,
+.text-inverse h5,
+.text-inverse h6,
+.text-inverse p,
+.text-inverse label,
+.text-inverse span,
+.text-inverse div {
+  color: var(--color-text-inverse) !important;
+}
+
+/* Override form component labels when in inverse context */
+.text-inverse .label {
+  color: var(--color-text-inverse) !important;
+}
+
+/* Text Color Variants */
+.text-primary {
+  color: var(--color-text-primary);
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+/* Background Utilities */
+.bg-primary {
+  background-color: var(--color-primary);
+}
+
+.bg-secondary {
+  background-color: var(--color-bg-secondary);
+}
+
+.bg-white {
+  background-color: var(--color-bg-primary);
+}
+
+/* ===== TABLE SYSTEM ===== */
+/* Material Design Compact density - consistent with mockup */
+
+/* Base table styles - apply to all tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--table-body-font-size);
+  line-height: var(--table-line-height);
+}
+
+/* Table header cells */
+table thead th {
+  padding: var(--table-cell-padding-y) var(--table-cell-padding-x) !important;
+  font-size: var(--table-header-font-size) !important;
+  line-height: var(--table-line-height) !important;
+  height: var(--table-header-height) !important;
+  vertical-align: middle !important;
+  box-sizing: border-box !important;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid var(--color-border);
+}
+
+/* Table body cells */
+table tbody td {
+  padding: var(--table-cell-padding-y) var(--table-cell-padding-x) !important;
+  font-size: var(--table-body-font-size) !important;
+  line-height: var(--table-line-height) !important;
+  height: var(--table-row-height) !important;
+  max-height: var(--table-row-height) !important;
+  vertical-align: middle !important;
+  box-sizing: border-box !important;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+/* Table body rows */
+table tbody tr {
+  height: var(--table-row-height) !important;
+  max-height: var(--table-row-height) !important;
+  min-height: var(--table-row-height) !important;
+  transition: background-color 0.15s ease;
+}
+
+/* Table row hover effect */
+table tbody tr:hover {
+  background-color: var(--color-gray-50);
+}
+
+/* Last row no border */
+table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Ensure buttons in tables use compact sizing */
+table td .button,
+table td button {
+  height: var(--component-size-compact-min-height) !important;
+  min-height: var(--component-size-compact-min-height) !important;
+  max-height: var(--component-size-compact-min-height) !important;
+  padding: var(--component-size-compact-padding-y) var(--component-size-compact-padding-x) !important;
+  font-size: var(--component-size-compact-font-size) !important;
+  line-height: var(--component-size-compact-line-height) !important;
+  box-sizing: border-box !important;
+  overflow: hidden;
+}
+
+/* Ensure badges in tables use compact sizing */
+table td .badge,
+table td [class*="badge"] {
+  height: var(--component-size-compact-min-height) !important;
+  padding: 4px 12px !important;
+  font-size: var(--table-header-font-size) !important;
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}

@@ -1,0 +1,367 @@
+/* Button Component Styles */
+
+/* Base button styles */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-weight: 500;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+  position: relative;
+  text-decoration: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+/* Icon and text wrappers */
+.iconWrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.text {
+  display: inline-flex;
+  align-items: center;
+}
+
+.button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-bg-primary), 0 0 0 4px currentColor;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Size variants using shared component size system */
+.compact {
+  padding: var(--component-size-compact-padding-y) var(--component-size-compact-padding-x);
+  font-size: var(--component-size-compact-font-size);
+  min-height: var(--component-size-compact-min-height);
+  height: var(--component-size-compact-min-height);
+  max-height: var(--component-size-compact-min-height);
+  line-height: var(--component-size-compact-line-height);
+  overflow: hidden;
+}
+
+.extraSmall {
+  padding: var(--component-size-xs-padding-y) var(--component-size-xs-padding-x);
+  font-size: var(--component-size-xs-font-size);
+  min-height: var(--component-size-xs-min-height);
+  line-height: 1;
+}
+
+.small {
+  padding: var(--component-size-sm-padding-y) var(--component-size-sm-padding-x);
+  font-size: var(--component-size-sm-font-size);
+  min-height: var(--component-size-sm-min-height);
+  line-height: 1;
+}
+
+.medium {
+  padding: var(--component-size-md-padding-y) var(--component-size-md-padding-x);
+  font-size: var(--component-size-md-font-size);
+  min-height: var(--component-size-md-min-height);
+  line-height: 1;
+}
+
+.large {
+  padding: var(--component-size-lg-padding-y) var(--component-size-lg-padding-x);
+  font-size: var(--component-size-lg-font-size);
+  min-height: var(--component-size-lg-min-height);
+  line-height: 1;
+}
+
+.extraLarge {
+  padding: var(--component-size-xl-padding-y) var(--component-size-xl-padding-x);
+  font-size: var(--component-size-xl-font-size);
+  min-height: var(--component-size-xl-min-height);
+  line-height: 1;
+}
+
+/* Color variants */
+.primary,
+.default {
+  background-color: var(--color-primary);
+  background-image: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: var(--color-text-inverse);
+}
+
+.primary:hover:not(:disabled),
+.default:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+  background-image: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary-dark) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.primary:focus,
+.default:focus {
+  box-shadow: 0 0 0 2px var(--color-bg-primary), 0 0 0 4px var(--color-primary);
+}
+
+.secondary {
+  background-color: #6c757d;
+  background-image: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
+  color: var(--color-text-inverse);
+}
+
+.secondary:hover:not(:disabled) {
+  background-color: #545b62;
+  background-image: linear-gradient(135deg, #545b62 0%, #495057 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.secondary:focus {
+  box-shadow: 0 0 0 2px var(--color-bg-primary), 0 0 0 4px #6c757d;
+}
+
+.success {
+  background-color: var(--color-success);
+  background-image: linear-gradient(135deg, var(--color-success) 0%, var(--color-success) 100%);
+  color: var(--color-text-inverse);
+}
+
+.success:hover:not(:disabled) {
+  background-color: var(--color-success);
+  background-image: linear-gradient(135deg, var(--color-success) 0%, var(--color-success) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.success:focus {
+  box-shadow: 0 0 0 2px var(--color-bg-primary), 0 0 0 4px var(--color-success);
+}
+
+.warning {
+  background-color: var(--color-warning);
+  color: var(--color-text-primary);
+}
+
+.warning:hover:not(:disabled) {
+  background-color: var(--color-warning);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.warning:focus {
+  box-shadow: 0 0 0 2px var(--color-bg-primary), 0 0 0 4px var(--color-warning);
+}
+
+.danger {
+  background-color: var(--color-danger);
+  background-image: linear-gradient(135deg, var(--color-danger) 0%, var(--color-danger) 100%);
+  color: var(--color-text-inverse);
+}
+
+.danger:hover:not(:disabled) {
+  background-color: var(--color-danger);
+  background-image: linear-gradient(135deg, var(--color-danger) 0%, var(--color-danger) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.danger:focus {
+  box-shadow: 0 0 0 2px var(--color-bg-primary), 0 0 0 4px var(--color-danger);
+}
+
+.info {
+  background-color: var(--color-info);
+  color: var(--color-text-inverse);
+}
+
+.info:hover:not(:disabled) {
+  background-color: var(--color-info);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.info:focus {
+  box-shadow: 0 0 0 2px var(--color-bg-primary), 0 0 0 4px var(--color-info);
+}
+
+.outline {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-inverse);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: none;
+}
+
+.outline:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: var(--color-text-inverse);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.outline:focus {
+  box-shadow: 0 0 0 2px var(--color-bg-primary), 0 0 0 4px rgba(255, 255, 255, 0.5);
+}
+
+.ghost {
+  background-color: transparent;
+  color: var(--color-gray-600);
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.ghost:hover:not(:disabled) {
+  background-color: var(--color-gray-50);
+  color: var(--color-primary);
+  transform: none;
+  box-shadow: none;
+}
+
+.ghost:focus {
+  box-shadow: 0 0 0 2px var(--color-bg-primary), 0 0 0 4px var(--color-primary);
+}
+
+/* Nav variant - for navigation tabs */
+.nav {
+  flex: 1;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-bg-primary);
+  border-radius: 12px;
+  font-weight: 500;
+  box-shadow: none;
+  transition: all 0.2s ease;
+  font-size: var(--font-size-sm);
+}
+
+/* Hover state for inactive nav tabs - lighter blue background */
+.nav:hover:not(:disabled):not(.active) {
+  background-color: var(--color-primary-light);
+  color: var(--color-text-primary);
+  transform: none;
+  box-shadow: var(--shadow-sm);
+}
+
+.nav:focus {
+  box-shadow: none;
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
+/* Nav active state - use darker blue to stand out from page background */
+.nav.active {
+  background-color: var(--color-primary-dark);
+  color: #ffffff;
+  border-color: var(--color-primary-dark);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Critical: Active nav tabs should NOT change on hover */
+.nav.active:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+  color: #ffffff;
+  border-color: var(--color-primary-dark);
+  transform: none;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Icon sizing for each button size */
+.compact .iconWrapper svg,
+.compact .iconWrapper i {
+  font-size: var(--component-size-compact-font-size);
+  width: calc(var(--component-size-compact-font-size) * 1);
+  height: calc(var(--component-size-compact-font-size) * 1);
+}
+
+.extraSmall .iconWrapper svg,
+.extraSmall .iconWrapper i {
+  font-size: var(--font-size-xs);
+  width: calc(var(--font-size-xs) * 1);
+  height: calc(var(--font-size-xs) * 1);
+}
+
+.small .iconWrapper svg,
+.small .iconWrapper i {
+  font-size: var(--font-size-sm);
+  width: calc(var(--font-size-sm) * 1);
+  height: calc(var(--font-size-sm) * 1);
+}
+
+.medium .iconWrapper svg,
+.medium .iconWrapper i {
+  font-size: var(--font-size-base);
+  width: calc(var(--font-size-base) * 1);
+  height: calc(var(--font-size-base) * 1);
+}
+
+.large .iconWrapper svg,
+.large .iconWrapper i {
+  font-size: var(--font-size-lg);
+  width: calc(var(--font-size-lg) * 1);
+  height: calc(var(--font-size-lg) * 1);
+}
+
+.extraLarge .iconWrapper svg,
+.extraLarge .iconWrapper i {
+  font-size: var(--font-size-xl);
+  width: calc(var(--font-size-xl) * 1);
+  height: calc(var(--font-size-xl) * 1);
+}
+
+/* Loading spinner */
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+.compact .spinner {
+  height: calc(var(--component-size-compact-font-size) * 1);
+  width: calc(var(--component-size-compact-font-size) * 1);
+}
+
+.extraSmall .spinner {
+  height: calc(var(--font-size-xs) * 1);
+  width: calc(var(--font-size-xs) * 1);
+}
+
+.small .spinner {
+  height: calc(var(--font-size-sm) * 1);
+  width: calc(var(--font-size-sm) * 1);
+}
+
+.medium .spinner {
+  height: calc(var(--font-size-base) * 1);
+  width: calc(var(--font-size-base) * 1);
+}
+
+.large .spinner {
+  height: calc(var(--font-size-lg) * 1);
+  width: calc(var(--font-size-lg) * 1);
+}
+
+.extraLarge .spinner {
+  height: calc(var(--font-size-xl) * 1);
+  width: calc(var(--font-size-xl) * 1);
+}
+
+.spinnerCircle {
+  opacity: 0.25;
+}
+
+.spinnerPath {
+  opacity: 0.75;
+  fill: currentColor;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
