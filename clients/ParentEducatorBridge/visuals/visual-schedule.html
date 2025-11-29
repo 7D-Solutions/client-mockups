@@ -442,190 +442,257 @@
             color: #666;
         }
 
-        /* Side Navigation */
-        .side-nav {
+        /* Sidebar Navigation */
+        .sidebar {
             position: fixed;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
             background: white;
-            border-radius: 12px;
-            padding: 15px 10px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
             z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+            overflow-y: auto;
+            transition: transform 0.3s;
         }
 
-        .side-nav a {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 12px;
-            border-radius: 8px;
+        .sidebar-header {
+            padding: 30px 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .sidebar-logo {
+            font-family: 'Merriweather', serif;
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            font-weight: 700;
             text-decoration: none;
-            color: var(--text-dark);
-            font-weight: 600;
-            font-size: 0.85rem;
-            transition: all 0.3s;
-            white-space: nowrap;
+            display: block;
+            line-height: 1.3;
         }
 
-        .side-nav a:hover {
-            background: #f0f0f0;
+        .sidebar-logo span {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            display: block;
+            margin-top: 5px;
         }
 
-        .side-nav a.active {
-            background: var(--primary-color);
-            color: white;
+        .sidebar-nav {
+            padding: 20px 0;
         }
 
-        .side-nav a.morning.active {
-            background: linear-gradient(135deg, #F4D03F 0%, #E8A54B 100%);
-            color: var(--text-dark);
-        }
-
-        .side-nav a.school.active {
-            background: linear-gradient(135deg, #5DADE2 0%, #3498DB 100%);
-            color: white;
-        }
-
-        .side-nav a.afternoon.active {
-            background: linear-gradient(135deg, #58D68D 0%, #28B463 100%);
-            color: white;
-        }
-
-        .side-nav a.evening.active {
-            background: linear-gradient(135deg, #BB8FCE 0%, #8E44AD 100%);
-            color: white;
-        }
-
-        .side-nav .nav-icon {
-            width: 24px;
-            height: 24px;
+        .sidebar-nav a {
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
         }
 
-        .side-nav .nav-icon svg {
-            width: 100%;
-            height: 100%;
+        .sidebar-nav a:hover {
+            background: #f8f9fa;
+            padding-left: 25px;
         }
 
-        .side-nav .nav-label {
-            display: none;
-        }
-
-        .side-nav:hover .nav-label {
-            display: inline;
-        }
-
-        .side-nav .progress-indicator {
-            width: 100%;
-            height: 4px;
-            background: #e0e0e0;
-            border-radius: 2px;
-            margin-top: 10px;
-            overflow: hidden;
-        }
-
-        .side-nav .progress-bar {
-            height: 100%;
+        .sidebar-nav a.active {
             background: var(--primary-color);
-            width: 0%;
-            transition: width 0.3s;
-            border-radius: 2px;
+            color: white;
         }
 
-        /* Adjust container for side nav */
-        @media screen and (min-width: 1400px) {
-            .container {
-                margin-left: 120px;
+        .sidebar-nav a .emoji {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: #e0e0e0;
+            margin: 15px 20px;
+        }
+
+        .sidebar-cta {
+            margin: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #d4942a 100%);
+            color: white;
+            text-align: center;
+            border-radius: 10px;
+            font-weight: 700;
+            text-decoration: none;
+            display: block;
+            transition: transform 0.3s;
+        }
+
+        .sidebar-cta:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Mobile menu button */
+        .mobile-menu {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            cursor: pointer;
+            display: none;
+            font-weight: 600;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        /* Sidebar overlay for mobile */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        /* Main content wrapper */
+        .main-content {
+            margin-left: 280px;
+            transition: margin-left 0.3s;
+        }
+
+        /* Adjust container for sidebar */
+        body {
+            padding: 20px 20px 20px 0;
+        }
+
+        .container {
+            margin: 0 auto;
+        }
+
+        /* Mobile responsive */
+        @media screen and (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            body {
+                padding: 20px;
             }
         }
 
-        @media screen and (max-width: 1000px) {
-            .side-nav {
-                display: none;
-            }
-        }
-
+        /* Print styles */
         @media print {
-            .side-nav {
+            .sidebar,
+            .mobile-menu,
+            .sidebar-overlay {
                 display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            body {
+                padding: 0;
             }
         }
     </style>
 </head>
 <body>
-    <a href="../resources.html" class="back-link">← Back to Resources</a>
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu" onclick="toggleSidebar()">☰ Menu</button>
 
-    <!-- Side Navigation -->
-    <nav class="side-nav" id="sideNav">
-        <a href="#morning-section" class="morning" data-section="morning-section">
-            <span class="nav-icon">
-                <svg viewBox="0 0 100 100">
-                    <circle cx="50" cy="70" r="25" fill="#F4D03F"/>
-                    <line x1="50" y1="35" x2="50" y2="20" stroke="#F4D03F" stroke-width="4"/>
-                    <line x1="25" y1="50" x2="15" y2="40" stroke="#F4D03F" stroke-width="4"/>
-                    <line x1="75" y1="50" x2="85" y2="40" stroke="#F4D03F" stroke-width="4"/>
-                    <rect x="0" y="75" width="100" height="25" fill="#F4D03F" opacity="0.3"/>
-                </svg>
-            </span>
-            <span class="nav-label">Morning</span>
-        </a>
-        <a href="#school-section" class="school" data-section="school-section">
-            <span class="nav-icon">
-                <svg viewBox="0 0 100 100">
-                    <rect x="20" y="40" width="60" height="50" fill="#5DADE2"/>
-                    <polygon points="50,15 85,40 15,40" fill="#5DADE2"/>
-                    <rect x="40" y="60" width="20" height="30" fill="#3498DB"/>
-                </svg>
-            </span>
-            <span class="nav-label">School</span>
-        </a>
-        <a href="#afternoon-section" class="afternoon" data-section="afternoon-section">
-            <span class="nav-icon">
-                <svg viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="25" fill="#58D68D"/>
-                    <line x1="50" y1="15" x2="50" y2="5" stroke="#58D68D" stroke-width="4"/>
-                    <line x1="50" y1="95" x2="50" y2="85" stroke="#58D68D" stroke-width="4"/>
-                    <line x1="15" y1="50" x2="5" y2="50" stroke="#58D68D" stroke-width="4"/>
-                    <line x1="95" y1="50" x2="85" y2="50" stroke="#58D68D" stroke-width="4"/>
-                </svg>
-            </span>
-            <span class="nav-label">Afternoon</span>
-        </a>
-        <a href="#evening-section" class="evening" data-section="evening-section">
-            <span class="nav-icon">
-                <svg viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="25" fill="#BB8FCE"/>
-                    <circle cx="40" cy="45" r="8" fill="#8E44AD"/>
-                    <circle cx="55" cy="55" r="5" fill="#8E44AD"/>
-                    <circle cx="20" cy="25" r="2" fill="#BB8FCE"/>
-                    <circle cx="80" cy="30" r="2" fill="#BB8FCE"/>
-                </svg>
-            </span>
-            <span class="nav-label">Evening</span>
-        </a>
-        <a href="#cards-section" class="cards" data-section="cards-section">
-            <span class="nav-icon">
-                <svg viewBox="0 0 100 100">
-                    <rect x="10" y="20" width="35" height="45" rx="5" fill="#E8E8E8" stroke="#333" stroke-width="2"/>
-                    <rect x="55" y="20" width="35" height="45" rx="5" fill="#E8E8E8" stroke="#333" stroke-width="2"/>
-                    <rect x="32" y="45" width="35" height="45" rx="5" fill="white" stroke="#333" stroke-width="2"/>
-                </svg>
-            </span>
-            <span class="nav-label">Cut-Out Cards</span>
-        </a>
-        <div class="progress-indicator">
-            <div class="progress-bar" id="progressBar"></div>
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="../index.html" class="sidebar-logo">
+                Bridging the Gap
+                <span>Parent Educator Bridge</span>
+            </a>
         </div>
-    </nav>
 
-    <div class="container">
+        <nav class="sidebar-nav">
+            <a href="../index.html">
+                <span class="emoji">🏠</span>
+                Home
+            </a>
+            <a href="../course.html">
+                <span class="emoji">📚</span>
+                Course
+            </a>
+            <a href="../5-things.html">
+                <span class="emoji">✋</span>
+                5 Things to Know
+            </a>
+            <a href="../foundation-skills.html">
+                <span class="emoji">🧱</span>
+                Foundation Skills
+            </a>
+
+            <div class="sidebar-divider"></div>
+
+            <a href="../resources.html" class="active">
+                <span class="emoji">🎯</span>
+                Resources
+            </a>
+            <a href="../podcast.html">
+                <span class="emoji">🎙️</span>
+                Podcast
+            </a>
+            <a href="../blog.html">
+                <span class="emoji">✍️</span>
+                Blog
+            </a>
+
+            <div class="sidebar-divider"></div>
+
+            <a href="../faq.html">
+                <span class="emoji">❓</span>
+                FAQ
+            </a>
+            <a href="../contact.html">
+                <span class="emoji">✉️</span>
+                Contact
+            </a>
+        </nav>
+
+        <a href="../course.html" class="sidebar-cta">
+            Enroll Now
+        </a>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <a href="../resources.html" class="back-link">← Back to Resources</a>
+
+        <div class="container">
         <header>
             <h1>My Visual Schedule</h1>
             <p class="subtitle">Bridging the Gap - Parent Educator Bridge</p>
@@ -1367,75 +1434,32 @@
             </div>
         </div>
 
-        <footer>
-            <p style="font-size: 0.9rem;">
-                Created with care by Bridging the Gap - Parent Educator Bridge
-            </p>
-            <p style="font-size: 0.8rem; margin-top: 5px;">
-                Supporting families of children with autism and special needs
-            </p>
-        </footer>
+            <footer>
+                <p style="font-size: 0.9rem;">
+                    Created with care by Bridging the Gap - Parent Educator Bridge
+                </p>
+                <p style="font-size: 0.8rem; margin-top: 5px;">
+                    Supporting families of children with autism and special needs
+                </p>
+            </footer>
+        </div>
     </div>
 
     <script>
+        // Toggle sidebar for mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // Reset all checkboxes
         function resetAll() {
             document.querySelectorAll('.checkbox-area').forEach(cb => {
                 cb.classList.remove('checked');
             });
         }
-
-        // Scroll tracking for side navigation
-        document.addEventListener('DOMContentLoaded', function() {
-            const sections = ['morning-section', 'school-section', 'afternoon-section', 'evening-section', 'cards-section'];
-            const navLinks = document.querySelectorAll('.side-nav a');
-            const progressBar = document.getElementById('progressBar');
-
-            // Smooth scroll for nav links
-            navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('href').slice(1);
-                    const targetSection = document.getElementById(targetId);
-                    if (targetSection) {
-                        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                });
-            });
-
-            // Update active section on scroll
-            function updateActiveSection() {
-                const scrollPosition = window.scrollY + 200;
-
-                // Update progress bar
-                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-                const scrollPercent = (window.scrollY / docHeight) * 100;
-                progressBar.style.width = scrollPercent + '%';
-
-                // Find current section
-                let currentSection = sections[0];
-
-                sections.forEach(sectionId => {
-                    const section = document.getElementById(sectionId);
-                    if (section && section.offsetTop <= scrollPosition) {
-                        currentSection = sectionId;
-                    }
-                });
-
-                // Update nav links
-                navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('data-section') === currentSection) {
-                        link.classList.add('active');
-                    }
-                });
-            }
-
-            // Listen for scroll events
-            window.addEventListener('scroll', updateActiveSection);
-
-            // Initial update
-            updateActiveSection();
-        });
     </script>
 </body>
 </html>

@@ -37,6 +37,170 @@
             color: #333;
             background-color: #fff;
             padding: 20px;
+            margin: 0;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--primary-color), #1D5C4E);
+            color: white;
+            padding: 30px 20px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-logo {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .sidebar-logo h2 {
+            font-size: 24px;
+            font-weight: 800;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .sidebar-logo .subtitle {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .sidebar nav {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .sidebar a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .sidebar a.active {
+            background: var(--secondary-color);
+        }
+
+        .sidebar a .emoji {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.2);
+            margin: 15px 0;
+        }
+
+        .sidebar-cta {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .sidebar-cta a {
+            background: var(--secondary-color);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            border-radius: 50px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .sidebar-cta a:hover {
+            background: #D69438;
+            transform: scale(1.05);
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 270px;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.open {
+                display: block;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        @media print {
+            .sidebar,
+            .mobile-menu,
+            .sidebar-overlay {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
         }
 
         .back-link {
@@ -58,6 +222,10 @@
         @media print {
             .back-link {
                 display: none;
+            }
+
+            body {
+                padding: 10px;
             }
         }
 
@@ -374,14 +542,6 @@
 
         /* Print Styles */
         @media print {
-            body {
-                padding: 10px;
-            }
-
-            .page-break {
-                page-break-after: always;
-            }
-
             .emotion-card:hover {
                 transform: none;
             }
@@ -431,10 +591,75 @@
     </style>
 </head>
 <body>
-    <a href="../resources.html" class="back-link">← Back to Resources</a>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
 
-    <!-- Full Poster Version -->
-    <div class="header">
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h2>Parent Educator Bridge</h2>
+            <div class="subtitle">Together We Grow</div>
+        </div>
+
+        <nav>
+            <a href="../index.html">
+                <span class="emoji">🏠</span>
+                <span>Home</span>
+            </a>
+            <a href="../course.html">
+                <span class="emoji">📚</span>
+                <span>Course</span>
+            </a>
+            <a href="../5-things.html">
+                <span class="emoji">✋</span>
+                <span>5 Things to Know</span>
+            </a>
+            <a href="../foundation-skills.html">
+                <span class="emoji">🧱</span>
+                <span>Foundation Skills</span>
+            </a>
+
+            <div class="nav-divider"></div>
+
+            <a href="../resources.html" class="active">
+                <span class="emoji">📖</span>
+                <span>Resources</span>
+            </a>
+            <a href="../podcast.html">
+                <span class="emoji">🎙️</span>
+                <span>Podcast</span>
+            </a>
+            <a href="../blog.html">
+                <span class="emoji">✍️</span>
+                <span>Blog</span>
+            </a>
+
+            <div class="nav-divider"></div>
+
+            <a href="../faq.html">
+                <span class="emoji">❓</span>
+                <span>FAQ</span>
+            </a>
+            <a href="../contact.html">
+                <span class="emoji">💬</span>
+                <span>Contact</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-cta">
+            <a href="../course.html#enroll">Enroll Now</a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <a href="../resources.html" class="back-link">← Back to Resources</a>
+
+        <!-- Full Poster Version -->
+        <div class="header">
         <h1>How Do You Feel Today?</h1>
         <div class="subtitle">Feelings Chart</div>
     </div>
@@ -786,5 +1011,15 @@
         <h2>Feelings Chart Accessibility Information</h2>
         <p>This feelings chart is designed to help children identify and communicate their emotions. Each emotion is represented by a large emoji-style face with a color-coded border and label. The chart includes 12 core emotions: Happy (yellow), Sad (blue), Angry (red), Scared (purple), Worried (orange), Frustrated (dark red), Tired (gray), Sick (green), Excited (bright orange), Calm (teal), Confused (light gray), and Hungry (dark orange).</p>
     </div>
+    </div> <!-- End main-content -->
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+    </script>
 </body>
 </html>

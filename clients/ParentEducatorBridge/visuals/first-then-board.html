@@ -20,6 +20,7 @@
             --dark-text: #2C3E50;
             --light-bg: #F8F9FA;
             --border-gray: #333;
+            --sidebar-width: 280px;
         }
 
         body {
@@ -27,6 +28,124 @@
             line-height: 1.6;
             color: var(--dark-text);
             background: var(--light-bg);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-logo {
+            padding: 30px 25px;
+            background: var(--primary-green);
+            color: white;
+            text-align: center;
+        }
+
+        .sidebar-logo h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 12px 25px;
+            color: var(--dark-text);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 600;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: var(--light-bg);
+            border-left-color: var(--accent-gold);
+            color: var(--primary-green);
+        }
+
+        .nav-item.active {
+            background: rgba(46, 125, 107, 0.1);
+            border-left-color: var(--primary-green);
+            color: var(--primary-green);
+        }
+
+        .nav-item span {
+            margin-right: 10px;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: #E0E0E0;
+            margin: 15px 25px;
+        }
+
+        .cta-button {
+            display: block;
+            margin: 20px 25px;
+            padding: 15px;
+            background: var(--accent-gold);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .cta-button:hover {
+            background: #D89540;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Mobile Menu Button */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
             padding: 20px;
         }
 
@@ -330,6 +449,18 @@
 
         /* Print Styles */
         @media print {
+            .sidebar,
+            .mobile-menu-btn,
+            .sidebar-overlay,
+            .back-link {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
             body {
                 background: white;
                 padding: 0;
@@ -364,6 +495,25 @@
 
         /* Responsive */
         @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
             .page-header h1 {
                 font-size: 2rem;
             }
@@ -399,9 +549,38 @@
     </style>
 </head>
 <body>
-    <a href="../resources.html" class="back-link">← Back to Resources</a>
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
 
-    <div class="page-header">
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="sidebar-logo">
+            <h1>Parent Educator Bridge</h1>
+        </div>
+        <div class="sidebar-nav">
+            <a href="../index.html" class="nav-item"><span>🏠</span>Home</a>
+            <a href="../course.html" class="nav-item"><span>📚</span>Course</a>
+            <a href="../5-things.html" class="nav-item"><span>💡</span>5 Things to Know</a>
+            <a href="../foundation-skills.html" class="nav-item"><span>🧱</span>Foundation Skills</a>
+            <div class="nav-divider"></div>
+            <a href="../resources.html" class="nav-item active"><span>📖</span>Resources</a>
+            <a href="../podcast.html" class="nav-item"><span>🎙️</span>Podcast</a>
+            <a href="../blog.html" class="nav-item"><span>✍️</span>Blog</a>
+            <div class="nav-divider"></div>
+            <a href="../faq.html" class="nav-item"><span>❓</span>FAQ</a>
+            <a href="../contact.html" class="nav-item"><span>📧</span>Contact</a>
+        </div>
+        <a href="../enroll.html" class="cta-button">🎓 Enroll Now</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <a href="../resources.html" class="back-link">← Back to Resources</a>
+
+        <div class="page-header">
         <h1>🎯 First-Then Board</h1>
         <p>Visual Support Tool for Transitions & Motivation</p>
         <p class="subtitle">Parent Educator Bridge - Evidence-Based Visual Supports</p>
@@ -675,5 +854,16 @@
         <p>Evidence-Based Visual Supports for Effective Parenting</p>
         <p>© 2024 Parent Educator Bridge. For personal use only.</p>
     </div>
+
+    </div><!-- End Main Content -->
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+    </script>
 </body>
 </html>

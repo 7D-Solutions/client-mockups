@@ -29,7 +29,127 @@
             line-height: 1.6;
             color: var(--text-dark);
             background-color: var(--bg-light);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            background: linear-gradient(135deg, var(--primary-color), #3A9D87);
+            color: white;
+        }
+
+        .sidebar-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 0;
+            text-align: center;
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            gap: 12px;
+        }
+
+        .sidebar-nav a .emoji {
+            font-size: 1.3rem;
+            width: 30px;
+            display: inline-block;
+        }
+
+        .sidebar-nav a:hover {
+            background: var(--bg-light);
+            padding-left: 30px;
+        }
+
+        .sidebar-nav a.active {
+            background: var(--primary-color);
+            color: white;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 10px 20px;
+        }
+
+        .sidebar-cta {
+            margin: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--secondary-color), #D89435);
+            color: white;
+            text-align: center;
+            border-radius: 12px;
+            text-decoration: none;
+            display: block;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: transform 0.3s;
+        }
+
+        .sidebar-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(232, 165, 75, 0.4);
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 1001;
+            font-size: 1.5rem;
+            display: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            margin-left: 280px;
             padding: 20px;
+            min-height: 100vh;
         }
 
         .back-link {
@@ -49,8 +169,21 @@
         }
 
         @media print {
+            .sidebar,
+            .mobile-menu-toggle,
+            .sidebar-overlay,
             .back-link {
                 display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 0;
+            }
+
+            body {
+                background: white;
             }
         }
 
@@ -383,6 +516,27 @@
         }
 
         @media screen and (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 80px 20px 20px;
+            }
+
             .header h1 {
                 font-size: 1.8rem;
             }
@@ -458,9 +612,38 @@
     </style>
 </head>
 <body>
-    <a href="../resources.html" class="back-link">← Back to Resources</a>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" onclick="toggleSidebar()">☰</button>
 
-    <div class="header">
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h1 class="sidebar-logo">Parent Educator Bridge</h1>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="../index.html"><span class="emoji">🏠</span> Home</a>
+            <a href="../course.html"><span class="emoji">📚</span> Course</a>
+            <a href="../5-things.html"><span class="emoji">🌟</span> 5 Things to Know</a>
+            <a href="../foundation-skills.html"><span class="emoji">🧱</span> Foundation Skills</a>
+            <div class="sidebar-divider"></div>
+            <a href="../resources.html" class="active"><span class="emoji">🎁</span> Resources</a>
+            <a href="../podcast.html"><span class="emoji">🎙️</span> Podcast</a>
+            <a href="../blog.html"><span class="emoji">📝</span> Blog</a>
+            <div class="sidebar-divider"></div>
+            <a href="../faq.html"><span class="emoji">❓</span> FAQ</a>
+            <a href="../contact.html"><span class="emoji">✉️</span> Contact</a>
+        </nav>
+        <a href="../enroll.html" class="sidebar-cta">🚀 Enroll Now</a>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <a href="../resources.html" class="back-link">← Back to Resources</a>
+
+        <div class="header">
         <h1>🚽 Bathroom Communication Board</h1>
         <p>Essential tool for school readiness and independence</p>
     </div>
@@ -707,10 +890,20 @@
         </ul>
     </div>
 
-    <div class="footer no-print">
-        <p><strong>Parent Educator Bridge</strong> | Empowering families for school success</p>
-        <p>For more resources and support, visit our parent resource center</p>
-        <p style="margin-top: 10px; font-style: italic;">"Whatever you do, work heartily, as for the Lord and not for men." - Colossians 3:23</p>
-    </div>
+        <div class="footer no-print">
+            <p><strong>Parent Educator Bridge</strong> | Empowering families for school success</p>
+            <p>For more resources and support, visit our parent resource center</p>
+            <p style="margin-top: 10px; font-style: italic;">"Whatever you do, work heartily, as for the Lord and not for men." - Colossians 3:23</p>
+        </div>
+    </main>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+    </script>
 </body>
 </html>

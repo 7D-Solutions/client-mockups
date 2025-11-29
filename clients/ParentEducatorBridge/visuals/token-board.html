@@ -53,6 +53,173 @@
             }
         }
 
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: var(--white);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            padding: 30px 20px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-logo {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--light-bg);
+        }
+
+        .sidebar-logo h2 {
+            color: var(--primary-green);
+            font-size: 1.5em;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-logo p {
+            color: var(--accent-gold);
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar nav li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .sidebar nav a:hover {
+            background: var(--light-bg);
+            color: var(--primary-green);
+            transform: translateX(5px);
+        }
+
+        .sidebar nav a.active {
+            background: var(--primary-green);
+            color: var(--white);
+        }
+
+        .sidebar nav a span {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: var(--light-bg);
+            margin: 15px 0;
+        }
+
+        .sidebar-cta {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .sidebar-cta a {
+            display: inline-block;
+            background: var(--accent-gold);
+            color: var(--white);
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-cta a:hover {
+            background: #F4B95F;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(232, 165, 75, 0.3);
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: var(--primary-green);
+            color: var(--white);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        @media print {
+            .sidebar,
+            .mobile-menu,
+            .sidebar-overlay {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+
         .screen-only {
             max-width: 1200px;
             margin: 0 auto;
@@ -546,9 +713,48 @@
     </style>
 </head>
 <body>
-    <a href="../resources.html" class="back-link">← Back to Resources</a>
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu" onclick="toggleSidebar()">☰ Menu</button>
 
-    <div class="screen-only">
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h2>Parent Educator Bridge</h2>
+            <p>Building Strong Foundations</p>
+        </div>
+
+        <nav>
+            <ul>
+                <li><a href="../index.html"><span>🏠</span>Home</a></li>
+                <li><a href="../course.html"><span>📚</span>Course</a></li>
+                <li><a href="../5-things.html"><span>🌟</span>5 Things to Know</a></li>
+                <li><a href="../foundation-skills.html"><span>🧱</span>Foundation Skills</a></li>
+
+                <div class="sidebar-divider"></div>
+
+                <li><a href="../resources.html" class="active"><span>📖</span>Resources</a></li>
+                <li><a href="../podcast.html"><span>🎙️</span>Podcast</a></li>
+                <li><a href="../blog.html"><span>✍️</span>Blog</a></li>
+
+                <div class="sidebar-divider"></div>
+
+                <li><a href="../faq.html"><span>❓</span>FAQ</a></li>
+                <li><a href="../contact.html"><span>📧</span>Contact</a></li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-cta">
+            <a href="../course.html">Enroll Now</a>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <a href="../resources.html" class="back-link">← Back to Resources</a>
+
+        <div class="screen-only">
         <h1>Token Board & Reward System</h1>
         <p class="subtitle">Positive Behavior Reinforcement Tools for Parents & Educators</p>
 
@@ -1352,9 +1558,19 @@
         </div>
 
         <button class="print-button no-print" onclick="window.print()" style="margin-top: 30px;">🖨️ Print This Resource</button>
+        </div>
     </div>
 
     <script>
+        // Toggle sidebar on mobile
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
         // Add any interactive functionality here if needed
         console.log('Token Board System Loaded - Parent Educator Bridge');
     </script>

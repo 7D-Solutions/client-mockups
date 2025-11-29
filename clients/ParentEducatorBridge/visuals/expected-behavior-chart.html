@@ -31,7 +31,134 @@
             line-height: 1.6;
             color: var(--text-dark);
             background: white;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--primary-color) 0%, #1D5C4E 100%);
+            color: white;
             padding: 20px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-logo {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .sidebar-logo h1 {
+            font-size: 1.5em;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-logo p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .sidebar nav {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            transition: background 0.3s, transform 0.2s;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar a:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateX(5px);
+        }
+
+        .sidebar a.active {
+            background: rgba(255,255,255,0.2);
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .sidebar a span {
+            font-size: 1.2em;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.2);
+            margin: 10px 0;
+        }
+
+        .cta-button {
+            background: var(--secondary-color);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            border-radius: 50px;
+            font-weight: 700;
+            margin-top: 20px;
+            text-decoration: none;
+            display: block;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .cta-button:hover {
+            background: #D89535;
+            transform: scale(1.05);
+        }
+
+        /* Mobile Menu Button */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        /* Sidebar Overlay for Mobile */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 20px;
+            min-height: 100vh;
         }
 
         .back-link {
@@ -51,6 +178,17 @@
         }
 
         @media print {
+            .sidebar,
+            .mobile-menu,
+            .sidebar-overlay {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
             .back-link {
                 display: none;
             }
@@ -315,6 +453,26 @@
         }
 
         @media screen and (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
             .main-chart,
             .scenario-grid {
                 grid-template-columns: 1fr;
@@ -335,9 +493,45 @@
     </style>
 </head>
 <body>
-    <a href="../resources.html" class="back-link">← Back to Resources</a>
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
 
-    <!-- Page 1: Main Chart -->
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h1>Parent Educator Bridge</h1>
+            <p>Building Bridges Together</p>
+        </div>
+
+        <nav>
+            <a href="../index.html"><span>🏠</span> Home</a>
+            <a href="../course.html"><span>📚</span> Course</a>
+            <a href="../5-things.html"><span>💡</span> 5 Things to Know</a>
+            <a href="../foundation-skills.html"><span>🎯</span> Foundation Skills</a>
+
+            <div class="sidebar-divider"></div>
+
+            <a href="../resources.html" class="active"><span>📖</span> Resources</a>
+            <a href="../podcast.html"><span>🎙️</span> Podcast</a>
+            <a href="../blog.html"><span>✍️</span> Blog</a>
+
+            <div class="sidebar-divider"></div>
+
+            <a href="../faq.html"><span>❓</span> FAQ</a>
+            <a href="../contact.html"><span>📧</span> Contact</a>
+        </nav>
+
+        <a href="../enroll.html" class="cta-button">Enroll Now</a>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <a href="../resources.html" class="back-link">← Back to Resources</a>
+
+        <!-- Page 1: Main Chart -->
     <div class="header">
         <h1>Expected vs. Unexpected Behaviors</h1>
         <p>Learning to Be a Good Friend and Student</p>
@@ -1082,6 +1276,17 @@
             </div>
         </div>
     </div>
+
+    </div> <!-- End Main Content -->
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+    </script>
 
 </body>
 </html>
