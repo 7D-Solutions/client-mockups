@@ -38,15 +38,9 @@
             background-color: var(--background);
         }
 
-        /* Header */
+        /* Header - Hidden on desktop, mobile toggle only */
         .site-header {
-            background-color: var(--background);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: none;
         }
 
         .header-container {
@@ -65,21 +59,100 @@
             text-decoration: none;
         }
 
-        .nav-menu {
-            display: flex;
-            gap: 2rem;
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background-color: var(--background);
+            border-right: 1px solid var(--border);
+            padding: 2rem 0;
+            z-index: 1000;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-logo {
+            padding: 0 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .sidebar-logo a {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .sidebar-menu {
             list-style: none;
         }
 
-        .nav-menu a {
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-menu a {
+            display: block;
+            padding: 0.875rem 2rem;
             color: var(--text-medium);
             text-decoration: none;
             font-weight: 600;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
         }
 
-        .nav-menu a:hover {
+        .sidebar-menu a:hover {
+            background-color: var(--primary-light);
             color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .sidebar-menu a.active {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            background-color: var(--background);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 0.5rem 0.75rem;
+            z-index: 1001;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Main Content Area */
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+        }
+
+        /* Mobile Overlay */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
         }
 
         /* Article Header */
@@ -517,6 +590,31 @@
 
         /* Responsive */
         @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .sidebar-overlay {
+                display: none;
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
             .article-title {
                 font-size: 2rem;
             }
@@ -546,30 +644,37 @@
             .newsletter-form {
                 flex-direction: column;
             }
-
-            .nav-menu {
-                display: none;
-            }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="site-header">
-        <div class="header-container">
-            <a href="../index.html" class="logo">ParentEducatorBridge</a>
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="../index.html#curriculum">Course</a></li>
-                    <li><a href="../resources.html">Resources</a></li>
-                    <li><a href="../podcast.html">Podcast</a></li>
-                    <li><a href="../blog.html">Blog</a></li>
-                    <li><a href="../faq.html">FAQ</a></li>
-                    <li><a href="../contact.html">Contact</a></li>
-                </ul>
-            </nav>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <a href="../index.html">ParentEducatorBridge</a>
         </div>
-    </header>
+        <nav>
+            <ul class="sidebar-menu">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../resources.html">Resources</a></li>
+                <li><a href="../podcast.html">Podcast</a></li>
+                <li><a href="../blog.html" class="active">Blog</a></li>
+                <li><a href="../faq.html">FAQ</a></li>
+                <li><a href="../contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle menu">
+        ☰
+    </button>
+
+    <!-- Sidebar Overlay (Mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-content">
 
     <!-- Article Header -->
     <div class="article-header">
@@ -1186,5 +1291,27 @@
             <p>&copy; 2024 ParentEducatorBridge. All rights reserved. | <a href="#" style="color: inherit;">Privacy Policy</a> | <a href="#" style="color: inherit;">Terms of Use</a></p>
         </div>
     </footer>
+    </div><!-- End Main Content -->
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // Close sidebar when clicking a link (mobile)
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        toggleSidebar();
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

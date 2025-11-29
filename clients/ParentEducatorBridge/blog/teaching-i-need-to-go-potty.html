@@ -34,35 +34,31 @@
             line-height: 1.8;
         }
 
-        /* Navigation */
-        .nav {
+        /* Sidebar Navigation */
+        .sidebar {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
+            width: 280px;
+            height: 100vh;
             background: var(--surface);
-            box-shadow: 0 2px 20px var(--shadow);
+            box-shadow: 2px 0 20px var(--shadow);
             z-index: 1000;
-            padding: 0.75rem 2rem;
+            padding: 2rem 0;
+            overflow-y: auto;
         }
 
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-logo {
+        .sidebar-logo {
             display: flex;
             align-items: center;
             gap: 0.75rem;
             text-decoration: none;
             color: var(--primary);
+            padding: 0 2rem;
+            margin-bottom: 2rem;
         }
 
-        .nav-logo-icon {
+        .sidebar-logo-icon {
             width: 45px;
             height: 45px;
             background: var(--gradient);
@@ -73,35 +69,85 @@
             font-size: 1.5rem;
         }
 
-        .nav-logo-text { font-weight: 800; font-size: 1.25rem; }
+        .sidebar-logo-text {
+            font-weight: 800;
+            font-size: 1.25rem;
+        }
 
-        .nav-links {
-            display: flex;
-            gap: 2rem;
+        .sidebar-nav {
             list-style: none;
         }
 
-        .nav-links a {
+        .sidebar-nav li {
+            margin: 0;
+        }
+
+        .sidebar-nav a {
+            display: block;
             text-decoration: none;
             color: var(--text);
             font-weight: 600;
-            transition: color 0.3s;
+            padding: 1rem 2rem;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
         }
 
-        .nav-links a:hover { color: var(--primary); }
+        .sidebar-nav a:hover {
+            background: var(--background);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
 
-        .nav-cta {
+        .sidebar-nav a.active {
+            background: linear-gradient(90deg, rgba(46, 125, 107, 0.1) 0%, transparent 100%);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 700;
+        }
+
+        .sidebar-cta {
+            margin: 2rem;
+            display: block;
             background: var(--gradient);
             color: white;
             padding: 0.75rem 1.5rem;
             border-radius: 50px;
             text-decoration: none;
             font-weight: 700;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .sidebar-cta:hover {
+            transform: translateY(-2px);
+        }
+
+        .sidebar-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
         }
 
         /* Article Header */
         .article-header {
-            padding: 8rem 2rem 3rem;
+            padding: 4rem 2rem 3rem;
             background: linear-gradient(180deg, #E8F5F1 0%, var(--background) 100%);
             text-align: center;
         }
@@ -504,7 +550,23 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .nav-links { display: none; }
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .sidebar-toggle {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
             .article-header h1 { font-size: 2rem; }
             .article-subtitle { font-size: 1.1rem; }
             .article-content h2 { font-size: 1.6rem; }
@@ -519,25 +581,28 @@
     </style>
 </head>
 <body>
-    <nav class="nav">
-        <div class="nav-container">
-            <a href="../index.html" class="nav-logo">
-                <div class="nav-logo-icon">🌉</div>
-                <span class="nav-logo-text">Bridging the Gap</span>
-            </a>
-            <ul class="nav-links">
-                <li><a href="../index.html#curriculum">Course</a></li>
+    <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+
+    <aside class="sidebar" id="sidebar">
+        <a href="../index.html" class="sidebar-logo">
+            <div class="sidebar-logo-icon">🌉</div>
+            <span class="sidebar-logo-text">Bridging the Gap</span>
+        </a>
+        <nav>
+            <ul class="sidebar-nav">
+                <li><a href="../index.html">Home</a></li>
                 <li><a href="../resources.html">Resources</a></li>
                 <li><a href="../podcast.html">Podcast</a></li>
-                <li><a href="../blog.html">Blog</a></li>
+                <li><a href="../blog.html" class="active">Blog</a></li>
                 <li><a href="../faq.html">FAQ</a></li>
                 <li><a href="../contact.html">Contact</a></li>
             </ul>
-            <a href="../index.html#pricing" class="nav-cta">Enroll Now</a>
-        </div>
-    </nav>
+        </nav>
+        <a href="../index.html#pricing" class="sidebar-cta">Enroll Now</a>
+    </aside>
 
-    <header class="article-header">
+    <div class="main-content">
+        <header class="article-header">
         <div class="article-icon">🚽</div>
         <div class="article-meta">
             <span class="article-category">Home Strategies</span>
@@ -984,8 +1049,14 @@
         <a href="../index.html">🌉 Bridging the Gap</a>
         <p>© 2024 Bridging the Gap. All rights reserved. | <a href="../privacy.html">Privacy Policy</a> | <a href="../terms.html">Terms of Service</a></p>
     </footer>
+    </div>
 
     <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
         function handleSubscribe(e) {
             e.preventDefault();
             const email = e.target.querySelector('input[type="email"]').value;

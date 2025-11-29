@@ -34,23 +34,24 @@
             background-color: var(--bg-cream);
         }
 
-        /* Header */
-        header {
-            background: var(--bg-light);
-            padding: 1.5rem 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            position: sticky;
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            left: 0;
             top: 0;
-            z-index: 100;
+            width: 280px;
+            height: 100vh;
+            background: var(--bg-light);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
         }
 
-        nav {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 2px solid var(--border-light);
         }
 
         .logo {
@@ -59,30 +60,71 @@
             font-weight: 700;
             color: var(--primary);
             text-decoration: none;
+            display: block;
         }
 
-        .nav-links {
-            display: flex;
-            gap: 2rem;
+        .sidebar-nav {
+            flex: 1;
+            padding: 2rem 0;
+        }
+
+        .sidebar-nav ul {
             list-style: none;
         }
 
-        .nav-links a {
+        .sidebar-nav li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-nav a {
+            display: block;
+            padding: 0.875rem 1.5rem;
             color: var(--text-medium);
             text-decoration: none;
             font-weight: 600;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
         }
 
-        .nav-links a:hover {
+        .sidebar-nav a:hover {
+            background: var(--bg-cream);
             color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .sidebar-nav a.active {
+            background: var(--bg-cream);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
         }
 
         /* Article Container */
         .article-container {
             max-width: 800px;
             margin: 3rem auto;
-            padding: 0 2rem;
+            padding: 0 2rem 3rem 2rem;
         }
 
         /* Article Header */
@@ -428,6 +470,29 @@
         }
 
         /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .article-container {
+                margin-top: 5rem;
+            }
+        }
+
         @media (max-width: 768px) {
             .article-title {
                 font-size: 2rem;
@@ -453,34 +518,30 @@
             .newsletter-form input {
                 width: 100%;
             }
-
-            nav {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .nav-links {
-                gap: 1rem;
-            }
         }
     </style>
 </head>
 <body>
-    <header>
-        <nav>
+    <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation menu">☰ Menu</button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
             <a href="../index.html" class="logo">ParentEducatorBridge</a>
-            <ul class="nav-links">
-                <li><a href="../index.html#curriculum">Course</a></li>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="../index.html">Home</a></li>
                 <li><a href="../resources.html">Resources</a></li>
                 <li><a href="../podcast.html">Podcast</a></li>
-                <li><a href="../blog.html">Blog</a></li>
+                <li><a href="../blog.html" class="active">Blog</a></li>
                 <li><a href="../faq.html">FAQ</a></li>
                 <li><a href="../contact.html">Contact</a></li>
             </ul>
         </nav>
-    </header>
+    </aside>
 
-    <main class="article-container">
+    <div class="main-content">
+        <main class="article-container">
         <article>
             <div class="article-header">
                 <div class="article-meta">
@@ -789,9 +850,9 @@
                 <a href="#" class="cta-button">Explore the Course</a>
             </div>
         </article>
-    </main>
+        </main>
 
-    <footer>
+        <footer>
         <div class="footer-content">
             <div class="footer-section">
                 <h4>ParentEducatorBridge</h4>
@@ -821,6 +882,27 @@
         <div class="footer-bottom">
             <p>&copy; 2024 ParentEducatorBridge. All rights reserved. | <a href="#" style="color: inherit;">Privacy Policy</a> | <a href="#" style="color: inherit;">Terms of Service</a></p>
         </div>
-    </footer>
+        </footer>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.querySelector('.menu-toggle');
+
+            if (window.innerWidth <= 1024 &&
+                !sidebar.contains(event.target) &&
+                !menuToggle.contains(event.target) &&
+                sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+            }
+        });
+    </script>
 </body>
 </html>

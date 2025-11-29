@@ -43,50 +43,89 @@
             background: var(--bg-cream);
         }
 
-        /* Header */
-        header {
-            background: var(--bg-white);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            position: sticky;
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            left: 0;
             top: 0;
-            z-index: 100;
+            width: 280px;
+            height: 100vh;
+            background: var(--bg-white);
+            box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+            z-index: 1000;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
         }
 
-        nav {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1.25rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
         }
 
         .logo {
             font-family: 'Merriweather', serif;
-            font-size: 1.5rem;
+            font-size: 1.35rem;
             font-weight: 700;
             color: var(--primary);
             text-decoration: none;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            line-height: 1.3;
         }
 
-        .nav-links {
-            display: flex;
-            gap: 2rem;
+        .sidebar-nav {
+            padding: 1.5rem 0;
+        }
+
+        .sidebar-nav ul {
             list-style: none;
         }
 
-        .nav-links a {
+        .sidebar-nav li {
+            margin-bottom: 0.25rem;
+        }
+
+        .sidebar-nav a {
+            display: block;
+            padding: 0.875rem 1.5rem;
             color: var(--text-dark);
             text-decoration: none;
             font-weight: 600;
-            transition: color 0.3s;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
         }
 
-        .nav-links a:hover {
+        .sidebar-nav a:hover {
+            background: var(--bg-cream);
             color: var(--primary);
+            border-left-color: var(--primary-light);
+        }
+
+        .sidebar-nav a.active {
+            background: var(--bg-cream);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 1.25rem;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .main-content {
+            margin-left: 280px;
         }
 
         /* Article Header */
@@ -551,8 +590,20 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .nav-links {
-                display: none;
+            .mobile-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
             }
 
             h1 {
@@ -588,24 +639,31 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <nav>
+    <!-- Mobile Toggle Button -->
+    <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
             <a href="../index.html" class="logo">
                 🌉 ParentEducatorBridge
             </a>
-            <ul class="nav-links">
-                <li><a href="../index.html#curriculum">Course</a></li>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="../index.html">Home</a></li>
                 <li><a href="../resources.html">Resources</a></li>
                 <li><a href="../podcast.html">Podcast</a></li>
-                <li><a href="../blog.html">Blog</a></li>
+                <li><a href="../blog.html" class="active">Blog</a></li>
                 <li><a href="../faq.html">FAQ</a></li>
                 <li><a href="../contact.html">Contact</a></li>
             </ul>
         </nav>
-    </header>
+    </aside>
 
-    <!-- Article Header -->
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Article Header -->
     <section class="article-header">
         <div class="container">
             <span class="category-badge">Home Strategies</span>
@@ -1046,44 +1104,64 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>ParentEducatorBridge</h4>
-                <p>Connecting home strategies with school success through evidence-based practices and practical support.</p>
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>ParentEducatorBridge</h4>
+                    <p>Connecting home strategies with school success through evidence-based practices and practical support.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="../index.html#parent-coaching">Parent Coaching</a></li>
+                        <li><a href="../index.html#school-consultation">School Consultation</a></li>
+                        <li><a href="../index.html#behavior-plans">Behavior Plans</a></li>
+                        <li><a href="../index.html#workshops">Workshops</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="../blog.html">Blog</a></li>
+                        <li><a href="../resources.html">Free Downloads</a></li>
+                        <li><a href="../faq.html">FAQ</a></li>
+                        <li><a href="../contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="mailto:sarah@parenteducatorbridge.com">sarah@parenteducatorbridge.com</a></li>
+                        <li><a href="tel:555-123-4567">(555) 123-4567</a></li>
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="#">Instagram</a></li>
+                    </ul>
+                </div>
             </div>
-            <div class="footer-section">
-                <h4>Services</h4>
-                <ul>
-                    <li><a href="../index.html#parent-coaching">Parent Coaching</a></li>
-                    <li><a href="../index.html#school-consultation">School Consultation</a></li>
-                    <li><a href="../index.html#behavior-plans">Behavior Plans</a></li>
-                    <li><a href="../index.html#workshops">Workshops</a></li>
-                </ul>
+            <div class="footer-bottom">
+                <p>&copy; 2024 ParentEducatorBridge. All rights reserved. | <a href="../privacy.html">Privacy Policy</a> | <a href="../terms.html">Terms of Service</a></p>
             </div>
-            <div class="footer-section">
-                <h4>Resources</h4>
-                <ul>
-                    <li><a href="../blog.html">Blog</a></li>
-                    <li><a href="../resources.html">Free Downloads</a></li>
-                    <li><a href="../faq.html">FAQ</a></li>
-                    <li><a href="../contact.html">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Connect</h4>
-                <ul>
-                    <li><a href="mailto:sarah@parenteducatorbridge.com">sarah@parenteducatorbridge.com</a></li>
-                    <li><a href="tel:555-123-4567">(555) 123-4567</a></li>
-                    <li><a href="#">Facebook</a></li>
-                    <li><a href="#">Instagram</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 ParentEducatorBridge. All rights reserved. | <a href="../privacy.html">Privacy Policy</a> | <a href="../terms.html">Terms of Service</a></p>
-        </div>
-    </footer>
+        </footer>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.mobile-toggle');
+
+            if (window.innerWidth <= 768) {
+                if (!sidebar.contains(event.target) && !toggle.contains(event.target)) {
+                    sidebar.classList.remove('active');
+                }
+            }
+        });
+    </script>
 </body>
 </html>

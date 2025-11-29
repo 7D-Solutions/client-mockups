@@ -87,22 +87,24 @@
             color: var(--text-medium);
         }
 
-        /* Header */
-        header {
-            background: white;
-            box-shadow: 0 2px 10px var(--shadow);
-            position: sticky;
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
             top: 0;
-            z-index: 100;
+            width: 280px;
+            height: 100vh;
+            background: white;
+            box-shadow: 2px 0 10px var(--shadow);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
         }
 
-        nav {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 2px solid var(--border);
         }
 
         .logo {
@@ -111,24 +113,72 @@
             font-weight: 800;
             color: var(--primary);
             text-decoration: none;
+            display: block;
         }
 
-        .nav-links {
-            display: flex;
-            gap: 2rem;
+        .sidebar-nav {
+            flex: 1;
+            padding: 2rem 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-nav ul {
             list-style: none;
+            padding: 0;
+            margin: 0;
         }
 
-        .nav-links a {
+        .sidebar-nav li {
+            margin: 0;
+        }
+
+        .sidebar-nav a {
+            display: block;
+            padding: 1rem 1.5rem;
             font-family: 'Nunito', sans-serif;
             text-decoration: none;
             color: var(--text-medium);
             font-weight: 600;
-            transition: color 0.3s;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
         }
 
-        .nav-links a:hover {
+        .sidebar-nav a:hover {
             color: var(--primary);
+            background: var(--bg-light);
+            border-left-color: var(--primary);
+        }
+
+        .sidebar-nav a.active {
+            color: var(--primary);
+            background: linear-gradient(135deg, rgba(46, 125, 107, 0.1) 0%, rgba(232, 165, 75, 0.1) 100%);
+            border-left-color: var(--primary);
+            font-weight: 700;
+        }
+
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.25rem;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .mobile-toggle:hover {
+            background: var(--primary-dark);
+        }
+
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
         }
 
         /* Hero Section */
@@ -611,6 +661,26 @@
 
         /* Responsive */
         @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .blog-hero {
+                padding-left: 4rem;
+            }
+
             .blog-hero h1 {
                 font-size: 2rem;
             }
@@ -644,29 +714,34 @@
             .newsletter-form {
                 flex-direction: column;
             }
-
-            .nav-links {
-                display: none;
-            }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <nav>
+    <!-- Mobile Toggle -->
+    <button class="mobile-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
             <a href="../index.html" class="logo">ParentEducatorBridge</a>
-            <ul class="nav-links">
-                <li><a href="../index.html#curriculum">Course</a></li>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="../index.html">Home</a></li>
                 <li><a href="../resources.html">Resources</a></li>
                 <li><a href="../podcast.html">Podcast</a></li>
-                <li><a href="../blog.html">Blog</a></li>
+                <li><a href="../blog.html" class="active">Blog</a></li>
                 <li><a href="../faq.html">FAQ</a></li>
                 <li><a href="../contact.html">Contact</a></li>
             </ul>
         </nav>
-    </header>
+    </aside>
 
+    <!-- Main Content -->
+    <div class="main-content">
     <!-- Hero Section -->
     <section class="blog-hero">
         <div class="blog-hero-content">
@@ -1073,8 +1148,27 @@
             </div>
         </div>
     </footer>
+    </div><!-- End Main Content -->
 
     <script>
+        // Sidebar toggle for mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.mobile-toggle');
+
+            if (window.innerWidth <= 768) {
+                if (!sidebar.contains(event.target) && !toggle.contains(event.target)) {
+                    sidebar.classList.remove('active');
+                }
+            }
+        });
+
         // Share button functionality
         document.addEventListener('DOMContentLoaded', function() {
             const shareButtons = document.querySelectorAll('.share-btn');

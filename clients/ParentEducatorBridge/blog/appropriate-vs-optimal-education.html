@@ -42,35 +42,32 @@
             overflow-x: hidden;
         }
 
-        /* Navigation */
-        .nav {
+        /* Sidebar Navigation */
+        .sidebar {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
+            width: 280px;
+            height: 100vh;
             background: var(--surface);
-            box-shadow: 0 2px 20px var(--shadow);
+            box-shadow: 2px 0 20px var(--shadow);
             z-index: 1000;
-            padding: 0.75rem 2rem;
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            overflow-y: auto;
         }
 
-        .nav-logo {
+        .sidebar-logo {
             display: flex;
             align-items: center;
             gap: 0.75rem;
             text-decoration: none;
             color: var(--primary);
+            padding: 2rem 1.5rem 1.5rem;
+            border-bottom: 1px solid var(--border);
         }
 
-        .nav-logo-icon {
+        .sidebar-logo-icon {
             width: 45px;
             height: 45px;
             background: var(--gradient);
@@ -79,58 +76,95 @@
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
+            flex-shrink: 0;
         }
 
-        .nav-logo-text {
+        .sidebar-logo-text {
             font-weight: 800;
             font-size: 1.25rem;
         }
 
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
+        .sidebar-nav {
+            flex: 1;
+            padding: 2rem 0;
         }
 
-        .nav-links a {
+        .sidebar-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-nav li {
+            margin: 0;
+        }
+
+        .sidebar-nav a {
+            display: block;
+            padding: 1rem 1.5rem;
             text-decoration: none;
             color: var(--text);
             font-weight: 600;
-            transition: color 0.3s;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
         }
 
-        .nav-links a:hover {
+        .sidebar-nav a:hover {
+            background: var(--background);
             color: var(--primary);
+            border-left-color: var(--primary);
         }
 
-        .nav-cta {
+        .sidebar-nav a.active {
+            background: linear-gradient(90deg, rgba(46, 125, 107, 0.1) 0%, transparent 100%);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 700;
+        }
+
+        .sidebar-cta {
+            margin: 1rem 1.5rem 2rem;
+            display: block;
+            text-align: center;
             background: var(--gradient);
             color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 50px;
+            padding: 1rem;
+            border-radius: 12px;
             text-decoration: none;
             font-weight: 700;
             transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        .nav-cta:hover {
+        .sidebar-cta:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 20px var(--shadow);
         }
 
         .mobile-menu {
             display: none;
-            background: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            background: var(--gradient);
+            color: white;
             border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
             font-size: 1.5rem;
             cursor: pointer;
-            color: var(--primary);
+            z-index: 1001;
+            box-shadow: 0 5px 20px var(--shadow);
+        }
+
+        .main-content {
+            margin-left: 280px;
         }
 
         /* Blog Hero */
         .blog-hero {
-            padding: 8rem 2rem 3rem;
+            padding: 4rem 2rem 3rem;
             background: linear-gradient(180deg, #E8F5F1 0%, var(--background) 100%);
             text-align: center;
         }
@@ -570,12 +604,21 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .nav-links {
-                display: none;
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
             }
 
             .mobile-menu {
                 display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
             }
 
             .blog-hero h1 {
@@ -615,28 +658,31 @@
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="nav">
-        <div class="nav-container">
-            <a href="../index.html" class="nav-logo">
-                <div class="nav-logo-icon">🌉</div>
-                <span class="nav-logo-text">Bridging the Gap</span>
-            </a>
-            <ul class="nav-links">
-                <li><a href="../index.html#curriculum">Course</a></li>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <a href="../index.html" class="sidebar-logo">
+            <div class="sidebar-logo-icon">🌉</div>
+            <span class="sidebar-logo-text">Bridging the Gap</span>
+        </a>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="../index.html">Home</a></li>
                 <li><a href="../resources.html">Resources</a></li>
                 <li><a href="../podcast.html">Podcast</a></li>
-                <li><a href="../blog.html">Blog</a></li>
+                <li><a href="../blog.html" class="active">Blog</a></li>
                 <li><a href="../faq.html">FAQ</a></li>
                 <li><a href="../contact.html">Contact</a></li>
             </ul>
-            <a href="../index.html#pricing" class="nav-cta">Enroll Now</a>
-            <button class="mobile-menu">☰</button>
-        </div>
-    </nav>
+        </nav>
+        <a href="../index.html#pricing" class="sidebar-cta">Enroll Now</a>
+    </aside>
 
-    <!-- Blog Hero -->
-    <section class="blog-hero">
+    <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Blog Hero -->
+        <section class="blog-hero">
         <div class="blog-meta">
             <span class="blog-category">📚 IEP Tips</span>
             <span class="blog-date">October 8, 2024</span>
@@ -984,6 +1030,7 @@
             </div>
         </div>
     </article>
+    </div>
 
     <!-- Footer -->
     <footer class="footer">
@@ -1024,5 +1071,25 @@
             <p>© 2024 Bridging the Gap. All rights reserved. | <a href="../privacy.html" style="color: inherit;">Privacy Policy</a> | <a href="../terms.html" style="color: inherit;">Terms of Service</a></p>
         </div>
     </footer>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const mobileMenu = document.querySelector('.mobile-menu');
+
+            if (window.innerWidth <= 768 &&
+                sidebar.classList.contains('active') &&
+                !sidebar.contains(event.target) &&
+                !mobileMenu.contains(event.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+    </script>
 </body>
 </html>
