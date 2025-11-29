@@ -33,23 +33,25 @@
             line-height: 1.7;
         }
 
-        .nav {
+        /* Sidebar Navigation */
+        .sidebar {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
+            width: 280px;
+            height: 100vh;
             background: var(--surface);
-            box-shadow: 0 2px 20px var(--shadow);
+            box-shadow: 2px 0 20px var(--shadow);
             z-index: 1000;
-            padding: 0.75rem 2rem;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
         }
 
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .main-content {
+            margin-left: 280px;
+            width: calc(100% - 280px);
         }
 
         .nav-logo {
@@ -58,6 +60,9 @@
             gap: 0.75rem;
             text-decoration: none;
             color: var(--primary);
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border);
         }
 
         .nav-logo-icon {
@@ -71,23 +76,103 @@
             font-size: 1.5rem;
         }
 
-        .nav-logo-text { font-weight: 800; font-size: 1.25rem; }
+        .nav-logo-text {
+            font-weight: 800;
+            font-size: 1.1rem;
+            line-height: 1.2;
+        }
 
-        .nav-links { display: flex; gap: 2rem; list-style: none; }
-        .nav-links a { text-decoration: none; color: var(--text); font-weight: 600; transition: color 0.3s; }
-        .nav-links a:hover { color: var(--primary); }
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            list-style: none;
+            flex: 1;
+        }
+
+        .nav-links li a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 600;
+            padding: 0.85rem 1rem;
+            border-radius: 10px;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .nav-links li a:hover {
+            background: var(--background);
+            color: var(--primary);
+        }
+
+        .nav-links li a.active {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .nav-links li a span {
+            font-size: 1.1rem;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 1rem 0;
+        }
 
         .nav-cta {
             background: var(--gradient);
             color: white;
-            padding: 0.75rem 1.5rem;
+            padding: 1rem 1.5rem;
             border-radius: 50px;
             text-decoration: none;
             font-weight: 700;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px var(--shadow);
+        }
+
+        .mobile-menu {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            width: 50px;
+            height: 50px;
+            background: var(--surface);
+            border-radius: 50%;
+            box-shadow: 0 2px 10px var(--shadow);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
         }
 
         .hero-podcast {
-            padding: 8rem 2rem 4rem;
+            padding: 4rem 2rem 4rem;
             background: linear-gradient(180deg, #1D5C4E 0%, #2E7D6B 100%);
             color: white;
         }
@@ -547,7 +632,28 @@
         }
 
         @media (max-width: 768px) {
-            .nav-links { display: none; }
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .mobile-menu {
+                display: flex;
+            }
+
             .hero-podcast-content h1 { font-size: 2rem; }
             .episode-card { flex-direction: column; text-align: center; }
             .host-card { grid-template-columns: 1fr; text-align: center; }
@@ -557,25 +663,35 @@
     </style>
 </head>
 <body>
-    <nav class="nav">
-        <div class="nav-container">
-            <a href="index.html" class="nav-logo">
-                <div class="nav-logo-icon">🌉</div>
-                <span class="nav-logo-text">Bridging the Gap</span>
-            </a>
-            <ul class="nav-links">
-                <li><a href="index.html#curriculum">Course</a></li>
-                <li><a href="resources.html">Resources</a></li>
-                <li><a href="podcast.html">Podcast</a></li>
-                <li><a href="blog.html">Blog</a></li>
-                <li><a href="faq.html">FAQ</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-            <a href="index.html#pricing" class="nav-cta">Enroll Now</a>
-        </div>
+    <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <nav class="sidebar">
+        <a href="index.html" class="nav-logo">
+            <div class="nav-logo-icon">🌉</div>
+            <span class="nav-logo-text">Bridging the Gap</span>
+        </a>
+
+        <ul class="nav-links">
+            <li><a href="index.html"><span>🏠</span> Home</a></li>
+            <li><a href="index.html#curriculum"><span>📚</span> Course</a></li>
+            <li><a href="5-things.html"><span>✋</span> 5 Things to Know</a></li>
+            <li><a href="foundation-skills.html"><span>🎯</span> Foundation Skills</a></li>
+            <li><div class="nav-divider"></div></li>
+            <li><a href="resources.html"><span>📖</span> Resources</a></li>
+            <li><a href="podcast.html" class="active"><span>🎙️</span> Podcast</a></li>
+            <li><a href="blog.html"><span>✍️</span> Blog</a></li>
+            <li><div class="nav-divider"></div></li>
+            <li><a href="faq.html"><span>❓</span> FAQ</a></li>
+            <li><a href="contact.html"><span>✉️</span> Contact</a></li>
+        </ul>
+
+        <a href="index.html#pricing" class="nav-cta">Enroll Now</a>
     </nav>
 
-    <section class="hero-podcast">
+    <div class="main-content">
+        <section class="hero-podcast">
         <div class="hero-podcast-container">
             <div class="podcast-cover">
                 <div class="podcast-cover-image">
@@ -798,5 +914,23 @@
         <a href="index.html">🌉 Bridging the Gap</a>
         <p>© 2024 Bridging the Gap. All rights reserved.</p>
     </footer>
+    </div>
+
+    <script>
+        // Toggle Sidebar for mobile
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('active');
+            document.querySelector('.sidebar-overlay').classList.toggle('active');
+        }
+
+        // Close sidebar when clicking a nav link (mobile)
+        document.querySelectorAll('.sidebar .nav-links a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    toggleSidebar();
+                }
+            });
+        });
+    </script>
 </body>
 </html>

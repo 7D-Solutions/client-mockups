@@ -38,23 +38,24 @@
             line-height: 1.7;
         }
 
-        .nav {
+        .sidebar {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
+            width: 280px;
+            height: 100vh;
             background: var(--surface);
-            box-shadow: 0 2px 20px var(--shadow);
+            box-shadow: 2px 0 20px var(--shadow);
             z-index: 1000;
-            padding: 0.75rem 2rem;
+            padding: 2rem 0;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
         }
 
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .sidebar-logo {
+            padding: 0 2rem;
+            margin-bottom: 2rem;
         }
 
         .nav-logo {
@@ -82,29 +83,63 @@
         }
 
         .nav-links {
-            display: flex;
-            gap: 2rem;
             list-style: none;
+            flex: 1;
+        }
+
+        .nav-links li {
+            margin-bottom: 0.5rem;
         }
 
         .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 2rem;
             text-decoration: none;
             color: var(--text);
             font-weight: 600;
-            transition: color 0.3s;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
         }
 
         .nav-links a:hover {
+            background: rgba(46, 125, 107, 0.05);
+            border-left-color: var(--primary);
             color: var(--primary);
         }
 
+        .nav-links a.active {
+            background: rgba(46, 125, 107, 0.1);
+            border-left-color: var(--primary);
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .nav-links a span {
+            font-size: 1.25rem;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 1rem 2rem;
+        }
+
+        .sidebar-cta {
+            padding: 0 2rem;
+            margin-top: 1rem;
+        }
+
         .nav-cta {
+            display: block;
             background: var(--gradient);
             color: white;
             padding: 0.75rem 1.5rem;
             border-radius: 50px;
             text-decoration: none;
             font-weight: 700;
+            text-align: center;
             transition: transform 0.3s, box-shadow 0.3s;
         }
 
@@ -113,8 +148,29 @@
             box-shadow: 0 5px 20px var(--shadow);
         }
 
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .main-content {
+            margin-left: 280px;
+        }
+
         .hero-mini {
-            padding: 8rem 2rem 4rem;
+            padding: 4rem 2rem;
             background: linear-gradient(180deg, #E8F5F1 0%, var(--background) 100%);
             text-align: center;
         }
@@ -316,8 +372,27 @@
         }
 
         @media (max-width: 768px) {
-            .nav-links {
-                display: none;
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .mobile-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .hero-mini {
+                padding-top: 6rem;
             }
 
             .hero-mini h1 {
@@ -335,25 +410,37 @@
     </style>
 </head>
 <body>
-    <nav class="nav">
-        <div class="nav-container">
+    <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
             <a href="index.html" class="nav-logo">
                 <div class="nav-logo-icon">🌉</div>
                 <span class="nav-logo-text">Bridging the Gap</span>
             </a>
-            <ul class="nav-links">
-                <li><a href="index.html#curriculum">Course</a></li>
-                <li><a href="resources.html">Resources</a></li>
-                <li><a href="podcast.html">Podcast</a></li>
-                <li><a href="blog.html">Blog</a></li>
-                <li><a href="faq.html">FAQ</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="index.html"><span>🏠</span> Home</a></li>
+            <li><a href="index.html#curriculum"><span>📚</span> Course</a></li>
+            <li><a href="index.html#5things"><span>🎯</span> 5 Things to Know</a></li>
+            <li><a href="index.html#foundation"><span>🧱</span> Foundation Skills</a></li>
+            <li class="nav-divider"></li>
+            <li><a href="resources.html" class="active"><span>📖</span> Resources</a></li>
+            <li><a href="podcast.html"><span>🎙️</span> Podcast</a></li>
+            <li><a href="blog.html"><span>✍️</span> Blog</a></li>
+            <li class="nav-divider"></li>
+            <li><a href="faq.html"><span>❓</span> FAQ</a></li>
+            <li><a href="contact.html"><span>💬</span> Contact</a></li>
+        </ul>
+
+        <div class="sidebar-cta">
             <a href="index.html#pricing" class="nav-cta">Enroll Now</a>
         </div>
-    </nav>
+    </aside>
 
-    <section class="hero-mini">
+    <div class="main-content">
+        <section class="hero-mini">
         <h1>📋 Free IEP Meeting Checklist</h1>
         <p>Walk into your next IEP meeting prepared, confident, and ready to advocate effectively for your child.</p>
     </section>
@@ -439,11 +526,17 @@
         <a href="index.html">🌉 Bridging the Gap</a>
         <p>© 2024 Bridging the Gap. All rights reserved.</p>
     </footer>
+    </div>
 
     <script>
         function handleDownload(e) {
             e.preventDefault();
             alert('Thank you! Check your email for the IEP Meeting Checklist. (In a live version, this would send the PDF to your email.)');
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
         }
     </script>
 </body>

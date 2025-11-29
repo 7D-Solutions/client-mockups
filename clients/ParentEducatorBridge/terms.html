@@ -37,35 +37,32 @@
             line-height: 1.7;
         }
 
-        /* Navigation */
-        .nav {
+        /* Sidebar Navigation */
+        .sidebar {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
+            width: 280px;
+            height: 100vh;
             background: var(--surface);
-            box-shadow: 0 2px 20px var(--shadow);
+            box-shadow: 2px 0 20px var(--shadow);
             z-index: 1000;
-            padding: 0.75rem 2rem;
+            padding: 2rem 0;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
         }
 
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-logo {
+        .sidebar-logo {
             display: flex;
             align-items: center;
             gap: 0.75rem;
             text-decoration: none;
             color: var(--primary);
+            padding: 0 2rem;
+            margin-bottom: 2rem;
         }
 
-        .nav-logo-icon {
+        .sidebar-logo-icon {
             width: 45px;
             height: 45px;
             background: var(--gradient);
@@ -76,47 +73,102 @@
             font-size: 1.5rem;
         }
 
-        .nav-logo-text {
+        .sidebar-logo-text {
             font-weight: 800;
             font-size: 1.25rem;
         }
 
         .nav-links {
-            display: flex;
-            gap: 2rem;
             list-style: none;
+            padding: 0 1rem;
+        }
+
+        .nav-links li {
+            margin-bottom: 0.5rem;
         }
 
         .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
             text-decoration: none;
             color: var(--text);
             font-weight: 600;
-            transition: color 0.3s;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
             font-size: 0.95rem;
         }
 
         .nav-links a:hover {
+            background: linear-gradient(135deg, #E8F5F1 0%, #F0F8F6 100%);
             color: var(--primary);
         }
 
-        .nav-cta {
+        .nav-links span {
+            font-size: 1.25rem;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 1rem 2rem;
+        }
+
+        .sidebar-cta {
+            margin: 2rem 1rem 0;
+            text-align: center;
+        }
+
+        .sidebar-cta a {
+            display: block;
             background: var(--gradient);
             color: white;
-            padding: 0.75rem 1.5rem;
+            padding: 0.875rem 1.5rem;
             border-radius: 50px;
             text-decoration: none;
             font-weight: 700;
             transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        .nav-cta:hover {
+        .sidebar-cta a:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px var(--shadow);
+            box-shadow: 0 8px 25px var(--shadow);
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 0.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .mobile-menu-toggle span {
+            width: 20px;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .main-content {
+            margin-left: 280px;
         }
 
         /* Hero Section */
         .hero-mini {
-            padding: 8rem 2rem 4rem;
+            padding: 4rem 2rem 4rem;
             background: linear-gradient(180deg, #E8F5F1 0%, var(--background) 100%);
             text-align: center;
         }
@@ -345,8 +397,20 @@
         }
 
         @media (max-width: 768px) {
-            .nav-links {
-                display: none;
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .mobile-menu-toggle {
+                display: flex;
+            }
+
+            .main-content {
+                margin-left: 0;
             }
 
             .hero-mini h1 {
@@ -365,24 +429,49 @@
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="nav">
-        <div class="nav-container">
-            <a href="index.html" class="nav-logo">
-                <div class="nav-logo-icon">🌉</div>
-                <span class="nav-logo-text">Bridging the Gap</span>
-            </a>
-            <ul class="nav-links">
-                <li><a href="index.html#curriculum">Course</a></li>
-                <li><a href="resources.html">Resources</a></li>
-                <li><a href="podcast.html">Podcast</a></li>
-                <li><a href="blog.html">Blog</a></li>
-                <li><a href="faq.html">FAQ</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-            <a href="index.html#pricing" class="nav-cta">Enroll Now</a>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <a href="index.html" class="sidebar-logo">
+            <div class="sidebar-logo-icon">🌉</div>
+            <span class="sidebar-logo-text">Bridging the Gap</span>
+        </a>
+
+        <ul class="nav-links">
+            <li><a href="index.html"><span>🏠</span> Home</a></li>
+            <li><a href="index.html#curriculum"><span>📚</span> Course</a></li>
+            <li><a href="index.html#five-things"><span>✨</span> 5 Things to Know</a></li>
+            <li><a href="index.html#foundation"><span>🎯</span> Foundation Skills</a></li>
+        </ul>
+
+        <div class="nav-divider"></div>
+
+        <ul class="nav-links">
+            <li><a href="resources.html"><span>📖</span> Resources</a></li>
+            <li><a href="podcast.html"><span>🎙️</span> Podcast</a></li>
+            <li><a href="blog.html"><span>✍️</span> Blog</a></li>
+        </ul>
+
+        <div class="nav-divider"></div>
+
+        <ul class="nav-links">
+            <li><a href="faq.html"><span>❓</span> FAQ</a></li>
+            <li><a href="contact.html"><span>📧</span> Contact</a></li>
+        </ul>
+
+        <div class="sidebar-cta">
+            <a href="index.html#pricing">Enroll Now</a>
         </div>
-    </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
 
     <!-- Hero Section -->
     <section class="hero-mini">
@@ -739,7 +828,24 @@
         </div>
     </footer>
 
+    </div> <!-- Close main-content -->
+
     <script>
+        // Toggle sidebar on mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Close sidebar when clicking a link on mobile
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    document.getElementById('sidebar').classList.remove('active');
+                }
+            });
+        });
+
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {

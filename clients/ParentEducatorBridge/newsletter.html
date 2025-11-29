@@ -40,24 +40,19 @@
             line-height: 1.7;
         }
 
-        /* Navigation */
-        .nav {
+        /* Sidebar Navigation */
+        .sidebar {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
+            width: 280px;
+            height: 100vh;
             background: var(--surface);
-            box-shadow: 0 2px 20px var(--shadow);
+            box-shadow: 2px 0 20px var(--shadow);
             z-index: 1000;
-            padding: 0.75rem 2rem;
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 2rem 0;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
         }
 
         .nav-logo {
@@ -66,6 +61,8 @@
             gap: 0.75rem;
             text-decoration: none;
             color: var(--primary);
+            padding: 0 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .nav-logo-icon {
@@ -85,27 +82,51 @@
         }
 
         .nav-links {
-            display: flex;
-            gap: 2rem;
             list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-links li {
+            margin: 0;
         }
 
         .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1.5rem;
             text-decoration: none;
             color: var(--text);
             font-weight: 600;
-            transition: color 0.3s;
+            transition: all 0.3s;
         }
 
         .nav-links a:hover {
+            background: var(--background);
             color: var(--primary);
         }
 
+        .nav-links a span {
+            font-size: 1.25rem;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 1rem 1.5rem;
+        }
+
         .nav-cta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
             background: var(--gradient);
             color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 50px;
+            padding: 0.875rem 1.5rem;
+            margin: 1.5rem 1.5rem 0;
+            border-radius: 12px;
             text-decoration: none;
             font-weight: 700;
             transition: transform 0.3s, box-shadow 0.3s;
@@ -118,16 +139,39 @@
 
         .mobile-menu {
             display: none;
-            background: none;
-            border: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: 12px;
             font-size: 1.5rem;
+            padding: 0.5rem 0.75rem;
             cursor: pointer;
             color: var(--primary);
+            z-index: 1001;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
         }
 
         /* Hero Section */
         .hero {
-            padding: 8rem 2rem 4rem;
+            padding: 4rem 2rem 4rem;
             background: linear-gradient(180deg, #E8F5F1 0%, var(--background) 100%);
             text-align: center;
         }
@@ -641,12 +685,24 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .nav-links {
-                display: none;
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
             }
 
             .mobile-menu {
                 display: block;
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
             }
 
             .hero h1 {
@@ -671,7 +727,7 @@
 
         @media (max-width: 480px) {
             .hero {
-                padding: 6rem 1rem 3rem;
+                padding: 4rem 1rem 3rem;
             }
 
             .hero h1 {
@@ -685,25 +741,36 @@
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="nav">
-        <div class="nav-container">
-            <a href="index.html" class="nav-logo">
-                <div class="nav-logo-icon">🌉</div>
-                <span class="nav-logo-text">Bridging the Gap</span>
-            </a>
-            <ul class="nav-links">
-                <li><a href="index.html#curriculum">Course</a></li>
-                <li><a href="resources.html">Resources</a></li>
-                <li><a href="podcast.html">Podcast</a></li>
-                <li><a href="blog.html">Blog</a></li>
-                <li><a href="faq.html">FAQ</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-            <a href="index.html#pricing" class="nav-cta">Enroll Now</a>
-            <button class="mobile-menu">☰</button>
-        </div>
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <a href="index.html" class="nav-logo">
+            <div class="nav-logo-icon">🌉</div>
+            <span class="nav-logo-text">Bridging the Gap</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html"><span>🏠</span> Home</a></li>
+            <li><a href="index.html#curriculum"><span>📚</span> Course</a></li>
+            <li><a href="index.html#five-things"><span>💡</span> 5 Things to Know</a></li>
+            <li><a href="index.html#foundation"><span>🎯</span> Foundation Skills</a></li>
+            <div class="nav-divider"></div>
+            <li><a href="resources.html"><span>📁</span> Resources</a></li>
+            <li><a href="podcast.html"><span>🎙️</span> Podcast</a></li>
+            <li><a href="blog.html"><span>✍️</span> Blog</a></li>
+            <div class="nav-divider"></div>
+            <li><a href="faq.html"><span>❓</span> FAQ</a></li>
+            <li><a href="contact.html"><span>📧</span> Contact</a></li>
+        </ul>
+        <a href="index.html#pricing" class="nav-cta">🚀 Enroll Now</a>
     </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
 
     <!-- Hero Section -->
     <section class="hero">
@@ -957,7 +1024,17 @@
         </div>
     </footer>
 
+    </div><!-- End Main Content -->
+
     <script>
+        // Toggle Sidebar for Mobile
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
         // Form validation and submission
         document.getElementById('newsletter-form').addEventListener('submit', function(e) {
             e.preventDefault();
